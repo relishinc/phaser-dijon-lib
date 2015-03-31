@@ -18,10 +18,6 @@ BaseState.prototype = {
             return;
         }
 
-        if (!this.game.model.isEnding && this.game.state.current !== 'boot' && this.game.state.current !== 'preload' && this.game.state.current !== 'menu' && this.game.state.current !== 'intro'){
-            this.game.hud.enableButtons();
-        }
-
         this.buildInterface();
 
         if (this.autoHidePreloader){
@@ -52,7 +48,6 @@ BaseState.prototype = {
     },
 
     reset: function() {
-        this.game.hud.reset();
         this.game.model.reset();
     },
 
