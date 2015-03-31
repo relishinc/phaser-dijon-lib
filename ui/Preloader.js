@@ -56,8 +56,6 @@ Preloader.prototype.setLoadingText = function(){
     }
     this.loadingText.text = 'Loading ' + Math.round(this.percent).toString() + '%';
     this.loadingText.pivot.set(this.loadingText.width >> 1, this.loadingText.height >> 1);
-
-    console.log(this.loadingText.pivot.x)
 };
 
 Preloader.prototype.onLoadComplete = function() {
