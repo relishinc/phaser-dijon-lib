@@ -37,6 +37,7 @@ PopupManager.prototype.init = function () {
 
 PopupManager.prototype.buildInterface = function(){
     this.modalContainer = this.add(this.game.add.group());
+    this.modalContainer.name = 'modalContainer';
 
     var gfx = this.modalContainer.add(this.game.add.graphics(0, 0));
     gfx.beginFill(0, 0.3);
@@ -46,10 +47,12 @@ PopupManager.prototype.buildInterface = function(){
     this.modal = this.modalContainer.add(this.game.add.image(0,0, gfx.generateTexture()));
     this.modal.inputEnabled = true;
     this.modal.visible = false;
+    this.modal.name = 'modal';
 
-    gfx.destroy();
+    this.modalContainer.remove(gfx, true);
 
     this.popupContainer = this.add(this.game.add.group());
+    this.popupContainer.name = 'popupContainer';
 };
 
 PopupManager.prototype.addPopup = function (popup, showModal, closeOnModalClick, centered, pausesGame) {

@@ -23,7 +23,6 @@ Preloader.prototype.init = function(){
 };
 
 Preloader.prototype.buildInterface = function(){
-    this.bg = this.add(this.game.add.image(0, 0, 'ui','preloader/bg'));
     this.addText();
 };
 
