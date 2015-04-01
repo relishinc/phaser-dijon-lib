@@ -20,7 +20,7 @@ BaseState.prototype = {
 
         this.buildInterface();
 
-        if (this.autoHidePreloader){
+        if (this.autoHidePreloader && typeof this.game.preloader !== 'undefined'){
             this.game.preloader.hide();
         }
 
