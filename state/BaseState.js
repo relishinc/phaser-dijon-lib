@@ -42,9 +42,7 @@ BaseState.prototype = {
     },
 
     render: function () {
-        if (this.game.showFPS){
-            this.game.fpsText.setText(this.game.time.fps.toString() || '--');
-        }
+
     },
 
     reset: function() {
