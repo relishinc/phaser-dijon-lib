@@ -23,6 +23,11 @@ BaseState.prototype = {
         if (this.autoHidePreloader){
             this.game.preloader.hide();
         }
+
+        if (this.game.debugger){
+            this.game.debugger.selectedObject = null;
+            this.game.debugger.refresh();
+        }
     },
 
     buildInterface: function(){
