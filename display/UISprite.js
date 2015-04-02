@@ -62,4 +62,9 @@ UISprite.prototype.addAnim = function(animName, animPath, numFrames) {
     this.animations.add(animName, Phaser.Animation.generateFrameNames(animPath, 1, numFrames, '', 4));
 };
 
+UISprite.prototype.playAnim = function(animName, framerate, loop, killOnComplete)
+{
+    this.animations.play(animName, framerate, loop, killOnComplete);
+};
+
 module.exports = UISprite;
