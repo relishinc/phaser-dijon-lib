@@ -67,4 +67,16 @@ UISprite.prototype.playAnim = function(animName, framerate, loop, killOnComplete
     this.animations.play(animName, framerate, loop, killOnComplete);
 };
 
+UISprite.prototype.centerPivot = function(){
+    this.pivot.set(this.width >> 1, this.height >> 1);
+};
+
+UISprite.prototype.centerAnchor = function(){
+    this.anchor.set(0.5);
+};
+
+UISprite.prototype.center = function(){
+    this.position.set(this.parent.width >> 1, this. parent.height >> 1);
+};
+
 module.exports = UISprite;

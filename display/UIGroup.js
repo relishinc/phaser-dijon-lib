@@ -20,4 +20,12 @@ UIGroup.prototype.buildInterface = function () {
     // add visual elements
 };
 
+UISprite.prototype.centerPivot = function(){
+    this.pivot.set(this.width >> 1, this.height >> 1);
+};
+
+UISprite.prototype.center = function(){
+    this.position.set(this.parent.width >> 1, this. parent.height >> 1);
+};
+
 module.exports = UIGroup;
