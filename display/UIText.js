@@ -15,7 +15,7 @@ var UISprite = require('./UISprite');
  * @param settings additional settings appended to the style object
  * @constructor
  */
-var UIText = function (game, x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, autoAdd, settings) {
+var UIText = function (game, x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, autoAdd, settings) {
 
     if (typeof fontName === 'undefined') {
         fontName = UIText.DEFAULT_FONT;
@@ -56,6 +56,8 @@ var UIText = function (game, x, y, text, fontName, fontSize, fontColor, fontAlig
     text.replace(/'/g, "\'");
 
     Phaser.Text.call(this, game, x, y, text, style);
+
+    this.lineSpacing = lineSpacing || 0;
     this.events.onAnimationComplete = new Phaser.Signal();
     this.lowercaseText = this.text.toLowerCase();
 
