@@ -1,9 +1,10 @@
 var UISprite = require('../UISprite');
 
 var InvisibleButton = function (game, x, y, name, w, h) {
-    if (typeof w !== 'undefined' && typeof h !== 'undefined') {
-        this.hitRect = new Phaser.Rectangle(0, 0, w, h);
-    }
+
+    this.hitWidth = w || 10;
+    this.hitHeight = h || 10;
+
     UISprite.call(this, game, x, y, null, null, name);
 
     /*
@@ -24,9 +25,15 @@ InvisibleButton.prototype.update = function () {
 InvisibleButton.prototype.init = function () {
     UISprite.prototype.init.call(this);
     this.inputEnabled = true;
-    if (this.hitRect) {
-        this.hitArea = this.hitRect;
-    }
+};
+
+InvisibleButton.prototype.buildInterface = function(){
+    this.hitArea = new Phaser.Rectangle(0,0, this.hitWidth, this.hitHeight);
+};
+
+InvisibleButton.prototype.centerPivot = function(){
+    this.hitArea.x = -this.hitWidth * 0.5;
+    this.hitArea.y = -this.hitHeight * 0.5;
 };
 
 module.exports = InvisibleButton;
