@@ -81,6 +81,9 @@ BaseState.prototype = {
             while (this.audio.length > 0){
                 sound = this.audio.shift();
                 if (typeof sound !== 'undefined' && sound != null && typeof sound.stop !== 'undefined'){
+                    if (typeof sound.onStop !== 'undefined'){
+                        sound.onStop.removeAll();
+                    }
                     sound.stop();
                 }
             }
