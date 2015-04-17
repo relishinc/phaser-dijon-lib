@@ -33,7 +33,7 @@ AudioManager.prototype = {
         return this.addSound(key);
     },
 
-    playSound: function(marker, volume, loop, forceRestart) {
+    playAudio: function(marker, volume, loop, forceRestart) {
         if (this._getKeyFromMarkerName(marker)) {
             return this.playFXMarker(marker, volume, loop, forceRestart);
         }
@@ -41,7 +41,7 @@ AudioManager.prototype = {
         return this.playMusic(marker, volume, loop, forceRestart);
     },
 
-    playDelayedSound: function(delay, marker, volume, loop, forceRestart) {
+    playDelayedAudio: function(delay, marker, volume, loop, forceRestart) {
         if (this._getKeyFromMarkerName(marker)) {
             return this.playDelayedFXMarker(delay, marker, volume, loop, forceRestart);
         }
