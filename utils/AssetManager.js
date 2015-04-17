@@ -1,6 +1,6 @@
 var global = require('../../global');
 
-var AssetManager = function (game) {
+var AssetManager = function(game) {
     this.game = game;
     this.game.assetManager = this;
     this.init();
@@ -9,12 +9,12 @@ var AssetManager = function (game) {
 AssetManager.prototype = {
     constructor: AssetManager,
 
-    init: function(){
+    init: function() {
         this._xml = null;
         this._data = {};
 
-        this._autoLoadData  = {};
-        this._requiredData  = {};
+        this._autoLoadData = {};
+        this._requiredData = {};
 
         this._currentState = null;
         this._hasFiles = false;
@@ -34,80 +34,83 @@ AssetManager.prototype = {
         this.onBackgroundLoadCompleteAndAudioDecoded = new Phaser.Signal();
     },
 
-    loadText: function(url, ext){
-        if (typeof ext === 'undefined' || ext == null){
+    loadText: function(url, ext) {
+        if (typeof ext === 'undefined' || ext == null) {
             ext = 'xml';
         }
 
         return this.game.load.text(url, global.dataPath + '/' + url + '.' + ext);
     },
 
-    loadAtlas: function(url){
-        if (this.game.cache.checkImageKey(url)){
+    loadAtlas: function(url) {
+        if (this.game.cache.checkImageKey(url)) {
             return;
         }
 
         return this.game.load.atlasXML(url, global.spritesheetPath + '/' + url + '.png', global.spritesheetPath + '/' + url + '.xml');
     },
 
-    loadImage: function(url, ext){
-        if (this.game.cache.checkImageKey(url)){
+    loadImage: function(url, ext) {
+        if (this.game.cache.checkImageKey(url)) {
             return;
         }
-        if (typeof ext === 'undefined' || ext == null){
+        if (typeof ext === 'undefined' || ext == null) {
             ext = 'jpg';
         }
 
         return this.game.load.image(url, global.imgPath + '/' + url + '.' + ext);
     },
 
-    loadAudio: function(url, type, exts, isAudioSprite){
-        if (this.game.cache.checkSoundKey(url) && this.game.cache.getSound(url).decoded){
+    loadAudio: function(url, type, exts, isAudioSprite) {
+        if (this.game.cache.checkSoundKey(url) && this.game.cache.getSound(url).decoded) {
             return;
         }
         var path;
         // type should be 'fx' or 'music'
         // default to fx
 
-        if (typeof type === 'undefined'){
+        if (typeof type === 'undefined') {
             type = 'fx';
         }
-        if (exts.indexOf(',') >= 0){
+        if (exts.indexOf(',') >= 0) {
             exts = exts.split(',');
         }
-        if (this.game.device.iOS && exts.indexOf('m4a') === -1){
+        if (this.game.device.iOS && exts.indexOf('m4a') === -1) {
             exts.unshift('m4a');
         }
-        if (typeof exts === 'object'){
+        if (typeof exts === 'object') {
             path = [];
-            for (var i = 0; i < exts.length; i ++){
+            for (var i = 0; i < exts.length; i++) {
                 path.push(global.audioPath + '/' + type + '/' + url + '.' + exts[i]);
             }
         } else {
-           path = global.audioPath + '/' + type + '/' + url + '.' + exts;
+            path = global.audioPath + '/' + type + '/' + url + '.' + exts;
         }
 
-        if (isAudioSprite){
-            this.game.load.audiosprite(url , path, global.audioPath + '/' + type + '/' + url + '.json');
-        }else{
+        if (isAudioSprite) {
+            this.game.load.audiosprite(url, path, global.audioPath + '/' + type + '/' + url + '.json');
+        } else {
             this.game.load.audio(url, path);
         }
 
-        this._soundsToDecode.push(url);
+        this._soundsToDecode.push({
+            url: url,
+            isAudioSprite: isAudioSprite
+        });
     },
 
-    setStateData: function(xml){
+    setStateData: function(xml) {
         var parser = new DOMParser();
         this._xml = parser.parseFromString(xml, "application/xml");
         this._parseStateData();
     },
 
-    _parseStateData: function(){
+    _parseStateData: function() {
         var states = this._xml.querySelectorAll('states state');
         _.each(states, this._parseStateNode, this);
     },
 
-    _parseStateNode: function(state){
+    _parseStateNode: function(state) {
         var stateName, assets;
 
         stateName = state.getAttribute('id');
@@ -118,13 +121,13 @@ AssetManager.prototype = {
 
         assets = state.querySelectorAll('asset');
 
-        _.each(assets, function(asset){
+        _.each(assets, function(asset) {
             this._data[stateName].push(asset);
         }, this);
     },
 
 
-    loadState: function(state, background){
+    loadState: function(state, background) {
         this._currentState = state;
 
 
@@ -135,55 +138,55 @@ AssetManager.prototype = {
         this._hasFiles = false;
         this._soundsToDecode = [];
 
-        if (typeof this._data === 'undefined'){
+        if (typeof this._data === 'undefined') {
             return;
         }
 
-        if (typeof this._data[state] === 'undefined' || this._data[state].length < 1){
+        if (typeof this._data[state] === 'undefined' || this._data[state].length < 1) {
             return console.log('no preload data registered for ', state);
         }
 
         var assets = this._data[state];
 
-        for (var i = 0; i < assets.length; i ++ ){
+        for (var i = 0; i < assets.length; i++) {
             this._loadAsset(assets[i]);
         }
 
         this._hasFiles = this.game.load._fileList.length > 0;
 
-        if (background){
+        if (background) {
             this.game.load.onLoadStart.addOnce(this._backgroundLoadStart, this);
             this.game.load.onFileComplete.add(this._backgroundFileComplete, this);
             this.game.load.onLoadComplete.addOnce(this._backgroundLoadComplete, this);
-        }else{
+        } else {
             this.game.load.onLoadStart.addOnce(this._gameLoadStart, this);
             this.game.load.onFileStart.add(this._gameFileStart, this);
             this.game.load.onFileComplete.add(this._gameFileComplete, this);
             this.game.load.onLoadComplete.addOnce(this._gameLoadComplete, this);
         }
 
-        if (!this._hasFiles){
+        if (!this._hasFiles) {
             return this._gameLoadComplete();
         }
 
         return this.game.load.start();
     },
 
-    loadQueue: function(){
-        if (this._isLoadingQueue){
+    loadQueue: function() {
+        if (this._isLoadingQueue) {
             return;
         }
 
-        if (typeof this._data === 'undefined'){
+        if (typeof this._data === 'undefined') {
             return console.log('no preload queue to load');
         }
         var assets;
 
-        for (var state in this._data){
-            if (this._autoLoadData[state]){
+        for (var state in this._data) {
+            if (this._autoLoadData[state]) {
 
                 assets = this._data[state];
-                for (var i = 0; i < assets.length; i ++ ){
+                for (var i = 0; i < assets.length; i++) {
                     this._loadAsset(assets[i], true);
                 }
             }
@@ -196,38 +199,39 @@ AssetManager.prototype = {
         this.game.load.onLoadComplete.addOnce(this._backgroundLoadComplete, this);
     },
 
-    getLoadProgress: function(){
+    getLoadProgress: function() {
         return this.game.load.progress;
     },
 
-    _backgroundLoadStart: function(){
+    _backgroundLoadStart: function() {
         this.onBackgroundLoadStart.dispatch();
     },
 
-    _backgroundFileComplete: function(progress, id, fileIndex, totalFiles){
+    _backgroundFileComplete: function(progress, id, fileIndex, totalFiles) {
         this.onBackgroundFileComplete.dispatch(progress, id, fileIndex, totalFiles);
     },
 
-    _backgroundLoadComplete: function(){
+    _backgroundLoadComplete: function() {
         this.game.load.onFileComplete.remove(this._backgroundFileComplete, this);
 
         this.onBackgroundLoadComplete.dispatch();
         this._checkSoundDecoding(this.onBackgroundLoadCompleteAndAudioDecoded);
     },
 
-    _gameLoadStart: function(){
+    _gameLoadStart: function() {
         this.onLoadStart.dispatch();
     },
 
-    _gameFileStart: function(){
+    _gameFileStart: function() {
         this.onFileStart.dispatch();
     },
 
-    _gameFileComplete: function(progress, id, fileIndex, totalFiles){
+    _gameFileComplete: function(progress, id, fileIndex, totalFiles) {
+
         this.onFileComplete.dispatch(progress, id, fileIndex, totalFiles);
     },
 
-    _gameLoadComplete: function(){
+    _gameLoadComplete: function() {
         this.onLoadComplete.dispatch();
         this.game.load.onFileStart.remove(this._gameFileStart, this);
         this.game.load.onFileComplete.remove(this._gameFileComplete, this);
@@ -235,64 +239,68 @@ AssetManager.prototype = {
         this._checkSoundDecoding(this.onLoadCompleteAndAudioDecoded);
     },
 
-    allSoundsDecoded: function(){
+    allSoundsDecoded: function() {
         //console.log('sounds to decode', this._soundsToDecode.length);
         return this._soundsToDecode.length === 0;
     },
 
-    _checkSoundDecoding: function(eventToDispatch){
+    _checkSoundDecoding: function(eventToDispatch) {
         var sound, i;
-        if(this._soundsToDecode && this._soundsToDecode.length > 0){
-            for (i = 0; i < this._soundsToDecode.length; i ++){
-                sound = this.game.add.sound(this._soundsToDecode[i]);
+        if (this._soundsToDecode && this._soundsToDecode.length > 0) {
+            for (i = 0; i < this._soundsToDecode.length; i++) {
+                sound = this.game.add.sound(this._soundsToDecode[i].url);
+                sound.__isAudioSprite = this._soundsToDecode[i].isAudioSprite;
                 sound.eventToDispatch = eventToDispatch;
                 sound.onDecoded.addOnce(this._onSoundDecoded, this);
             }
-        }else{
+        } else {
             eventToDispatch.dispatch();
         }
     },
 
-    _onSoundDecoded: function(sound){
+    _onSoundDecoded: function(sound) {
         var soundIndex = this._soundsToDecode.indexOf(sound.key);
         this._soundsToDecode.splice(soundIndex, 1);
-        if (this._soundsToDecode.length === 0){
+        if (this._soundsToDecode.length === 0) {
             sound.eventToDispatch.dispatch();
+        }
+        if (typeof this.game.audioManager !== 'undefined' && typeof this.game.audioManager.addAudio !== 'undefined') {
+            this.game.audioManager.addAudio(sound.key, sound.__isAudioSprite);
         }
     },
 
-    _loadAsset: function(asset){
+    _loadAsset: function(asset) {
         var type, url, extension, extensions, audioType, audioSprite;
         type = asset.getAttribute('type');
         url = asset.getAttribute('key');
         extension = asset.getAttribute('extension') || null;
 
-        switch (type){
+        switch (type) {
             case AssetManager.AUDIO:
                 extensions = asset.getAttribute('extensions');
                 audioType = asset.getAttribute('audioType');
                 audioSprite = asset.getAttribute('sprite') === 'true';
 
                 this.loadAudio(url, audioType, extensions, audioSprite);
-            break;
+                break;
             case AssetManager.IMAGE:
                 this.loadImage(url, extension);
-            break;
+                break;
             case AssetManager.ATLAS:
                 this.loadAtlas(url);
-            break;
+                break;
             case AssetManager.TEXT:
                 this.loadText(url, extension);
-            break;
+                break;
         }
     },
 
-    clearState: function(state, clearAudio, clearAtlasses, clearImages, clearText){
+    clearState: function(state, clearAudio, clearAtlasses, clearImages, clearText) {
         var assets = this._data[state];
 
         console.log('clearing: ', state);
 
-        if (!assets || typeof assets === 'undefined' || assets.length < 1){
+        if (!assets || typeof assets === 'undefined' || assets.length < 1) {
             return console.log('no assets', assets);
         }
 
@@ -301,45 +309,45 @@ AssetManager.prototype = {
         clearImages = clearImages !== false;
         clearText = clearText !== false;
 
-        for (var i = 0; i < assets.length; i ++ ){
+        for (var i = 0; i < assets.length; i++) {
             this.clearAsset(assets[i], clearAudio, clearAtlasses, clearImages, clearText);
         }
     },
 
-    clearAsset: function(asset, clearAudio, clearAtlasses, clearImages, clearText){
+    clearAsset: function(asset, clearAudio, clearAtlasses, clearImages, clearText) {
         var type, url, required;
         type = asset.getAttribute('type');
         url = asset.getAttribute('key');
         required = asset.getAttribute('required') === "true";
-        if (required){
+        if (required) {
             console.log('the ' + type + ' asset: ' + url + ' is required and will not be cleared');
             return;
         }
         console.log('clearing: ', url);
-        switch (type){
+        switch (type) {
             case AssetManager.AUDIO:
-                if (clearAudio){
+                if (clearAudio) {
                     this.game.cache.removeSound(url);
                 }
-            break;
+                break;
             case AssetManager.IMAGE:
-                if (clearImages){
+                if (clearImages) {
                     this.game.cache.removeImage(url);
                     PIXI.BaseTextureCache[url].destroy();
                 }
-            break;
+                break;
             case AssetManager.ATLAS:
-                if (clearAtlasses){
+                if (clearAtlasses) {
                     this.game.cache.removeImage(url);
                     PIXI.BaseTextureCache[url].destroy();
                     this.game.cache.removeXML(url);
                 }
-            break;
+                break;
             case AssetManager.TEXT:
-                if (clearText){
+                if (clearText) {
                     AssetManager.removeText(url);
                 }
-            break;
+                break;
         }
     }
 };

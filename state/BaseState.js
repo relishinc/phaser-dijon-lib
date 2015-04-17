@@ -1,4 +1,4 @@
-var BaseState = function () {
+var BaseState = function() {
     Phaser.State.call(this);
 };
 
@@ -6,47 +6,47 @@ BaseState.prototype = Object.create(Phaser.State.prototype);
 BaseState.prototype.constructor = BaseState;
 
 BaseState.prototype = {
-    init: function () {
+    init: function() {
         this.autoHidePreloader = true;
         Phaser.State.prototype.stateKeys = Object.keys(Phaser.State.prototype);
         this.game.stateHistory.push(this.game.state.current);
     },
 
-    create: function () {
-        if (!this.game.assetManager.allSoundsDecoded()){
+    create: function() {
+        if (!this.game.assetManager.allSoundsDecoded()) {
             this.game.assetManager.onLoadCompleteAndAudioDecoded.addOnce(this.create, this);
             return;
         }
 
         this.buildInterface();
 
-        if (this.autoHidePreloader && typeof this.game.preloader !== 'undefined'){
+        if (this.autoHidePreloader && typeof this.game.preloader !== 'undefined') {
             this.game.preloader.hide();
         }
 
-        if (this.game.debugger){
+        if (this.game.debugger) {
             this.game.debugger.selectedObject = null;
             this.game.debugger.refresh();
         }
     },
 
-    buildInterface: function(){
+    buildInterface: function() {
 
     },
 
-    addAudio: function(track){
-        if (typeof this.audio === 'undefined'){
+    addAudio: function(track) {
+        if (typeof this.audio === 'undefined') {
             this.audio = [];
         }
         this.audio.push(track);
         return track;
     },
 
-    update: function () {
+    update: function() {
 
     },
 
-    render: function () {
+    render: function() {
 
     },
 
@@ -56,7 +56,7 @@ BaseState.prototype = {
 
     // game state stuff
     // ------------------------
-    lastState: function (clearWorld, clearCache) {
+    lastState: function(clearWorld, clearCache) {
         if (typeof clearWorld === 'undefined') {
             clearWorld = false;
         }
@@ -67,21 +67,21 @@ BaseState.prototype = {
         return this.game.state.start(this.getLastState(), clearWorld, clearCache);
     },
 
-    getLastState: function () {
+    getLastState: function() {
         return this.game.getLastState();
     },
 
-    goBack: function () {
+    goBack: function() {
         this.lastState();
     },
 
-    removeAudio: function(){
+    removeAudio: function() {
         var sound;
-        if (typeof this.audio !== 'undefined'){
-            while (this.audio.length > 0){
+        if (typeof this.audio !== 'undefined') {
+            while (this.audio.length > 0) {
                 sound = this.audio.shift();
-                if (typeof sound !== 'undefined' && sound != null && typeof sound.stop !== 'undefined'){
-                    if (typeof sound.onStop !== 'undefined'){
+                if (typeof sound !== 'undefined' && sound != null && typeof sound.stop !== 'undefined') {
+                    if (typeof sound.onStop !== 'undefined') {
                         sound.onStop.removeAll();
                     }
                     sound.stop();
@@ -90,29 +90,32 @@ BaseState.prototype = {
         }
     },
 
-    removeStateProps: function(){
+    removeStateProps: function() {
         var keys = Object.keys(this);
         var defaults = Array.prototype.slice.call(Object.keys(Phaser.State.prototype));
         var key, index, n;
 
-        while(defaults.length > 0){
+        while (defaults.length > 0) {
             key = defaults.shift();
             index = keys.indexOf(key);
-            if (index >= 0){
+            if (index >= 0) {
                 keys.splice(index, 1);
             }
         }
 
         n = keys.length;
-        while(n >= 0){
+        while (n >= 0) {
             this[keys[n]] = null;
             delete this[keys[n]];
-            n --;
+            n--;
         }
     },
 
-    shutdown: function(){
-        this.game.popupManager.removeAllPopups();
+    shutdown: function() {
+        if (typeof this.game.popupManager !== 'undefined') {
+            this.game.popupManager.removeAllPopups();
+        }
+
         this.removeAudio();
         this.removeStateProps();
     }
