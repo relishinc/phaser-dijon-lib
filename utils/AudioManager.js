@@ -43,8 +43,16 @@ AudioManager.prototype = {
 
     playDelayedAudio: function(delay, marker, volume, loop, forceRestart) {
         if (this._getKeyFromMarkerName(marker)) {
+            //delay, marker, volume, loop, forceRestart
             return this.playDelayedFXMarker(delay, marker, volume, loop, forceRestart);
         }
+    },
+
+    stopAudio: function(marker) {
+        if (this._getKeyFromMarkerName(marker)) {
+            return this.stopFXMarker(marker);
+        }
+        return this.stopMusic(marker);
     },
 
     stopSound: function(marker) {
@@ -185,6 +193,7 @@ AudioManager.prototype = {
             console.log('marker not found', marker);
             return;
         }
+
         return this.playFX(key, marker, volume, loop, forceRestart);
     },
 

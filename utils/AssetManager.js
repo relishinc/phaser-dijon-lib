@@ -245,11 +245,12 @@ AssetManager.prototype = {
     },
 
     _checkSoundDecoding: function(eventToDispatch) {
-        var sound, i;
+        var sound, i, isAudioSprite;
         if (this._soundsToDecode && this._soundsToDecode.length > 0) {
             for (i = 0; i < this._soundsToDecode.length; i++) {
+                isAudioSprite = this._soundsToDecode[i].isAudioSprite;
                 sound = this.game.add.sound(this._soundsToDecode[i].url);
-                sound.__isAudioSprite = this._soundsToDecode[i].isAudioSprite;
+                sound.__isAudioSprite = isAudioSprite;
                 sound.eventToDispatch = eventToDispatch;
                 sound.onDecoded.addOnce(this._onSoundDecoded, this);
             }
@@ -265,6 +266,9 @@ AssetManager.prototype = {
             sound.eventToDispatch.dispatch();
         }
         if (typeof this.game.audioManager !== 'undefined' && typeof this.game.audioManager.addAudio !== 'undefined') {
+            if (sound.__isAudioSprite)
+                this.game.add.audioSprite(sound.key);
+
             this.game.audioManager.addAudio(sound.key, sound.__isAudioSprite);
         }
     },
