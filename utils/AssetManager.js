@@ -126,11 +126,16 @@ AssetManager.prototype = {
         }, this);
     },
 
+    _addStateAssets: function(state) {
+        var assets = this._data[state];
+
+        for (var i = 0; i < assets.length; i++) {
+            this._loadAsset(assets[i]);
+        }
+    },
 
     loadState: function(state, background) {
         this._currentState = state;
-
-
         this.game.load.onFileComplete.remove(this._backgroundFileComplete, this);
         this.game.load.onFileComplete.remove(this._gameFileComplete, this);
 
@@ -146,11 +151,7 @@ AssetManager.prototype = {
             return console.log('no preload data registered for ', state);
         }
 
-        var assets = this._data[state];
-
-        for (var i = 0; i < assets.length; i++) {
-            this._loadAsset(assets[i]);
-        }
+        this._addStateAssets(state);
 
         this._hasFiles = this.game.load._fileList.length > 0;
 
@@ -280,6 +281,8 @@ AssetManager.prototype = {
         extension = asset.getAttribute('extension') || null;
 
         switch (type) {
+            case AssetManager.STATE:
+                return this._addStateAssets(url);
             case AssetManager.AUDIO:
                 extensions = asset.getAttribute('extensions');
                 audioType = asset.getAttribute('audioType');
@@ -360,5 +363,6 @@ AssetManager.AUDIO = 'audio';
 AssetManager.IMAGE = 'image';
 AssetManager.ATLAS = 'atlas';
 AssetManager.TEXT = 'text';
+AssetManager.STATE = 'state';
 
 module.exports = AssetManager;
