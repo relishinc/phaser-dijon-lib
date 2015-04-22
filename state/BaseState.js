@@ -19,6 +19,7 @@ BaseState.prototype = {
         }
 
         this.buildInterface();
+        this.afterBuildInterface();
 
         if (this.autoHidePreloader && typeof this.game.preloader !== 'undefined') {
             this.game.preloader.hide();
@@ -31,6 +32,10 @@ BaseState.prototype = {
     },
 
     buildInterface: function() {
+
+    },
+
+    afterBuildInterface: function() {
 
     },
 
