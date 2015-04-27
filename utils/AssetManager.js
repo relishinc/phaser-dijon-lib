@@ -66,11 +66,11 @@ AssetManager.prototype = {
             return;
         }
         var path;
-        // type should be 'fx' or 'music'
-        // default to fx
+        // type should be 'sound' or 'sprite' ('fx' and 'music' to be deprecated)
+        // default to sound
 
         if (typeof type === 'undefined') {
-            type = 'fx';
+            type = 'sound';
         }
         if (exts.indexOf(',') >= 0) {
             exts = exts.split(',');
