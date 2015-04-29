@@ -1,18 +1,15 @@
-var Analytics = function () {
+var Analytics = function (category) {
+    if (!category) {
+        throw new this.exception('No category defined');
+    }
 
+    this.active = (window.ga) ? true : false;
+    this.category = category;
 };
 
+Analytics.prototype.constructor = Analytics;
+
 Analytics.prototype = {
-
-    constructor: function (category) {
-        if (!category) {
-            throw new this.exception('No category defined');
-        }
-
-        this.active = (window.ga) ? true : false;
-        this.category = category;
-    },
-
     trackEvent: function (action, label, value) {
         if (!this.active) {
             return;
