@@ -11,7 +11,7 @@ var BaseMediator = function (game, mediatorName, viewComponent, modelClass, auto
   if (typeof modelClass !== 'undefined') {
     this._createModel(modelClass);
   }
-
+  
 };
 
 BaseMediator.prototype.constructor = BaseMediator;
