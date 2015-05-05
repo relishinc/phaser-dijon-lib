@@ -1,5 +1,6 @@
 var BaseMediator = function (game, mediatorName, viewComponent, modelClass, autoReg) {
   this.game = game;
+  this.mediatorName = mediatorName;
 
   if (autoReg !== false)
     this.game[mediatorName] = this;
@@ -11,7 +12,6 @@ var BaseMediator = function (game, mediatorName, viewComponent, modelClass, auto
   if (typeof modelClass !== 'undefined') {
     this._createModel(modelClass);
   }
-  
 };
 
 BaseMediator.prototype.constructor = BaseMediator;
@@ -41,6 +41,16 @@ BaseMediator.prototype.setModel = function (model) {
 BaseMediator.prototype.getCopy = function (group, id) {
   if (typeof this.game.copy !== 'undefined')
     return this.game.copy.getCopy(group, id);
+};
+
+BaseMediator.prototype.release = function () {
+  if (typeof this.viewComponent.mediator === 'undefined') {
+    this.viewComponent.mediator = null;
+    delete this.viewComponent.mediator;
+  }
+
+  this.game[this.mediatorName] = null;
+  delete this.game[this.mediatorName];
 };
 
 module.exports = BaseMediator;
