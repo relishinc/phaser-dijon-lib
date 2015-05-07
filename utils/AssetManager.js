@@ -263,14 +263,16 @@ AssetManager.prototype = {
     _onSoundDecoded: function(sound) {
         var soundIndex = this._soundsToDecode.indexOf(sound.key);
         this._soundsToDecode.splice(soundIndex, 1);
-        if (this._soundsToDecode.length === 0) {
-            sound.eventToDispatch.dispatch();
-        }
+
         if (typeof this.game.audioManager !== 'undefined' && typeof this.game.audioManager.addAudio !== 'undefined') {
             if (sound.__isAudioSprite)
                 this.game.add.audioSprite(sound.key);
 
             this.game.audioManager.addAudio(sound.key, sound.__isAudioSprite);
+        }
+
+        if (this._soundsToDecode.length === 0) {
+            sound.eventToDispatch.dispatch();
         }
     },
 
