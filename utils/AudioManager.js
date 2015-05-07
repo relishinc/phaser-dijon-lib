@@ -46,6 +46,7 @@ AudioManager.prototype = {
             //delay, marker, volume, loop, forceRestart
             return this.playDelayedFXMarker(delay, marker, volume, loop, forceRestart);
         }
+        return this.playDelayedMusic(delay, marker, volume, loop, forceRestart);
     },
 
     stopAudio: function(marker) {
@@ -67,6 +68,7 @@ AudioManager.prototype = {
             return this.sound[key];
         }
         this.sound[key] = this.game.add.audio(key);
+        this.sound[key].allowMultiple = true;
         return this.sound[key];
     },
 
@@ -199,6 +201,10 @@ AudioManager.prototype = {
 
     playDelayedFXMarker: function(delay, marker, volume, loop, forceRestart) {
         this.game.time.events.add(delay, this.playFXMarker, this, marker, volume, loop, forceRestart);
+    },
+
+    playDelayedMusic: function(delay, key, volume, loop, forceRestart) {
+        this.game.time.events.add(delay, this.playMusic, this, key, volume, loop, forceRestart);
     },
 
     stopFXMarker: function(marker) {
