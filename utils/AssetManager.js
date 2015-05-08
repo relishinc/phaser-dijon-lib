@@ -99,26 +99,15 @@ AssetManager.prototype = {
         });
     },
 
-    setData: function(textFileFromCache) {
-        this._data = JSON.parse(textFileFromCache);
-        this._loadData = {};
-    },
+    _parseAssetList: function(key, list) {
 
-    _parseData: function() {
-        _.each(this._data.assetlist, this._parseAssetList, this);
-    },
+        this._autoLoadData[key] = list.audtoload;
+        this._requiredData[key] = list.required;
 
-    _parseAssetList: function(assetList) {
-        var id = assetList.id;
+        this._loadData[key] = [];
 
-        this._autoLoadData[id] = assetList.audtoload;
-        this._requiredData[id] = assetList.required;
-
-        this._data[stateName] = [];
-
-
-        _.each(assetList.assets, function(asset) {
-            this._loadData[id].push(asset);
+        _.each(list.assets, function(asset) {
+            this._loadData[key].push(asset);
         }, this);
     },
 
@@ -225,7 +214,6 @@ AssetManager.prototype = {
     },
 
     _gameFileComplete: function(progress, id, fileIndex, totalFiles) {
-
         this.onFileComplete.dispatch(progress, id, fileIndex, totalFiles);
     },
 
@@ -300,6 +288,20 @@ AssetManager.prototype = {
                 this.loadText(url, extension);
                 break;
         }
+    },
+
+    _parseData: function() {
+        var key;
+
+        for (key in this._data) {
+            this._parseAssetList(key, this._data[key]);
+        }
+    },
+
+    setData: function(textFileFromCache) {
+        this._data = JSON.parse(textFileFromCache);
+        this._loadData = {};
+        this._parseData();
     },
 
     clearState: function(state, clearAudio, clearAtlasses, clearImages, clearText) {

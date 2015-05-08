@@ -33,6 +33,4 @@ CopyModel.prototype.setData = function(jsonText) {
     this._data = JSON.parse(jsonText);
 };
 
-
-
 module.exports = CopyModel;

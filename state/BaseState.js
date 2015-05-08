@@ -36,11 +36,11 @@ BaseState.prototype = {
     shutdown: function() {
         this._removeAudio();
         this._removeStateProps();
-    }
+    },
 
     // private methods
 
-        _removeAudio: function() {
+    _removeAudio: function() {
         var sound;
         if (typeof this._audio !== 'undefined') {
             while (this._audio.length > 0) {
