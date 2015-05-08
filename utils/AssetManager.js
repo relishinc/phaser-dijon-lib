@@ -3,20 +3,20 @@ var global = require('../../global');
 var AssetManager = function(game) {
     this.game = game;
     this.game.assetManager = this;
-    this.init();
+
+    this._init();
 };
 
 AssetManager.prototype = {
     constructor: AssetManager,
 
-    init: function() {
-        this._xml = null;
+    _init: function() {
         this._data = {};
 
         this._autoLoadData = {};
         this._requiredData = {};
 
-        this._currentState = null;
+        this._currentAssetList = null;
         this._hasFiles = false;
         this._soundsToDecode = null;
         this._isLoadingQueue = false;
@@ -61,7 +61,7 @@ AssetManager.prototype = {
         return this.game.load.image(url, global.imgPath + '/' + url + '.' + ext);
     },
 
-    loadAudio: function(url, type, exts, isAudioSprite) {
+    loadAudio: function(url, exts, isSprite) {
         if (this.game.cache.checkSoundKey(url) && this.game.cache.getSound(url).decoded) {
             return;
         }
@@ -99,43 +99,40 @@ AssetManager.prototype = {
         });
     },
 
-    setStateData: function(xml) {
-        var parser = new DOMParser();
-        this._xml = parser.parseFromString(xml, "application/xml");
-        this._parseStateData();
+    setData: function(textFileFromCache) {
+        this._data = JSON.parse(textFileFromCache);
+        this._loadData = {};
     },
 
-    _parseStateData: function() {
-        var states = this._xml.querySelectorAll('states state');
-        _.each(states, this._parseStateNode, this);
+    _parseData: function() {
+        _.each(this._data.assetlist, this._parseAssetList, this);
     },
 
-    _parseStateNode: function(state) {
-        var stateName, assets;
+    _parseAssetList: function(assetList) {
+        var id = assetList.id;
 
-        stateName = state.getAttribute('id');
+        this._autoLoadData[id] = assetList.audtoload;
+        this._requiredData[id] = assetList.required;
 
-        this._autoLoadData[stateName] = state.getAttribute('autoload') !== "false";
-        this._requiredData[stateName] = state.getAttribute('required') === "true";
         this._data[stateName] = [];
 
-        assets = state.querySelectorAll('asset');
 
-        _.each(assets, function(asset) {
-            this._data[stateName].push(asset);
+        _.each(assetList.assets, function(asset) {
+            this._loadData[id].push(asset);
         }, this);
     },
 
-    _addStateAssets: function(state) {
-        var assets = this._data[state];
+    _loadAssets: function(id) {
+        var assets = this._loadData[id],
+            i;
 
-        for (var i = 0; i < assets.length; i++) {
+        for (i = 0; i < assets.length; i++) {
             this._loadAsset(assets[i]);
         }
     },
 
-    loadState: function(state, background) {
-        this._currentState = state;
+    loadAssetList: function(id, background) {
+        this._currentAssetList = id;
         this.game.load.onFileComplete.remove(this._backgroundFileComplete, this);
         this.game.load.onFileComplete.remove(this._gameFileComplete, this);
 
@@ -147,11 +144,11 @@ AssetManager.prototype = {
             return;
         }
 
-        if (typeof this._data[state] === 'undefined' || this._data[state].length < 1) {
+        if (typeof this._data[id] === 'undefined' || this._data[id].length < 1) {
             return console.log('no preload data registered for ', state);
         }
 
-        this._addStateAssets(state);
+        this._loadAssets(id);
 
         this._hasFiles = this.game.load._fileList.length > 0;
 
@@ -247,6 +244,7 @@ AssetManager.prototype = {
 
     _checkSoundDecoding: function(eventToDispatch) {
         var sound, i, isAudioSprite;
+
         if (this._soundsToDecode && this._soundsToDecode.length > 0) {
             for (i = 0; i < this._soundsToDecode.length; i++) {
                 isAudioSprite = this._soundsToDecode[i].isAudioSprite;
@@ -277,20 +275,20 @@ AssetManager.prototype = {
     },
 
     _loadAsset: function(asset) {
-        var type, url, extension, extensions, audioType, audioSprite;
-        type = asset.getAttribute('type');
-        url = asset.getAttribute('key');
-        extension = asset.getAttribute('extension') || null;
+        var type = asset.type,
+            url = asset.key,
+            extension = asset.extension,
+            extensions,
+            audioType,
+            audioSprite;
 
         switch (type) {
             case AssetManager.STATE:
                 return this._addStateAssets(url);
             case AssetManager.AUDIO:
-                extensions = asset.getAttribute('extensions');
-                audioType = asset.getAttribute('audioType');
-                audioSprite = asset.getAttribute('sprite') === 'true';
-
-                this.loadAudio(url, audioType, extensions, audioSprite);
+                extensions = asset.extension;
+                isSprite = asset.sprite === true;
+                this.loadAudio(url, extensions, isSprite);
                 break;
             case AssetManager.IMAGE:
                 this.loadImage(url, extension);
@@ -325,14 +323,14 @@ AssetManager.prototype = {
 
     clearAsset: function(asset, clearAudio, clearAtlasses, clearImages, clearText) {
         var type, url, required;
-        type = asset.getAttribute('type');
-        url = asset.getAttribute('key');
-        required = asset.getAttribute('required') === "true";
+        type = asset.type,
+            url = asset.key,
+            required = asset.required;
+
         if (required) {
             console.log('the ' + type + ' asset: ' + url + ' is required and will not be cleared');
             return;
         }
-        console.log('clearing: ', url);
         switch (type) {
             case AssetManager.AUDIO:
                 if (clearAudio) {

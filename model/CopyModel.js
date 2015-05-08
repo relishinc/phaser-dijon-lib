@@ -1,40 +1,38 @@
-var CopyModel = function (game, xml) {
-  //make sure only one copy model is attached to the game
-  if (game && typeof game.copy !== 'undefined') {
-    return false;
-  }
+var CopyModel = function(game, data) {
+    //make sure only one copy model is attached to the game
+    if (game && typeof game.copy !== 'undefined') {
+        return false;
+    }
 
-  game.copy = this;
+    game.copy = this;
 
-  if (typeof xml !== 'undefined') {
-    this.setXML(xml);
-  }
+    if (typeof data !== 'undefined') {
+        this.setData(data);
+    }
 };
 
 CopyModel.prototype.constructor = CopyModel;
 
-CopyModel.prototype.getCopy = function (groupId, itemId) {
-  if (!this.hasXML()) {
-    return false;
-  }
-  var node = this.xml.querySelector('[id="' + groupId + '"] [id="' + itemId + '"]');
+// private methods
 
-  // fixes a case where line breaks are counted as text nodes in the domParser
-  return node ? this.replaceChars(node.childNodes.length > 1 ? node.childNodes[0].wholeText.trim() : node.childNodes[0].nodeValue) : null;
+CopyModel.prototype._hasData = function() {
+    return typeof this._data !== 'undefined';
 };
 
-CopyModel.prototype.replaceChars = function (text) {
-  var result = text.replace(/\\n/g, '\n');
-  return result;
+// public methods
+
+CopyModel.prototype.getCopy = function(groupId, itemId) {
+    if (!this._hasData()) {
+        return false;
+    }
+
+    return this._data[groupId][itemId];
 };
 
-CopyModel.prototype.setXML = function (xml) {
-  var parser = new DOMParser();
-  this.xml = parser.parseFromString(xml, "application/xml");
+CopyModel.prototype.setData = function(jsonText) {
+    this._data = JSON.parse(jsonText);
 };
 
-CopyModel.prototype.hasXML = function () {
-  return typeof this.xml !== 'undefined';
-};
+
 
 module.exports = CopyModel;

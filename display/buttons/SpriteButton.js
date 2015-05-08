@@ -7,9 +7,7 @@ var SpriteButton = function(game, x, y, key, frame, name, autoAdd) {
 SpriteButton.prototype = Object.create(UISprite.prototype);
 SpriteButton.prototype.constructor = SpriteButton;
 
-SpriteButton.prototype.update = function() {
-
-};
+// UISprite overrides
 
 SpriteButton.prototype.init = function() {
     UISprite.prototype.init.call(this, arguments);
@@ -22,15 +20,32 @@ SpriteButton.prototype.init = function() {
 
     this.events.onInputOver.add(this.onRollover, this);
     this.events.onInputOut.add(this.onRollout, this);
-    this.events.onInputDown.add(this.onDown, this);
+    this.events.onInputDown.add(this.onPress, this);
     this.events.onInputUp.add(this.onClicked, this);
 
     this.input.useHandCursor = true;
 };
 
-SpriteButton.prototype.onDown = function() {
-    this.animations.play('down', 0, false);
+SpriteButton.prototype.destroy = function() {
+    this.stopFlashing();
+    UISprite.prototype.destroy.call(this);
 };
+
+// private methods
+
+SpriteButton.prototype._onFlash = function() {
+    if (this._currentFlashFrame === 0) {
+        this._currentFlashFrame = 1;
+        this.animations.play('over', 0, false);
+        return;
+    }
+
+    this._currentFlashFrame = 0;
+    this.animations.play('up', 0, false);
+    return;
+};
+
+// public methods
 
 SpriteButton.prototype.onRollover = function() {
     this.game.time.events.remove(this.flashInterval);
@@ -44,6 +59,10 @@ SpriteButton.prototype.onRollout = function() {
     }
 };
 
+SpriteButton.prototype.onPress = function() {
+    this.animations.play('down', 0, false);
+};
+
 SpriteButton.prototype.onClicked = function() {
     this.animations.play('up', 0, false);
 };
@@ -54,8 +73,8 @@ SpriteButton.prototype.flash = function(flashTime) {
     }
     this.flashing = true;
     this.flashTime = flashTime || 1000;
-    this.currentFlashFrame = 0;
-    this.flashInterval = this.game.time.events.loop(this.flashTime, this.onFlash, this);
+    this._currentFlashFrame = 0;
+    this.flashInterval = this.game.time.events.loop(this.flashTime, this._onFlash, this);
 };
 
 SpriteButton.prototype.stopFlashing = function() {
@@ -63,24 +82,5 @@ SpriteButton.prototype.stopFlashing = function() {
     this.flashing = false;
     this.animations.play('up', 0, false);
 };
-
-SpriteButton.prototype.onFlash = function() {
-    if (this.currentFlashFrame === 0) {
-        this.currentFlashFrame = 1;
-        this.animations.play('over', 0, false);
-        return;
-    }
-
-    this.currentFlashFrame = 0;
-    this.animations.play('up', 0, false);
-    return;
-};
-
-SpriteButton.prototype.destroy = function() {
-    this.stopFlashing();
-    UISprite.prototype.destroy.call(this);
-};
-
-SpriteButton.prototype.handleClick = UISprite.prototype.handleClick;
 
 module.exports = SpriteButton;

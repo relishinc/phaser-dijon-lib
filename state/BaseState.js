@@ -6,6 +6,8 @@ BaseState.prototype = Object.create(Phaser.State.prototype);
 BaseState.prototype.constructor = BaseState;
 
 BaseState.prototype = {
+    // Phaser.State overrides
+
     init: function() {
         this.autoHidePreloader = true;
         Phaser.State.prototype.stateKeys = Object.keys(Phaser.State.prototype);
@@ -31,60 +33,18 @@ BaseState.prototype = {
         }
     },
 
-    buildInterface: function() {
+    shutdown: function() {
+        this._removeAudio();
+        this._removeStateProps();
+    }
 
-    },
+    // private methods
 
-    afterBuildInterface: function() {
-
-    },
-
-    addAudio: function(track) {
-        if (typeof this.audio === 'undefined') {
-            this.audio = [];
-        }
-        this.audio.push(track);
-        return track;
-    },
-
-    update: function() {
-
-    },
-
-    render: function() {
-
-    },
-
-    reset: function() {
-        this.game.model.reset();
-    },
-
-    // game state stuff
-    // ------------------------
-    lastState: function(clearWorld, clearCache) {
-        if (typeof clearWorld === 'undefined') {
-            clearWorld = false;
-        }
-        if (typeof clearCache === 'undefined') {
-            clearCache = false;
-        }
-
-        return this.game.state.start(this.getLastState(), clearWorld, clearCache);
-    },
-
-    getLastState: function() {
-        return this.game.getLastState();
-    },
-
-    goBack: function() {
-        this.lastState();
-    },
-
-    removeAudio: function() {
+        _removeAudio: function() {
         var sound;
-        if (typeof this.audio !== 'undefined') {
-            while (this.audio.length > 0) {
-                sound = this.audio.shift();
+        if (typeof this._audio !== 'undefined') {
+            while (this._audio.length > 0) {
+                sound = this._audio.shift();
                 if (typeof sound !== 'undefined' && sound != null && typeof sound.stop !== 'undefined') {
                     if (typeof sound.onStop !== 'undefined') {
                         sound.onStop.removeAll();
@@ -95,10 +55,12 @@ BaseState.prototype = {
         }
     },
 
-    removeStateProps: function() {
-        var keys = Object.keys(this);
-        var defaults = Array.prototype.slice.call(Object.keys(Phaser.State.prototype));
-        var key, index, n;
+    _removeStateProps: function() {
+        var keys = Object.keys(this),
+            defaults = Array.prototype.slice.call(Object.keys(Phaser.State.prototype)),
+            key,
+            index,
+            n;
 
         while (defaults.length > 0) {
             key = defaults.shift();
@@ -116,13 +78,45 @@ BaseState.prototype = {
         }
     },
 
-    shutdown: function() {
-        if (typeof this.game.popupManager !== 'undefined') {
-            this.game.popupManager.removeAllPopups();
+    // public methods
+
+    buildInterface: function() {
+        // called after all sounds are loaded and decoded
+    },
+
+    afterBuildInterface: function() {
+        // called after buildInterface is called
+    },
+
+    addAudio: function(track) {
+        if (typeof this.audio === 'undefined') {
+            this._audio = [];
+        }
+        this._audio.push(track);
+        return track;
+    },
+
+    reset: function() {
+        this.game.model.reset();
+    },
+
+    lastState: function(clearWorld, clearCache) {
+        if (typeof clearWorld === 'undefined') {
+            clearWorld = false;
+        }
+        if (typeof clearCache === 'undefined') {
+            clearCache = false;
         }
 
-        this.removeAudio();
-        this.removeStateProps();
+        return this.game.state.start(this.getLastState(), clearWorld, clearCache);
+    },
+
+    getLastState: function() {
+        return this.game.getLastState();
+    },
+
+    goBack: function() {
+        this.lastState();
     }
 };
 

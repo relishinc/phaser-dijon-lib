@@ -4,21 +4,12 @@ var InvisibleButton = function(game, x, y, name, w, h) {
 
     this.setSize(w, h);
     UISprite.call(this, game, x, y, null, null, name);
-
-    /*
-    var graphics = this.game.add.graphics();
-    graphics.beginFill(0xFF00FF, 0.5);
-    graphics.drawRect(0, 0, w, h);
-    this.addChild(graphics);
-    */
 };
 
 InvisibleButton.prototype = Object.create(UISprite.prototype);
 InvisibleButton.prototype.constructor = InvisibleButton;
 
-InvisibleButton.prototype.update = function() {
-    UISprite.prototype.update.call(this);
-};
+// UISprite overrides
 
 InvisibleButton.prototype.init = function() {
     UISprite.prototype.init.call(this);
@@ -26,25 +17,24 @@ InvisibleButton.prototype.init = function() {
 };
 
 InvisibleButton.prototype.buildInterface = function() {
-    this.addHitRect();
+    this._addHitRect();
 };
 
-InvisibleButton.prototype.addHitRect = function() {
-    if (this.hitWidth > 0 && this.hitHeight > 0) {
-        this.hitArea = new Phaser.Rectangle(0, 0, this.hitWidth, this.hitHeight);
+// private methods
+
+InvisibleButton.prototype._addHitRect = function() {
+    if (this._hitWidth > 0 && this._hitHeight > 0) {
+        this.hitArea = new Phaser.Rectangle(0, 0, this._hitWidth, this._hitHeight);
     }
 };
 
+// public methods
+
 InvisibleButton.prototype.setSize = function(w, h) {
-    this.hitWidth = w || 0;
-    this.hitHeight = h || 0;
+    this._hitWidth = w || 0;
+    this._hitHeight = h || 0;
 
-    this.addHitRect();
-};
-
-InvisibleButton.prototype.centerPivot = function() {
-    this.hitArea.x = -this.hitWidth * 0.5;
-    this.hitArea.y = -this.hitHeight * 0.5;
+    this._addHitRect();
 };
 
 module.exports = InvisibleButton;
