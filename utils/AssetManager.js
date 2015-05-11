@@ -284,19 +284,16 @@ AssetManager.prototype = {
 
     _loadAsset: function(asset) {
         var type = asset.type,
-            url = asset.url || asset.key,
-            extension;
+            url = asset.url || asset.key;
 
         switch (type) {
-            case AssetManager.STATE:
-                return this._addStateAssets(url);
+            case AssetManager.ASSET_LIST:
+                return this._loadAssets(asset.id);
             case AssetManager.SOUND:
-                extension = asset.extensions;
-                this.loadSound(url, extension);
+                this.loadSound(url, asset.extensions);
                 break;
             case AssetManager.AUDIO_SPRITE:
-                extension = asset.extensions;
-                this.loadAudioSprite(url, extension);
+                this.loadAudioSprite(url, asset.extensions);
                 break;
             case AssetManager.IMAGE:
                 this.loadImage(url);
@@ -305,7 +302,7 @@ AssetManager.prototype = {
                 this.loadAtlas(url);
                 break;
             case AssetManager.TEXT:
-                this.loadText(url, extension);
+                this.loadText(url, asset.extensions);
                 break;
         }
     },
@@ -385,6 +382,6 @@ AssetManager.AUDIO_SPRITE = 'audioSprite';
 AssetManager.IMAGE = 'image';
 AssetManager.ATLAS = 'atlas';
 AssetManager.TEXT = 'text';
-AssetManager.STATE = 'state';
+AssetManager.ASSET_LIST = 'assetList';
 
 module.exports = AssetManager;

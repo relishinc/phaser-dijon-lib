@@ -72,7 +72,6 @@ AudioManager.prototype = {
         loop = loop || false;
         forceRestart = forceRestart || true;
 
-        console.log('vol', volume)
         return this.sounds[key].play("", 0, volume, loop, forceRestart);
     },
 
@@ -184,8 +183,6 @@ AudioManager.prototype = {
         } else {
             volume = this.spritesVolume;
         }
-
-        console.log(volume)
 
         loop = loop || false;
         forceRestart = forceRestart === false ? false : true;
