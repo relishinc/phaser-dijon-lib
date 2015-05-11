@@ -47,31 +47,32 @@ AssetManager.prototype = {
             return;
         }
 
-        return this.game.load.atlasXML(url, global.spritesheetPath + '/' + url + '.png', global.spritesheetPath + '/' + url + '.xml');
+        return this.game.load.atlasJSONHash(url, global.spritesheetPath + '/' + url + '.png', global.spritesheetPath + '/' + url + '.json');
+
     },
 
-    loadImage: function(url, ext) {
+    loadImage: function(url) {
         if (this.game.cache.checkImageKey(url)) {
             return;
         }
-        if (typeof ext === 'undefined' || ext == null) {
-            ext = 'jpg';
-        }
 
-        return this.game.load.image(url, global.imgPath + '/' + url + '.' + ext);
+        var key = this._getImageKey(url);
+
+        return this.game.load.image(key, global.imgPath + '/' + url);
     },
 
-    loadAudio: function(url, exts, isSprite) {
+    loadAudio: function(url, exts, isAudioSprite) {
+        var type, path;
         if (this.game.cache.checkSoundKey(url) && this.game.cache.getSound(url).decoded) {
             return;
         }
-        var path;
         // type should be 'sound' or 'sprite' ('fx' and 'music' to be deprecated)
         // default to sound
 
         if (typeof type === 'undefined') {
             type = 'sound';
         }
+
         if (exts.indexOf(',') >= 0) {
             exts = exts.split(',');
         }
@@ -81,14 +82,14 @@ AssetManager.prototype = {
         if (typeof exts === 'object') {
             path = [];
             for (var i = 0; i < exts.length; i++) {
-                path.push(global.audioPath + '/' + type + '/' + url + '.' + exts[i]);
+                path.push((isAudioSprite ? global.audioSpritePath : global.soundPath) + '/' + url + '.' + exts[i]);
             }
         } else {
-            path = global.audioPath + '/' + type + '/' + url + '.' + exts;
+            path = (isAudioSprite ? global.audioSpritePath : global.soundPath) + '/' + type + '/' + url + '.' + exts;
         }
 
         if (isAudioSprite) {
-            this.game.load.audiosprite(url, path, global.audioPath + '/' + type + '/' + url + '.json');
+            this.game.load.audiosprite(url, path, global.audioSpritePath + '/' + url + '.json');
         } else {
             this.game.load.audio(url, path);
         }
@@ -97,6 +98,14 @@ AssetManager.prototype = {
             url: url,
             isAudioSprite: isAudioSprite
         });
+    },
+
+    loadSound: function(url, exts) {
+        return this.loadAudio(url, exts, false);
+    },
+
+    loadAudioSprite: function(url, exts) {
+        return this.loadAudio(url, exts, true);
     },
 
     _parseAssetList: function(key, list) {
@@ -120,7 +129,7 @@ AssetManager.prototype = {
         }
     },
 
-    loadAssetList: function(id, background) {
+    loadAssets: function(id, background) {
         this._currentAssetList = id;
         this.game.load.onFileComplete.remove(this._backgroundFileComplete, this);
         this.game.load.onFileComplete.remove(this._gameFileComplete, this);
@@ -134,7 +143,7 @@ AssetManager.prototype = {
         }
 
         if (typeof this._data[id] === 'undefined' || this._data[id].length < 1) {
-            return console.log('no preload data registered for ', state);
+            return console.log('no preload data registered for ', id);
         }
 
         this._loadAssets(id);
@@ -262,24 +271,35 @@ AssetManager.prototype = {
         }
     },
 
+    _getImageKey: function(fileName) {
+        var ext = fileName.split('.');
+        ext.pop();
+
+        return ext.join('');
+    },
+
+    _getExtension: function(fileName) {
+        return fileName.split('.').pop();
+    },
+
     _loadAsset: function(asset) {
         var type = asset.type,
-            url = asset.key,
-            extension = asset.extension,
-            extensions,
-            audioType,
-            audioSprite;
+            url = asset.url || asset.key,
+            extension;
 
         switch (type) {
             case AssetManager.STATE:
                 return this._addStateAssets(url);
-            case AssetManager.AUDIO:
-                extensions = asset.extension;
-                isSprite = asset.sprite === true;
-                this.loadAudio(url, extensions, isSprite);
+            case AssetManager.SOUND:
+                extension = asset.extensions;
+                this.loadSound(url, extension);
+                break;
+            case AssetManager.AUDIO_SPRITE:
+                extension = asset.extensions;
+                this.loadAudioSprite(url, extension);
                 break;
             case AssetManager.IMAGE:
-                this.loadImage(url, extension);
+                this.loadImage(url);
                 break;
             case AssetManager.ATLAS:
                 this.loadAtlas(url);
@@ -324,8 +344,7 @@ AssetManager.prototype = {
     },
 
     clearAsset: function(asset, clearAudio, clearAtlasses, clearImages, clearText) {
-        var type, url, required;
-        type = asset.type,
+        var type = asset.type,
             url = asset.key,
             required = asset.required;
 
@@ -361,7 +380,8 @@ AssetManager.prototype = {
     }
 };
 
-AssetManager.AUDIO = 'audio';
+AssetManager.SOUND = 'sound';
+AssetManager.AUDIO_SPRITE = 'audioSprite';
 AssetManager.IMAGE = 'image';
 AssetManager.ATLAS = 'atlas';
 AssetManager.TEXT = 'text';

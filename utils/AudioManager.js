@@ -25,27 +25,10 @@ AudioManager.prototype = {
     },
 
     addAudio: function(key, audioSprite) {
-        //console.log('addAudio', key, audioSprite)
         if (audioSprite === true) {
             return this.addAudioSprite(key);
         }
         return this.addSound(key);
-    },
-
-    playAudio: function(marker, volume, loop, forceRestart) {
-        if (this._getKeyFromMarkerName(marker)) {
-            return this.playSpriteMarker(marker, volume, loop, forceRestart);
-        }
-
-        return this.playMusic(marker, volume, loop, forceRestart);
-    },
-
-    playDelayedAudio: function(delay, marker, volume, loop, forceRestart) {
-        if (this._getKeyFromMarkerName(marker)) {
-            //delay, marker, volume, loop, forceRestart
-            return this.playDelayedSpriteMarker(delay, marker, volume, loop, forceRestart);
-        }
-        return this.playDelayedSound(delay, marker, volume, loop, forceRestart);
     },
 
     addSound: function(key) {
@@ -61,9 +44,54 @@ AudioManager.prototype = {
         if (typeof this.sprites[key] !== 'undefined') {
             return this.sprites[key];
         }
-        this.sprites[key] = this._addAudio(key, isAudioSprite);
+        this.sprites[key] = this._addAudio(key, true);
 
         return this.sprites[key];
+    },
+
+    playAudio: function(marker, volume, loop, forceRestart) {
+        if (this._getKeyFromMarkerName(marker)) {
+            return this.playSpriteMarker(marker, volume, loop, forceRestart);
+        }
+
+        return this.playSound(marker, volume, loop, forceRestart);
+    },
+
+    playDelayedAudio: function(delay, marker, volume, loop, forceRestart) {
+        if (this._getKeyFromMarkerName(marker)) {
+            return this.playDelayedSpriteMarker(delay, marker, volume, loop, forceRestart);
+        }
+        return this.playDelayedSound(delay, marker, volume, loop, forceRestart);
+    },
+
+    playSound: function(key, volume, loop, forceRestart) {
+        if (typeof this.sounds[key] === 'undefined') {
+            return false;
+        }
+        volume = typeof volume === 'undefined' ? this.soundsVolume : volume;
+        loop = loop || false;
+        forceRestart = forceRestart || true;
+
+        console.log('vol', volume)
+        return this.sounds[key].play("", 0, volume, loop, forceRestart);
+    },
+
+    playSpriteMarker: function(marker, volume, loop, forceRestart) {
+        var key = this._getKeyFromMarkerName(marker);
+        if (!key) {
+            console.log('marker not found', marker);
+            return;
+        }
+
+        return this._playSpriteMarker(key, marker, volume, loop, forceRestart);
+    },
+
+    playDelayedSound: function(delay, key, volume, loop, forceRestart) {
+        this.game.time.events.add(delay, this.playSound, this, key, volume, loop, forceRestart);
+    },
+
+    playDelayedSpriteMarker: function(delay, marker, volume, loop, forceRestart) {
+        this.game.time.events.add(delay, this.playSpriteMarker, this, marker, volume, loop, forceRestart);
     },
 
     stopAudio: function(marker) {
@@ -80,25 +108,13 @@ AudioManager.prototype = {
         return this.sounds[key].stop();
     },
 
-    _addAudio: function(key, isAudioSprite) {
-        if (isAudioSprite === true) {
-            return this._parseAudioSprite(key, this.game.add.audioSprite(key));
-        } else {
-            return this._allowMultiple(this.game.add.sound(key));
+    stopSpriteMarker: function(marker) {
+        var key = this._getKeyFromMarkerName(marker);
+        if (!key) {
+            console.log('marker not found', marker);
+            return;
         }
-    },
-
-    _allowMultiple: function(sound) {
-        sound.allowMultiple = true;
-        return sound;
-    },
-
-    _parseAudioSprite: function(key, audioSprite) {
-        for (var soundKey in audioSprite.sounds) {
-            this._allowMultiple(audioSprite.sounds[soundKey]);
-            this.markerLookup[soundKey] = key;
-        }
-        return audioSprite;
+        return this._stopSpriteMarker(key, marker);
     },
 
     removeSound: function(key) {
@@ -121,22 +137,26 @@ AudioManager.prototype = {
         delete this.sprites[key];
     },
 
-    playSound: function(key, volume, loop, forceRestart) {
-        if (typeof this.sounds[key] === 'undefined') {
-            return false;
-        }
-        volume = volume || this.soundsVolume;
-        loop = loop || false;
-        forceRestart = forceRestart || true;
 
-        return this.sounds[key].play("", 0, volume, loop, forceRestart);
+    _addAudio: function(key, isAudioSprite) {
+        if (isAudioSprite === true) {
+            return this._parseAudioSprite(key, this.game.add.audioSprite(key));
+        } else {
+            return this._allowMultiple(this.game.add.sound(key));
+        }
     },
 
-    stopSound: function(key) {
-        if (typeof this.sounds === 'undefined' || typeof this.sounds[key] === 'undefined') {
-            return false;
+    _parseAudioSprite: function(key, audioSprite) {
+        for (var soundKey in audioSprite.sounds) {
+            this._allowMultiple(audioSprite.sounds[soundKey]);
+            this.markerLookup[soundKey] = key;
         }
-        return this.sounds[key].stop();
+        return audioSprite;
+    },
+
+    _allowMultiple: function(sound) {
+        sound.allowMultiple = true;
+        return sound;
     },
 
     _getKeyFromMarkerName: function(marker) {
@@ -152,34 +172,6 @@ AudioManager.prototype = {
         return false;
     },
 
-    playSpriteMarker: function(marker, volume, loop, forceRestart) {
-        var key = this._getKeyFromMarkerName(marker);
-        //console.log(marker,'key is', key);
-        if (!key) {
-            console.log('marker not found', marker);
-            return;
-        }
-
-        return this._playSpriteMarker(key, marker, volume, loop, forceRestart);
-    },
-
-    playDelayedSpriteMarker: function(delay, marker, volume, loop, forceRestart) {
-        this.game.time.events.add(delay, this.playSpriteMarker, this, marker, volume, loop, forceRestart);
-    },
-
-    playDelayedSound: function(delay, key, volume, loop, forceRestart) {
-        this.game.time.events.add(delay, this.playMusic, this, key, volume, loop, forceRestart);
-    },
-
-    stopSpriteMarker: function(marker) {
-        var key = this._getKeyFromMarkerName(marker);
-        if (!key) {
-            console.log('marker not found', marker);
-            return;
-        }
-        return this.stopSpriteMarker(key, marker);
-    },
-
     _playSpriteMarker: function(key, marker, volume, loop, forceRestart) {
         if (typeof volume !== 'undefined') {
             if (typeof volume === 'string') {
@@ -193,31 +185,15 @@ AudioManager.prototype = {
             volume = this.spritesVolume;
         }
 
-        volume = volume || this.spritesVolume;
-
-        if (volume > 1) {
-            volume = 1;
-        }
+        console.log(volume)
 
         loop = loop || false;
         forceRestart = forceRestart === false ? false : true;
 
-        /*if (this.multiChannel){
-            return this._getChannel(key).play(marker, volume);
-        }*/
-        if (!this.game.device.webAudio && this.sprites[key].get(marker).isPlaying) {
-            this.stopSpriteMarker(key, null);
-        }
-        //console.log(this.sprites[key].get(marker))
-        //return this.sprites[key].get(marker).play(marker, null, volume, loop, forceRestart);
         return this.sprites[key].play(marker, volume);
     },
 
-    playDelayedSpriteMarker: function(delay, key, marker, volume, loop, forceRestart) {
-        this.game.time.events.add(delay, this.playSpriteMarker, this, key, marker, volume, loop, forceRestart);
-    },
-
-    stopSpriteMarker: function(key, marker) {
+    _stopSpriteMarker: function(key, marker) {
         if (typeof this.sprites === 'undefined' || typeof this.sprites[key] === 'undefined') {
             return false;
         }

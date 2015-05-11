@@ -14,9 +14,9 @@ SpriteButton.prototype.init = function() {
 
     this.inputEnabled = true;
 
-    this.animations.add('up', [this.getFramePrefix() + '/up'], 0, false, false);
-    this.animations.add('over', [this.getFramePrefix() + '/over'], 0, false, false);
-    this.animations.add('down', [this.getFramePrefix() + '/down'], 0, false, false);
+    this.animations.add('up', [this._getFramePrefix() + '/up'], 0, false, false);
+    this.animations.add('over', [this._getFramePrefix() + '/over'], 0, false, false);
+    this.animations.add('down', [this._getFramePrefix() + '/down'], 0, false, false);
 
     this.events.onInputOver.add(this.onRollover, this);
     this.events.onInputOut.add(this.onRollout, this);

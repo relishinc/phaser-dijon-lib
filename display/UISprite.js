@@ -16,6 +16,23 @@ var UISprite = function(game, x, y, key, frame, name, autoAdd) {
 UISprite.prototype = Object.create(Phaser.Sprite.prototype);
 UISprite.prototype.constructor = UISprite;
 
+// private methods
+
+UISprite.prototype._getFramePrefix = function() {
+    var frameArr,
+        prefix;
+    if (typeof(this.__frameName) !== 'string') {
+        return '';
+    }
+    if (this.__frameName.indexOf('/')) {
+        frameArr = this.__frameName.split('/');
+        frameArr.pop();
+        prefix = frameArr.join('/');
+        return prefix;
+    }
+    return this.__frameName;
+};
+
 // public methods
 
 UISprite.prototype.init = function() {
