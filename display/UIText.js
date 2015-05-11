@@ -62,10 +62,6 @@ var UIText = function(game, x, y, text, fontName, fontSize, fontColor, fontAlign
     if (autoAdd !== false) {
         game.add.existing(this);
     }
-
-    if (typeof text !== 'undefined' && text !== null) {
-        this.name = text.substr(0, 10);
-    }
 };
 
 UIText.prototype = Object.create(Phaser.Text.prototype);

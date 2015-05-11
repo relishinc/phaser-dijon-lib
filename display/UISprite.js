@@ -3,8 +3,6 @@ var UISprite = function(game, x, y, key, frame, name, autoAdd) {
     Phaser.Sprite.call(this, game, x, y, key, frame);
     this.__frameName = frame;
 
-    this.name = typeof name === 'undefined' ? typeof frame !== 'undefined' ? frame : 'UISprite' : name;
-
     if (autoAdd !== false) {
         game.add.existing(this);
     }
