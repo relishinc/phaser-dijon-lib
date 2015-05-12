@@ -22,10 +22,6 @@ CopyModel.prototype._hasData = function() {
 // public methods
 
 CopyModel.prototype.getCopy = function(groupId, itemId) {
-    if (!this._hasData()) {
-        return false;
-    }
-
     return this._data[groupId][itemId];
 };
 

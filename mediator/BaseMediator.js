@@ -6,11 +6,11 @@ var BaseMediator = function(game, mediatorName, viewComponent, modelClass, autoR
     if (autoReg !== false)
         this.game[mediatorName] = this;
 
-    if (typeof viewComponent !== 'undefined') {
+    if (viewComponent && typeof viewComponent !== 'undefined') {
         this.setViewComponent(viewComponent);
     }
 
-    if (typeof modelClass !== 'undefined') {
+    if (modelClass && typeof modelClass !== 'undefined') {
         this._createModel(modelClass);
     }
 };
