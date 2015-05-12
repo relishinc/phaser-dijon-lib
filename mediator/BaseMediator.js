@@ -1,5 +1,6 @@
 var BaseMediator = function(game, mediatorName, viewComponent, modelClass, autoReg) {
     this.game = game;
+    this.name = mediatorName;
     this._mediatorName = mediatorName;
 
     if (autoReg !== false)
