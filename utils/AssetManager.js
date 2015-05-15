@@ -34,12 +34,9 @@ AssetManager.prototype = {
         this.onBackgroundLoadCompleteAndAudioDecoded = new Phaser.Signal();
     },
 
-    loadText: function(url, ext) {
-        if (typeof ext === 'undefined' || ext == null) {
-            ext = 'xml';
-        }
-
-        return this.game.load.text(url, global.dataPath + '/' + url + '.' + ext);
+    loadText: function(url) {
+        var key = this._getAssetKey(url);
+        return this.game.load.text(key, global.dataPath + '/' + url);
     },
 
     loadAtlas: function(url) {
@@ -56,7 +53,7 @@ AssetManager.prototype = {
             return;
         }
 
-        var key = this._getImageKey(url);
+        var key = this._getAssetKey(url);
 
         return this.game.load.image(key, global.imgPath + '/' + url);
     },
@@ -271,7 +268,7 @@ AssetManager.prototype = {
         }
     },
 
-    _getImageKey: function(fileName) {
+    _getAssetKey: function(fileName) {
         var ext = fileName.split('.');
         ext.pop();
 
