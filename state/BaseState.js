@@ -9,9 +9,62 @@ BaseState.prototype = {
     // Phaser.State overrides
 
     init: function() {
-        this.autoHidePreloader = true;
         Phaser.State.prototype.stateKeys = Object.keys(Phaser.State.prototype);
         this.game.stateHistory.push(this.game.state.current);
+
+        this.sequenceTimer = this.game.time.create(false);
+        // show preloader if there's a build sequence and a preloader
+        if (typeof this.game.preloader !== 'undefined' && this.getBuildSequence().length > 0)
+            this.game.preloader.show();
+    },
+
+    getBuildInterval: function() {
+        return 20;
+    },
+
+    getBuildSequence: function() {
+        return [];
+    },
+
+    startBuild: function() {
+        this.runSequence(this.getBuildSequence(), this._initialSequenceComplete, this);
+    },
+
+    afterBuild: function() {
+        if (typeof this.game.preloader !== 'undefined')
+            this.game.preloader.hide();
+
+        if (this.game.debugger) {
+            this.game.debugger.selectedObject = null;
+            this.game.debugger.refresh();
+        }
+    },
+
+    runSequence: function(sequenceToBuild, callback, callbackContext, interval) {
+        var sequence = sequenceToBuild,
+            sequenceCallback = callback || null,
+            sequenceCallbackContext = callbackContext || this,
+            sequenceInterval = typeof interval === 'undefined' ? this.getBuildInterval() : interval;
+
+        if (sequence.length === 0) {
+            callback.call(callbackContext);
+            return;
+        }
+
+        this.sequenceTimer.repeat(sequenceInterval, sequence.length, this._executeSequenceMethod, this, sequence, sequenceCallback, sequenceCallbackContext);
+        this.sequenceTimer.start();
+    },
+
+    _executeSequenceMethod: function(sequence, callback, callbackContext) {
+        sequence.shift().call(this);
+
+        if (sequence.length === 0 && callback && callbackContext) {
+            callback.call(callbackContext);
+        }
+    },
+
+    _initialSequenceComplete: function() {
+        this.afterBuild();
     },
 
     create: function() {
@@ -21,19 +74,22 @@ BaseState.prototype = {
         }
 
         this.buildInterface();
+
+        this.startBuild();
+
         this.afterBuildInterface();
 
         if (this.autoHidePreloader && typeof this.game.preloader !== 'undefined') {
             this.game.preloader.hide();
         }
-
-        if (this.game.debugger) {
-            this.game.debugger.selectedObject = null;
-            this.game.debugger.refresh();
-        }
     },
 
     shutdown: function() {
+        if (typeof this.sequenceTimer !== 'undefined') {
+            this.sequenceTimer.removeAll();
+            this.sequenceTimer.destroy();
+        }
+
         this._removeAudio();
         this._removeStateProps();
     },
