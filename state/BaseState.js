@@ -13,9 +13,18 @@ BaseState.prototype = {
         this.game.stateHistory.push(this.game.state.current);
 
         this.sequenceTimer = this.game.time.create(false);
-        // show preloader if there's a build sequence and a preloader
-        if (typeof this.game.preloader !== 'undefined' && this.getBuildSequence().length > 0)
+
+        if (typeof this.game.preloader !== 'undefined' && ((this.getPreloadID() && !this.game.assetManager.hasLoadedAssets(this.getPreloadID())) || (this.getBuildSequence().length > 0 && this.getBuildInterval() > 0)))
             this.game.preloader.show();
+    },
+
+    preload: function() {
+        if (this.getPreloadID())
+            this.game.assetManager.loadAssets(this.getPreloadID());
+    },
+
+    getPreloadID: function() {
+        return null;
     },
 
     getBuildInterval: function() {
@@ -51,6 +60,12 @@ BaseState.prototype = {
             return;
         }
 
+        if (sequenceInterval === 0) {
+            while (sequence.length > 0)
+                this._executeSequenceMethod(sequence, sequenceCallback, sequenceCallbackContext);
+            return;
+        }
+
         this.sequenceTimer.repeat(sequenceInterval, sequence.length, this._executeSequenceMethod, this, sequence, sequenceCallback, sequenceCallbackContext);
         this.sequenceTimer.start();
     },
@@ -74,14 +89,9 @@ BaseState.prototype = {
         }
 
         this.buildInterface();
-
+        this.afterBuildInterface();
         this.startBuild();
 
-        this.afterBuildInterface();
-
-        if (this.autoHidePreloader && typeof this.game.preloader !== 'undefined') {
-            this.game.preloader.hide();
-        }
     },
 
     shutdown: function() {

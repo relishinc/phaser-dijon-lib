@@ -14,6 +14,7 @@ AssetManager.prototype = {
         this._data = {};
 
         this._autoLoadData = {};
+        this._completedLoads = {};
         this._requiredData = {};
 
         this._currentAssetList = null;
@@ -224,6 +225,7 @@ AssetManager.prototype = {
     },
 
     _gameLoadComplete: function() {
+        this._completedLoads[this._currentAssetList] = true;
         this.onLoadComplete.dispatch();
         this.game.load.onFileStart.remove(this._gameFileStart, this);
         this.game.load.onFileComplete.remove(this._gameFileComplete, this);
@@ -318,7 +320,7 @@ AssetManager.prototype = {
         this._parseData();
     },
 
-    clearState: function(state, clearAudio, clearAtlasses, clearImages, clearText) {
+    clearAssets: function(id, clearAudio, clearAtlasses, clearImages, clearText) {
         var assets = this._data[state];
 
         console.log('clearing: ', state);
@@ -335,6 +337,8 @@ AssetManager.prototype = {
         for (var i = 0; i < assets.length; i++) {
             this.clearAsset(assets[i], clearAudio, clearAtlasses, clearImages, clearText);
         }
+
+        this._completedLoads[id] = false;
     },
 
     clearAsset: function(asset, clearAudio, clearAtlasses, clearImages, clearText) {
@@ -371,6 +375,10 @@ AssetManager.prototype = {
                 }
                 break;
         }
+    },
+
+    hasLoadedAssets: function(id) {
+        return this._completedLoads[id] === true;
     }
 };
 
