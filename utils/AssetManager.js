@@ -321,9 +321,9 @@ AssetManager.prototype = {
     },
 
     clearAssets: function(id, clearAudio, clearAtlasses, clearImages, clearText) {
-        var assets = this._data[state];
+        var assets = this._data[id];
 
-        console.log('clearing: ', state);
+        console.log('clearing: ', id);
 
         if (!assets || typeof assets === 'undefined' || assets.length < 1) {
             return console.log('no assets', assets);
