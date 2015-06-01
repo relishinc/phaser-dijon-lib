@@ -1,5 +1,3 @@
-var Constants = require('./Constants');
-
 var SaveManager = function(game) {
     this.game = game;
     this.game.saveManager = this;
@@ -19,10 +17,11 @@ SaveManager.prototype = {
     getData: function(key, isJSON) {
         var data = localStorage[key];
         if (typeof data === 'undefined') {
-            return console.log('no data saved with the key', key);
+            console.log('no data saved with the key', key);
+            return null;
         }
 
-        if (isJSON) {
+        if (isJSON !== false) {
             data = JSON.parse(data);
         }
         return data;
@@ -36,14 +35,14 @@ SaveManager.prototype = {
         localStorage[key] = this._getString(value);
     },
 
-    clearData: function() {
+    clearData: function(saveID) {
         if (!this._localStorageAvailable) {
             console.log('no local storage');
             return false;
         }
 
         try {
-            localStorage.removeItem(Constants.SAVE_ID);
+            localStorage.removeItem(saveID);
         } catch (e) {}
 
     },
