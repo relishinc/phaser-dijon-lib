@@ -13,9 +13,6 @@ BaseState.prototype = {
         this.game.stateHistory.push(this.game.state.current);
 
         this.sequenceTimer = this.game.time.create(false);
-
-        if (typeof this.game.preloader !== 'undefined' && ((this.getPreloadID() && !this.game.assetManager.hasLoadedAssets(this.getPreloadID())) || (this.getBuildSequence().length > 0 && this.getBuildInterval() > 0)))
-            this.game.preloader.show();
     },
 
     preload: function() {
@@ -40,8 +37,8 @@ BaseState.prototype = {
     },
 
     afterBuild: function() {
-        if (typeof this.game.preloader !== 'undefined')
-            this.game.preloader.hide();
+        if (typeof this.game.transitionManager !== 'undefined')
+            this.game.transitionManager.transitionOut();
 
         if (this.game.debugger) {
             this.game.debugger.selectedObject = null;

@@ -59,6 +59,10 @@ AssetManager.prototype = {
         return this.game.load.image(key, global.imgPath + '/' + url);
     },
 
+    loadBitmapFont: function(url) {
+        this.game.load.bitmapFont(url, global.fontPath + '/' + url + '.png', global.fontPath + '/' + url + '.fnt');
+    },
+
     loadAudio: function(url, exts, isAudioSprite) {
         var type, path;
         if (this.game.cache.checkSoundKey(url) && this.game.cache.getSound(url).decoded) {
