@@ -25,6 +25,10 @@ CopyModel.prototype.getCopy = function(groupId, itemId) {
     return this._data[groupId][itemId];
 };
 
+CopyModel.prototype.getCopyGroup = function(groupId) {
+    return this._data[groupId];
+};
+
 CopyModel.prototype.setData = function(jsonText) {
     this._data = JSON.parse(jsonText);
 };
