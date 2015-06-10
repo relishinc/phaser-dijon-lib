@@ -18,8 +18,10 @@ SpriteButton.prototype.init = function() {
     this.animations.add('over', [this._getFramePrefix() + '/over'], 0, false, false);
     this.animations.add('down', [this._getFramePrefix() + '/down'], 0, false, false);
 
-    this.events.onInputOver.add(this.onRollover, this);
-    this.events.onInputOut.add(this.onRollout, this);
+    if (this.game.device.desktop) {
+        this.events.onInputOver.add(this.onRollover, this);
+        this.events.onInputOut.add(this.onRollout, this);
+    }
     this.events.onInputDown.add(this.onPress, this);
     this.events.onInputUp.add(this.onClicked, this);
 
@@ -81,6 +83,17 @@ SpriteButton.prototype.stopFlashing = function() {
     this.game.time.events.remove(this.flashInterval);
     this.flashing = false;
     this.animations.play('up', 0, false);
+};
+
+SpriteButton.prototype.disable = function() {
+    this.inputEnabled = false;
+    this.alpha = 0.5;
+};
+
+SpriteButton.prototype.enable = function() {
+    this.inputEnabled = true;
+    this.input.useHandCursor = true;
+    this.alpha = 1;
 };
 
 module.exports = SpriteButton;
