@@ -1,28 +1,26 @@
-var UISprite = require('../UISprite');
-
-var TextButton = function (game, x, y, bg, text, horizontalPadding, verticalPadding, borderWidth, borderColor, yOffset, autoAdd) {
+var TextButton = function(game, x, y, bg, text, horizontalPadding, verticalPadding, borderWidth, borderColor, yOffset) {
     this.yOffset = typeof yOffset === 'undefined' || isNaN(yOffset) ? 0 : yOffset;
 
-    UISprite.call(this, game, x, y, null, null, name, autoAdd);
+    Dijon.UISprite.call(this, game, x, y, null, null, name);
 
     this.horizontalPadding = horizontalPadding;
     this.verticalPadding = verticalPadding;
     this.borderWidth = borderWidth;
     this.borderColor = borderColor;
 
-    if (typeof this.horizontalPadding === 'undefined'){
+    if (typeof this.horizontalPadding === 'undefined') {
         this.horizontalPadding = 0;
     }
 
-    if (typeof this.verticalPadding  === 'undefined'){
-        this.verticalPadding  = 0;
+    if (typeof this.verticalPadding === 'undefined') {
+        this.verticalPadding = 0;
     }
 
-    if (typeof this.borderWidth === 'undefined'){
+    if (typeof this.borderWidth === 'undefined') {
         this.borderWidth = 0;
     }
 
-    if (typeof this.borderColor === 'undefined'){
+    if (typeof this.borderColor === 'undefined') {
         this.borderColor = 0x000000;
     }
 
@@ -35,7 +33,7 @@ var TextButton = function (game, x, y, bg, text, horizontalPadding, verticalPadd
     this.text.x = horizontalPadding;
     this.text.y = verticalPadding + this.yOffset;
 
-    if (this.borderWidth > 0){
+    if (this.borderWidth > 0) {
         this.drawBorder();
     }
     this.inputEnabled = true;
@@ -43,29 +41,37 @@ var TextButton = function (game, x, y, bg, text, horizontalPadding, verticalPadd
 
 };
 
-TextButton.prototype = Object.create(UISprite.prototype);
+TextButton.prototype = Object.create(Dijon.UISprite.prototype);
 TextButton.prototype.constructor = TextButton;
 
 TextButton.prototype.update = function() {
-    UISprite.prototype.update.call(this);
+    Dijon.UISprite.prototype.update.call(this);
 };
 
-TextButton.prototype.init = function(){
-    UISprite.prototype.init.call(this);
+TextButton.prototype.init = function() {
+    Dijon.UISprite.prototype.init.call(this);
 };
 
-TextButton.prototype.buildInterface = function(){
-    UISprite.prototype.buildInterface.call(this);
+TextButton.prototype.buildInterface = function() {
+    Dijon.UISprite.prototype.buildInterface.call(this);
 };
 
-TextButton.prototype.drawBorder = function(){
-    this.borderGraphics = this.game.add.graphics(0,0);
+TextButton.prototype.drawBorder = function() {
+    this.borderGraphics = this.game.add.graphics(0, 0);
     this.borderGraphics.lineStyle(this.borderWidth, this.borderColor, 1);
     this.borderGraphics.beginFill(0x000000, 0);
     this.borderGraphics.drawRect(0, 0, this.bg.width, this.bg.height);
     this.borderGraphics.endFill();
-    this.border = this.addChild(new UISprite(this.game, 0, 0, this.borderGraphics.generateTexture()));
+    this.border = this.addChild(new Dijon.UISprite(this.game, 0, 0, this.borderGraphics.generateTexture()));
     this.borderGraphics.destroy();
+};
+
+// Phaser addons
+Phaser.GameObjectFactory.prototype.textButton = function(x, y, bg, text, horizontalPadding, verticalPadding, borderWidth, borderColor, yOffset, group) {
+    if (typeof group === 'undefined') {
+        group = this.world;
+    }
+    return group.add(new TextButton(this.game, x, y, bg, text, horizontalPadding, verticalPadding, borderWidth, borderColor, yOffset));
 };
 
 module.exports = TextButton;

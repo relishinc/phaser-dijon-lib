@@ -1,18 +1,16 @@
-var UISprite = require('../UISprite');
-
-var InvisibleButton = function(game, x, y, name, w, h) {
+var InvisibleButton = function(game, x, y, w, h, name) {
 
     this.setSize(w, h);
-    UISprite.call(this, game, x, y, null, null, name);
+    Dijon.UISprite.call(this, game, x, y, null, null, name);
 };
 
-InvisibleButton.prototype = Object.create(UISprite.prototype);
+InvisibleButton.prototype = Object.create(Dijon.UISprite.prototype);
 InvisibleButton.prototype.constructor = InvisibleButton;
 
 // UISprite overrides
 
 InvisibleButton.prototype.init = function() {
-    UISprite.prototype.init.call(this);
+    Dijon.UISprite.prototype.init.call(this);
     this.inputEnabled = true;
 };
 
@@ -35,6 +33,15 @@ InvisibleButton.prototype.setSize = function(w, h) {
     this._hitHeight = h || 0;
 
     this._addHitRect();
+};
+
+
+// Phaser addons
+Phaser.GameObjectFactory.prototype.invisibleButton = function(x, y, w, h, name, group) {
+    if (typeof group === 'undefined') {
+        group = this.world;
+    }
+    return group.add(new InvisibleButton(this.game, x, y, w, h, name));
 };
 
 module.exports = InvisibleButton;

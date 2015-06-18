@@ -2,17 +2,45 @@ var SaveManager = function(game) {
     this.game = game;
     this.game.saveManager = this;
 
-    this.init();
+    this._init();
 };
 
 SaveManager.prototype = {
     constructor: SaveManager,
 
-    // public methods
-    init: function() {
+    // private methods
+
+    _init: function() {
         this._localStorageAvailable = this._getIsLocalStorageAvailable();
         console.log('saving available', this._localStorageAvailable);
     },
+
+    _getString: function(data) {
+        if (typeof data === 'string') {
+            return data;
+        }
+
+        var jsonData;
+
+        try {
+            jsonData = JSON.stringify(data);
+        } catch (e) {
+            console.log('Could not convert' + data + ' to json');
+            return null;
+        }
+
+        return jsonData;
+    },
+
+    _getIsLocalStorageAvailable: function() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    },
+
+    // public methods
 
     getData: function(key, isJSON) {
         var data = localStorage[key];
@@ -45,32 +73,6 @@ SaveManager.prototype = {
             localStorage.removeItem(saveID);
         } catch (e) {}
 
-    },
-
-    // private methods
-    _getString: function(data) {
-        if (typeof data === 'string') {
-            return data;
-        }
-
-        var jsonData;
-
-        try {
-            jsonData = JSON.stringify(data);
-        } catch (e) {
-            console.log('Could not convert' + data + ' to json');
-            return null;
-        }
-
-        return jsonData;
-    },
-
-    _getIsLocalStorageAvailable: function() {
-        try {
-            return 'localStorage' in window && window['localStorage'] !== null;
-        } catch (e) {
-            return false;
-        }
     }
 };
 

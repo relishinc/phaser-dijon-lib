@@ -21,4 +21,9 @@ UIGroup.prototype.buildInterface = function() {
     // add visual elements
 };
 
+// Phaser addons
+Phaser.GameObjectFactory.prototype.uiGroup = function(parent, name, addToStage) {
+    return new UIGroup(this.game, parent, name, addToStage);
+};
+
 module.exports = UIGroup;

@@ -14,7 +14,7 @@
  * @param settings additional settings appended to the style object
  * @constructor
  */
-var UIText = function(game, x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, autoAdd, settings) {
+var UIText = function(game, x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings) {
     if (typeof fontName === 'undefined') {
         fontName = UIText.DEFAULT_FONT;
     }
@@ -58,10 +58,6 @@ var UIText = function(game, x, y, text, fontName, fontSize, fontColor, fontAlign
     this.lineSpacing = lineSpacing || 0;
     this.events.onAnimationComplete = new Phaser.Signal();
     this.lowercaseText = this.text.toLowerCase();
-
-    if (autoAdd !== false) {
-        game.add.existing(this);
-    }
 };
 
 UIText.prototype = Object.create(Phaser.Text.prototype);
@@ -153,5 +149,17 @@ UIText.prototype.stopAnimating = function() {
 UIText.DEFAULT_FONT = 'Helvetica Neue, Arial';
 UIText.DEFAULT_SIZE = 12;
 UIText.DEFAULT_COLOR = '#ffffff';
+
+// Phaser addons
+Phaser.GameObjectCreator.prototype.uiText = function(x, y, text, fontName, fontSize, color, align, wordWrap, width, lineSpacing, settings) {
+    return new UIText(this.game, x, y, text, fontName, fontSize, color, align, wordWrap, width, lineSpacing, settings);
+};
+
+Phaser.GameObjectFactory.prototype.uiText = function(x, y, text, fontName, fontSize, color, align, wordWrap, width, lineSpacing, settings, group) {
+    if (typeof group === 'undefined') {
+        group = this.world;
+    }
+    return group.add(new UIText(this.game, x, y, text, fontName, fontSize, color, align, wordWrap, width, lineSpacing, settings));
+};
 
 module.exports = UIText;

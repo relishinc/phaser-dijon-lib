@@ -8,13 +8,15 @@
 
 var TransitionManager = function(game) {
     this.game = game;
-    this._initialize();
+
+    this._init();
 };
 
 TransitionManager.prototype = {
     constructor: TransitionManager,
+
     // private methods
-    _initialize: function() {
+    _init: function() {
         /**
          * The current transition
          * @property {string} _transition
@@ -56,14 +58,14 @@ TransitionManager.prototype = {
 
     _transitionInComplete: function() {
         if (typeof this._transition.preloadHandler.loadStart === 'function')
-            this.game.assetManager.onLoadStart.addOnce(this._transition.preloadHandler.loadStart, this._transition.preloadHandler);
+            this.game.asset.onLoadStart.addOnce(this._transition.preloadHandler.loadStart, this._transition.preloadHandler);
 
         if (typeof this._transition.preloadHandler.loadProgress === 'function') {
-            this.game.assetManager.onFileComplete.add(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
+            this.game.asset.onFileComplete.add(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
         }
 
 
-        this.game.assetManager.onLoadCompleteAndAudioDecoded.addOnce(this._preloadComplete, this);
+        this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this._preloadComplete, this);
         this.game.state.start(this._toState);
     },
 
@@ -72,7 +74,7 @@ TransitionManager.prototype = {
     },
 
     _preloadComplete: function() {
-        this.game.assetManager.onFileComplete.remove(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
+        this.game.asset.onFileComplete.remove(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
 
         if (typeof this._transition.preloadHandler.loadComplete === 'function')
             this._transition.preloadHandler.loadComplete();
@@ -84,9 +86,9 @@ TransitionManager.prototype = {
 
         this._transition.outHandler.transitionComplete.remove(this._transitionOutComplete, this);
         this._transition.inHandler.transitionComplete.remove(this._transitionInComplete, this);
-        this.game.assetManager.onLoadCompleteAndAudioDecoded.remove(this._preloadComplete, this);
-        this.game.assetManager.onLoadStart.remove(this._transition.preloadHandler.loadStart, this._transition.preloadHandler);
-        this.game.assetManager.onFileComplete.remove(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
+        this.game.asset.onLoadCompleteAndAudioDecoded.remove(this._preloadComplete, this);
+        this.game.asset.onLoadStart.remove(this._transition.preloadHandler.loadStart, this._transition.preloadHandler);
+        this.game.asset.onFileComplete.remove(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
 
         this._transition = null;
     },
@@ -98,11 +100,11 @@ TransitionManager.prototype = {
      * pass the from / to states as the first 2 arguments, and additional arguments for which instance will handle the transition
      * if only 3 args are passed, the instance will handle the in / out transition, and the preloading
      * E.G.
-     * this.game.transitionManager.add(this.game.constants.STATE_PRELOAD, this.game.constants.STATE_MENU, this.game.preloader);
+     * this.game.transition.add(this.game.constants.STATE_PRELOAD, this.game.constants.STATE_MENU, this.game.preloader);
      *
      * if 5 arguments are passed, a different instance can be used for in transition, preloading, and out transition
      * E.G.
-     * this.game.transitionManager.add(this.game.constants.STATE_PRELOAD, this.game.constants.STATE_MENU, this.game.transitionOutHandler, this.game.preloadHandler, this.game.transitionInHandler);
+     * this.game.transition.add(this.game.constants.STATE_PRELOAD, this.game.constants.STATE_MENU, this.game.transitionOutHandler, this.game.preloadHandler, this.game.transitionInHandler);
      *
      * transition handlers are expected to behave as follows:
      * an out transition handler should have a transitionIn method and dispatch a transitionComplete signal when done

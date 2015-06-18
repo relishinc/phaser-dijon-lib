@@ -26,6 +26,10 @@ Model.prototype.setData = function(dataKey) {
     this.data = this.parseData(this.game.cache.getText(dataKey));
 };
 
+Model.prototype.getData = function() {
+    return this.data;
+};
+
 Model.prototype.parseData = function(data) {
     return JSON.parse(data);
 };
