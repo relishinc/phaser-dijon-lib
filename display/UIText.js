@@ -13,17 +13,17 @@
  * @param {Object} [settings = null] additional settings appended to the style object
  * @constructor
  */
-var UIText = function(game, x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings) {
+Dijon.UIText = function(game, x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings) {
     if (typeof fontName === 'undefined') {
-        fontName = UIText.DEFAULT_FONT;
+        fontName = Dijon.UIText.DEFAULT_FONT;
     }
 
     if (typeof fontSize === 'undefined') {
-        fontSize = UIText.DEFAULT_SIZE;
+        fontSize = Dijon.UIText.DEFAULT_SIZE;
     }
 
     if (typeof fontColor === 'undefined') {
-        fontColor = UIText.DEFAULT_COLOR;
+        fontColor = Dijon.UIText.DEFAULT_COLOR;
     }
 
     if (typeof fontAlign === 'undefined') {
@@ -59,8 +59,7 @@ var UIText = function(game, x, y, text, fontName, fontSize, fontColor, fontAlign
     this.lowercaseText = this.text.toLowerCase();
 };
 
-UIText.prototype = Object.create(Phaser.Text.prototype);
-UIText.prototype.constructor = UIText;
+Dijon.UIText.prototype = Object.create(Phaser.Text.prototype);
 
 // private methods
 /**
@@ -68,7 +67,7 @@ UIText.prototype.constructor = UIText;
  * @return {void}
  * @private
  */
-UIText.prototype._startTextAnimation = function() {
+Dijon.UIText.prototype._startTextAnimation = function() {
     this._canUpdate = true;
     this._repeatTimer = this.game.time.events.repeat(this._letterTime * 100, this._textLength, this._updateTextAnimation, this);
 };
@@ -80,7 +79,7 @@ UIText.prototype._startTextAnimation = function() {
  * @return {void}
  * @private
  */
-UIText.prototype._updateTextAnimation = function() {
+Dijon.UIText.prototype._updateTextAnimation = function() {
     if (!this._canUpdate || !this._textToAnimate) {
         return false;
     }
@@ -98,17 +97,17 @@ UIText.prototype._updateTextAnimation = function() {
 /**
  * sets the color of the entire text
  * @param {String} color css color string (such as "#ff0000")
- * @return {UIText.highlightPhrase} calls the highlightPhrase method and "highlights" the entire text string
+ * @return {Dijon.UIText.highlightPhrase} calls the highlightPhrase method and "highlights" the entire text string
  */
-UIText.prototype.setColor = function(color) {
+Dijon.UIText.prototype.setColor = function(color) {
     return this.highlightPhrase(this.text, color, false);
 };
 
 /**
  * resets the color to the original fill color
- * @return {UIText.highlightPhrase} calls the highlightPhrase method and "highlights" the entire text string
+ * @return {Dijon.UIText.highlightPhrase} calls the highlightPhrase method and "highlights" the entire text string
  */
-UIText.prototype.resetColor = function() {
+Dijon.UIText.prototype.resetColor = function() {
     return this.highlightPhrase(this.text, this.style.fill, false);
 };
 
@@ -119,7 +118,7 @@ UIText.prototype.resetColor = function() {
  * @param  {Boolean} [caseSensitive = false] whether the search for the phrase within this text should be case sensitive
  * @return {void}
  */
-UIText.prototype.highlightPhrase = function(phrase, color, caseSensitive) {
+Dijon.UIText.prototype.highlightPhrase = function(phrase, color, caseSensitive) {
     caseSensitive = caseSensitive === true;
 
     var text = caseSensitive ? this.text : this.lowercaseText;
@@ -144,7 +143,7 @@ UIText.prototype.highlightPhrase = function(phrase, color, caseSensitive) {
  * @param  {Number} [letterTime = 0.1]  the time (in seconds) between each character
  * @param  {int} [delay = 0]            the delay before starting the animation
  */
-UIText.prototype.animate = function(letterTime, delay) {
+Dijon.UIText.prototype.animate = function(letterTime, delay) {
     this.game.time.events.remove(this._delayTimer);
     this.game.time.events.remove(this._repeatTimer);
 
@@ -174,7 +173,7 @@ UIText.prototype.animate = function(letterTime, delay) {
  * stops the text animation and clears the timers
  * @return {void}
  */
-UIText.prototype.stopAnimating = function() {
+Dijon.UIText.prototype.stopAnimating = function() {
     this._canUpdate = false;
     this._textToAnimate = null;
     this.game.time.events.remove(this._delayTimer);
@@ -187,31 +186,31 @@ UIText.prototype.stopAnimating = function() {
  * @type {String}
  * @static
  */
-UIText.DEFAULT_FONT = 'Helvetica Neue, Arial';
+Dijon.UIText.DEFAULT_FONT = 'Helvetica Neue, Arial';
 
 /**
  * the default text size
  * @type {Number}
  * @static
  */
-UIText.DEFAULT_SIZE = 12;
+Dijon.UIText.DEFAULT_SIZE = 12;
 
 /**
  * the default text colour
  * @type {String}
  */
-UIText.DEFAULT_COLOR = '#000000';
+Dijon.UIText.DEFAULT_COLOR = '#000000';
+
+Dijon.UIText.prototype.constructor = Dijon.UIText;
 
 // Phaser addons
 Phaser.GameObjectCreator.prototype.uiText = function(x, y, text, fontName, fontSize, color, align, wordWrap, width, lineSpacing, settings) {
-    return new UIText(this.game, x, y, text, fontName, fontSize, color, align, wordWrap, width, lineSpacing, settings);
+    return new Dijon.UIText(this.game, x, y, text, fontName, fontSize, color, align, wordWrap, width, lineSpacing, settings);
 };
 
 Phaser.GameObjectFactory.prototype.uiText = function(x, y, text, fontName, fontSize, color, align, wordWrap, width, lineSpacing, settings, group) {
     if (typeof group === 'undefined') {
         group = this.world;
     }
-    return group.add(new UIText(this.game, x, y, text, fontName, fontSize, color, align, wordWrap, width, lineSpacing, settings));
+    return group.add(new Dijon.UIText(this.game, x, y, text, fontName, fontSize, color, align, wordWrap, width, lineSpacing, settings));
 };
-
-module.exports = UIText;

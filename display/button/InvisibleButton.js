@@ -8,14 +8,13 @@
  * @param {String} name for debugging purposes
  * @constructor
  */
-var InvisibleButton = function(game, x, y, w, h, name) {
+Dijon.InvisibleButton = function(game, x, y, w, h, name) {
 
     this.setSize(w, h);
     Dijon.UISprite.call(this, game, x, y, null, null, name);
 };
 
-InvisibleButton.prototype = Object.create(Dijon.UISprite.prototype);
-InvisibleButton.prototype.constructor = InvisibleButton;
+Dijon.InvisibleButton.prototype = Object.create(Dijon.UISprite.prototype);
 
 // UISprite overrides
 /**
@@ -23,7 +22,7 @@ InvisibleButton.prototype.constructor = InvisibleButton;
  * @return {void}
  * @override
  */
-InvisibleButton.prototype.init = function() {
+Dijon.InvisibleButton.prototype.init = function() {
     Dijon.UISprite.prototype.init.call(this);
     this.inputEnabled = true;
 };
@@ -33,7 +32,7 @@ InvisibleButton.prototype.init = function() {
  * @return {void}
  * @override
  */
-InvisibleButton.prototype.buildInterface = function() {
+Dijon.InvisibleButton.prototype.buildInterface = function() {
     this._addHitRect();
 };
 
@@ -42,7 +41,7 @@ InvisibleButton.prototype.buildInterface = function() {
  * adds the clickable area with the size set using the "w" and "h" parameters in the constructor
  * @private
  */
-InvisibleButton.prototype._addHitRect = function() {
+Dijon.InvisibleButton.prototype._addHitRect = function() {
     if (this._hitWidth > 0 && this._hitHeight > 0) {
         this.hitArea = new Phaser.Rectangle(0, 0, this._hitWidth, this._hitHeight);
     }
@@ -54,7 +53,7 @@ InvisibleButton.prototype._addHitRect = function() {
  * @param {Number} w the width
  * @param {Number} h the height
  */
-InvisibleButton.prototype.setSize = function(w, h) {
+Dijon.InvisibleButton.prototype.setSize = function(w, h) {
     this._hitWidth = w || 0;
     this._hitHeight = h || 0;
 
@@ -66,7 +65,7 @@ Phaser.GameObjectFactory.prototype.invisibleButton = function(x, y, w, h, name, 
     if (typeof group === 'undefined') {
         group = this.world;
     }
-    return group.add(new InvisibleButton(this.game, x, y, w, h, name));
+    return group.add(new Dijon.InvisibleButton(this.game, x, y, w, h, name));
 };
 
-module.exports = InvisibleButton;
+Dijon.InvisibleButton.prototype.constructor = Dijon.InvisibleButton;

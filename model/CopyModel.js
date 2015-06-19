@@ -4,7 +4,7 @@
  * @param {String} [dataKey = undefined] Phaser.Cache key to use for this model
  * @constructor
  */
-var CopyModel = function(game, dataKey) {
+Dijon.CopyModel = function(game, dataKey) {
     //make sure only one copy model is attached to the game
     if (typeof game !== 'undefined' && typeof game.copy !== 'undefined') {
         return;
@@ -15,8 +15,7 @@ var CopyModel = function(game, dataKey) {
     game.copy = this;
 };
 
-CopyModel.prototype.constructor = CopyModel;
-CopyModel.prototype = Object.create(Dijon.Model.prototype);
+Dijon.CopyModel.prototype = Object.create(Dijon.Model.prototype);
 
 // public methods
 /**
@@ -25,7 +24,7 @@ CopyModel.prototype = Object.create(Dijon.Model.prototype);
  * @param  {String} itemId  id of the item within that group
  * @return {String}         the copy (a single string)
  */
-CopyModel.prototype.getCopy = function(groupId, itemId) {
+Dijon.CopyModel.prototype.getCopy = function(groupId, itemId) {
     return this._data[groupId][itemId];
 };
 
@@ -34,8 +33,8 @@ CopyModel.prototype.getCopy = function(groupId, itemId) {
  * @param  {String} groupId id of the copy group
  * @return {Object}         the full copy group
  */
-CopyModel.prototype.getCopyGroup = function(groupId) {
+Dijon.CopyModel.prototype.getCopyGroup = function(groupId) {
     return this._data[groupId];
 };
 
-module.exports = CopyModel;
+Dijon.CopyModel.prototype.constructor = Dijon.CopyModel;

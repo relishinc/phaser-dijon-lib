@@ -30,13 +30,13 @@
  * @param {Phaser.Game} game reference to the Phaser.Game object
  * @constructor
  */
-var AssetManager = function(game) {
+Dijon.AssetManager = function(game) {
     this.game = game;
     this._init();
 };
 
-AssetManager.prototype = {
-    constructor: AssetManager,
+Dijon.AssetManager.prototype = {
+    constructor: Dijon.AssetManager,
 
     // private methods
     /**
@@ -267,21 +267,21 @@ AssetManager.prototype = {
             url = asset.url || asset.key;
 
         switch (type) {
-            case AssetManager.ASSET_LIST:
+            case Dijon.AssetManager.ASSET_LIST:
                 return this._loadAssets(asset.id);
-            case AssetManager.SOUND:
+            case Dijon.AssetManager.SOUND:
                 this.loadSound(url, asset.extensions);
                 break;
-            case AssetManager.AUDIO_SPRITE:
+            case Dijon.AssetManager.AUDIO_SPRITE:
                 this.loadAudioSprite(url, asset.extensions);
                 break;
-            case AssetManager.IMAGE:
+            case Dijon.AssetManager.IMAGE:
                 this.loadImage(url);
                 break;
-            case AssetManager.ATLAS:
+            case Dijon.AssetManager.ATLAS:
                 this.loadAtlas(url);
                 break;
-            case AssetManager.TEXT:
+            case Dijon.AssetManager.TEXT:
                 this.loadText(url, asset.extensions);
                 break;
         }
@@ -302,7 +302,7 @@ AssetManager.prototype = {
 
     // public methods
     /**
-     * sets the paths where the AssetManager will look for different files
+     * sets the paths where the Dijon.AssetManager will look for different files
      * @param {Object} pathObj an object containing locations for different file types (should have the following properties: assetPath, dataPath, spritesheetPath, imgPath, fontPath, audioSpritePath, soundPath)
      * @return {void}
      */
@@ -429,7 +429,7 @@ AssetManager.prototype = {
      * loads a sound file
      * @param  {String} url  the url to the sound file (prepends soundPath)
      * @param  {String} exts comma separated list of extensions (usually "ogg,mp3")
-     * @return {AssetManager.loadAudio}
+     * @return {Dijon.AssetManager.loadAudio}
      */
     loadSound: function(url, exts) {
         return this.loadAudio(url, exts, false);
@@ -439,7 +439,7 @@ AssetManager.prototype = {
      * loads a sound file
      * @param  {String} url  the url to the audioSprite file (prepends audioSpritePath)
      * @param  {String} exts comma separated list of extensions (usually "ogg,mp3")
-     * @return {AssetManager.loadAudio}
+     * @return {Dijon.AssetManager.loadAudio}
      */
     loadAudioSprite: function(url, exts) {
         return this.loadAudio(url, exts, true);
@@ -545,7 +545,7 @@ AssetManager.prototype = {
 
 
     /**
-     * sets the data for the AssetManager to use as a reference (usually from data/assets.json)
+     * sets the data for the Dijon.AssetManager to use as a reference (usually from data/assets.json)
      * triggers the _parseData internal method, which stores the asset list for later use
      * @param {String} textFileFromCache the id of the file in the Phaser.Cache
      */
@@ -604,28 +604,28 @@ AssetManager.prototype = {
             return;
         }
         switch (type) {
-            case AssetManager.AUDIO:
+            case Dijon.AssetManager.AUDIO:
                 if (clearAudio) {
                     this.game.sound.removeByKey(url);
                     this.game.cache.removeSound(url);
                 }
                 break;
-            case AssetManager.IMAGE:
+            case Dijon.AssetManager.IMAGE:
                 if (clearImages) {
                     this.game.cache.removeImage(url);
                     PIXI.BaseTextureCache[url].destroy();
                 }
                 break;
-            case AssetManager.ATLAS:
+            case Dijon.AssetManager.ATLAS:
                 if (clearAtlasses) {
                     this.game.cache.removeImage(url);
                     PIXI.BaseTextureCache[url].destroy();
                     this.game.cache.removeXML(url);
                 }
                 break;
-            case AssetManager.TEXT:
+            case Dijon.AssetManager.TEXT:
                 if (clearText) {
-                    AssetManager.removeText(url);
+                    Dijon.AssetManager.removeText(url);
                 }
                 break;
         }
@@ -645,39 +645,37 @@ AssetManager.prototype = {
  * @type {String}
  * @static
  */
-AssetManager.SOUND = 'sound';
+Dijon.AssetManager.SOUND = 'sound';
 
 /**
  * @type {String}
  * @static
  */
-AssetManager.AUDIO_SPRITE = 'audioSprite';
+Dijon.AssetManager.AUDIO_SPRITE = 'audioSprite';
 
 /**
  * @type {String}
  * @static
  */
-AssetManager.IMAGE = 'image';
+Dijon.AssetManager.IMAGE = 'image';
 
 /**
  * @type {String}
  * @static
  */
-AssetManager.ATLAS = 'atlas';
+Dijon.AssetManager.ATLAS = 'atlas';
 
 /**
  * @type {String}
  * @static
  */
-AssetManager.TEXT = 'text';
+Dijon.AssetManager.TEXT = 'text';
 
 /**
  * @type {String}
  * @static
  */
-AssetManager.ASSET_LIST = 'assetList';
-
-module.exports = AssetManager;
+Dijon.AssetManager.ASSET_LIST = 'assetList';
 </code></pre>
         </article>
     </section>
@@ -688,13 +686,13 @@ module.exports = AssetManager;
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-Dijon.html">Dijon</a></li></ul><h3>Classes</h3><ul><li><a href="AssetManager.html">AssetManager</a></li><li><a href="AudioManager.html">AudioManager</a></li><li><a href="BaseComponent.html">BaseComponent</a></li><li><a href="BaseState.html">BaseState</a></li><li><a href="CopyModel.html">CopyModel</a></li><li><a href="InvisibleButton.html">InvisibleButton</a></li><li><a href="Model.html">Model</a></li><li><a href="SaveManager.html">SaveManager</a></li><li><a href="SequenceManager.html">SequenceManager</a></li><li><a href="TransitionManager.html">TransitionManager</a></li><li><a href="UIGroup.html">UIGroup</a></li><li><a href="UISprite.html">UISprite</a></li><li><a href="UIText.html">UIText</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-Dijon.html">Dijon</a></li></ul><h3>Classes</h3><ul><li><a href="Dijon.AssetManager.html">AssetManager</a></li><li><a href="Dijon.AudioManager.html">AudioManager</a></li><li><a href="Dijon.BaseComponent.html">BaseComponent</a></li><li><a href="Dijon.BaseMediator.html">BaseMediator</a></li><li><a href="Dijon.BaseState.html">BaseState</a></li><li><a href="Dijon.CopyModel.html">CopyModel</a></li><li><a href="Dijon.InvisibleButton.html">InvisibleButton</a></li><li><a href="Dijon.Model.html">Model</a></li><li><a href="Dijon.SaveManager.html">SaveManager</a></li><li><a href="Dijon.SequenceManager.html">SequenceManager</a></li><li><a href="Dijon.TransitionManager.html">TransitionManager</a></li><li><a href="Dijon.UIGroup.html">UIGroup</a></li><li><a href="Dijon.UISprite.html">UISprite</a></li><li><a href="Dijon.UIText.html">UIText</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Fri Jun 19 2015 15:38:24 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Fri Jun 19 2015 16:23:53 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

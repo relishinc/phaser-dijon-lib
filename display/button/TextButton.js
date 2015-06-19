@@ -1,4 +1,4 @@
-var TextButton = function(game, x, y, bg, text, horizontalPadding, verticalPadding, borderWidth, borderColor, yOffset) {
+Dijon.TextButton = function(game, x, y, bg, text, horizontalPadding, verticalPadding, borderWidth, borderColor, yOffset) {
     this.yOffset = typeof yOffset === 'undefined' || isNaN(yOffset) ? 0 : yOffset;
 
     Dijon.UISprite.call(this, game, x, y, null, null, name);
@@ -41,22 +41,21 @@ var TextButton = function(game, x, y, bg, text, horizontalPadding, verticalPaddi
 
 };
 
-TextButton.prototype = Object.create(Dijon.UISprite.prototype);
-TextButton.prototype.constructor = TextButton;
+Dijon.TextButton.prototype = Object.create(Dijon.UISprite.prototype);
 
-TextButton.prototype.update = function() {
+Dijon.TextButton.prototype.update = function() {
     Dijon.UISprite.prototype.update.call(this);
 };
 
-TextButton.prototype.init = function() {
+Dijon.TextButton.prototype.init = function() {
     Dijon.UISprite.prototype.init.call(this);
 };
 
-TextButton.prototype.buildInterface = function() {
+Dijon.TextButton.prototype.buildInterface = function() {
     Dijon.UISprite.prototype.buildInterface.call(this);
 };
 
-TextButton.prototype.drawBorder = function() {
+Dijon.TextButton.prototype.drawBorder = function() {
     this.borderGraphics = this.game.add.graphics(0, 0);
     this.borderGraphics.lineStyle(this.borderWidth, this.borderColor, 1);
     this.borderGraphics.beginFill(0x000000, 0);
@@ -66,12 +65,12 @@ TextButton.prototype.drawBorder = function() {
     this.borderGraphics.destroy();
 };
 
+Dijon.TextButton.prototype.constructor = Dijon.TextButton;
+
 // Phaser addons
 Phaser.GameObjectFactory.prototype.textButton = function(x, y, bg, text, horizontalPadding, verticalPadding, borderWidth, borderColor, yOffset, group) {
     if (typeof group === 'undefined') {
         group = this.world;
     }
-    return group.add(new TextButton(this.game, x, y, bg, text, horizontalPadding, verticalPadding, borderWidth, borderColor, yOffset));
+    return group.add(new Dijon.TextButton(this.game, x, y, bg, text, horizontalPadding, verticalPadding, borderWidth, borderColor, yOffset));
 };
-
-module.exports = TextButton;

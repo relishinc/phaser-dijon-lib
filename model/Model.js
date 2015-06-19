@@ -4,7 +4,7 @@
  * @param {String} [dataKey = undefined] Phaser.Cache key to use for this model
  * @constructor
  */
-var Model = function(game, dataKey) {
+Dijon.Model = function(game, dataKey) {
     //make sure only one model is attached to the game
     this.game = game;
 
@@ -13,15 +13,13 @@ var Model = function(game, dataKey) {
     }
 };
 
-Model.prototype.constructor = Model;
-
 // private methods
 /**
  * whether the model contains any data
  * @return {Boolean}
  * @private
  */
-Model.prototype._hasData = function() {
+Dijon.Model.prototype._hasData = function() {
     return this._data && typeof this._data !== 'undefined';
 };
 
@@ -31,7 +29,7 @@ Model.prototype._hasData = function() {
  * assumes it's a json file
  * @param {String} dataKey the key for pulling data from the Phaser.Cache
  */
-Model.prototype.setData = function(dataKey) {
+Dijon.Model.prototype.setData = function(dataKey) {
     if (!this.game.cache.getText(dataKey)) {
         console.log('cannot set data from key ' + dataKey + '. Is it in the Phaser cache?');
         return false;
@@ -44,7 +42,7 @@ Model.prototype.setData = function(dataKey) {
  * retrieves the data
  * @return {Object} the data
  */
-Model.prototype.getData = function() {
+Dijon.Model.prototype.getData = function() {
     return this._data;
 };
 
@@ -53,8 +51,8 @@ Model.prototype.getData = function() {
  * @param  {String} data the data to parse (assumes it's a json string)
  * @return {Object}      the parsed data
  */
-Model.prototype.parseData = function(data) {
+Dijon.Model.prototype.parseData = function(data) {
     return JSON.parse(data);
 };
 
-module.exports = Model;
+Dijon.Model.prototype.constructor = Dijon.Model;

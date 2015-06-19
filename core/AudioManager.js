@@ -3,13 +3,13 @@
  * @param {Phaser.Game} game reference to the Phaser.Game object
  * @constructor
  */
-var AudioManager = function(game) {
+Dijon.AudioManager = function(game) {
     this.game = game;
     this._init();
 };
 
-AudioManager.prototype = {
-    constructor: AudioManager,
+Dijon.AudioManager.prototype = {
+    constructor: Dijon.AudioManager,
 
     // private methods
     _init: function() {
@@ -146,7 +146,7 @@ AudioManager.prototype = {
     },
 
     /**
-     * calls AudioManager.playAudio on a delay
+     * calls Dijon.AudioManager.playAudio on a delay
      * @param  {int} delay        number of milliseconds to delay the sound
      * @param  {String} marker       the sound marker (or key) to check for
      * @param  {Number} volume       the volume at which to play the sound
@@ -243,7 +243,7 @@ AudioManager.prototype = {
     },
 
     /**
-     * stops removes a sound from AudioManager's lookup
+     * stops removes a sound from Dijon.AudioManager's lookup
      * @param  {String} key the key of the sound to be removed
      * @return {void}
      */
@@ -259,7 +259,7 @@ AudioManager.prototype = {
     },
 
     /**
-     * stops removes an audio sprite from AudioManager's lookup
+     * stops removes an audio sprite from Dijon.AudioManager's lookup
      * @param  {String} key the key of the sound to be removed
      * @return {void}
      */
@@ -273,7 +273,3 @@ AudioManager.prototype = {
     }
 
 };
-
-AudioManager.CHANNELS = 4;
-
-module.exports = AudioManager;

@@ -4,16 +4,16 @@
  * calls init and buildInterface() methods after being added
  * @param {Phaser.Game} game       reference to the Phaser.Game instance
  * @param {object} [parent = Phaser.World] reference to this group's parent
- * @param {String} [name = 'UIGroup'] for debugging purposes
+ * @param {String} [name = 'Dijon.UIGroup'] for debugging purposes
  * @param {Boolean} [addToStage = false] whether to add to the Phaser.Stage or not
  * @param {Array} [components = null] a list of components to attach
  * @constructor
  */
-var UIGroup = function(game, parent, name, addToStage, components) {
+Dijon.UIGroup = function(game, parent, name, addToStage, components) {
     this.game = game;
 
     /**
-     * whether the UIGroup has any components (updated when a component is added or removed)
+     * whether the Dijon.UIGroup has any components (updated when a component is added or removed)
      * @type {Boolean}
      */
     this._hasComponents = false;
@@ -32,7 +32,7 @@ var UIGroup = function(game, parent, name, addToStage, components) {
     this._components = {};
 
     if (typeof name === 'undefined') {
-        name = 'UIGroup';
+        name = 'Dijon.UIGroup';
     }
 
     Phaser.Group.call(this, game, parent, name, addToStage);
@@ -44,8 +44,7 @@ var UIGroup = function(game, parent, name, addToStage, components) {
         this.addComponents(components);
 };
 
-UIGroup.prototype = Object.create(Phaser.Group.prototype);
-UIGroup.prototype.constructor = UIGroup;
+Dijon.UIGroup.prototype = Object.create(Phaser.Group.prototype);
 
 // Phaser.Group overrides
 /**
@@ -54,7 +53,7 @@ UIGroup.prototype.constructor = UIGroup;
  * @return {void}
  * @override
  */
-UIGroup.prototype.update = function() {
+Dijon.UIGroup.prototype.update = function() {
     if (this._hasComponents)
         this._updateComponents();
 };
@@ -64,7 +63,7 @@ UIGroup.prototype.update = function() {
  * @return {Phaser.Group.destroy}
  * @override
  */
-UIGroup.prototype.destroy = function() {
+Dijon.UIGroup.prototype.destroy = function() {
     this.removeAllComponents();
     return Phaser.Sprite.prototype.destroy.call(this);
 };
@@ -75,7 +74,7 @@ UIGroup.prototype.destroy = function() {
  * @return {void}
  * @private
  */
-UIGroup.prototype._updateComponents = function() {
+Dijon.UIGroup.prototype._updateComponents = function() {
     _.each(this._componentKeys, this.updateComponent, this);
 };
 
@@ -83,37 +82,37 @@ UIGroup.prototype._updateComponents = function() {
  * updates the internal list of component keys (so we don't have to call Object.keys() all the time)
  * @return {void}
  */
-UIGroup.prototype._updateComponentKeys = function() {
+Dijon.UIGroup.prototype._updateComponentKeys = function() {
     this._componentKeys = Object.keys(this._components);
     this._hasComponents = this._componentKeys.length > 0;
 };
 
 // public methods
-UIGroup.prototype.init = function() {
+Dijon.UIGroup.prototype.init = function() {
     // initialize variables
 };
 
-UIGroup.prototype.buildInterface = function() {
+Dijon.UIGroup.prototype.buildInterface = function() {
     // add visual elements
 };
 
 /**
- * attaches a list of components to the UIGroup
+ * attaches a list of components to the Dijon.UIGroup
  * @param {Array} components the list of components to add
  */
-UIGroup.prototype.addComponents = function(components) {
+Dijon.UIGroup.prototype.addComponents = function(components) {
     if (typeof components.length === 'undefined')
-        throw new Error('UIGroup components must be an array');
+        throw new Error('Dijon.UIGroup components must be an array');
 
     while (components.length > 0)
         this.addComponent(components.shift());
 };
 
 /**
- * attaches a component to the UIGroup
+ * attaches a component to the Dijon.UIGroup
  * @param {Dijon.BaseComponent} component to be attached
  */
-UIGroup.prototype.addComponent = function(component) {
+Dijon.UIGroup.prototype.addComponent = function(component) {
     component.setOwner(this);
     component.init();
     component.buildInterface();
@@ -126,7 +125,7 @@ UIGroup.prototype.addComponent = function(component) {
  * removes all the components currently attached
  * @return {void}
  */
-UIGroup.prototype.removeAllComponents = function() {
+Dijon.UIGroup.prototype.removeAllComponents = function() {
     while (this._componentKeys.length > 0) {
         this.removeComponent(this._componentKeys.pop());
     }
@@ -137,7 +136,7 @@ UIGroup.prototype.removeAllComponents = function() {
  * @param  {String} componentName the name of the component to remove
  * @return {void}
  */
-UIGroup.prototype.removeComponent = function(componentName) {
+Dijon.UIGroup.prototype.removeComponent = function(componentName) {
     if (typeof this._components[componentName] === 'undefined')
         return;
 
@@ -148,18 +147,20 @@ UIGroup.prototype.removeComponent = function(componentName) {
     this._updateComponentKeys();
 };
 
+Dijon.UIGroup.prototype.constructor = Dijon.UIGroup;
+
 /**
  * updates an attached component (calls component.update())
  * @param  {String} componentName the name of the component to update
  * @return {void}
  */
-UIGroup.prototype.updateComponent = function(componentName) {
+Dijon.UIGroup.prototype.updateComponent = function(componentName) {
     this._components[componentName].update();
 };
 
 // Phaser addons
 Phaser.GameObjectFactory.prototype.uiGroup = function(parent, name, addToStage, components) {
-    return new UIGroup(this.game, parent, name, addToStage, components);
+    return new Dijon.UIGroup(this.game, parent, name, addToStage, components);
 };
 
-module.exports = UIGroup;
+module.exports = Dijon.UIGroup;

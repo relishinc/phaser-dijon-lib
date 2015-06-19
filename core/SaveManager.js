@@ -3,13 +3,13 @@
  * @param {Phaser.Game} game the Phaser.Game instance
  * @constructor
  */
-var SaveManager = function(game) {
+Dijon.SaveManager = function(game) {
     this.game = game;
     this._init();
 };
 
-SaveManager.prototype = {
-    constructor: SaveManager,
+Dijon.SaveManager.prototype = {
+    constructor: Dijon.SaveManager,
 
     // private methods
     /**
@@ -110,5 +110,3 @@ SaveManager.prototype = {
 
     }
 };
-
-module.exports = SaveManager;

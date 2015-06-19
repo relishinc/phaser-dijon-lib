@@ -14,121 +14,118 @@
 /**
  * Initialize the library and attach to the global scope
  */
-var Dijon = window.Dijon = Dijon || {
-    /**
-     * Boot up the library and initialize the manager classes
-     * @param  {Phaser.Game} game the global Phaser.Game instance
-     * @return {void}
-     */
-    boot: function(game) {
-
-        var AssetManager = require('./core/AssetManager');
-        var AudioManager = require('./core/AudioManager');
-        var TransitionManager = require('./core/TransitionManager');
-        var SequenceManager = require('./core/SequenceManager');
-        var SaveManager = require('./core/SaveManager');
-
-        game.asset = new AssetManager(game);
-        game.audio = new AudioManager(game);
-        game.transition = new TransitionManager(game);
-        game.sequence = new SequenceManager(game);
-        game.save = new SaveManager(game);
-
-        this._addUtilityMethods(game);
-    },
-
-    /**
-     * _addUtilityMethods adds methods to disable and enable world input
-     * @param {Phaser.Game} game the global Phaser.Game instance
-     * @private
-     */
-    _addUtilityMethods: function(game) {
-        game.onWorldInputDisabled = new Phaser.Signal();
-        game.onWorldInputEnabled = new Phaser.Signal();
-
-        game.disableElementInput = function(el) {
-            if (el.input && el.input.enabled === true) {
-                el.wasEnabled = true;
-                el.input.enabled = false;
-            }
-            if (el.children.length > 0) {
-                for (var i = 0; i < el.children.length; i++) {
-                    this.disableElementInput(el.children[i]);
-                }
-            }
-        };
-
-        game.enableElementInput = function(el) {
-            if (el.input && el.input.enabled === false && el.wasEnabled) {
-                el.wasEnabled = false;
-                el.input.enabled = true;
-            }
-            if (el.children.length > 0) {
-                for (var i = 0; i < el.children.length; i++) {
-                    this.enableElementInput(el.children[i]);
-                }
-            }
-        };
-
-        game.disableInput = function(group) {
-            return group.forEach(function(el) {
-                if (el instanceof Phaser.Group) {
-                    return this.disableInput(el);
-                } else {
-                    return this.disableElementInput(el);
-                }
-            }, this);
-        };
-
-        game.disableWorldInput = function() {
-            this.disableInput(this.world);
-            this.onWorldInputDisabled.dispatch();
-        };
-
-        game.enableInput = function(group) {
-            return group.forEach(function(el) {
-                if (el instanceof Phaser.Group) {
-                    return this.enableInput(el);
-                } else {
-                    return this.enableElementInput(el);
-                }
-            }, this);
-        };
-
-        game.enableWorldInput = function() {
-            this.enableInput(this.world);
-            this.onWorldInputEnabled.dispatch();
-        };
-    }
-};
+var Dijon = window.Dijon = Dijon || {};
 
 /**
  * Initialize the library's core classes and attach them to the global Dijon object
  */
 
+require('./core/AssetManager');
+require('./core/AudioManager');
+require('./core/TransitionManager');
+require('./core/SequenceManager');
+require('./core/SaveManager');
+
 // state
-Dijon.BaseState = require('./state/BaseState');
+require('./state/BaseState');
 
 // model
-Dijon.Model = require('./model/Model');
-Dijon.CopyModel = require('./model/CopyModel');
+require('./model/Model');
+require('./model/CopyModel');
 
 // mediator
-Dijon.BaseMediator = require('./mediator/BaseMediator');
+require('./mediator/BaseMediator');
 
 // component
-Dijon.BaseComponent = require('./component/BaseComponent');
-Dijon.Rotateable = require('./component/Rotateable');
+require('./component/BaseComponent');
+require('./component/Rotateable');
 
 // display classes
 // require Dijon Display classes here, as they contain addons to Phaser.GameobjectFactory and Phaser.GameObjectCreator - this way we don't need to require them every time we want to use them
-Dijon.UISprite = require('./display/UISprite');
-Dijon.UIGroup = require('./display/UIGroup');
-Dijon.UIText = require('./display/UIText');
+require('./display/UISprite');
+require('./display/UIGroup');
+require('./display/UIText');
 
 // buttons
-Dijon.TextButton = require('./display/button/TextButton');
-Dijon.InvisibleButton = require('./display/button/InvisibleButton');
+require('./display/button/TextButton');
+require('./display/button/InvisibleButton');
+
+/**
+ * Boot up the library and initialize the manager classes
+ * @param  {Phaser.Game} game the global Phaser.Game instance
+ * @return {void}
+ */
+Dijon.boot = function(game) {
+    game.asset = new Dijon.AssetManager(game);
+    game.audio = new Dijon.AudioManager(game);
+    game.transition = new Dijon.TransitionManager(game);
+    game.sequence = new Dijon.SequenceManager(game);
+
+    Dijon.addUtilityMethods(game);
+};
+/**
+ * _addUtilityMethods adds methods to disable and enable world input
+ * @param {Phaser.Game} game the global Phaser.Game instance
+ */
+Dijon.addUtilityMethods = function(game) {
+    game.onWorldInputDisabled = new Phaser.Signal();
+    game.onWorldInputEnabled = new Phaser.Signal();
+
+    game.disableElementInput = function(el) {
+        if (el.input && el.input.enabled === true) {
+            el.wasEnabled = true;
+            el.input.enabled = false;
+        }
+        if (el.children.length > 0) {
+            for (var i = 0; i < el.children.length; i++) {
+                this.disableElementInput(el.children[i]);
+            }
+        }
+    };
+
+    game.enableElementInput = function(el) {
+        if (el.input && el.input.enabled === false && el.wasEnabled) {
+            el.wasEnabled = false;
+            el.input.enabled = true;
+        }
+        if (el.children.length > 0) {
+            for (var i = 0; i < el.children.length; i++) {
+                this.enableElementInput(el.children[i]);
+            }
+        }
+    };
+
+    game.disableInput = function(group) {
+        return group.forEach(function(el) {
+            if (el instanceof Phaser.Group) {
+                return this.disableInput(el);
+            } else {
+                return this.disableElementInput(el);
+            }
+        }, this);
+    };
+
+    game.disableWorldInput = function() {
+        this.disableInput(this.world);
+        this.onWorldInputDisabled.dispatch();
+    };
+
+    game.enableInput = function(group) {
+        return group.forEach(function(el) {
+            if (el instanceof Phaser.Group) {
+                return this.enableInput(el);
+            } else {
+                return this.enableElementInput(el);
+            }
+        }, this);
+    };
+
+    game.enableWorldInput = function() {
+        this.enableInput(this.world);
+        this.onWorldInputEnabled.dispatch();
+    };
+};
+
 
 // additional Phaser GameObjectFactory / GameObjectCreator addons
 Phaser.GameObjectFactory.prototype.spriteButton = function(x, y, key, framePrefix, callback, callbackContext, group) {

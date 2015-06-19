@@ -3,13 +3,13 @@
  * @param {Phaser.Game} game reference to the Phaser.Game object
  * @constructor
  */
-var SequenceManager = function(game) {
+Dijon.SequenceManager = function(game) {
     this.game = game;
     this._init();
 };
 
-SequenceManager.prototype = {
-    constructor: SequenceManager,
+Dijon.SequenceManager.prototype = {
+    constructor: Dijon.SequenceManager,
     // private methods
     /**
      * sets the default interval
@@ -72,5 +72,3 @@ SequenceManager.prototype = {
         this.game.time.events.repeat(interval, sequence.length, this._executeMethod, this, sequence, context, typeof completeCallback === 'undefined' ? null : completeCallback, typeof completeCallbackContext === 'undefined' ? null : completeCallbackContext);
     }
 };
-
-module.exports = SequenceManager;

@@ -3,14 +3,13 @@
  * all game states *except* Boot should extend this
  * @constructor
  */
-var BaseState = function() {
+Dijon.BaseState = function() {
     Phaser.State.call(this);
 };
 
-BaseState.prototype = Object.create(Phaser.State.prototype);
-BaseState.prototype.constructor = BaseState;
+Dijon.BaseState.prototype = Object.create(Phaser.State.prototype);
 
-BaseState.prototype = {
+Dijon.BaseState.prototype = {
     // Phaser.State overrides
     /**
      * called before anything else
@@ -20,7 +19,7 @@ BaseState.prototype = {
 
     /**
      * preloads our assets
-     * calls the [getPreloadID method]{@link BaseState#getPreloadID} to check for an asset list to load
+     * calls the [getPreloadID method]{@link Dijon.BaseState#getPreloadID} to check for an asset list to load
      * @override
      */
     preload: function() {
@@ -96,7 +95,7 @@ BaseState.prototype = {
 
     /**
      * called after the afterBuildInterface method
-     * runs the methods returned from [getBuildSequence method]{@link BaseState#getBuildSequence}
+     * runs the methods returned from [getBuildSequence method]{@link Dijon.BaseState#getBuildSequence}
      * uses the {@link SequenceManager} to run these methods
      */
     startBuild: function() {
@@ -105,7 +104,7 @@ BaseState.prototype = {
 
     /**
      * called directly after the build sequence has completed
-     * then calls the [afterBuild method]{@link BaseState#afterBuild}
+     * then calls the [afterBuild method]{@link Dijon.BaseState#afterBuild}
      */
     preAfterBuild: function() {
         if (typeof this.game.transition !== 'undefined')
@@ -120,7 +119,7 @@ BaseState.prototype = {
     },
 
     /**
-     * called in the [preAfterBuild method]{@link BaseState#preAfterBuild}, after the build sequence has completed
+     * called in the [preAfterBuild method]{@link Dijon.BaseState#preAfterBuild}, after the build sequence has completed
      * useful for overriding
      */
     afterBuild: function() {
@@ -145,7 +144,7 @@ BaseState.prototype = {
     // private methods
     /**
      * removes all the audio files added using the {@link #addAudio} method
-     * called in the [shutdown method]{@link BaseState#shutdown}
+     * called in the [shutdown method]{@link Dijon.BaseState#shutdown}
      * @private
      */
     _removeAudio: function() {
@@ -185,4 +184,4 @@ BaseState.prototype = {
 
 };
 
-module.exports = BaseState;
+Dijon.BaseState.prototype.constructor = Dijon.BaseState;

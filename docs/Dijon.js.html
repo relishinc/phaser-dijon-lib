@@ -41,121 +41,118 @@
 /**
  * Initialize the library and attach to the global scope
  */
-var Dijon = window.Dijon = Dijon || {
-    /**
-     * Boot up the library and initialize the manager classes
-     * @param  {Phaser.Game} game the global Phaser.Game instance
-     * @return {void}
-     */
-    boot: function(game) {
-
-        var AssetManager = require('./core/AssetManager');
-        var AudioManager = require('./core/AudioManager');
-        var TransitionManager = require('./core/TransitionManager');
-        var SequenceManager = require('./core/SequenceManager');
-        var SaveManager = require('./core/SaveManager');
-
-        game.asset = new AssetManager(game);
-        game.audio = new AudioManager(game);
-        game.transition = new TransitionManager(game);
-        game.sequence = new SequenceManager(game);
-        game.save = new SaveManager(game);
-
-        this._addUtilityMethods(game);
-    },
-
-    /**
-     * _addUtilityMethods adds methods to disable and enable world input
-     * @param {Phaser.Game} game the global Phaser.Game instance
-     * @private
-     */
-    _addUtilityMethods: function(game) {
-        game.onWorldInputDisabled = new Phaser.Signal();
-        game.onWorldInputEnabled = new Phaser.Signal();
-
-        game.disableElementInput = function(el) {
-            if (el.input &amp;&amp; el.input.enabled === true) {
-                el.wasEnabled = true;
-                el.input.enabled = false;
-            }
-            if (el.children.length > 0) {
-                for (var i = 0; i &lt; el.children.length; i++) {
-                    this.disableElementInput(el.children[i]);
-                }
-            }
-        };
-
-        game.enableElementInput = function(el) {
-            if (el.input &amp;&amp; el.input.enabled === false &amp;&amp; el.wasEnabled) {
-                el.wasEnabled = false;
-                el.input.enabled = true;
-            }
-            if (el.children.length > 0) {
-                for (var i = 0; i &lt; el.children.length; i++) {
-                    this.enableElementInput(el.children[i]);
-                }
-            }
-        };
-
-        game.disableInput = function(group) {
-            return group.forEach(function(el) {
-                if (el instanceof Phaser.Group) {
-                    return this.disableInput(el);
-                } else {
-                    return this.disableElementInput(el);
-                }
-            }, this);
-        };
-
-        game.disableWorldInput = function() {
-            this.disableInput(this.world);
-            this.onWorldInputDisabled.dispatch();
-        };
-
-        game.enableInput = function(group) {
-            return group.forEach(function(el) {
-                if (el instanceof Phaser.Group) {
-                    return this.enableInput(el);
-                } else {
-                    return this.enableElementInput(el);
-                }
-            }, this);
-        };
-
-        game.enableWorldInput = function() {
-            this.enableInput(this.world);
-            this.onWorldInputEnabled.dispatch();
-        };
-    }
-};
+var Dijon = window.Dijon = Dijon || {};
 
 /**
  * Initialize the library's core classes and attach them to the global Dijon object
  */
 
+require('./core/AssetManager');
+require('./core/AudioManager');
+require('./core/TransitionManager');
+require('./core/SequenceManager');
+require('./core/SaveManager');
+
 // state
-Dijon.BaseState = require('./state/BaseState');
+require('./state/BaseState');
 
 // model
-Dijon.Model = require('./model/Model');
-Dijon.CopyModel = require('./model/CopyModel');
+require('./model/Model');
+require('./model/CopyModel');
 
 // mediator
-Dijon.BaseMediator = require('./mediator/BaseMediator');
+require('./mediator/BaseMediator');
 
 // component
-Dijon.BaseComponent = require('./component/BaseComponent');
-Dijon.Rotateable = require('./component/Rotateable');
+require('./component/BaseComponent');
+require('./component/Rotateable');
 
 // display classes
 // require Dijon Display classes here, as they contain addons to Phaser.GameobjectFactory and Phaser.GameObjectCreator - this way we don't need to require them every time we want to use them
-Dijon.UISprite = require('./display/UISprite');
-Dijon.UIGroup = require('./display/UIGroup');
-Dijon.UIText = require('./display/UIText');
+require('./display/UISprite');
+require('./display/UIGroup');
+require('./display/UIText');
 
 // buttons
-Dijon.TextButton = require('./display/button/TextButton');
-Dijon.InvisibleButton = require('./display/button/InvisibleButton');
+require('./display/button/TextButton');
+require('./display/button/InvisibleButton');
+
+/**
+ * Boot up the library and initialize the manager classes
+ * @param  {Phaser.Game} game the global Phaser.Game instance
+ * @return {void}
+ */
+Dijon.boot = function(game) {
+    game.asset = new Dijon.AssetManager(game);
+    game.audio = new Dijon.AudioManager(game);
+    game.transition = new Dijon.TransitionManager(game);
+    game.sequence = new Dijon.SequenceManager(game);
+
+    Dijon.addUtilityMethods(game);
+};
+/**
+ * _addUtilityMethods adds methods to disable and enable world input
+ * @param {Phaser.Game} game the global Phaser.Game instance
+ */
+Dijon.addUtilityMethods = function(game) {
+    game.onWorldInputDisabled = new Phaser.Signal();
+    game.onWorldInputEnabled = new Phaser.Signal();
+
+    game.disableElementInput = function(el) {
+        if (el.input &amp;&amp; el.input.enabled === true) {
+            el.wasEnabled = true;
+            el.input.enabled = false;
+        }
+        if (el.children.length > 0) {
+            for (var i = 0; i &lt; el.children.length; i++) {
+                this.disableElementInput(el.children[i]);
+            }
+        }
+    };
+
+    game.enableElementInput = function(el) {
+        if (el.input &amp;&amp; el.input.enabled === false &amp;&amp; el.wasEnabled) {
+            el.wasEnabled = false;
+            el.input.enabled = true;
+        }
+        if (el.children.length > 0) {
+            for (var i = 0; i &lt; el.children.length; i++) {
+                this.enableElementInput(el.children[i]);
+            }
+        }
+    };
+
+    game.disableInput = function(group) {
+        return group.forEach(function(el) {
+            if (el instanceof Phaser.Group) {
+                return this.disableInput(el);
+            } else {
+                return this.disableElementInput(el);
+            }
+        }, this);
+    };
+
+    game.disableWorldInput = function() {
+        this.disableInput(this.world);
+        this.onWorldInputDisabled.dispatch();
+    };
+
+    game.enableInput = function(group) {
+        return group.forEach(function(el) {
+            if (el instanceof Phaser.Group) {
+                return this.enableInput(el);
+            } else {
+                return this.enableElementInput(el);
+            }
+        }, this);
+    };
+
+    game.enableWorldInput = function() {
+        this.enableInput(this.world);
+        this.onWorldInputEnabled.dispatch();
+    };
+};
+
 
 // additional Phaser GameObjectFactory / GameObjectCreator addons
 Phaser.GameObjectFactory.prototype.spriteButton = function(x, y, key, framePrefix, callback, callbackContext, group) {
@@ -311,13 +308,13 @@ module.exports = Dijon;
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-Dijon.html">Dijon</a></li></ul><h3>Classes</h3><ul><li><a href="AssetManager.html">AssetManager</a></li><li><a href="AudioManager.html">AudioManager</a></li><li><a href="BaseComponent.html">BaseComponent</a></li><li><a href="BaseState.html">BaseState</a></li><li><a href="CopyModel.html">CopyModel</a></li><li><a href="InvisibleButton.html">InvisibleButton</a></li><li><a href="Model.html">Model</a></li><li><a href="SaveManager.html">SaveManager</a></li><li><a href="SequenceManager.html">SequenceManager</a></li><li><a href="TransitionManager.html">TransitionManager</a></li><li><a href="UIGroup.html">UIGroup</a></li><li><a href="UISprite.html">UISprite</a></li><li><a href="UIText.html">UIText</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-Dijon.html">Dijon</a></li></ul><h3>Classes</h3><ul><li><a href="Dijon.AssetManager.html">AssetManager</a></li><li><a href="Dijon.AudioManager.html">AudioManager</a></li><li><a href="Dijon.BaseComponent.html">BaseComponent</a></li><li><a href="Dijon.BaseMediator.html">BaseMediator</a></li><li><a href="Dijon.BaseState.html">BaseState</a></li><li><a href="Dijon.CopyModel.html">CopyModel</a></li><li><a href="Dijon.InvisibleButton.html">InvisibleButton</a></li><li><a href="Dijon.Model.html">Model</a></li><li><a href="Dijon.SaveManager.html">SaveManager</a></li><li><a href="Dijon.SequenceManager.html">SequenceManager</a></li><li><a href="Dijon.TransitionManager.html">TransitionManager</a></li><li><a href="Dijon.UIGroup.html">UIGroup</a></li><li><a href="Dijon.UISprite.html">UISprite</a></li><li><a href="Dijon.UIText.html">UIText</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Fri Jun 19 2015 15:38:24 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Fri Jun 19 2015 16:23:53 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -1,5 +1,5 @@
-var Rotateable = function(iconKey, iconFrame, iconAngle, padding, iconOffset) {
-    this.name = 'Rotateable';
+Dijon.Rotateable = function(iconKey, iconFrame, iconAngle, padding, iconOffset) {
+    this.name = 'Dijon.Rotateable';
 
     this._iconAdded = false;
     this._iconKey = iconKey;
@@ -12,8 +12,8 @@ var Rotateable = function(iconKey, iconFrame, iconAngle, padding, iconOffset) {
     } : iconOffset;
 };
 
-Rotateable.prototype = {
-    constructor: Rotateable,
+Dijon.Rotateable.prototype = {
+    constructor: Dijon.Rotateable,
 
     setOwner: function(owner) {
         this.owner = owner;
@@ -151,5 +151,3 @@ Rotateable.prototype = {
         this.icon.visible = false;
     }
 };
-
-module.exports = Rotateable;

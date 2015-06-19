@@ -4,13 +4,13 @@
  * @param {Phaser.Game} game - A reference to the currently running game
  * @constructor
  */
-var TransitionManager = function(game) {
+Dijon.TransitionManager = function(game) {
     this.game = game;
     this._init();
 };
 
-TransitionManager.prototype = {
-    constructor: TransitionManager,
+Dijon.TransitionManager.prototype = {
+    constructor: Dijon.TransitionManager,
 
     // private methods
     _init: function() {
@@ -135,7 +135,7 @@ TransitionManager.prototype = {
     },
 
     /**
-     * Adds an exception to the transitionManager in the case where 'all' has been used
+     * Adds an exception to the Dijon.TransitionManager in the case where 'all' has been used
      * @param {string} state - the state to add the exception for
      */
     addException: function(state) {
@@ -206,5 +206,3 @@ TransitionManager.prototype = {
         }
     }
 };
-
-module.exports = TransitionManager;

@@ -3,13 +3,13 @@
  * @param {Phaser.Game} game reference to the Phaser.Game object
  * @constructor
  */
-var AssetManager = function(game) {
+Dijon.AssetManager = function(game) {
     this.game = game;
     this._init();
 };
 
-AssetManager.prototype = {
-    constructor: AssetManager,
+Dijon.AssetManager.prototype = {
+    constructor: Dijon.AssetManager,
 
     // private methods
     /**
@@ -240,21 +240,21 @@ AssetManager.prototype = {
             url = asset.url || asset.key;
 
         switch (type) {
-            case AssetManager.ASSET_LIST:
+            case Dijon.AssetManager.ASSET_LIST:
                 return this._loadAssets(asset.id);
-            case AssetManager.SOUND:
+            case Dijon.AssetManager.SOUND:
                 this.loadSound(url, asset.extensions);
                 break;
-            case AssetManager.AUDIO_SPRITE:
+            case Dijon.AssetManager.AUDIO_SPRITE:
                 this.loadAudioSprite(url, asset.extensions);
                 break;
-            case AssetManager.IMAGE:
+            case Dijon.AssetManager.IMAGE:
                 this.loadImage(url);
                 break;
-            case AssetManager.ATLAS:
+            case Dijon.AssetManager.ATLAS:
                 this.loadAtlas(url);
                 break;
-            case AssetManager.TEXT:
+            case Dijon.AssetManager.TEXT:
                 this.loadText(url, asset.extensions);
                 break;
         }
@@ -275,7 +275,7 @@ AssetManager.prototype = {
 
     // public methods
     /**
-     * sets the paths where the AssetManager will look for different files
+     * sets the paths where the Dijon.AssetManager will look for different files
      * @param {Object} pathObj an object containing locations for different file types (should have the following properties: assetPath, dataPath, spritesheetPath, imgPath, fontPath, audioSpritePath, soundPath)
      * @return {void}
      */
@@ -402,7 +402,7 @@ AssetManager.prototype = {
      * loads a sound file
      * @param  {String} url  the url to the sound file (prepends soundPath)
      * @param  {String} exts comma separated list of extensions (usually "ogg,mp3")
-     * @return {AssetManager.loadAudio}
+     * @return {Dijon.AssetManager.loadAudio}
      */
     loadSound: function(url, exts) {
         return this.loadAudio(url, exts, false);
@@ -412,7 +412,7 @@ AssetManager.prototype = {
      * loads a sound file
      * @param  {String} url  the url to the audioSprite file (prepends audioSpritePath)
      * @param  {String} exts comma separated list of extensions (usually "ogg,mp3")
-     * @return {AssetManager.loadAudio}
+     * @return {Dijon.AssetManager.loadAudio}
      */
     loadAudioSprite: function(url, exts) {
         return this.loadAudio(url, exts, true);
@@ -518,7 +518,7 @@ AssetManager.prototype = {
 
 
     /**
-     * sets the data for the AssetManager to use as a reference (usually from data/assets.json)
+     * sets the data for the Dijon.AssetManager to use as a reference (usually from data/assets.json)
      * triggers the _parseData internal method, which stores the asset list for later use
      * @param {String} textFileFromCache the id of the file in the Phaser.Cache
      */
@@ -577,28 +577,28 @@ AssetManager.prototype = {
             return;
         }
         switch (type) {
-            case AssetManager.AUDIO:
+            case Dijon.AssetManager.AUDIO:
                 if (clearAudio) {
                     this.game.sound.removeByKey(url);
                     this.game.cache.removeSound(url);
                 }
                 break;
-            case AssetManager.IMAGE:
+            case Dijon.AssetManager.IMAGE:
                 if (clearImages) {
                     this.game.cache.removeImage(url);
                     PIXI.BaseTextureCache[url].destroy();
                 }
                 break;
-            case AssetManager.ATLAS:
+            case Dijon.AssetManager.ATLAS:
                 if (clearAtlasses) {
                     this.game.cache.removeImage(url);
                     PIXI.BaseTextureCache[url].destroy();
                     this.game.cache.removeXML(url);
                 }
                 break;
-            case AssetManager.TEXT:
+            case Dijon.AssetManager.TEXT:
                 if (clearText) {
-                    AssetManager.removeText(url);
+                    Dijon.AssetManager.removeText(url);
                 }
                 break;
         }
@@ -618,36 +618,34 @@ AssetManager.prototype = {
  * @type {String}
  * @static
  */
-AssetManager.SOUND = 'sound';
+Dijon.AssetManager.SOUND = 'sound';
 
 /**
  * @type {String}
  * @static
  */
-AssetManager.AUDIO_SPRITE = 'audioSprite';
+Dijon.AssetManager.AUDIO_SPRITE = 'audioSprite';
 
 /**
  * @type {String}
  * @static
  */
-AssetManager.IMAGE = 'image';
+Dijon.AssetManager.IMAGE = 'image';
 
 /**
  * @type {String}
  * @static
  */
-AssetManager.ATLAS = 'atlas';
+Dijon.AssetManager.ATLAS = 'atlas';
 
 /**
  * @type {String}
  * @static
  */
-AssetManager.TEXT = 'text';
+Dijon.AssetManager.TEXT = 'text';
 
 /**
  * @type {String}
  * @static
  */
-AssetManager.ASSET_LIST = 'assetList';
-
-module.exports = AssetManager;
+Dijon.AssetManager.ASSET_LIST = 'assetList';

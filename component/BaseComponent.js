@@ -1,14 +1,14 @@
 /**
- * BaseComponent
+ * Dijon.BaseComponent
  * components must have a name
  * each component should either extend this, or have all its methods
  * @constructor
  */
-var BaseComponent = function() {
-    this.name = 'BaseComponent';
+Dijon.BaseComponent = function() {
+    this.name = 'Dijon.BaseComponent';
 };
 
-BaseComponent.prototype = {
+Dijon.BaseComponent.prototype = {
     /**
      * setOwner
      * @param {Dijon.UISprite} owner the Dijon.UISprite instance this component is attached to
@@ -47,6 +47,4 @@ BaseComponent.prototype = {
     destroy: function() {}
 };
 
-BaseComponent.prototype.constructor = BaseComponent;
-
-module.exports = BaseComponent;
+Dijon.BaseComponent.prototype.constructor = Dijon.BaseComponent;

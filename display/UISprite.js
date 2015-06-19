@@ -11,7 +11,7 @@
  * @param {Array} [components = null] list of components to attach
  * @constructor
  */
-var UISprite = function(game, x, y, key, frame, name, components) {
+Dijon.UISprite = function(game, x, y, key, frame, name, components) {
     /**
      * reference to the frame (probably unneccessary)
      * @type {String}
@@ -19,7 +19,7 @@ var UISprite = function(game, x, y, key, frame, name, components) {
     this.__frameName = frame;
 
     /**
-     * whether the UISprite has any components (updated when a component is added or removed)
+     * whether the Dijon.UISprite has any components (updated when a component is added or removed)
      * @type {Boolean}
      */
     this._hasComponents = false;
@@ -50,8 +50,8 @@ var UISprite = function(game, x, y, key, frame, name, components) {
         this.addComponents(components);
 };
 
-UISprite.prototype = Object.create(Phaser.Sprite.prototype);
-UISprite.prototype.constructor = UISprite;
+Dijon.UISprite.prototype = Object.create(Phaser.Sprite.prototype);
+
 
 // Phaser Sprite overrides
 /**
@@ -60,7 +60,7 @@ UISprite.prototype.constructor = UISprite;
  * @return {void}
  * @override
  */
-UISprite.prototype.update = function() {
+Dijon.UISprite.prototype.update = function() {
     if (this._hasComponents)
         this._updateComponents();
 };
@@ -70,7 +70,7 @@ UISprite.prototype.update = function() {
  * @return {Phaser.Sprite.destroy}
  * @override
  */
-UISprite.prototype.destroy = function() {
+Dijon.UISprite.prototype.destroy = function() {
     this.removeAllComponents();
     return Phaser.Sprite.prototype.destroy.call(this);
 };
@@ -81,7 +81,7 @@ UISprite.prototype.destroy = function() {
  * @return {void}
  * @private
  */
-UISprite.prototype._updateComponents = function() {
+Dijon.UISprite.prototype._updateComponents = function() {
     _.each(this._componentKeys, this.updateComponent, this);
 };
 
@@ -89,7 +89,7 @@ UISprite.prototype._updateComponents = function() {
  * updates the internal list of component keys (so we don't have to call Object.keys() all the time)
  * @return {void}
  */
-UISprite.prototype._updateComponentKeys = function() {
+Dijon.UISprite.prototype._updateComponentKeys = function() {
     this._componentKeys = Object.keys(this._components);
     this._hasComponents = this._componentKeys.length > 0;
 };
@@ -100,7 +100,7 @@ UISprite.prototype._updateComponentKeys = function() {
  * use to define internal variables set up
  * @return {void}
  */
-UISprite.prototype.init = function() {
+Dijon.UISprite.prototype.init = function() {
     // initialize variables
 };
 
@@ -110,27 +110,27 @@ UISprite.prototype.init = function() {
  * use to add visual elements
  * @return {void}
  */
-UISprite.prototype.buildInterface = function() {
+Dijon.UISprite.prototype.buildInterface = function() {
     // add visual elements
 };
 
 /**
- * attaches a list of components to the UISprite
+ * attaches a list of components to the Dijon.UISprite
  * @param {Array} components the list of components to add
  */
-UISprite.prototype.addComponents = function(components) {
+Dijon.UISprite.prototype.addComponents = function(components) {
     if (typeof components.length === 'undefined')
-        throw new Error('UISprite components must be an array');
+        throw new Error('Dijon.UISprite components must be an array');
 
     while (components.length > 0)
         this.addComponent(components.shift());
 };
 
 /**
- * attaches a component to the UISprite
+ * attaches a component to the Dijon.UISprite
  * @param {Dijon.BaseComponent} component to be attached
  */
-UISprite.prototype.addComponent = function(component) {
+Dijon.UISprite.prototype.addComponent = function(component) {
     component.setOwner(this);
     component.init();
     component.buildInterface();
@@ -143,7 +143,7 @@ UISprite.prototype.addComponent = function(component) {
  * removes all the components currently attached
  * @return {void}
  */
-UISprite.prototype.removeAllComponents = function() {
+Dijon.UISprite.prototype.removeAllComponents = function() {
     while (this._componentKeys.length > 0) {
         this.removeComponent(this._componentKeys.pop());
     }
@@ -154,7 +154,7 @@ UISprite.prototype.removeAllComponents = function() {
  * @param  {String} componentName the name of the component to remove
  * @return {void}
  */
-UISprite.prototype.removeComponent = function(componentName) {
+Dijon.UISprite.prototype.removeComponent = function(componentName) {
     if (typeof this._components[componentName] === 'undefined')
         return;
 
@@ -170,20 +170,20 @@ UISprite.prototype.removeComponent = function(componentName) {
  * @param  {String} componentName the name of the component to update
  * @return {void}
  */
-UISprite.prototype.updateComponent = function(componentName) {
+Dijon.UISprite.prototype.updateComponent = function(componentName) {
     this._components[componentName].update();
 };
 
+Dijon.UISprite.prototype.constructor = Dijon.UISprite;
+
 // Phaser addons
 Phaser.GameObjectCreator.prototype.uiSprite = function(x, y, key, frame, name, components) {
-    return new UISprite(this.game, x, y, key, frame, name, components);
+    return new Dijon.UISprite(this.game, x, y, key, frame, name, components);
 };
 
 Phaser.GameObjectFactory.prototype.uiSprite = function(x, y, key, frame, name, components, group) {
     if (typeof group === 'undefined') {
         group = this.world;
     }
-    return group.add(new UISprite(this.game, x, y, key, frame, name, components));
+    return group.add(new Dijon.UISprite(this.game, x, y, key, frame, name, components));
 };
-
-module.exports = UISprite;
