@@ -1,4 +1,31 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/AssetManager.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: core/AssetManager.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * Manager for loading and clearing assets
  * @param {Phaser.Game} game reference to the Phaser.Game object
  * @constructor
@@ -76,7 +103,7 @@ AssetManager.prototype = {
         var assets = this._loadData[id],
             i;
 
-        for (i = 0; i < assets.length; i++) {
+        for (i = 0; i &lt; assets.length; i++) {
             this._loadAsset(assets[i]);
         }
     },
@@ -167,8 +194,8 @@ AssetManager.prototype = {
     _checkSoundDecoding: function(eventToDispatch) {
         var sound, i, isAudioSprite;
 
-        if (this._soundsToDecode && this._soundsToDecode.length > 0) {
-            for (i = 0; i < this._soundsToDecode.length; i++) {
+        if (this._soundsToDecode &amp;&amp; this._soundsToDecode.length > 0) {
+            for (i = 0; i &lt; this._soundsToDecode.length; i++) {
                 isAudioSprite = this._soundsToDecode[i].isAudioSprite;
                 sound = this.game.add.sound(this._soundsToDecode[i].url);
                 sound.__isAudioSprite = isAudioSprite;
@@ -190,7 +217,7 @@ AssetManager.prototype = {
         var soundIndex = this._soundsToDecode.indexOf(sound.key);
         this._soundsToDecode.splice(soundIndex, 1);
 
-        if (typeof this.game.audio !== 'undefined' && typeof this.game.audio.addAudio !== 'undefined') {
+        if (typeof this.game.audio !== 'undefined' &amp;&amp; typeof this.game.audio.addAudio !== 'undefined') {
             if (sound.__isAudioSprite)
                 this.game.add.audioSprite(sound.key);
 
@@ -361,7 +388,7 @@ AssetManager.prototype = {
      */
     loadAudio: function(url, exts, isAudioSprite) {
         var type, path;
-        if (this.game.cache.checkSoundKey(url) && this.game.cache.getSound(url).decoded) {
+        if (this.game.cache.checkSoundKey(url) &amp;&amp; this.game.cache.getSound(url).decoded) {
             return;
         }
         // type should be 'sound' or 'sprite' ('fx' and 'music' to be deprecated)
@@ -374,12 +401,12 @@ AssetManager.prototype = {
         if (exts.indexOf(',') >= 0) {
             exts = exts.split(',');
         }
-        if (this.game.device.iOS && exts.indexOf('m4a') === -1) {
+        if (this.game.device.iOS &amp;&amp; exts.indexOf('m4a') === -1) {
             exts.unshift('m4a');
         }
         if (typeof exts === 'object') {
             path = [];
-            for (var i = 0; i < exts.length; i++) {
+            for (var i = 0; i &lt; exts.length; i++) {
                 path.push((isAudioSprite ? this._audioSpritePath : this._soundPath) + '/' + url + '.' + exts[i]);
             }
         } else {
@@ -437,7 +464,7 @@ AssetManager.prototype = {
             return;
         }
 
-        if (typeof this._data[id] === 'undefined' || this._data[id].length < 1) {
+        if (typeof this._data[id] === 'undefined' || this._data[id].length &lt; 1) {
             return console.log('no preload data registered for ', id);
         }
 
@@ -484,7 +511,7 @@ AssetManager.prototype = {
             if (this._autoLoadData[state]) {
 
                 assets = this._data[state];
-                for (var i = 0; i < assets.length; i++) {
+                for (var i = 0; i &lt; assets.length; i++) {
                     this._loadAsset(assets[i], true);
                 }
             }
@@ -542,7 +569,7 @@ AssetManager.prototype = {
 
         console.log('clearing: ', id);
 
-        if (!assets || typeof assets === 'undefined' || assets.length < 1) {
+        if (!assets || typeof assets === 'undefined' || assets.length &lt; 1) {
             return console.log('no assets', assets);
         }
 
@@ -551,7 +578,7 @@ AssetManager.prototype = {
         clearImages = clearImages !== false;
         clearText = clearText !== false;
 
-        for (var i = 0; i < assets.length; i++) {
+        for (var i = 0; i &lt; assets.length; i++) {
             this.clearAsset(assets[i], clearAudio, clearAtlasses, clearImages, clearText);
         }
 
@@ -651,3 +678,26 @@ AssetManager.TEXT = 'text';
 AssetManager.ASSET_LIST = 'assetList';
 
 module.exports = AssetManager;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-Dijon.html">Dijon</a></li></ul><h3>Classes</h3><ul><li><a href="AssetManager.html">AssetManager</a></li><li><a href="AudioManager.html">AudioManager</a></li><li><a href="BaseComponent.html">BaseComponent</a></li><li><a href="BaseState.html">BaseState</a></li><li><a href="CopyModel.html">CopyModel</a></li><li><a href="InvisibleButton.html">InvisibleButton</a></li><li><a href="Model.html">Model</a></li><li><a href="SaveManager.html">SaveManager</a></li><li><a href="SequenceManager.html">SequenceManager</a></li><li><a href="TransitionManager.html">TransitionManager</a></li><li><a href="UIGroup.html">UIGroup</a></li><li><a href="UISprite.html">UISprite</a></li><li><a href="UIText.html">UIText</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Fri Jun 19 2015 15:38:24 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
