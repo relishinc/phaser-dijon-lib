@@ -5,7 +5,7 @@
  * @constructor
  */
 Dijon.BaseComponent = function() {
-    this.name = 'Dijon.BaseComponent';
+    this.name = 'BaseComponent';
 };
 
 Dijon.BaseComponent.prototype = {
