@@ -1,4 +1,3 @@
-<a name="module_Dijon"></a>
 ## Dijon
 
 * [Dijon](#module_Dijon)
@@ -1570,4 +1569,3 @@ parses the data
 | Param | Type | Description |
 | --- | --- | --- |
 | data | <code>String</code> | the data to parse (assumes it's a json string) |
-
