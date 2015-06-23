@@ -91,8 +91,6 @@ Dijon.Transformable.prototype = {
     },
 
     destroy: function() {
-        this.owner.events.onInputOver.remove(this._onRollover, this);
-        this.owner.events.onInputOut.remove(this._onRollout, this);
         this.owner.events.onInputDown.add(this._onPress, this);
         this.game.input.onDown.remove(this._onPress, this);
         this.game.input.onUp.remove(this._onRelease, this);
