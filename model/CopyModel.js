@@ -12,6 +12,9 @@ Dijon.CopyModel = function(game, dataKey) {
 
     Dijon.Model.call(this, game, dataKey);
 
+    this._langs = {};
+    this._langs['en'] = this._data;
+
     game.copy = this;
 };
 
@@ -36,5 +39,20 @@ Dijon.CopyModel.prototype.getCopy = function(groupId, itemId) {
 Dijon.CopyModel.prototype.getCopyGroup = function(groupId) {
     return this._data[groupId];
 };
+
+Dijon.CopyModel.prototype.addLanguage = function(lang, dataKey) {
+    if (!this.game.cache.getText(dataKey)) {
+        throw new Error('cannot add an alternate language from key ' + dataKey + '. Is it in the Phaser cache?');
+    }
+    this._langs[lang] = this.parseData(this.game.cache.getText(dataKey));
+};
+
+Dijon.CopyModel.prototype.changeLanguage = function(lang) {
+    if (typeof this._langs[lang] === 'undefined')
+        throw new Error('there is no language ' + lang);
+
+    this._data = this._langs[lang];
+};
+
 
 Dijon.CopyModel.prototype.constructor = Dijon.CopyModel;

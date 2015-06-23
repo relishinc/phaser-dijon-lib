@@ -46,6 +46,7 @@ Dijon.AssetManager.prototype = {
         this.onBackgroundLoadCompleteAndAudioDecoded = new Phaser.Signal();
 
         this.setPaths({});
+        this.setResolution();
     },
 
     /**
@@ -289,6 +290,13 @@ Dijon.AssetManager.prototype = {
         this._soundPath = pathObj.soundPath || 'assets/audio/sound';
     },
 
+    setResolution: function(res) {
+        if (res !== Dijon.AssetManager.RESOLUTION_2X && res !== Dijon.AssetManager.RESOLUTION_3X)
+            res = '';
+
+        this._resolution = res;
+    },
+
     /**
      * sets the percentage of the load we should allot to each sound
      * @param {Number} [num = 2] the percentage
@@ -324,7 +332,7 @@ Dijon.AssetManager.prototype = {
             return;
         }
 
-        return this.game.load.atlasJSONHash(url, this._spriteSheetPath + '/' + url + '.png', this._spriteSheetPath + '/' + url + '.json');
+        return this.game.load.atlasJSONHash(url, this._spriteSheetPath + '/' + url + this._resolution + '.png', this._spriteSheetPath + '/' + url + this._resolution + '.json');
 
     },
 
@@ -334,12 +342,12 @@ Dijon.AssetManager.prototype = {
      * @return {Phaser.Loader.image} adds the image file to the load queue
      */
     loadImage: function(url) {
-        if (this.game.cache.checkImageKey(url)) {
-            return;
-        }
-
         var key = this._getAssetKey(url);
 
+        if (this.game.cache.checkImageKey(key)) {
+            return;
+        }
+        url = key + this._resolution + '.' + this._getExtension(url);
         return this.game.load.image(key, this._imgPath + '/' + url);
     },
 
@@ -649,3 +657,6 @@ Dijon.AssetManager.TEXT = 'text';
  * @static
  */
 Dijon.AssetManager.ASSET_LIST = 'assetList';
+
+Dijon.AssetManager.RESOLUTION_2X = "@2x";
+Dijon.AssetManager.RESOLUTION_3X = "@3x";

@@ -9,7 +9,7 @@
  * @param {Array} [components = null] a list of components to attach
  * @constructor
  */
-Dijon.UIGroup = function(game, parent, name, addToStage, components) {
+Dijon.UIGroup = function(game, x, y, name, addToStage, components) {
     this.game = game;
 
     /**
@@ -35,8 +35,9 @@ Dijon.UIGroup = function(game, parent, name, addToStage, components) {
         name = 'Dijon.UIGroup';
     }
 
-    Phaser.Group.call(this, game, parent, name, addToStage);
+    Phaser.Group.call(this, game, null, name, addToStage);
 
+    this.position.set(typeof x === 'undefined' ? 0 : x, typeof y === 'undefined' ? 0 : y);
     this.init();
     this.buildInterface();
 
@@ -159,8 +160,8 @@ Dijon.UIGroup.prototype.updateComponent = function(componentName) {
 };
 
 // Phaser addons
-Phaser.GameObjectFactory.prototype.uiGroup = function(parent, name, addToStage, components) {
-    return new Dijon.UIGroup(this.game, parent, name, addToStage, components);
+Phaser.GameObjectFactory.prototype.uiGroup = function(x, y, name, addToStage, components) {
+    return new Dijon.UIGroup(this.game, x, y, name, addToStage, components);
 };
 
 module.exports = Dijon.UIGroup;

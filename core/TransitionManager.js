@@ -81,8 +81,8 @@ Dijon.TransitionManager.prototype = {
         if (!this._transition)
             return false;
 
-        this._transition.outHandler.transitionComplete.remove(this._transitionOutComplete, this);
-        this._transition.inHandler.transitionComplete.remove(this._transitionInComplete, this);
+        this._transition.outHandler.transitionInComplete.remove(this._transitionOutComplete, this);
+        this._transition.inHandler.transitionOutComplete.remove(this._transitionInComplete, this);
         this.game.asset.onLoadCompleteAndAudioDecoded.remove(this._preloadComplete, this);
         this.game.asset.onLoadStart.remove(this._transition.preloadHandler.loadStart, this._transition.preloadHandler);
         this.game.asset.onFileComplete.remove(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
@@ -184,7 +184,7 @@ Dijon.TransitionManager.prototype = {
             return;
 
         if (typeof this._transition.outHandler.transitionIn === 'function') {
-            this._transition.outHandler.transitionComplete.addOnce(this._transitionInComplete, this);
+            this._transition.outHandler.transitionInComplete.addOnce(this._transitionInComplete, this);
             this._transition.outHandler.transitionIn();
         }
     },
@@ -201,7 +201,7 @@ Dijon.TransitionManager.prototype = {
             return;
 
         if (typeof this._transition.inHandler.transitionOut === 'function') {
-            this._transition.inHandler.transitionComplete.addOnce(this._transitionOutComplete, this);
+            this._transition.inHandler.transitionOutComplete.addOnce(this._transitionOutComplete, this);
             this._transition.inHandler.transitionOut();
         }
     }
