@@ -39,6 +39,10 @@ Dijon.UIGroup = function(game, x, y, name, addToStage, components) {
 
     this.position.set(typeof x === 'undefined' ? 0 : x, typeof y === 'undefined' ? 0 : y);
     this.init();
+
+    if (addToStage !== true)
+        this.game.add.existing(this);
+
     this.buildInterface();
 
     if (typeof components !== 'undefined')

@@ -15,7 +15,7 @@ Dijon.CopyModel = function(game, dataKey) {
     this._langs = {};
     this._langs['en'] = this._data;
 
-    game.copy = this;
+    this.game.onLanguageChange = new Phaser.Signal();
 };
 
 Dijon.CopyModel.prototype = Object.create(Dijon.Model.prototype);
@@ -52,6 +52,8 @@ Dijon.CopyModel.prototype.changeLanguage = function(lang) {
         throw new Error('there is no language ' + lang);
 
     this._data = this._langs[lang];
+
+    this.game.onLanguageChange.dispatch();
 };
 
 
