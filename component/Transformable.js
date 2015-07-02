@@ -21,6 +21,7 @@ Dijon.Transformable.prototype = {
     },
 
     init: function() {
+        this.owner.centerPivot();
         this.owner.inputEnabled = true;
         this._pointer = this.game.input.activePointer;
 
@@ -34,25 +35,23 @@ Dijon.Transformable.prototype = {
     buildInterface: function() {
         this._createHitArea();
         if (typeof this.game.__transformable === 'undefined') {
-            this.game.__transformable = this.game.add.group();
-            this.game.__transformableFX = this.game.add.group();
-
             var gfx = this.game.add.graphics();
             gfx.beginFill(0xFF0000);
             gfx.drawRect(0, 0, 100, 100);
             gfx.endFill();
 
-            this._hitZone = this.game.__transformableHitZone = this.game.__transformable.add(this.game.add.image(0, 0, gfx.generateTexture()));
+            this._hitZone = this.game.__transformableHitZone = this.game.make.image(0, 0, gfx.generateTexture());
+            this._hitZone.alpha = 0;
             this._hitZone.name = 'Rotateable_hitZone';
             this._hitZone.centerPivot();
 
-            this._icon = this.game.__transformableRotateIcon = this.game.__transformableFX.add(this.game.add.image(0, 0, this._iconKey, this._iconFrame));
+            this._icon = this.game.__transformableRotateIcon = this.game.make.image(0, 0, this._iconKey, this._iconFrame);
             this._icon.inputEnabled = false;
             this._icon.centerPivot();
             this._icon.alpha = 0;
             this._icon.visible = false;
             this.game.world.remove(gfx, true);
-            this.game.__transformable.visible = false;
+
         } else {
             this._hitZone = this.game.__transformableHitZone;
             this._icon = this.game.__transformableRotateIcon;
@@ -95,17 +94,8 @@ Dijon.Transformable.prototype = {
         this.game.input.onDown.remove(this._onPress, this);
         this.game.input.onUp.remove(this._onRelease, this);
 
-        if (typeof this.game.__transformable !== 'undefined') {
-            this.game.__transformable.destroy();
-            this.game.__transformable = null;
-            delete this.game.__transformable;
-        }
-
-        if (typeof this.game.__transformableFX !== 'undefined') {
-            this.game.__transformableFX.destroy();
-            this.game.__transformableFX = null;
-            delete this.game.__transformableFX;
-        }
+        this._hitZone.destroy();
+        this._icon.destroy();
 
         this.owner.hitArea = null;
     },
@@ -128,17 +118,17 @@ Dijon.Transformable.prototype = {
     },
 
     _onOwnerPress: function() {
+        this._hitZone.visible = true;
         this.game.input.onUp.remove(this._onRelease, this);
         this.game.input.onDown.remove(this._onPress, this);
 
         this.game.__transformableSelected = this.owner;
-        this.game.world.bringToTop(this.game.__transformableFX);
-        this.owner.parent.addChild(this.game.__transformable);
-        this.owner.parent.setChildIndex(this.game.__transformable, this.owner.parent.getChildIndex(this.owner));
+        this.owner.parent.addChild(this._hitZone);
+        this.owner.parent.addChild(this._icon);
+        this.owner.parent.setChildIndex(this._icon, this.owner.parent.getChildIndex(this.owner));
+        this.owner.parent.setChildIndex(this._hitZone, this.owner.parent.getChildIndex(this.owner));
 
         this._positionHitZone();
-
-        this.game.__transformable.visible = true;
 
         this._pressed = true;
         this._selected = true;
@@ -158,11 +148,10 @@ Dijon.Transformable.prototype = {
 
     _onPress: function() {
         if (this._notInHitZone()) {
-
             this._pressed = false;
             this._hideIcon();
+            this._hitZone.visible = false;
             this.game.input.onDown.remove(this._onPress, this);
-            this.game.__transformable.visible = false;
             this._rotating = false;
             return;
         }
@@ -172,7 +161,7 @@ Dijon.Transformable.prototype = {
             x: this._pointer.x,
             y: this._pointer.y
         };
-
+        this._hitZone.visible = true;
         this._initialAngle = this.owner.angle;
 
         if (this.totalActivePointers === 2)
@@ -225,10 +214,13 @@ Dijon.Transformable.prototype = {
     },
 
     _positionHitZone: function() {
-        this.game.__transformable.position.set(this.game.__transformableSelected.x, this.game.__transformableSelected.y);
+        this._hitZone.position.set(0, 0);
+        this._hitZone.scale.set(1);
         var bounds = this.game.__transformableSelected.getBounds();
+
         this._hitZone.width = bounds.width + this._padding;
         this._hitZone.height = bounds.height + this._padding;
+        this._hitZone.position.set(this.game.__transformableSelected.x, this.game.__transformableSelected.y);
     },
 
     _inRotateArea: function() {

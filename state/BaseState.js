@@ -107,15 +107,17 @@ Dijon.BaseState.prototype = {
      * then calls the [afterBuild method]{@link Dijon.BaseState#afterBuild}
      */
     preAfterBuild: function() {
-        if (typeof this.game.transition !== 'undefined')
-            this.game.transition.transitionOut();
-
         if (this.game.debugger) {
             this.game.debugger.selectedObject = null;
             this.game.debugger.refresh();
         }
 
-        this.afterBuild();
+        if (typeof this.game.transition === 'undefined' || !this.game.transition.transitionOut())
+            this.afterBuild();
+        else {
+            this.game.transition.onTransitionOutComplete.addOnce(this.afterBuild, this);
+            this.game.transition.transitionOut();
+        }
     },
 
     /**
