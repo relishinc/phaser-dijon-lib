@@ -178,7 +178,6 @@ Dijon.BaseState.prototype = {
         while (keys.length > 0) {
             key = keys.pop();
             if (defaults.indexOf(key) == -1) {
-                this[key] = null;
                 delete this[key];
             }
         }
