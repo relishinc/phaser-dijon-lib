@@ -35,6 +35,9 @@ Dijon.TransitionManager.prototype = {
          * @private
          */
         this._exceptions = {};
+
+        this.onTransitionOutComplete = new Phaser.Signal();
+        this.onTransitionInComplete = new Phaser.Signal();
     },
 
     _add: function(id, outHandler, preloadHandler, inHandler) {
@@ -63,11 +66,14 @@ Dijon.TransitionManager.prototype = {
 
 
         this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this._preloadComplete, this);
+        this.onTransitionInComplete.dispatch();
+
         this.game.state.start(this._toState);
     },
 
     _transitionOutComplete: function() {
         this._transition = null;
+        this.onTransitionOutComplete.dispatch();
     },
 
     _preloadComplete: function() {
@@ -195,14 +201,13 @@ Dijon.TransitionManager.prototype = {
      */
     transitionOut: function() {
         if (!this._transition)
-            return;
-
+            return false;
         if (this._exceptions[this.game.state.current])
-            return;
-
+            return false;
         if (typeof this._transition.inHandler.transitionOut === 'function') {
             this._transition.inHandler.transitionOutComplete.addOnce(this._transitionOutComplete, this);
             this._transition.inHandler.transitionOut();
         }
+        return true;
     }
 };

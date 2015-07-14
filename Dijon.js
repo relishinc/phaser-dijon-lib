@@ -126,6 +126,10 @@ Dijon.addUtilityMethods = function(game) {
     };
 };
 
+Dijon.setPixelRatio = function(ratio) {
+    Dijon.RATIO = ratio;
+};
+
 
 // additional Phaser GameObjectFactory / GameObjectCreator addons
 Phaser.GameObjectFactory.prototype.spriteButton = function(x, y, key, framePrefix, callback, callbackContext, group) {

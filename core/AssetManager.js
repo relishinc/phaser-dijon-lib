@@ -26,7 +26,7 @@ Dijon.AssetManager.prototype = {
 
         this._currentAssetList = null;
         this._hasFiles = false;
-        this._soundsToDecode = null;
+        this._soundsToDecode = [];
         this._isLoadingQueue = false;
         this._maxPercent = 100;
 
