@@ -38,7 +38,6 @@ require('./mediator/BaseMediator');
 
 // component
 require('./component/BaseComponent');
-require('./component/Transformable');
 
 // display classes
 // require Dijon Display classes here, as they contain addons to Phaser.GameobjectFactory and Phaser.GameObjectCreator - this way we don't need to require them every time we want to use them
