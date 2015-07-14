@@ -51,7 +51,8 @@ Dijon.BaseState.prototype = {
      */
     shutdown: function() {
         this._removeAudio();
-        this._removeStateProps();
+        // no longer call this - deprecated
+        //this._removeStateProps();
     },
 
     // public methods
@@ -168,6 +169,7 @@ Dijon.BaseState.prototype = {
      * removes all properties attached to the state (using this.prop) that aren't part of Phaser.State
      * alleviates problems if this is a state we will return to multiple times
      * @private
+     * @deprecated this was causing issues when physics is enabled - we might need to handle this on a case-by-case basis, or remove unwanted keys and nullify values in each state's shutdown method instead
      */
     _removeStateProps: function() {
         var keys = Object.keys(this),
