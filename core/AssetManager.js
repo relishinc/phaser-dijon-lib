@@ -345,12 +345,13 @@ Dijon.AssetManager.prototype = {
         var key = this._getAssetKey(url);
 
         if (this.game.cache.checkImageKey(key)) {
-            return;
+            // if the image key already exists, don't reload the image and return the key
+            return key;
         }
         url = key + this._resolution + '.' + this._getExtension(url);
+
         return this.game.load.image(key, this._imgPath + '/' + url);
     },
-
     /**
      * loads a bitmap font
      * @param  {String} url the url of the bitmap font (prepends the fontPath)

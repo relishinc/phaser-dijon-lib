@@ -152,6 +152,10 @@ Dijon.UIGroup.prototype.removeComponent = function(componentName) {
     this._updateComponentKeys();
 };
 
+Dijon.UIGroup.prototype.getMediator = function(mediatorName) {
+    return this.game[mediatorName];
+};
+
 Dijon.UIGroup.prototype.constructor = Dijon.UIGroup;
 
 /**

@@ -174,6 +174,10 @@ Dijon.UISprite.prototype.updateComponent = function(componentName) {
     this._components[componentName].update();
 };
 
+Dijon.UISprite.prototype.getMediator = function(mediatorName) {
+    return this.game[mediatorName];
+};
+
 Dijon.UISprite.prototype.constructor = Dijon.UISprite;
 
 // Phaser addons
