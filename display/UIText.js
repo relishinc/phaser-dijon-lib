@@ -55,7 +55,7 @@ Dijon.UIText = function(game, x, y, text, fontName, fontSize, fontColor, fontAli
     Phaser.Text.call(this, game, x, y, text, style);
 
     this.lineSpacing = lineSpacing || 0;
-    this.events.onAnimationComplete = new Phaser.Signal();
+    this.onAnimationComplete = new Phaser.Signal();
     this.lowercaseText = this.text.toLowerCase();
 };
 
@@ -89,7 +89,7 @@ Dijon.UIText.prototype._updateTextAnimation = function() {
     this._textToAnimate.shift();
 
     if (this._textToAnimate.length === 0) {
-        this.events.onAnimationComplete.dispatch();
+        this.onAnimationComplete.dispatch();
     }
 };
 
