@@ -273,4 +273,14 @@ PIXI.DisplayObject.prototype.stopSounds = function() {
     }
 };
 
+Object.defineProperty(PIXI.DisplayObject.prototype, "scales", {
+    get: function() {
+        return this.scale.x;
+    },
+
+    set: function(value) {
+        this.scale.set(value, value);
+    }
+});
+
 module.exports = Dijon;
