@@ -291,10 +291,15 @@ Dijon.AssetManager.prototype = {
     },
 
     setResolution: function(res) {
-        if (res !== Dijon.AssetManager.RESOLUTION_2X && res !== Dijon.AssetManager.RESOLUTION_3X)
-            res = '';
+        if (typeof res === 'undefined')
+            res = this.game.resolution;
 
-        this._resolution = res;
+        this._resolution = '';
+        // leave this out for now
+        /*
+        if (res > 1.5) {
+            this._resolution = Dijon.AssetManager.RESOLUTION_2X;
+        }*/
     },
 
     /**

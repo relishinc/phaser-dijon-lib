@@ -53,6 +53,8 @@ Dijon.UIText = function(game, x, y, text, fontName, fontSize, fontColor, fontAli
     text.replace(/'/g, "\'");
 
     Phaser.Text.call(this, game, x, y, text, style);
+    this.resolution = this.game.resolution;
+    this.updateText();
 
     this.lineSpacing = lineSpacing || 0;
     this.onAnimationComplete = new Phaser.Signal();
@@ -169,6 +171,15 @@ Dijon.UIText.prototype.animate = function(letterTime, delay) {
     this._delayTimer = this.game.time.events.add(delay * Phaser.Timer.SECOND, this._startTextAnimation, this);
 };
 
+Dijon.UIText.prototype.setText = function(text) {
+    Phaser.Text.prototype.setText.call(this, text);
+    this.lowercaseText = this.text.toLowerCase();
+    if (this.game) {
+        this.resolution = this.game.resolution;
+        this.updateText();
+    }
+};
+
 /**
  * stops the text animation and clears the timers
  * @return {void}
@@ -179,6 +190,153 @@ Dijon.UIText.prototype.stopAnimating = function() {
     this.game.time.events.remove(this._delayTimer);
     this.game.time.events.remove(this._repeatTimer);
 };
+
+
+/**
+ * rounds the position
+ * @return {void}
+ */
+
+Dijon.UIText.prototype.roundPixel = function() {
+    this.position.set(Math.round(this.x), Math.round(this.y));
+};
+
+Object.defineProperty(Dijon.UIText.prototype, 'width', {
+    get: function() {
+        if (this.dirty) {
+            this.updateText();
+            this.dirty = false;
+        }
+
+        return this.scale.x * this.texture.frame.width / this.resolution;
+    },
+    set: function(value) {
+        this.scale.x = value / this.texture.frame.width / this.resolution;
+    }
+});
+
+Object.defineProperty(Dijon.UIText.prototype, 'height', {
+    get: function() {
+        if (this.dirty) {
+            this.updateText();
+            this.dirty = false;
+        }
+        return this.scale.y * this.texture.frame.height / this.resolution;
+    },
+    set: function(value) {
+        this.scale.y = value / this.texture.frame.height / this.resolution;
+    }
+});
+
+/**
+ * Updates texture size based on canvas size
+ *
+ * @private
+ */
+Dijon.UIText.prototype.updateTexture = function() {
+    this.texture.baseTexture.resolution = this.resolution;
+
+    this.texture.baseTexture.width = this.canvas.width;
+    this.texture.baseTexture.height = this.canvas.height;
+
+    this.texture.crop.width = this.texture.frame.width = this.canvas.width;
+    this.texture.crop.height = this.texture.frame.height = this.canvas.height;
+
+    this._width = this.canvas.width / this.resolution;
+    this._height = this.canvas.height / this.resolution;
+
+    // update the dirty base textures
+    this.texture.baseTexture.dirty();
+    this.dirty = false;
+};
+
+Dijon.UIText.prototype.getBounds = function(matrix) {
+    if (this.dirty) {
+        this.updateText();
+    }
+    var width = this._width;
+    var height = this._height;
+
+    var w0 = width * (1 - this.anchor.x);
+    var w1 = width * -this.anchor.x;
+
+    var h0 = height * (1 - this.anchor.y);
+    var h1 = height * -this.anchor.y;
+
+    var worldTransform = matrix || this.worldTransform;
+
+    var a = worldTransform.a;
+    var b = worldTransform.b;
+    var c = worldTransform.c;
+    var d = worldTransform.d;
+    var tx = worldTransform.tx;
+    var ty = worldTransform.ty;
+
+    var maxX = -Infinity;
+    var maxY = -Infinity;
+
+    var minX = Infinity;
+    var minY = Infinity;
+
+    if (b === 0 && c === 0) {
+        // scale may be negative!
+        if (a < 0) a *= -1;
+        if (d < 0) d *= -1;
+
+        // this means there is no rotation going on right? RIGHT?
+        // if thats the case then we can avoid checking the bound values! yay
+        minX = a * w1 + tx;
+        maxX = a * w0 + tx;
+        minY = d * h1 + ty;
+        maxY = d * h0 + ty;
+    } else {
+        var x1 = a * w1 + c * h1 + tx;
+        var y1 = d * h1 + b * w1 + ty;
+
+        var x2 = a * w0 + c * h1 + tx;
+        var y2 = d * h1 + b * w0 + ty;
+
+        var x3 = a * w0 + c * h0 + tx;
+        var y3 = d * h0 + b * w0 + ty;
+
+        var x4 = a * w1 + c * h0 + tx;
+        var y4 = d * h0 + b * w1 + ty;
+
+        minX = x1 < minX ? x1 : minX;
+        minX = x2 < minX ? x2 : minX;
+        minX = x3 < minX ? x3 : minX;
+        minX = x4 < minX ? x4 : minX;
+
+        minY = y1 < minY ? y1 : minY;
+        minY = y2 < minY ? y2 : minY;
+        minY = y3 < minY ? y3 : minY;
+        minY = y4 < minY ? y4 : minY;
+
+        maxX = x1 > maxX ? x1 : maxX;
+        maxX = x2 > maxX ? x2 : maxX;
+        maxX = x3 > maxX ? x3 : maxX;
+        maxX = x4 > maxX ? x4 : maxX;
+
+        maxY = y1 > maxY ? y1 : maxY;
+        maxY = y2 > maxY ? y2 : maxY;
+        maxY = y3 > maxY ? y3 : maxY;
+        maxY = y4 > maxY ? y4 : maxY;
+    }
+
+    var bounds = this._bounds;
+
+    bounds.x = minX;
+    bounds.width = maxX - minX;
+
+    bounds.y = minY;
+    bounds.height = maxY - minY;
+
+    // store a reference so that if this function gets called again in the render cycle we do not have to recalculate
+    this._currentBounds = bounds;
+
+    return bounds;
+};
+
 
 // STATIC VARIABLES
 /**

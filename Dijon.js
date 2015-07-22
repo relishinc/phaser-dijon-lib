@@ -139,18 +139,22 @@ Phaser.GameObjectFactory.prototype.spriteButton = function(x, y, key, framePrefi
 /**
  * Centers the pivot point
  */
-PIXI.DisplayObject.prototype.centerPivot = function() {
-    this.pivot.set(this.width >> 1, this.height >> 1);
+PIXI.DisplayObject.prototype.centerPivot = function(roundPixel) {
+    if (roundPixel === true)
+        this.pivot.set(Math.round(this.width >> 1), Math.round(this.height >> 1));
+    else
+        this.pivot.set(this.width >> 1, this.height >> 1);
+
 };
 
 /**
  * Sets the location of the pivot point
  * @param {String} pivotLocation one of 'center', 'r', 'l', 't', 'b', 'tl', 'tr', 'bl', 'br'
  */
-PIXI.DisplayObject.prototype.setPivot = function(pivotLocation) {
+PIXI.DisplayObject.prototype.setPivot = function(pivotLocation, roundPixel) {
     switch (pivotLocation.toLowerCase()) {
         case 'center':
-            this.centerPivot();
+            this.centerPivot(roundPixel === true);
             break;
         case 'r':
             this.pivot.set(this.width, this.height >> 1);
@@ -177,6 +181,9 @@ PIXI.DisplayObject.prototype.setPivot = function(pivotLocation) {
             this.pivot.set(this.width, this.height);
             break;
     }
+
+    if (roundPixel === true)
+        this.pivot.set(Math.round(this.pivot.x), Math.round(this.pivot.y));
 };
 
 
@@ -282,5 +289,9 @@ Object.defineProperty(PIXI.DisplayObject.prototype, "scales", {
         this.scale.set(value, value);
     }
 });
+
+PIXI.DisplayObject.prototype.roundPixel = function() {
+    this.position.set(Math.round(this.x), Math.round(this.y));
+};
 
 module.exports = Dijon;
