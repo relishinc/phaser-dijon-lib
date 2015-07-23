@@ -67,7 +67,7 @@ Dijon.SaveManager.prototype = {
 }         the retrieved data - if it's a JSON string, we parse the data and return the JSON object
      */
     getData: function(key, isJSON) {
-        var data = localStorage[key];
+        var data = localStorage.getItem(key);
         if (typeof data === 'undefined') {
             console.log('no data saved with the key', key);
             return null;
@@ -90,7 +90,7 @@ Dijon.SaveManager.prototype = {
             console.log('no local storage');
             return false;
         }
-        localStorage[key] = this._getString(value);
+        localStorage.setItem(key, this._getString(value));
     },
 
     /**
