@@ -20,6 +20,14 @@ Dijon.AssetManager.prototype = {
     _init: function() {
         this._data = {};
 
+        this._assetPath = null;
+        this._dataPath = null;
+        this._spriteSheetPath = null;
+        this._imgPath = null;
+        this._fontPath = null;
+        this._audioSpritePath = null;
+        this._soundPath = null;
+
         this._autoLoadData = {};
         this._completedLoads = {};
         this._requiredData = {};
@@ -45,7 +53,9 @@ Dijon.AssetManager.prototype = {
         this.onBackgroundLoadComplete = new Phaser.Signal();
         this.onBackgroundLoadCompleteAndAudioDecoded = new Phaser.Signal();
 
-        this.setPaths({});
+        this.setBaseURL();
+        this.setPaths();
+
         this.setResolution();
     },
 
@@ -274,6 +284,18 @@ Dijon.AssetManager.prototype = {
         }
     },
 
+    setBaseURL: function(baseURL) {
+        if (typeof baseURL === 'undefined')
+            baseURL = '';
+
+        // ensure trailing slash
+        if (baseURL !== '' && baseURL.charAt(baseURL.length - 1) !== '/')
+            baseURL += '/';
+
+        this._baseURL = baseURL;
+        this.setPaths();
+    },
+
     // public methods
     /**
      * sets the paths where the Dijon.AssetManager will look for different files
@@ -281,13 +303,22 @@ Dijon.AssetManager.prototype = {
      * @return {void}
      */
     setPaths: function(pathObj) {
-        this._assetPath = pathObj.assetPath || 'assets';
-        this._dataPath = pathObj.dataPath || 'assets/data';
-        this._spriteSheetPath = pathObj.spritesheetPath || 'assets/img/spritesheets';
-        this._imgPath = pathObj.imgPath || 'assets/img';
-        this._fontPath = pathObj.fontPath || 'assets/fonts';
-        this._audioSpritePath = pathObj.audioSpritePath || 'assets/audio/sprite';
-        this._soundPath = pathObj.soundPath || 'assets/audio/sound';
+        var self = this;
+
+        if (typeof pathObj === 'undefined')
+            pathObj = {};
+
+        this._assetPath = this._baseURL + (pathObj.assetPath || 'assets');
+        this._dataPath = this._baseURL + (pathObj.dataPath || 'assets/data');
+        this._spriteSheetPath = this._baseURL + (pathObj.spritesheetPath || 'assets/img/spritesheets');
+        this._imgPath = this._baseURL + (pathObj.imgPath || 'assets/img');
+        this._fontPath = this._baseURL + (pathObj.fontPath || 'assets/fonts');
+        this._audioSpritePath = this._baseURL + (pathObj.audioSpritePath || 'assets/audio/sprite');
+        this._soundPath = this._baseURL + (pathObj.soundPath || 'assets/audio/sound');
+
+
+        // prepend baseURL
+        console.log(this._soundPath);
     },
 
     setResolution: function(res) {
