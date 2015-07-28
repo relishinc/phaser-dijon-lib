@@ -303,8 +303,6 @@ Dijon.AssetManager.prototype = {
      * @return {void}
      */
     setPaths: function(pathObj) {
-        var self = this;
-
         if (typeof pathObj === 'undefined')
             pathObj = {};
 
