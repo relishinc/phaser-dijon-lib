@@ -308,6 +308,7 @@ Dijon.AssetManager.prototype = {
         if (typeof pathObj === 'undefined')
             pathObj = {};
 
+        // prepend baseURL
         this._assetPath = this._baseURL + (pathObj.assetPath || 'assets');
         this._dataPath = this._baseURL + (pathObj.dataPath || 'assets/data');
         this._spriteSheetPath = this._baseURL + (pathObj.spritesheetPath || 'assets/img/spritesheets');
@@ -315,10 +316,6 @@ Dijon.AssetManager.prototype = {
         this._fontPath = this._baseURL + (pathObj.fontPath || 'assets/fonts');
         this._audioSpritePath = this._baseURL + (pathObj.audioSpritePath || 'assets/audio/sprite');
         this._soundPath = this._baseURL + (pathObj.soundPath || 'assets/audio/sound');
-
-
-        // prepend baseURL
-        console.log(this._soundPath);
     },
 
     setResolution: function(res) {
