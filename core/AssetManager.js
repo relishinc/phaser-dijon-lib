@@ -3,21 +3,19 @@
  * @param {Phaser.Game} game reference to the Phaser.Game object
  * @constructor
  */
-Dijon.AssetManager = function(game) {
-    this.game = game;
-    this._init();
-};
-
-Dijon.AssetManager.prototype = {
-    constructor: Dijon.AssetManager,
-
+ 
+export default class AssetManager{
+    constructor(game){
+       this.game = game;
+       this._init();
+    }
     // private methods
     /**
      * adds internal variables and signals
      * @return {void}
      * @private
      */
-    _init: function() {
+    _init() {
         this._data = {};
 
         this._assetPath = null;
@@ -57,7 +55,7 @@ Dijon.AssetManager.prototype = {
         this.setPaths();
 
         this.setResolution();
-    },
+    }
 
     /**
      * parses an asset list by key (usually from data/assets.json) and stores them internally
@@ -66,16 +64,16 @@ Dijon.AssetManager.prototype = {
      * @return {void}
      * @private
      */
-    _parseAssetList: function(key, list) {
+    _parseAssetList(key, list) {
         this._autoLoadData[key] = list.audtoload;
         this._requiredData[key] = list.required;
 
         this._loadData[key] = [];
-
-        _.each(list.assets, function(asset) {
+        
+        list.assets.forEach(asset => {
             this._loadData[key].push(asset);
-        }, this);
-    },
+            });
+    }
 
     /**
      * adds assets from a list to the load list
@@ -83,23 +81,23 @@ Dijon.AssetManager.prototype = {
      * @return {void}
      * @private
      */
-    _loadAssets: function(id) {
+    _loadAssets(id) {
         var assets = this._loadData[id],
             i;
 
         for (i = 0; i < assets.length; i++) {
             this._loadAsset(assets[i]);
         }
-    },
+    }
 
     /**
      * start the background loading
      * @return {void}
      * @private
      */
-    _backgroundLoadStart: function() {
+    _backgroundLoadStart() {
         this.onBackgroundLoadStart.dispatch();
-    },
+    }
 
     /**
      * when a file completes in an background load queue - dispatches the onBackgroundFileComplete signal
@@ -110,37 +108,37 @@ Dijon.AssetManager.prototype = {
      * @return {void}
      * @private
      */
-    _backgroundFileComplete: function(progress, id, fileIndex, totalFiles) {
+    _backgroundFileComplete(progress, id, fileIndex, totalFiles) {
         this.onBackgroundFileComplete.dispatch(progress, id, fileIndex, totalFiles);
-    },
+    }
 
     /**
      * when the background load completes - dispatches the onBackgroundLoadComplete signal, starts checking for decoded sounds
      * @return {void}
      * @private
      */
-    _backgroundLoadComplete: function() {
+    _backgroundLoadComplete() {
         this.game.load.onFileComplete.remove(this._backgroundFileComplete, this);
 
         this.onBackgroundLoadComplete.dispatch();
         this._checkSoundDecoding(this.onBackgroundLoadCompleteAndAudioDecoded);
-    },
+    }
 
     /**
      * when the asset list starts loading, dispatches the onLoadStart signal
      * @return {void}
      */
-    _gameLoadStart: function() {
+    _gameLoadStart() {
         this.onLoadStart.dispatch();
-    },
+    }
 
     /**
      * when a file starts loading - dispatches the onFileStart signal
      * @return {void}
      */
-    _gameFileStart: function() {
+    _gameFileStart() {
         this.onFileStart.dispatch();
-    },
+    }
 
     /**
      * when a file completes in the game load - dispatches the onFileComplete signal
@@ -151,23 +149,23 @@ Dijon.AssetManager.prototype = {
      * @return {void}
      * @private
      */
-    _gameFileComplete: function(progress, id, fileIndex, totalFiles) {
+    _gameFileComplete(progress, id, fileIndex, totalFiles) {
         this.onFileComplete.dispatch(this.getLoadProgress(progress), id, fileIndex, totalFiles);
-    },
+    }
 
     /**
      * when the background load completes - dispatches the onLoadComplete signal, starts checking for decoded sounds
      * @return {void}
      * @private
      */
-    _gameLoadComplete: function() {
+    _gameLoadComplete() {
         this._completedLoads[this._currentAssetList] = true;
         this.onLoadComplete.dispatch();
         this.game.load.onFileStart.remove(this._gameFileStart, this);
         this.game.load.onFileComplete.remove(this._gameFileComplete, this);
 
         this._checkSoundDecoding(this.onLoadCompleteAndAudioDecoded);
-    },
+    }
 
     /**
      * checks if all the sounds in the queue are decoded
@@ -175,7 +173,7 @@ Dijon.AssetManager.prototype = {
      * @return {void}
      * @private
      */
-    _checkSoundDecoding: function(eventToDispatch) {
+    _checkSoundDecoding(eventToDispatch) {
         var sound, i, isAudioSprite;
 
         if (this._soundsToDecode && this._soundsToDecode.length > 0) {
@@ -189,7 +187,7 @@ Dijon.AssetManager.prototype = {
         } else {
             eventToDispatch.dispatch();
         }
-    },
+    }
 
     /**
      * when a sound is decoded, this method removes it from the _soundsToDecode array, and increases the overall percentage loaded
@@ -197,7 +195,7 @@ Dijon.AssetManager.prototype = {
      * @return {void}
      * @private
      */
-    _onSoundDecoded: function(sound) {
+    _onSoundDecoded(sound) {
         var soundIndex = this._soundsToDecode.indexOf(sound.key);
         this._soundsToDecode.splice(soundIndex, 1);
 
@@ -215,7 +213,7 @@ Dijon.AssetManager.prototype = {
         if (this._soundsToDecode.length === 0) {
             sound.eventToDispatch.dispatch();
         }
-    },
+    }
 
     /**
      * shortcut to get an asset key using a file name (strips its extension)
@@ -223,12 +221,12 @@ Dijon.AssetManager.prototype = {
      * @return {Stirng}          the asset key (the filename with its extension stripped)
      * @private
      */
-    _getAssetKey: function(fileName) {
+    _getAssetKey(fileName) {
         var ext = fileName.split('.');
         ext.pop();
 
         return ext.join('');
-    },
+    }
 
     /**
      * gets the extension of a given file
@@ -236,9 +234,9 @@ Dijon.AssetManager.prototype = {
      * @return {String}          the extension
      * @private
      */
-    _getExtension: function(fileName) {
+    _getExtension(fileName) {
         return fileName.split('.').pop();
-    },
+    }
 
     /**
      * determines what kind of asset we're dealing with and adds it to the load queue
@@ -246,45 +244,46 @@ Dijon.AssetManager.prototype = {
      * @return {void}
      * @private
      */
-    _loadAsset: function(asset) {
+    _loadAsset(asset) {
         var type = asset.type,
             url = asset.url || asset.key;
 
         switch (type) {
-            case Dijon.AssetManager.ASSET_LIST:
+            case AssetManager.ASSET_LIST:
                 return this._loadAssets(asset.id);
-            case Dijon.AssetManager.SOUND:
+            case AssetManager.SOUND:
                 this.loadSound(url, asset.extensions);
                 break;
-            case Dijon.AssetManager.AUDIO_SPRITE:
+            case AssetManager.AUDIO_SPRITE:
                 this.loadAudioSprite(url, asset.extensions);
                 break;
-            case Dijon.AssetManager.IMAGE:
+            case AssetManager.IMAGE:
                 this.loadImage(url);
                 break;
-            case Dijon.AssetManager.ATLAS:
+            case AssetManager.ATLAS:
                 this.loadAtlas(url);
                 break;
-            case Dijon.AssetManager.TEXT:
+            case AssetManager.TEXT:
                 this.loadText(url, asset.extensions);
                 break;
         }
-    },
+    }
 
     /**
      * parses the data from the external assets file (normally data/assets.json)
      * @return {void}
      * @private
      */
-    _parseData: function() {
+    _parseData() {
         var key;
 
         for (key in this._data) {
             this._parseAssetList(key, this._data[key]);
         }
-    },
-
-    setBaseURL: function(baseURL) {
+    }
+    
+    // public methods
+    setBaseURL(baseURL) {
         if (typeof baseURL === 'undefined')
             baseURL = '';
 
@@ -294,15 +293,11 @@ Dijon.AssetManager.prototype = {
 
         this._baseURL = baseURL;
         this.setPaths();
-    },
+    }
 
-    // public methods
-    /**
-     * sets the paths where the Dijon.AssetManager will look for different files
-     * @param {Object} pathObj an object containing locations for different file types (should have the following properties: assetPath, dataPath, spritesheetPath, imgPath, fontPath, audioSpritePath, soundPath)
-     * @return {void}
-     */
-    setPaths: function(pathObj) {
+    
+   
+    setPaths(pathObj) {
         if (typeof pathObj === 'undefined')
             pathObj = {};
 
@@ -314,9 +309,9 @@ Dijon.AssetManager.prototype = {
         this._fontPath = this._baseURL + (pathObj.fontPath || 'assets/fonts');
         this._audioSpritePath = this._baseURL + (pathObj.audioSpritePath || 'assets/audio/sprite');
         this._soundPath = this._baseURL + (pathObj.soundPath || 'assets/audio/sound');
-    },
+    }
 
-    setResolution: function(res) {
+    setResolution(res) {
         if (typeof res === 'undefined')
             res = this.game.resolution;
 
@@ -324,55 +319,38 @@ Dijon.AssetManager.prototype = {
         // leave this out for now
         /*
         if (res > 1.5) {
-            this._resolution = Dijon.AssetManager.RESOLUTION_2X;
+            this._resolution = AssetManager.RESOLUTION_2X;
         }*/
-    },
+    }
 
     /**
      * sets the percentage of the load we should allot to each sound
      * @param {Number} [num = 2] the percentage
      */
-    setSoundDecodingModifier: function(num) {
+    setSoundDecodingModifier(num) {
         this._soundDecodingModifier = parseInt(num) || 2;
-    },
+    }
 
-    /**
-     * gets the percentage of the load we should allot to each sound
-     */
-    getSoundDecodingModifier: function() {
+    
+    getSoundDecodingModifier() {
         return this._soundDecodingModifier || 2;
-    },
+    }
 
-    /**
-     * loads any text file
-     * @param  {String} url of the file to load (prepends the dataPath)
-     * @return {Phaser.Loader.text}     adds the file to the load queue
-     */
-    loadText: function(url) {
+    loadText(url) {
         var key = this._getAssetKey(url);
         return this.game.load.text(key, this._dataPath + '/' + url);
-    },
+    }
 
-    /**
-     * loads a texture atlas
-     * @param  {String} url url of the texture atlas (prepends the spritesheetPath)
-     * @return {Phaser.Loader.atlasJSONHash}     adds the atlas and it's json descriptor file to the load queue
-     */
-    loadAtlas: function(url) {
+    loadAtlas(url) {
         if (this.game.cache.checkImageKey(url)) {
             return;
         }
 
         return this.game.load.atlasJSONHash(url, this._spriteSheetPath + '/' + url + this._resolution + '.png', this._spriteSheetPath + '/' + url + this._resolution + '.json');
 
-    },
+    }
 
-    /**
-     * loads any image file
-     * @param  {String} url the full image url, with extension (prepends the imgPath)
-     * @return {Phaser.Loader.image} adds the image file to the load queue
-     */
-    loadImage: function(url) {
+    loadImage(url) {
         var key = this._getAssetKey(url);
 
         if (this.game.cache.checkImageKey(key)) {
@@ -382,24 +360,14 @@ Dijon.AssetManager.prototype = {
         url = key + this._resolution + '.' + this._getExtension(url);
 
         return this.game.load.image(key, this._imgPath + '/' + url);
-    },
-    /**
-     * loads a bitmap font
-     * @param  {String} url the url of the bitmap font (prepends the fontPath)
-     * @return {Phaser.Loader.bitmapFont}     adds the bitmap font and its xml descriptor to the load queue
-     */
-    loadBitmapFont: function(url) {
+    }
+    
+    loadBitmapFont(url) {
         this.game.load.bitmapFont(url, this._fontPath + '/' + url + '.png', this._fontPath + '/' + url + '.fnt');
-    },
+    }
 
-    /**
-     * loads any audio file (adds the 'm4a' file extension if we're on an iOS device as it decodes way faster)
-     * @param  {String}  url           the url of the audio file (prepends either the audioSpritePath or the soundPath depending on the type of file)
-     * @param  {String}  exts          comma separated string of file extensions (usually "ogg,mp3")
-     * @param  {Boolean} isAudioSprite whether the asset is an audio sprite
-     * @return {Phaser.Loader.audiosprite|Phaser.Loader.audio}                adds the audioSprite or audio file to the file queue
-     */
-    loadAudio: function(url, exts, isAudioSprite) {
+    
+    loadAudio(url, exts, isAudioSprite) {
         var type, path;
         if (this.game.cache.checkSoundKey(url) && this.game.cache.getSound(url).decoded) {
             return;
@@ -436,35 +404,18 @@ Dijon.AssetManager.prototype = {
             url: url,
             isAudioSprite: isAudioSprite
         });
-    },
+    }
 
-    /**
-     * loads a sound file
-     * @param  {String} url  the url to the sound file (prepends soundPath)
-     * @param  {String} exts comma separated list of extensions (usually "ogg,mp3")
-     * @return {Dijon.AssetManager.loadAudio}
-     */
-    loadSound: function(url, exts) {
+    
+    loadSound(url, exts) {
         return this.loadAudio(url, exts, false);
-    },
+    }
 
-    /**
-     * loads a sound file
-     * @param  {String} url  the url to the audioSprite file (prepends audioSpritePath)
-     * @param  {String} exts comma separated list of extensions (usually "ogg,mp3")
-     * @return {Dijon.AssetManager.loadAudio}
-     */
-    loadAudioSprite: function(url, exts) {
+    loadAudioSprite(url, exts) {
         return this.loadAudio(url, exts, true);
-    },
+    }
 
-    /**
-     * loads an entire list of assets
-     * @param  {String} id         the id of the asset list to load
-     * @param  {Boolean} background whether this is a background load
-     * @return {Phaser.Loader.start}            starts the load
-     */
-    loadAssets: function(id, background) {
+    loadAssets(id, background) {
         this._currentAssetList = id;
         this.game.load.onFileComplete.remove(this._backgroundFileComplete, this);
         this.game.load.onFileComplete.remove(this._gameFileComplete, this);
@@ -508,9 +459,9 @@ Dijon.AssetManager.prototype = {
         this._maxPercent = 100 - (this._numSounds * this.getSoundDecodingModifier());
 
         return this.game.load.start();
-    },
+    }
 
-    loadQueue: function() {
+    loadQueue() {
         if (this._isLoadingQueue) {
             return;
         }
@@ -535,38 +486,31 @@ Dijon.AssetManager.prototype = {
         this.game.load.onLoadStart.addOnce(this._backgroundLoadStart, this);
         this.game.load.onFileComplete.add(this._backgroundFileComplete, this);
         this.game.load.onLoadComplete.addOnce(this._backgroundLoadComplete, this);
-    },
+    }
 
-    /**
-     * gets the (adjusted) load progress (also takes into accound the number of sounds to decode)
-     * @param  {Number} progress the game progress
-     * @return {Number}          the adjusted progress
-     */
-    getLoadProgress: function(progress) {
+    
+    getLoadProgress(progress) {
         var adjustedProgress = progress * this._maxPercent / 100;
         return adjustedProgress;
-    },
+    }
 
-    /**
-     * checks whether all the sounds in the queue are decoded
-     * @return {Boolean}
-     */
-    allSoundsDecoded: function() {
+    
+    allSoundsDecoded() {
         //console.log('sounds to decode', this._soundsToDecode.length);
         return this._soundsToDecode.length === 0;
-    },
+    }
 
 
     /**
-     * sets the data for the Dijon.AssetManager to use as a reference (usually from data/assets.json)
+     * sets the data for the AssetManager to use as a reference (usually from data/assets.json)
      * triggers the _parseData internal method, which stores the asset list for later use
      * @param {String} textFileFromCache the id of the file in the Phaser.Cache
      */
-    setData: function(textFileFromCache) {
+    setData(textFileFromCache) {
         this._data = JSON.parse(textFileFromCache);
         this._loadData = {};
         this._parseData();
-    },
+    }
 
     /**
      * clears the assets from a particular id in the storage
@@ -577,7 +521,7 @@ Dijon.AssetManager.prototype = {
      * @param  {Boolean} [clearText = true]     whether to clear text files
      * @return {void}
      */
-    clearAssets: function(id, clearAudio, clearAtlasses, clearImages, clearText) {
+    clearAssets(id, clearAudio, clearAtlasses, clearImages, clearText) {
         var assets = this._data[id];
 
         console.log('clearing: ', id);
@@ -596,7 +540,7 @@ Dijon.AssetManager.prototype = {
         }
 
         this._completedLoads[id] = false;
-    },
+    }
 
     /**
      * clears an asset from the game's memory
@@ -607,7 +551,7 @@ Dijon.AssetManager.prototype = {
      * @param  {Boolean} [clearText = true]     whether to clear text files
      * @return {void}
      */
-    clearAsset: function(asset, clearAudio, clearAtlasses, clearImages, clearText) {
+    clearAsset(asset, clearAudio, clearAtlasses, clearImages, clearText) {
         var type = asset.type,
             url = asset.key,
             required = asset.required;
@@ -617,78 +561,78 @@ Dijon.AssetManager.prototype = {
             return;
         }
         switch (type) {
-            case Dijon.AssetManager.AUDIO:
+            case AssetManager.AUDIO:
                 if (clearAudio) {
                     this.game.sound.removeByKey(url);
                     this.game.cache.removeSound(url);
                 }
                 break;
-            case Dijon.AssetManager.IMAGE:
+            case AssetManager.IMAGE:
                 if (clearImages) {
                     this.game.cache.removeImage(url);
                     PIXI.BaseTextureCache[url].destroy();
                 }
                 break;
-            case Dijon.AssetManager.ATLAS:
+            case AssetManager.ATLAS:
                 if (clearAtlasses) {
                     this.game.cache.removeImage(url);
                     PIXI.BaseTextureCache[url].destroy();
                     this.game.cache.removeXML(url);
                 }
                 break;
-            case Dijon.AssetManager.TEXT:
+            case AssetManager.TEXT:
                 if (clearText) {
-                    Dijon.AssetManager.removeText(url);
+                    AssetManager.removeText(url);
                 }
                 break;
         }
-    },
+    }
 
     /**
      * checks if the assets from this list id are already loaded
      * @param  {String}  id the asset list id to check
      * @return {Boolean}    whether it has been loaded already
      */
-    hasLoadedAssets: function(id) {
+    hasLoadedAssets(id) {
         return this._completedLoads[id] === true;
     }
-};
+}
 
 /**
  * @type {String}
  * @static
  */
-Dijon.AssetManager.SOUND = 'sound';
+AssetManager.SOUND = 'sound';
 
 /**
  * @type {String}
  * @static
  */
-Dijon.AssetManager.AUDIO_SPRITE = 'audioSprite';
+AssetManager.AUDIO_SPRITE = 'audioSprite';
 
 /**
  * @type {String}
  * @static
  */
-Dijon.AssetManager.IMAGE = 'image';
+AssetManager.IMAGE = 'image';
 
 /**
  * @type {String}
  * @static
  */
-Dijon.AssetManager.ATLAS = 'atlas';
+AssetManager.ATLAS = 'atlas';
 
 /**
  * @type {String}
  * @static
  */
-Dijon.AssetManager.TEXT = 'text';
+AssetManager.TEXT = 'text';
 
 /**
  * @type {String}
  * @static
  */
-Dijon.AssetManager.ASSET_LIST = 'assetList';
+AssetManager.ASSET_LIST = 'assetList';
 
-Dijon.AssetManager.RESOLUTION_2X = "@2x";
-Dijon.AssetManager.RESOLUTION_3X = "@3x";
+AssetManager.RESOLUTION_2X = "@2x";
+AssetManager.RESOLUTION_3X = "@3x";
