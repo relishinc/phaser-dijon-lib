@@ -1,8 +1,40 @@
-/// <reference path="../../../../bower_components/phaser-official/typescript/phaser.d.ts"/>
+/// <reference path="../../../bower_components/phaser-official/typescript/phaser.d.ts"/>
 declare module dijon{
+	
+	module mvc{
+		interface IApplication {
+			game:core.Game;	
+			initializeApplication():void;
+		}
+		
+		class Application implements IApplication{
+			constructor(gameConfig:Phaser.IGameConfig);
+			game:core.Game;	
+			initializeApplication():void;
+			static getInstance():IApplication;
+			static instance:IApplication;
+			static SINGLETON_MSG:string;
+		}
+	}
+	
 	module core{
 		class Game extends Phaser.Game{
+			// manager classes
 			asset: AssetManager;
+			/*
+			save:SaveManager;
+			transition:TransitionManager;
+			sequence:SequenceManager;
+			audio:AudioManager;
+			*/
+			
+			// game and ui layers
+			gameLayer:Phaser.Group;
+			uiLayer:Phaser.Group;
+			
+			addTo():Phaser.Image | Phaser.Sprite | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Text | Phaser.Button;
+			addToUI():Phaser.Image | Phaser.Sprite | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Text | Phaser.Button;
+			addToGame():Phaser.Image | Phaser.Sprite | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Text | Phaser.Button;
 		}
 		
 		interface IPathConfig{
