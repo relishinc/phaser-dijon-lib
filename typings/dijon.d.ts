@@ -1,6 +1,4 @@
-/// <reference path="../../../bower_components/phaser-official/typescript/phaser.d.ts"/>
 declare module dijon{
-	
 	module mvc{
 		interface IApplication {
 			game:core.Game;	
@@ -21,10 +19,10 @@ declare module dijon{
 		class Game extends Phaser.Game{
 			// manager classes
 			asset: AssetManager;
+			sequence: SequenceManager;
 			/*
 			save:SaveManager;
 			transition:TransitionManager;
-			sequence:SequenceManager;
 			audio:AudioManager;
 			*/
 			
@@ -201,11 +199,106 @@ declare module dijon{
 			static RESOLUTION_2X:string;
 			static RESOLUTION_3X:string;
 		}
+		
+		class SequenceManager{
+			constructor();
+			
+			/**
+			* sets the default interval
+			* @return {void}
+			* @private
+			*/
+			_init():void;
+			
+			/**
+			* executes the current method in the sequence
+			* @param  {Array}    sequence        the sequence the current method belongs to
+			* @param  {Object} context         the context to call the current method
+			* @param  {Function} callback        the callback to call if this is the last method in the sequence
+			* @param  {Object} callbackContext the context to call the callback
+			* @return {void}
+			* @private
+			*/
+			_executeMethod(sequence:Function[], context:Object, callback:Function, callbackContext:Object):void;
+			
+			/**
+			* runs a sequence
+			* @param  {Array} sequence                 an array of methods to be run in sequence
+			* @param  {Object} context                 the scope to execute all of the methods in the sequence
+			* @param  {int} interval                   the number of milliseconds between each step in the sequence
+			* @param  {Function} completeCallback      the method to call once the sequence is complete
+			* @param  {Object} completeCallbackContext the scope for the completeCallback
+			* @return {void}
+			*/
+			run(sequence:Function[], context:Object, interval:number, completeCallback:Function, completeCallbackContext:Object):void;
+		}
 	}
 	
 	module state{
 		class BaseState extends Phaser.State{
 			game:core.Game;
+			
+			/**
+			* lists the build sequence for this state
+			* @return {Array} a list of internal methods to call (usually these methods should just add visual elements to the game world)
+			*/
+			listBuildSequence():Function[];
+			
+			/**
+			* called when all assets are loaded and sounds are decoded
+			*/
+			buildInterface():void;
+			
+			/**
+			* called after the buildInterface method is called
+			*/
+			afterBuildInterface():void;
+			
+			/**
+			* called after the afterBuildInterface method
+			* runs the methods returned from [getBuildSequence method]{@link dijon.state.BaseState#getBuildSequence}
+			* uses the {@link dijon.core.SequenceManager} to run these methods
+			*/
+			startBuild():void;
+			
+			/**
+			* called directly after the build sequence has completed
+			* then calls the [afterBuild method]{@link dijon.state.BaseState#afterBuild}
+			*/
+			preAfterBuild():void;
+			
+			/**
+			* called in the [preAfterBuild method]{@link dijon.state.BaseState#preAfterBuild}, after the build sequence has completed
+			* useful for overriding
+			*/
+			afterBuild():void;
+			
+			/**
+			* use this to add playing sounds to an internal list
+			* all sounds added will be automatically stopped in the shutdown method
+			* @param {Phaser.Sound} track the sound to add to the internal list
+			* @return {Phaser.Sound} the added track
+			*/
+			addAudio(track:Phaser.Sound):Phaser.Sound;
+			
+			/**
+			* removes all the audio files added using the {@link #addAudio} method
+			* called in the [shutdown method]{@link dijon.state.BaseState#shutdown}
+			* @private
+			*/
+			removeAudio():void;
+			
+			/**
+			* gets / sets the preload id for this state (optional)
+			* @return {String}
+			*/
+			preloadID:string;
+			
+			/**
+			* gets / sets the interval at which to step through the build sequence (in ms)
+			* @return {Number}
+			*/
+			buildInterval:number;
 		}
 	}
 }

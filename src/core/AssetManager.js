@@ -4,10 +4,10 @@
  * @constructor
  */
  
-export default class AssetManager{
-    constructor(game){
-       this.game = game;
-       this._init();
+class AssetManager{
+    constructor(){
+       this.game = dijon.mvc.Application.getInstance().game;
+       this._init(); 
     }
     // private methods
     /**
@@ -636,3 +636,5 @@ AssetManager.ASSET_LIST = 'assetList';
 
 AssetManager.RESOLUTION_2X = "@2x";
 AssetManager.RESOLUTION_3X = "@3x";
+
+export default AssetManager;
