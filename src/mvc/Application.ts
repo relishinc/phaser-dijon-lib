@@ -1,5 +1,3 @@
-/// <reference path="../core/Game" />
-/// <reference path="../../../../../bower_components/phaser-official/typescript/phaser.d.ts" />
 module dijon.mvc{
 	export class Application {
 		// static constants
@@ -27,7 +25,7 @@ module dijon.mvc{
 			});
 		}
 		
-		static getInstance(){
+		static getInstance():Application{
 			if( !Application.instance )
 				Application.instance = new Application();
 			return Application.instance;

@@ -1,4 +1,3 @@
-/// <reference path="./Game" />
 module dijon.core{
     export class SequenceManager{
         public game:dijon.core.Game;
