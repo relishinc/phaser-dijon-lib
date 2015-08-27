@@ -30,7 +30,6 @@ declare module dijon{
 			gameLayer:Phaser.Group;
 			uiLayer:Phaser.Group;
 			
-			addTo():Phaser.Image | Phaser.Sprite | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Text | Phaser.Button;
 			addToUI():Phaser.Image | Phaser.Sprite | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Text | Phaser.Button;
 			addToGame():Phaser.Image | Phaser.Sprite | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Text | Phaser.Button;
 		}
