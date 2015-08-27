@@ -1,5 +1,5 @@
 module state{
-    export class BaseState extends Phaser.State{
+    export class State extends Phaser.State{
         private _audio:Array<Phaser.Sound> = [];
         public game:dijon.core.Game;
         
