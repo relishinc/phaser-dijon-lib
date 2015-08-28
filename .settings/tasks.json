@@ -21,7 +21,7 @@
 	"showOutput": "silent",
 	
 	// The args to pass to the typescript compiler
-	"args": ["--out","build/dijon.js"],
+	"args": ["--out","../build/dijon.js"],
 	
 	// use the standard tsc problem matcher to find compile problems
 	// in the output.
