@@ -13,7 +13,7 @@ module dijon.mvc{
 			Application.instance = this;
 			
 			this.initializeApplication();
-		}
+		} 
 		
 		protected initializeApplication(){
 			this.game = new dijon.core.Game({
