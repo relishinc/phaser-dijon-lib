@@ -1,2 +1,4 @@
 dijon.sublime-project
 dijon.sublime-workspace
+bower_components
+node_modules
