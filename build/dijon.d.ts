@@ -524,18 +524,6 @@ declare module dijon.core {
         transitionOut(): boolean;
     }
 }
-declare module dijon.display {
-    class Group extends Phaser.Group {
-    }
-}
-declare module dijon.display {
-    class Sprite extends Phaser.Sprite {
-    }
-}
-declare module dijon.display {
-    class Text extends Phaser.Text {
-    }
-}
 declare module dijon.mvc {
     class Application {
         static instance: any;
@@ -562,7 +550,19 @@ declare module dijon.mvc {
     class Notifier {
     }
 }
-declare module state {
+declare module dijon.display {
+    class Group extends Phaser.Group {
+    }
+}
+declare module dijon.display {
+    class Sprite extends Phaser.Sprite {
+    }
+}
+declare module dijon.display {
+    class Text extends Phaser.Text {
+    }
+}
+declare module dijon.state {
     class State extends Phaser.State {
         private _audio;
         game: dijon.core.Game;

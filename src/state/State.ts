@@ -1,5 +1,5 @@
 /// <reference path="../mvc/Application" />
-module state{
+module dijon.state{
     export class State extends Phaser.State{
         private _audio:Phaser.Sound[] = [];
         public game:dijon.core.Game;
