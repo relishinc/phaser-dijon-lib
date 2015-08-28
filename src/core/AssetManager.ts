@@ -369,10 +369,7 @@ module dijon.core{
         }
         
         // public methods
-        setBaseURL(baseURL) {
-            if (typeof baseURL === 'undefined')
-                baseURL = '';
-    
+        setBaseURL(baseURL:string = "") {
             // ensure trailing slash
             if (baseURL !== '' && baseURL.charAt(baseURL.length - 1) !== '/')
                 baseURL += '/';

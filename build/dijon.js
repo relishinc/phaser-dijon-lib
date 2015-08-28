@@ -311,8 +311,7 @@ var dijon;
             };
             // public methods
             AssetManager.prototype.setBaseURL = function (baseURL) {
-                if (typeof baseURL === 'undefined')
-                    baseURL = '';
+                if (baseURL === void 0) { baseURL = ""; }
                 // ensure trailing slash
                 if (baseURL !== '' && baseURL.charAt(baseURL.length - 1) !== '/')
                     baseURL += '/';
