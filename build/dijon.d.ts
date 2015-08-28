@@ -542,7 +542,7 @@ declare module dijon.mvc {
         static SINGLETON_MSG: string;
         game: dijon.core.Game;
         constructor();
-        protected initializeApplication(): void;
+        initializeApplication(): void;
         static getInstance(): Application;
     }
 }

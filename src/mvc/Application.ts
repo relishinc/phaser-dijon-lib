@@ -15,7 +15,7 @@ module dijon.mvc{
 			this.initializeApplication();
 		} 
 		
-		protected initializeApplication(){
+		public initializeApplication(){
 			this.game = new dijon.core.Game({
 				width: 800, 
 				height: 600, 
@@ -25,7 +25,7 @@ module dijon.mvc{
 			});
 		}
 		
-		static getInstance():Application{
+		public static getInstance():Application{
 			if( !Application.instance )
 				Application.instance = new Application();
 			return Application.instance;
