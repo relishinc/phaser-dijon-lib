@@ -371,7 +371,7 @@ module dijon.core{
         // public methods
         setBaseURL(baseURL:string = "") {
             // ensure trailing slash
-            if (baseURL !== '' && baseURL.charAt(baseURL.length - 1) !== '/')
+            if (baseURL && baseURL !== '' && baseURL.charAt(baseURL.length - 1) !== '/')
                 baseURL += '/';
     
             this._baseURL = baseURL;

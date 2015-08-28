@@ -313,7 +313,7 @@ var dijon;
             AssetManager.prototype.setBaseURL = function (baseURL) {
                 if (baseURL === void 0) { baseURL = ""; }
                 // ensure trailing slash
-                if (baseURL !== '' && baseURL.charAt(baseURL.length - 1) !== '/')
+                if (baseURL && baseURL !== '' && baseURL.charAt(baseURL.length - 1) !== '/')
                     baseURL += '/';
                 this._baseURL = baseURL;
                 this.setPaths(null);
