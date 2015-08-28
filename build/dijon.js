@@ -1241,6 +1241,48 @@ var dijon;
 })(dijon || (dijon = {}));
 var dijon;
 (function (dijon) {
+    var display;
+    (function (display) {
+        var Group = (function (_super) {
+            __extends(Group, _super);
+            function Group() {
+                _super.apply(this, arguments);
+            }
+            return Group;
+        })(Phaser.Group);
+        display.Group = Group;
+    })(display = dijon.display || (dijon.display = {}));
+})(dijon || (dijon = {}));
+var dijon;
+(function (dijon) {
+    var display;
+    (function (display) {
+        var Sprite = (function (_super) {
+            __extends(Sprite, _super);
+            function Sprite() {
+                _super.apply(this, arguments);
+            }
+            return Sprite;
+        })(Phaser.Sprite);
+        display.Sprite = Sprite;
+    })(display = dijon.display || (dijon.display = {}));
+})(dijon || (dijon = {}));
+var dijon;
+(function (dijon) {
+    var display;
+    (function (display) {
+        var Text = (function (_super) {
+            __extends(Text, _super);
+            function Text() {
+                _super.apply(this, arguments);
+            }
+            return Text;
+        })(Phaser.Text);
+        display.Text = Text;
+    })(display = dijon.display || (dijon.display = {}));
+})(dijon || (dijon = {}));
+var dijon;
+(function (dijon) {
     var mvc;
     (function (mvc) {
         var Application = (function () {
@@ -1321,48 +1363,6 @@ var dijon;
         })();
         mvc.Notifier = Notifier;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
-})(dijon || (dijon = {}));
-var dijon;
-(function (dijon) {
-    var display;
-    (function (display) {
-        var Group = (function (_super) {
-            __extends(Group, _super);
-            function Group() {
-                _super.apply(this, arguments);
-            }
-            return Group;
-        })(Phaser.Group);
-        display.Group = Group;
-    })(display = dijon.display || (dijon.display = {}));
-})(dijon || (dijon = {}));
-var dijon;
-(function (dijon) {
-    var display;
-    (function (display) {
-        var Sprite = (function (_super) {
-            __extends(Sprite, _super);
-            function Sprite() {
-                _super.apply(this, arguments);
-            }
-            return Sprite;
-        })(Phaser.Sprite);
-        display.Sprite = Sprite;
-    })(display = dijon.display || (dijon.display = {}));
-})(dijon || (dijon = {}));
-var dijon;
-(function (dijon) {
-    var display;
-    (function (display) {
-        var Text = (function (_super) {
-            __extends(Text, _super);
-            function Text() {
-                _super.apply(this, arguments);
-            }
-            return Text;
-        })(Phaser.Text);
-        display.Text = Text;
-    })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
 /// <reference path="../mvc/Application" />
 var dijon;
@@ -1458,3 +1458,4 @@ var dijon;
         state.State = State;
     })(state = dijon.state || (dijon.state = {}));
 })(dijon || (dijon = {}));
+//# sourceMappingURL=dijon.js.map
