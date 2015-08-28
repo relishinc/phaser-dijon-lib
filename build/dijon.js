@@ -321,6 +321,8 @@ var dijon;
             AssetManager.prototype.setPaths = function (pathObj) {
                 if (pathObj === void 0) { pathObj = null; }
                 // prepend baseURL
+                if (!pathObj)
+                    return;
                 this._assetPath = this._baseURL + (pathObj.assetPath || 'assets');
                 this._dataPath = this._baseURL + (pathObj.dataPath || 'assets/data');
                 this._spriteSheetPath = this._baseURL + (pathObj.spritesheetPath || 'assets/img/spritesheets');

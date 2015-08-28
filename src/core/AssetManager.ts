@@ -382,6 +382,8 @@ module dijon.core{
     
         setPaths(pathObj:IPathConfig = null) {
             // prepend baseURL
+            if (!pathObj)
+                return;
             this._assetPath = this._baseURL + (pathObj.assetPath || 'assets');
             this._dataPath = this._baseURL + (pathObj.dataPath || 'assets/data');
             this._spriteSheetPath = this._baseURL + (pathObj.spritesheetPath || 'assets/img/spritesheets');
