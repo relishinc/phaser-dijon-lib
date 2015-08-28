@@ -1364,7 +1364,6 @@ var dijon;
         mvc.Notifier = Notifier;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../mvc/Application" />
 var dijon;
 (function (dijon) {
     var state;
