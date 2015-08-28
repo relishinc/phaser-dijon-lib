@@ -54,15 +54,13 @@ var dijon;
         core.AnalyticsException = AnalyticsException;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/**
- * Manager for loading and clearing assets
- * @param {Phaser.Game} game reference to the Phaser.Game object
- * @constructor
- */
 var dijon;
 (function (dijon) {
     var core;
     (function (core) {
+        /**
+        * Manager for loading and clearing assets
+        */
         var AssetManager = (function () {
             function AssetManager() {
                 // private variables
@@ -1243,6 +1241,48 @@ var dijon;
 })(dijon || (dijon = {}));
 var dijon;
 (function (dijon) {
+    var display;
+    (function (display) {
+        var Group = (function (_super) {
+            __extends(Group, _super);
+            function Group() {
+                _super.apply(this, arguments);
+            }
+            return Group;
+        })(Phaser.Group);
+        display.Group = Group;
+    })(display = dijon.display || (dijon.display = {}));
+})(dijon || (dijon = {}));
+var dijon;
+(function (dijon) {
+    var display;
+    (function (display) {
+        var Sprite = (function (_super) {
+            __extends(Sprite, _super);
+            function Sprite() {
+                _super.apply(this, arguments);
+            }
+            return Sprite;
+        })(Phaser.Sprite);
+        display.Sprite = Sprite;
+    })(display = dijon.display || (dijon.display = {}));
+})(dijon || (dijon = {}));
+var dijon;
+(function (dijon) {
+    var display;
+    (function (display) {
+        var Text = (function (_super) {
+            __extends(Text, _super);
+            function Text() {
+                _super.apply(this, arguments);
+            }
+            return Text;
+        })(Phaser.Text);
+        display.Text = Text;
+    })(display = dijon.display || (dijon.display = {}));
+})(dijon || (dijon = {}));
+var dijon;
+(function (dijon) {
     var mvc;
     (function (mvc) {
         var Application = (function () {
@@ -1283,98 +1323,135 @@ var dijon;
             }
             return Mediator;
         })();
+        mvc.Mediator = Mediator;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
 })(dijon || (dijon = {}));
 var dijon;
 (function (dijon) {
-    var state;
-    (function (state) {
-        var State = (function (_super) {
-            __extends(State, _super);
-            function State() {
-                _super.call(this);
-                this._audio = [];
-                this.game = dijon.mvc.Application.getInstance().game;
+    var mvc;
+    (function (mvc) {
+        var Models = (function () {
+            function Models() {
             }
-            State.prototype.init = function () { };
-            State.prototype.preload = function () {
-                if (this.preloadID)
-                    this.game.asset.loadAssets(this.preloadID);
-            };
-            State.prototype.create = function () {
-                if (!this.game.asset.allSoundsDecoded()) {
-                    this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this.create, this);
-                    return;
-                }
-                this.buildInterface();
-                this.afterBuildInterface();
-                this.startBuild();
-            };
-            State.prototype.shutdown = function () {
-                this.removeAudio();
-            };
-            // public methods
-            State.prototype.listBuildSequence = function () {
-                return [];
-            };
-            State.prototype.buildInterface = function () { };
-            State.prototype.afterBuildInterface = function () { };
-            State.prototype.startBuild = function () {
-                this.game.sequence.run(this.listBuildSequence(), this, this.buildInterval, this.preAfterBuild, this);
-            };
-            State.prototype.preAfterBuild = function () {
-                if (this.game.debugger) {
-                    this.game.debugger.selectedObject = null;
-                    this.game.debugger.refresh();
-                }
-                if (typeof this.game.transition === 'undefined' || !this.game.transition.transitionOut()) {
-                    this.afterBuild();
-                }
-                else {
-                    this.game.transition.onTransitionOutComplete.addOnce(this.afterBuild, this);
-                    this.game.transition.transitionOut();
-                }
-            };
-            State.prototype.afterBuild = function () { };
-            State.prototype.addAudio = function (track) {
-                if (!this._audio) {
-                    this._audio = [];
-                }
-                this._audio.push(track);
-                return track;
-            };
-            State.prototype.removeAudio = function () {
-                var sound;
-                if (!this._audio) {
-                    return;
-                }
-                while (this._audio.length > 0) {
-                    sound = this._audio.pop();
-                    if (typeof sound !== 'undefined' && sound != null && typeof sound.stop !== 'undefined') {
-                        if (typeof sound.onStop !== 'undefined') {
-                            sound.onStop.removeAll();
-                        }
-                        sound.stop();
-                    }
-                }
-            };
-            Object.defineProperty(State.prototype, "preloadID", {
-                // getter / setter
-                get: function () {
-                    return null;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(State.prototype, "buildInterval", {
-                get: function () {
-                    return 10;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            return State;
-        })(Phaser.State);
-        state.State = State;
-    })(state = dijon.state || (dijon.state = {}));
+            return Models;
+        })();
+        mvc.Models = Models;
+    })(mvc = dijon.mvc || (dijon.mvc = {}));
 })(dijon || (dijon = {}));
+var dijon;
+(function (dijon) {
+    var mvc;
+    (function (mvc) {
+        var Notification = (function (_super) {
+            __extends(Notification, _super);
+            function Notification() {
+                _super.apply(this, arguments);
+            }
+            return Notification;
+        })(Phaser.Signal);
+        mvc.Notification = Notification;
+    })(mvc = dijon.mvc || (dijon.mvc = {}));
+})(dijon || (dijon = {}));
+var dijon;
+(function (dijon) {
+    var mvc;
+    (function (mvc) {
+        var Notifier = (function () {
+            function Notifier() {
+            }
+            return Notifier;
+        })();
+        mvc.Notifier = Notifier;
+    })(mvc = dijon.mvc || (dijon.mvc = {}));
+})(dijon || (dijon = {}));
+/// <reference path="../mvc/Application" />
+var state;
+(function (state) {
+    var State = (function (_super) {
+        __extends(State, _super);
+        function State() {
+            _super.call(this);
+            this._audio = [];
+            this.game = dijon.mvc.Application.getInstance().game;
+        }
+        State.prototype.init = function () { };
+        State.prototype.preload = function () {
+            if (this.preloadID)
+                this.game.asset.loadAssets(this.preloadID);
+        };
+        State.prototype.create = function () {
+            if (!this.game.asset.allSoundsDecoded()) {
+                this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this.create, this);
+                return;
+            }
+            this.buildInterface();
+            this.afterBuildInterface();
+            this.startBuild();
+        };
+        State.prototype.shutdown = function () {
+            this.removeAudio();
+        };
+        // public methods
+        State.prototype.listBuildSequence = function () {
+            return [];
+        };
+        State.prototype.buildInterface = function () { };
+        State.prototype.afterBuildInterface = function () { };
+        State.prototype.startBuild = function () {
+            this.game.sequence.run(this.listBuildSequence(), this, this.buildInterval, this.preAfterBuild, this);
+        };
+        State.prototype.preAfterBuild = function () {
+            if (this.game.debugger) {
+                this.game.debugger.selectedObject = null;
+                this.game.debugger.refresh();
+            }
+            if (typeof this.game.transition === 'undefined' || !this.game.transition.transitionOut()) {
+                this.afterBuild();
+            }
+            else {
+                this.game.transition.onTransitionOutComplete.addOnce(this.afterBuild, this);
+                this.game.transition.transitionOut();
+            }
+        };
+        State.prototype.afterBuild = function () { };
+        State.prototype.addAudio = function (track) {
+            if (!this._audio) {
+                this._audio = [];
+            }
+            this._audio.push(track);
+            return track;
+        };
+        State.prototype.removeAudio = function () {
+            var sound;
+            if (!this._audio) {
+                return;
+            }
+            while (this._audio.length > 0) {
+                sound = this._audio.pop();
+                if (typeof sound !== 'undefined' && sound != null && typeof sound.stop !== 'undefined') {
+                    if (typeof sound.onStop !== 'undefined') {
+                        sound.onStop.removeAll();
+                    }
+                    sound.stop();
+                }
+            }
+        };
+        Object.defineProperty(State.prototype, "preloadID", {
+            // getter / setter
+            get: function () {
+                return null;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(State.prototype, "buildInterval", {
+            get: function () {
+                return 10;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return State;
+    })(Phaser.State);
+    state.State = State;
+})(state || (state = {}));

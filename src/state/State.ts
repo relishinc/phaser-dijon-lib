@@ -1,6 +1,7 @@
-module dijon.state{
+/// <reference path="../mvc/Application" />
+module state{
     export class State extends Phaser.State{
-        private _audio:Array<Phaser.Sound> = [];
+        private _audio:Phaser.Sound[] = [];
         public game:dijon.core.Game;
         
         constructor(){
@@ -8,14 +9,14 @@ module dijon.state{
             this.game = dijon.mvc.Application.getInstance().game;
         }
         
-        public init(){}
+        public init():void{}
         
-        public preload(){
+        public preload():void{
             if (this.preloadID)
                 this.game.asset.loadAssets(this.preloadID);
         }
         
-        public create() {
+        public create():void{
             if (!this.game.asset.allSoundsDecoded()) {
                 this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this.create, this);
                 return;
@@ -25,24 +26,24 @@ module dijon.state{
             this.startBuild();
         }
         
-        public shutdown() {
+        public shutdown():void{
             this.removeAudio();
         }
         
         // public methods
-        public listBuildSequence(){
+        public listBuildSequence():Array<Function>{
             return [];
         }
         
-        public buildInterface(){}
+        public buildInterface():void{}
         
-        public afterBuildInterface(){}
+        public afterBuildInterface():void{}
         
-        public startBuild() {
+        public startBuild():void{
             this.game.sequence.run(this.listBuildSequence(), this, this.buildInterval, this.preAfterBuild, this);
         }
         
-        public preAfterBuild(){
+        public preAfterBuild():void{
             if (this.game.debugger) {
                 this.game.debugger.selectedObject = null;
                 this.game.debugger.refresh();
@@ -56,7 +57,7 @@ module dijon.state{
             }
         }
         
-        public afterBuild(){}
+        public afterBuild():void{}
         
         public addAudio(track:Phaser.Sound):Phaser.Sound{
             if (!this._audio){
@@ -66,8 +67,8 @@ module dijon.state{
             return track;
         }
         
-        public removeAudio() {
-            var sound;
+        public removeAudio():void {
+            var sound:Phaser.Sound;
             if (!this._audio){
                 return;
             } 

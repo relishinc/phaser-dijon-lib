@@ -1,9 +1,3 @@
-/**
- * Manager for loading and clearing assets
- * @param {Phaser.Game} game reference to the Phaser.Game object
- * @constructor
- */
-
 module dijon.core{
     export interface IAsset{
         url:string;
@@ -38,6 +32,9 @@ module dijon.core{
         soundPath:string;
     }
     
+    /**
+    * Manager for loading and clearing assets
+    */
     export class AssetManager{
         // private variables
         private _data = {};
