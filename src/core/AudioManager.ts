@@ -162,7 +162,7 @@ module dijon.core{
 			volume = typeof volume === 'undefined' ? this._defaultVolume : volume;
 	
 			return this._sounds[key].play("", 0, volume, loop, forceRestart);
-		},
+		}
 	
 		/**
 		* plays a marker from an audio sprite

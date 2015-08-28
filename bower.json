@@ -1,0 +1,16 @@
+{
+    "name": "dijon-es6",
+    "version": "1.0.0",
+    "description": "dijon core js library for phaser game dev",
+    "authors": [
+        "anthonysapp <anthony@reli.sh>"
+    ],
+    "dependencies": {
+        "phaser-official": "https://github.com/photonstorm/phaser.git#db641ca82e608470bd7902de3447d048d9715ab5"
+	},
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"bower_components"
+	]
+}
