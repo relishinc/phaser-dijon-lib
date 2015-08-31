@@ -1082,7 +1082,7 @@ var dijon;
     (function (display) {
         var Group = (function (_super) {
             __extends(Group, _super);
-            function Group(x, y, name, addToStage, enableBody, physicsBodyType, components) {
+            function Group(x, y, name, addToStage, components, enableBody, physicsBodyType) {
                 if (x === void 0) { x = 0; }
                 if (y === void 0) { y = 0; }
                 if (name === void 0) { name = "dGroup"; }
@@ -1157,6 +1157,14 @@ var dijon;
         display.Group = Group;
     })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
+Phaser.GameObjectFactory.prototype['dGroup'] = function (x, y, name, addToStage, components, enableBody, physicsBodyType) {
+    if (x === void 0) { x = 0; }
+    if (y === void 0) { y = 0; }
+    if (name === void 0) { name = "dGroup"; }
+    if (addToStage === void 0) { addToStage = false; }
+    if (components === void 0) { components = null; }
+    return new dijon.display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
+};
 /// <reference path="../lib.d.ts" />
 /// <reference path="../mvc/Application" />
 /// <reference path="../core/Game" />
@@ -1236,6 +1244,20 @@ var dijon;
         display.Sprite = Sprite;
     })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
+Phaser.GameObjectCreator.prototype['dSprite'] = function (x, y, key, frame, name, components) {
+    if (name === void 0) { name = "dSprite"; }
+    if (components === void 0) { components = null; }
+    return new dijon.display.Sprite(x, y, key, frame, name, components);
+};
+Phaser.GameObjectFactory.prototype['dSprite'] = function (x, y, key, frame, name, components, group) {
+    if (name === void 0) { name = "dSprite"; }
+    if (components === void 0) { components = null; }
+    if (group === void 0) { group = null; }
+    if (!group) {
+        group = this.world;
+    }
+    return group.add(new dijon.display.Sprite(x, y, key, frame, name, components));
+};
 /// <reference path="../core/Game" />
 /// <reference path="../mvc/Application" />
 var dijon;
@@ -1361,6 +1383,32 @@ var dijon;
         display.Text = Text;
     })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
+Phaser.GameObjectCreator.prototype['dText'] = function (x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings) {
+    if (text === void 0) { text = ""; }
+    if (fontSize === void 0) { fontSize = dijon.display.Text.DEFAULT_FONT_SIZE; }
+    if (fontColor === void 0) { fontColor = dijon.display.Text.DEFAULT_FONT_COLOR; }
+    if (fontAlign === void 0) { fontAlign = 'left'; }
+    if (wordWrap === void 0) { wordWrap = false; }
+    if (width === void 0) { width = 0; }
+    if (lineSpacing === void 0) { lineSpacing = 0; }
+    if (settings === void 0) { settings = null; }
+    return new dijon.display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings);
+};
+Phaser.GameObjectFactory.prototype['dText'] = function (x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings, group) {
+    if (text === void 0) { text = ""; }
+    if (fontSize === void 0) { fontSize = dijon.display.Text.DEFAULT_FONT_SIZE; }
+    if (fontColor === void 0) { fontColor = dijon.display.Text.DEFAULT_FONT_COLOR; }
+    if (fontAlign === void 0) { fontAlign = 'left'; }
+    if (wordWrap === void 0) { wordWrap = false; }
+    if (width === void 0) { width = 0; }
+    if (lineSpacing === void 0) { lineSpacing = 0; }
+    if (settings === void 0) { settings = null; }
+    if (group === void 0) { group = null; }
+    if (!group) {
+        group = this.world;
+    }
+    return group.add(new dijon.display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
+};
 /// <reference path="./Application" />
 /// <reference path="../core/Game" />
 var dijon;

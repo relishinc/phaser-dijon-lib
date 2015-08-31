@@ -140,3 +140,15 @@ module dijon.display{
 		}
 	}
 }
+
+// Phaser addons
+Phaser.GameObjectCreator.prototype['dSprite'] = function(x?:number, y?:number, key?:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, name:string="dSprite", components:dijon.component.Component[]=null) {
+    return new dijon.display.Sprite(x, y, key, frame, name, components);
+};
+
+Phaser.GameObjectFactory.prototype['dSprite'] = function(x?:number, y?:number, key?:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, name:string="dSprite", components:dijon.component.Component[]=null, group:Phaser.Group=null) {
+    if (!group) {
+        group = this.world;
+    }
+    return group.add(new dijon.display.Sprite(x, y, key, frame, name, components));
+};

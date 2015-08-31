@@ -292,7 +292,7 @@ declare module dijon.display {
         protected _components: {
             [componentName: string]: component.Component;
         };
-        constructor(x?: number, y?: number, name?: string, addToStage?: boolean, enableBody?: boolean, physicsBodyType?: number, components?: component.Component[]);
+        constructor(x?: number, y?: number, name?: string, addToStage?: boolean, components?: component.Component[], enableBody?: boolean, physicsBodyType?: number);
         update(): void;
         destroy(): void;
         protected init(): void;

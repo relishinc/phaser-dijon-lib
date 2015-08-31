@@ -10,7 +10,7 @@ module dijon.display{
 		protected _componentKeys:string[] = [];
 		protected _components:{[componentName:string]:component.Component} = {};
 		
-		constructor(x:number=0, y:number=0, public name:string="dGroup", addToStage:boolean=false, enableBody?:boolean, physicsBodyType?:number, components:component.Component[]=null){
+		constructor(x:number=0, y:number=0, public name:string="dGroup", addToStage:boolean=false, components:component.Component[]=null, enableBody?:boolean, physicsBodyType?:number){
 			super(mvc.Application.getInstance().game, null, name, addToStage, enableBody, physicsBodyType);
 			
 			this.position.set(x, y);
@@ -145,3 +145,8 @@ module dijon.display{
 		}
 	}
 }
+
+// Phaser addons
+Phaser.GameObjectFactory.prototype['dGroup'] = function(x:number=0, y:number=0, name:string="dGroup", addToStage:boolean=false, components:dijon.component.Component[]=null, enableBody?:boolean, physicsBodyType?:number) {
+    return new dijon.display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
+};
