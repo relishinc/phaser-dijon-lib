@@ -45,23 +45,27 @@ module dijon.core{
 			this.uiLayer = this.add.group(this.world, '_ui_layer');  
 		}
 		
-		// public methods
-		/*public addToGame(obj:Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group): Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group{
-			return this.gameLayer.add(obj);
-		}
-		
-		public addToUI(obj:Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group): Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group{
-			return this.uiLayer.add(obj);
-		}
-		*/
-		
 		// getter / setter
+		/**
+		 * sets the default group for the gameObjectFactory to gameLayer before adding 
+		 * this way if we pass a null group to whatever method we call 
+		 * ie (this.game.addToGame.image(0, 0, key, frame));
+		 * it will be added to the appropriate layer
+		 */
 		public get addToGame():Phaser.GameObjectFactory{
+			
 			this.add.defaultGroup = this.gameLayer;
 			return this.add;
 		}
 		
+		/**
+		 * sets the default group for the gameObjectFactory to uiLayer before adding 
+		 * this way if we pass a null group to whatever method we call 
+		 * ie (this.game.addToUI.image(0, 0, key, frame));
+		 * it will be added to the appropriate layer
+		 */
 		public get addToUI():Phaser.GameObjectFactory{
+			// set the default group for the gameObjectFactory before adding
 			this.add.defaultGroup = this.uiLayer;
 			return this.add;
 		}

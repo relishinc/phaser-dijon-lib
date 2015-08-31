@@ -1,10 +1,12 @@
 /// <reference path="../mvc/Application" />
 /// <reference path="../core/Game" />
+/// <reference path="../core/GameObjectFactory" />
 
 module dijon.state{
     export class State extends Phaser.State{
         private _audio:Phaser.Sound[] = [];
         public game:core.Game;
+        public add:core.GameObjectFactory;
         
         constructor(){
             super();
