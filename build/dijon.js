@@ -1664,8 +1664,6 @@ var dijon;
                 _super.call(this);
                 this._audio = [];
                 this.game = dijon.mvc.Application.getInstance().game;
-                this.addToUI = this.game.addToUI;
-                this.addToGame = this.game.addToGame;
             }
             State.prototype.init = function () { };
             State.prototype.preload = function () {

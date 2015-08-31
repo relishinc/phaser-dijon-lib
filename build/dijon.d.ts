@@ -409,8 +409,6 @@ declare module dijon.state {
         private _audio;
         game: core.Game;
         add: core.GameObjectFactory;
-        addToUI: core.GameObjectFactory;
-        addToGame: core.GameObjectFactory;
         constructor();
         init(): void;
         preload(): void;
