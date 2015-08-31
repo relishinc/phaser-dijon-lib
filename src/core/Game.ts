@@ -4,6 +4,7 @@
 /// <reference path="./StorageManager" />
 /// <reference path="./AudioManager" />
 /// <reference path="./AnalyticsManager" />
+/// <reference path="./GameObjectFactory" />
 
 module dijon.core{
 	export class Game extends Phaser.Game{
@@ -15,6 +16,7 @@ module dijon.core{
 		public storage:StorageManager;
 		public audio:AudioManager;
 		public analytics:AnalyticsManager;
+		public add:GameObjectFactory;
 		
 		// display layers
 		public gameLayer:Phaser.Group;
@@ -29,6 +31,8 @@ module dijon.core{
 		// Phaser.Game overrides
 		public boot(){ 
 			super.boot();
+			this.add = null;
+			this.add = new GameObjectFactory(this);
 			
 			this.asset = new AssetManager();
 			this.sequence = new SequenceManager();
@@ -42,12 +46,24 @@ module dijon.core{
 		}
 		
 		// public methods
-		public addToGame(obj:Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group): Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group{
+		/*public addToGame(obj:Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group): Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group{
 			return this.gameLayer.add(obj);
 		}
 		
 		public addToUI(obj:Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group): Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group{
 			return this.uiLayer.add(obj);
+		}
+		*/
+		
+		// getter / setter
+		public get addToGame():Phaser.GameObjectFactory{
+			this.add.defaultGroup = this.gameLayer;
+			return this.add;
+		}
+		
+		public get addToUI():Phaser.GameObjectFactory{
+			this.add.defaultGroup = this.uiLayer;
+			return this.add;
 		}
 	}
 }

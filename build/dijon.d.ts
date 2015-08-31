@@ -254,6 +254,24 @@ declare module dijon.core {
     }
 }
 declare module dijon.core {
+    class GameObjectFactory extends Phaser.GameObjectFactory {
+        protected _defaultGroup: Phaser.Group;
+        image(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, group?: Phaser.Group): Phaser.Image;
+        sprite(x?: number, y?: number, key?: string, frame?: string | number, group?: Phaser.Group): Phaser.Sprite;
+        creature(x?: number, y?: number, key?: string, mesh?: any, group?: Phaser.Group): any;
+        group(parent?: any, name?: string, addToStage?: boolean, enableBody?: boolean, physicsBodyType?: number): Phaser.Group;
+        physicsGroup(physicsBodyType?: number, parent?: any, name?: string, addToStage?: boolean): Phaser.Group;
+        spriteBatch(parent?: any, name?: string, addToStage?: boolean): Phaser.SpriteBatch;
+        tileSprite(x?: number, y?: number, width?: number, height?: number, key?: string, frame?: string | number, group?: Phaser.Group): Phaser.TileSprite;
+        rope(x?: number, y?: number, key?: string, frame?: string | number, points?: Phaser.Point[], group?: Phaser.Group): Phaser.Rope;
+        text(x?: number, y?: number, text?: string, style?: Phaser.PhaserTextStyle, group?: Phaser.Group): Phaser.Text;
+        button(x?: number, y?: number, key?: string, callback?: Function, callbackContext?: Object, overFrame?: string | number, outFrame?: string | number, downFrame?: string | number, upFrame?: string | number, group?: Phaser.Group): Phaser.Button;
+        graphics(x?: number, y?: number, group?: Phaser.Group): Phaser.Graphics;
+        bitmapText(x?: number, y?: number, font?: string, text?: string, size?: number, align?: string, group?: Phaser.Group): Phaser.BitmapText;
+        defaultGroup: Phaser.Group;
+    }
+}
+declare module dijon.core {
     class Game extends Phaser.Game {
         asset: AssetManager;
         sequence: SequenceManager;
@@ -261,13 +279,14 @@ declare module dijon.core {
         storage: StorageManager;
         audio: AudioManager;
         analytics: AnalyticsManager;
+        add: GameObjectFactory;
         gameLayer: Phaser.Group;
         uiLayer: Phaser.Group;
         debugger: any;
         constructor(config: Phaser.IGameConfig);
         boot(): void;
-        addToGame(obj: Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group): Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group;
-        addToUI(obj: Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group): Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group;
+        addToGame: Phaser.GameObjectFactory;
+        addToUI: Phaser.GameObjectFactory;
     }
 }
 declare module dijon.component {

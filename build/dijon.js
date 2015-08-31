@@ -1012,12 +1012,155 @@ var dijon;
         core.AnalyticsException = AnalyticsException;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
+/// <reference path="../lib.d.ts" />
+var dijon;
+(function (dijon) {
+    var core;
+    (function (core) {
+        var GameObjectFactory = (function (_super) {
+            __extends(GameObjectFactory, _super);
+            function GameObjectFactory() {
+                _super.apply(this, arguments);
+                this._defaultGroup = null;
+            }
+            GameObjectFactory.prototype.image = function (x, y, key, frame, group) {
+                if (x === void 0) { x = 0; }
+                if (y === void 0) { y = 0; }
+                if (group === undefined) {
+                    group = this.defaultGroup;
+                }
+                this.defaultGroup = null;
+                return group.add(new Phaser.Image(this.game, x, y, key, frame));
+            };
+            GameObjectFactory.prototype.sprite = function (x, y, key, frame, group) {
+                if (x === void 0) { x = 0; }
+                if (y === void 0) { y = 0; }
+                if (group === undefined) {
+                    group = this.defaultGroup;
+                }
+                this.defaultGroup = null;
+                return group.create(x, y, key, frame);
+            };
+            GameObjectFactory.prototype.creature = function (x, y, key, mesh, group) {
+                if (x === void 0) { x = 0; }
+                if (y === void 0) { y = 0; }
+                if (group === undefined) {
+                    group = this.defaultGroup;
+                }
+                this.defaultGroup = null;
+                var obj = new Phaser['Creature'](this.game, x, y, key, mesh);
+                group.add(obj);
+                return obj;
+            };
+            GameObjectFactory.prototype.group = function (parent, name, addToStage, enableBody, physicsBodyType) {
+                if (name === void 0) { name = 'group'; }
+                if (addToStage === void 0) { addToStage = false; }
+                if (enableBody === void 0) { enableBody = false; }
+                if (physicsBodyType === void 0) { physicsBodyType = 0; }
+                if (parent === undefined) {
+                    parent = this.defaultGroup;
+                }
+                this.defaultGroup = null;
+                return new Phaser.Group(this.game, parent, name, addToStage, enableBody, physicsBodyType);
+            };
+            GameObjectFactory.prototype.physicsGroup = function (physicsBodyType, parent, name, addToStage) {
+                if (physicsBodyType === void 0) { physicsBodyType = 0; }
+                if (name === void 0) { name = 'group'; }
+                if (addToStage === void 0) { addToStage = false; }
+                if (parent === undefined) {
+                    parent = this.defaultGroup;
+                }
+                this.defaultGroup = null;
+                return new Phaser.Group(this.game, parent, name, addToStage, true, physicsBodyType);
+            };
+            GameObjectFactory.prototype.spriteBatch = function (parent, name, addToStage) {
+                if (name === void 0) { name = "spriteBatch"; }
+                if (addToStage === void 0) { addToStage = false; }
+                if (parent === undefined) {
+                    parent = this.defaultGroup;
+                }
+                this.defaultGroup = null;
+                return new Phaser.SpriteBatch(this.game, parent, name, addToStage);
+            };
+            GameObjectFactory.prototype.tileSprite = function (x, y, width, height, key, frame, group) {
+                if (x === void 0) { x = 0; }
+                if (y === void 0) { y = 0; }
+                if (width === void 0) { width = 0; }
+                if (height === void 0) { height = 0; }
+                if (group === undefined) {
+                    group = this.defaultGroup;
+                }
+                this.defaultGroup = null;
+                return group.add(new Phaser.TileSprite(this.game, x, y, width, height, key, frame));
+            };
+            GameObjectFactory.prototype.rope = function (x, y, key, frame, points, group) {
+                if (x === void 0) { x = 0; }
+                if (y === void 0) { y = 0; }
+                if (group === undefined) {
+                    group = this.defaultGroup;
+                }
+                this.defaultGroup = null;
+                return group.add(new Phaser.Rope(this.game, x, y, key, frame, points));
+            };
+            GameObjectFactory.prototype.text = function (x, y, text, style, group) {
+                if (x === void 0) { x = 0; }
+                if (y === void 0) { y = 0; }
+                if (text === void 0) { text = ''; }
+                if (group === undefined) {
+                    group = this.defaultGroup;
+                }
+                this.defaultGroup = null;
+                return group.add(new Phaser.Text(this.game, x, y, text, style));
+            };
+            GameObjectFactory.prototype.button = function (x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame, group) {
+                if (x === void 0) { x = 0; }
+                if (y === void 0) { y = 0; }
+                if (group === undefined) {
+                    group = this.defaultGroup;
+                }
+                this.defaultGroup = null;
+                return group.add(new Phaser.Button(this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame));
+            };
+            GameObjectFactory.prototype.graphics = function (x, y, group) {
+                if (x === void 0) { x = 0; }
+                if (y === void 0) { y = 0; }
+                if (group === undefined) {
+                    group = this.defaultGroup;
+                }
+                this.defaultGroup = null;
+                return group.add(new Phaser.Graphics(this.game, x, y));
+            };
+            GameObjectFactory.prototype.bitmapText = function (x, y, font, text, size, align, group) {
+                if (text === void 0) { text = ""; }
+                if (size === void 0) { size = 32; }
+                if (group === undefined) {
+                    group = this.defaultGroup;
+                }
+                this.defaultGroup = null;
+                return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size, align));
+            };
+            Object.defineProperty(GameObjectFactory.prototype, "defaultGroup", {
+                get: function () {
+                    return this._defaultGroup || this.world;
+                },
+                set: function (value) {
+                    this._defaultGroup = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return GameObjectFactory;
+        })(Phaser.GameObjectFactory);
+        core.GameObjectFactory = GameObjectFactory;
+    })(core = dijon.core || (dijon.core = {}));
+})(dijon || (dijon = {}));
 /// <reference path="./AssetManager" />
 /// <reference path="./SequenceManager" />
 /// <reference path="./TransitionManager" />
 /// <reference path="./StorageManager" />
 /// <reference path="./AudioManager" />
 /// <reference path="./AnalyticsManager" />
+/// <reference path="./GameObjectFactory" />
 var dijon;
 (function (dijon) {
     var core;
@@ -1030,6 +1173,8 @@ var dijon;
             }
             Game.prototype.boot = function () {
                 _super.prototype.boot.call(this);
+                this.add = null;
+                this.add = new core.GameObjectFactory(this);
                 this.asset = new core.AssetManager();
                 this.sequence = new core.SequenceManager();
                 this.transition = new core.TransitionManager();
@@ -1039,12 +1184,22 @@ var dijon;
                 this.gameLayer = this.add.group();
                 this.uiLayer = this.add.group();
             };
-            Game.prototype.addToGame = function (obj) {
-                return this.gameLayer.add(obj);
-            };
-            Game.prototype.addToUI = function (obj) {
-                return this.uiLayer.add(obj);
-            };
+            Object.defineProperty(Game.prototype, "addToGame", {
+                get: function () {
+                    this.add.defaultGroup = this.gameLayer;
+                    return this.add;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Game.prototype, "addToUI", {
+                get: function () {
+                    this.add.defaultGroup = this.uiLayer;
+                    return this.add;
+                },
+                enumerable: true,
+                configurable: true
+            });
             return Game;
         })(Phaser.Game);
         core.Game = Game;
