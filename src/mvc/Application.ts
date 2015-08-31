@@ -1,3 +1,5 @@
+/// <reference path="../core/Game" />
+
 module dijon.mvc{
 	export class Application {
 		// static constants

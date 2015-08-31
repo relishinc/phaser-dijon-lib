@@ -1,3 +1,10 @@
+/// <reference path="./AssetManager" />
+/// <reference path="./SequenceManager" />
+/// <reference path="./TransitionManager" />
+/// <reference path="./StorageManager" />
+/// <reference path="./AudioManager" />
+/// <reference path="./AnalyticsManager" />
+
 module dijon.core{
 	export class Game extends Phaser.Game{
 		// public variables

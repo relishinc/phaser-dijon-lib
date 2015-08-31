@@ -1,6 +1,6 @@
 {
     "name": "dijon-es6",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "description": "dijon core js library for phaser game dev",
     "authors": [
         "anthonysapp <anthony@reli.sh>"

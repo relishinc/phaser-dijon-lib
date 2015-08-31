@@ -1,3 +1,6 @@
+/// <reference path="../mvc/Application" />
+/// <reference path="../core/Game" />
+
 module dijon.state{
     export class State extends Phaser.State{
         private _audio:Phaser.Sound[] = [];
@@ -30,7 +33,7 @@ module dijon.state{
         }
         
         // public methods
-        public listBuildSequence():Array<Function>{
+        public listBuildSequence():Function[]{
             return [];
         }
         

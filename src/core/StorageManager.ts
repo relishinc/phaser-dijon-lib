@@ -1,7 +1,9 @@
+/// <reference path="../mvc/Application" />
+/// <reference path="./Game" />
+
 module dijon.core{
 	export class StorageManager{
 		public game:dijon.core.Game;
-		
 		private _localStorageAvailable:boolean;
 		
 		constructor(){
@@ -47,7 +49,7 @@ module dijon.core{
 		* @param  {Boolean} isJSON is the stored data just a string or is it stringified json (assumes it's JSON)
 		* @return {String | Object} the retrieved data - if it's a JSON string, we parse the data and return the JSON object
 		*/
-		public getData(key:string, isJSON:boolean = true) {
+		public getFromLocalStorage(key:string, isJSON:boolean = true) {
 			var data = localStorage.getItem(key);
 			if (typeof data === 'undefined') {
 				console.log('no data saved with the key', key);
@@ -66,7 +68,7 @@ module dijon.core{
 		* @param  {String|Object} value the data to save (if it's an object, will be stringified before saving)
 		* @return {void}
 		*/
-		public saveData(key:string, value:string | Object) {
+		public saveToLocalStorage(key:string, value:string | Object) {
 			if (!this._localStorageAvailable) {
 				console.log('no local storage');
 				return false;
@@ -83,7 +85,7 @@ module dijon.core{
 		* @param  {String} key the LocalStorage key to clear
 		* @return {void}
 		*/
-		public clearData(key:string) {
+		public clearFromLocalStorage(key:string) {
 			if (!this._localStorageAvailable) {
 				console.log('no local storage');
 				return false;

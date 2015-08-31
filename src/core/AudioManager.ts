@@ -1,11 +1,14 @@
+/// <reference path="../mvc/Application" />
+/// <reference path="./Game" />
+
 module dijon.core{
 	export class AudioManager{
 		public game:dijon.core.Game;
 		
 		private _defaultVolume:number = 1;
-        private _sprites:{ [sprite: string]: Phaser.AudioSprite} = { };
-        private _sounds:{ [sound:string]: Phaser.Sound } = {};
-        private _markerLookup: {[id:string]: string} = {};
+        private _sprites:{[sprite: string]: Phaser.AudioSprite} = { };
+        private _sounds:{[sound:string]: Phaser.Sound } = {};
+        private _markerLookup:{[id:string]: string} = {};
 		
 		constructor(){
 			this.game = dijon.mvc.Application.getInstance().game;

@@ -1,7 +1,8 @@
 var gulp = require('gulp'),
     typescript = require('gulp-tsc'), 
-    uglify = require('gulp-uglify'), 
-    rename = require('gulp-rename');
+    uglify = require('gulp-uglify'),
+    sequwnce = require('run-sequence'), 
+    concat = require('gulp-concat');
  
 gulp.task('lib', function(){
   return gulp.src(['src/**/*.ts'])
@@ -12,6 +13,7 @@ gulp.task('lib', function(){
       module:"commonjs", 
       emitError:false,
       declaration:true,
+      removeComments:true,
       sourceMap:true
       }))
     .pipe(gulp.dest('build/'))
@@ -19,11 +21,11 @@ gulp.task('lib', function(){
 
 gulp.task('uglify', function(){
     return gulp.src('build/dijon.js')
+      .pipe(concat('dijon.min.js'))
       .pipe(uglify())
-      .pipe(rename({
-        extname: '.min.js'
-      }))
-      .pipe(gulp.dest('build/'));
+      .pipe(gulp.dest('build'));
 });
 
-gulp.task('compile', ['lib', 'uglify']);
+gulp.task('compile', function(done){
+  return sequwnce('lib', 'uglify', done); 
+});

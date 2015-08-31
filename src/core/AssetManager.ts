@@ -1,3 +1,6 @@
+/// <reference path="../mvc/Application" />
+/// <reference path="./Game" />
+
 module dijon.core{
     export interface IAsset{
         url:string;
