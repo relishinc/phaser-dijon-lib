@@ -6,11 +6,17 @@ module dijon.state{
     export class State extends Phaser.State{
         private _audio:Phaser.Sound[] = [];
         public game:core.Game;
+        
         public add:core.GameObjectFactory;
+        public addToUI:core.GameObjectFactory;
+        public addToGame:core.GameObjectFactory;
         
         constructor(){
             super();
             this.game = mvc.Application.getInstance().game;
+            
+            this.addToUI = this.game.addToUI;
+            this.addToGame = this.game.addToGame;
         }
         
         public init():void{}

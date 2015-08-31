@@ -52,7 +52,7 @@ module dijon.core{
 		 * ie (this.game.addToGame.image(0, 0, key, frame));
 		 * it will be added to the appropriate layer
 		 */
-		public get addToGame():Phaser.GameObjectFactory{
+		public get addToGame():core.GameObjectFactory{
 			
 			this.add.defaultGroup = this.gameLayer;
 			return this.add;
@@ -64,7 +64,7 @@ module dijon.core{
 		 * ie (this.game.addToUI.image(0, 0, key, frame));
 		 * it will be added to the appropriate layer
 		 */
-		public get addToUI():Phaser.GameObjectFactory{
+		public get addToUI():core.GameObjectFactory{
 			// set the default group for the gameObjectFactory before adding
 			this.add.defaultGroup = this.uiLayer;
 			return this.add;
