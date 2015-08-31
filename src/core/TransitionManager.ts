@@ -34,7 +34,7 @@ module dijon.core{
                 private _toState:string = null;
                 
                 constructor(){
-                        this.game = dijon.mvc.Application.getInstance().game;
+                        this.game = mvc.Application.getInstance().game;
                 }	
                 
                 private _add(id:string, outHandler:ITransitionHandler, preloadHandler:IPreloadHandler, inHandler:ITransitionHandler):void{

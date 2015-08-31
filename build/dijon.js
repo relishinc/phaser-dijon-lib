@@ -1,3 +1,114 @@
+/// <reference path="./Application" />
+/// <reference path="../core/Game" />
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var dijon;
+(function (dijon) {
+    var mvc;
+    (function (mvc) {
+        var Notification = (function (_super) {
+            __extends(Notification, _super);
+            function Notification() {
+                _super.apply(this, arguments);
+            }
+            return Notification;
+        })(Phaser.Signal);
+        mvc.Notification = Notification;
+    })(mvc = dijon.mvc || (dijon.mvc = {}));
+})(dijon || (dijon = {}));
+/// <reference path="./Application" />
+/// <reference path="./Notification" />
+/// <reference path="../core/Game" />
+var dijon;
+(function (dijon) {
+    var mvc;
+    (function (mvc) {
+        var Mediator = (function () {
+            function Mediator(_name, _viewComponent, autoReg) {
+                if (_viewComponent === void 0) { _viewComponent = null; }
+                if (autoReg === void 0) { autoReg = true; }
+                this._name = _name;
+                this._viewComponent = _viewComponent;
+            }
+            Mediator.prototype._register = function () {
+                mvc.Application.getInstance().registerMediator(this._name, this);
+            };
+            Mediator.prototype.onRegister = function () {
+            };
+            Mediator.prototype.listNotificationInterests = function () {
+                return [];
+            };
+            Mediator.prototype.handleNotification = function (note) {
+            };
+            Object.defineProperty(Mediator.prototype, "viewCompnent", {
+                set: function (viewComponent) {
+                    this._viewComponent = viewComponent;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Mediator.prototype, "viewComponent", {
+                get: function () {
+                    return this._viewComponent;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Mediator.prototype, "name", {
+                get: function () {
+                    return this._name;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return Mediator;
+        })();
+        mvc.Mediator = Mediator;
+    })(mvc = dijon.mvc || (dijon.mvc = {}));
+})(dijon || (dijon = {}));
+/// <reference path="./Mediator" />
+/// <reference path="../core/Game" />
+var dijon;
+(function (dijon) {
+    var mvc;
+    (function (mvc) {
+        var Application = (function () {
+            function Application() {
+                this._mediators = {};
+                if (Application.instance)
+                    throw Error(Application.SINGLETON_MSG);
+                Application.instance = this;
+                this.initializeApplication();
+            }
+            Application.prototype.initializeApplication = function () {
+                this.game = new dijon.core.Game({
+                    width: 800,
+                    height: 600,
+                    parent: 'game-container',
+                    renderer: Phaser.AUTO,
+                    transparent: false
+                });
+            };
+            Application.prototype.registerMediator = function (mediatorName, mediator) {
+                this._mediators[mediator.name] = mediator;
+                mediator.onRegister();
+            };
+            Application.getInstance = function () {
+                if (!Application.instance)
+                    Application.instance = new Application();
+                return Application.instance;
+            };
+            Application.instance = null;
+            Application.SINGLETON_MSG = 'Application singleton already constructed!';
+            return Application;
+        })();
+        mvc.Application = Application;
+    })(mvc = dijon.mvc || (dijon.mvc = {}));
+})(dijon || (dijon = {}));
 /// <reference path="../mvc/Application" />
 /// <reference path="./Game" />
 var dijon;
@@ -844,83 +955,6 @@ var dijon;
         core.AudioManager = AudioManager;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/// <reference path="./AssetManager" />
-/// <reference path="./SequenceManager" />
-/// <reference path="./TransitionManager" />
-/// <reference path="./StorageManager" />
-/// <reference path="./AudioManager" />
-/// <reference path="./AnalyticsManager" />
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var dijon;
-(function (dijon) {
-    var core;
-    (function (core) {
-        var Game = (function (_super) {
-            __extends(Game, _super);
-            function Game(config) {
-                _super.call(this, config);
-                this.debugger = null;
-            }
-            Game.prototype.boot = function () {
-                _super.prototype.boot.call(this);
-                this.asset = new dijon.core.AssetManager();
-                this.sequence = new dijon.core.SequenceManager();
-                this.transition = new dijon.core.TransitionManager();
-                this.storage = new dijon.core.StorageManager();
-                this.audio = new dijon.core.AudioManager();
-                this.analytics = new dijon.core.AnalyticsManager();
-                this.gameLayer = this.add.group();
-                this.uiLayer = this.add.group();
-            };
-            Game.prototype.addToGame = function (obj) {
-                return this.gameLayer.add(obj);
-            };
-            Game.prototype.addToUI = function (obj) {
-                return this.uiLayer.add(obj);
-            };
-            return Game;
-        })(Phaser.Game);
-        core.Game = Game;
-    })(core = dijon.core || (dijon.core = {}));
-})(dijon || (dijon = {}));
-/// <reference path="../core/Game" />
-var dijon;
-(function (dijon) {
-    var mvc;
-    (function (mvc) {
-        var Application = (function () {
-            function Application() {
-                if (Application.instance)
-                    throw Error(Application.SINGLETON_MSG);
-                Application.instance = this;
-                this.initializeApplication();
-            }
-            Application.prototype.initializeApplication = function () {
-                this.game = new dijon.core.Game({
-                    width: 800,
-                    height: 600,
-                    parent: 'game-container',
-                    renderer: Phaser.AUTO,
-                    transparent: false
-                });
-            };
-            Application.getInstance = function () {
-                if (!Application.instance)
-                    Application.instance = new Application();
-                return Application.instance;
-            };
-            Application.instance = null;
-            Application.SINGLETON_MSG = 'Application singleton already constructed!';
-            return Application;
-        })();
-        mvc.Application = Application;
-    })(mvc = dijon.mvc || (dijon.mvc = {}));
-})(dijon || (dijon = {}));
 /// <reference path="../mvc/Application" />
 /// <reference path="./Game" />
 var dijon;
@@ -978,46 +1012,350 @@ var dijon;
         core.AnalyticsException = AnalyticsException;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
+/// <reference path="./AssetManager" />
+/// <reference path="./SequenceManager" />
+/// <reference path="./TransitionManager" />
+/// <reference path="./StorageManager" />
+/// <reference path="./AudioManager" />
+/// <reference path="./AnalyticsManager" />
+var dijon;
+(function (dijon) {
+    var core;
+    (function (core) {
+        var Game = (function (_super) {
+            __extends(Game, _super);
+            function Game(config) {
+                _super.call(this, config);
+                this.debugger = null;
+            }
+            Game.prototype.boot = function () {
+                _super.prototype.boot.call(this);
+                this.asset = new core.AssetManager();
+                this.sequence = new core.SequenceManager();
+                this.transition = new core.TransitionManager();
+                this.storage = new core.StorageManager();
+                this.audio = new core.AudioManager();
+                this.analytics = new core.AnalyticsManager();
+                this.gameLayer = this.add.group();
+                this.uiLayer = this.add.group();
+            };
+            Game.prototype.addToGame = function (obj) {
+                return this.gameLayer.add(obj);
+            };
+            Game.prototype.addToUI = function (obj) {
+                return this.uiLayer.add(obj);
+            };
+            return Game;
+        })(Phaser.Game);
+        core.Game = Game;
+    })(core = dijon.core || (dijon.core = {}));
+})(dijon || (dijon = {}));
 /// <reference path="../core/Game" />
+/// <reference path="../mvc/Application" />
+var dijon;
+(function (dijon) {
+    var component;
+    (function (component) {
+        var Component = (function () {
+            function Component() {
+                this.game = dijon.mvc.Application.getInstance().game;
+                this.name = 'Component';
+            }
+            Component.prototype.setOwner = function (owner) {
+                this.owner = owner;
+            };
+            Component.prototype.init = function () { };
+            Component.prototype.buildInterface = function () { };
+            Component.prototype.update = function () { };
+            Component.prototype.destroy = function () { };
+            return Component;
+        })();
+        component.Component = Component;
+    })(component = dijon.component || (dijon.component = {}));
+})(dijon || (dijon = {}));
+/// <reference path="../mvc/Application" />
+/// <reference path="../core/Game" />
+/// <reference path="../component/Component" />
 var dijon;
 (function (dijon) {
     var display;
     (function (display) {
         var Group = (function (_super) {
             __extends(Group, _super);
-            function Group() {
-                _super.apply(this, arguments);
+            function Group(x, y, name, addToStage, enableBody, physicsBodyType, components) {
+                if (x === void 0) { x = 0; }
+                if (y === void 0) { y = 0; }
+                if (name === void 0) { name = "dGroup"; }
+                if (addToStage === void 0) { addToStage = false; }
+                if (components === void 0) { components = null; }
+                _super.call(this, dijon.mvc.Application.getInstance().game, null, name, addToStage, enableBody, physicsBodyType);
+                this.name = name;
+                this._hasComponents = false;
+                this._componentKeys = [];
+                this._components = {};
+                this.addComponents = function (components) {
+                    if (typeof components.length === 'undefined')
+                        throw new Error('Dijon.UIGroup components must be an array');
+                    while (components.length > 0)
+                        this.addComponent(components.shift());
+                };
+                this.position.set(x, y);
+                this.init();
+                if (!addToStage)
+                    this.game.add.existing(this);
+                this.buildInterface();
+                if (components)
+                    this.addComponents(components);
             }
+            Group.prototype.update = function () {
+                if (this._hasComponents)
+                    this.updateComponents();
+            };
+            Group.prototype.destroy = function () {
+                this.removeAllComponents();
+                _super.prototype.destroy.call(this);
+            };
+            Group.prototype.init = function () { };
+            Group.prototype.buildInterface = function () { };
+            Group.prototype._updateComponentKeys = function () {
+                this._componentKeys = Object.keys(this._components);
+                this._hasComponents = this._componentKeys.length > 0;
+            };
+            Group.prototype.addComponent = function (component) {
+                component.setOwner(this);
+                component.init();
+                component.buildInterface();
+                this._components[component.name] = component;
+                this._updateComponentKeys();
+                return component;
+            };
+            ;
+            Group.prototype.updateComponents = function () {
+                var _this = this;
+                this._componentKeys.forEach(function (componentName) {
+                    _this.updateComponent(componentName);
+                });
+            };
+            Group.prototype.updateComponent = function (componentName) {
+                this._components[componentName].update();
+            };
+            Group.prototype.removeAllComponents = function () {
+                while (this._componentKeys.length > 0) {
+                    this.removeComponent(this._componentKeys.pop());
+                }
+            };
+            Group.prototype.removeComponent = function (componentName) {
+                if (typeof this._components[componentName] === 'undefined')
+                    return;
+                this._components[componentName].destroy();
+                this._components[componentName] = null;
+                delete this._components[componentName];
+                this._updateComponentKeys();
+            };
             return Group;
         })(Phaser.Group);
         display.Group = Group;
     })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
+/// <reference path="../lib.d.ts" />
+/// <reference path="../mvc/Application" />
 /// <reference path="../core/Game" />
+/// <reference path="../component/Component" />
 var dijon;
 (function (dijon) {
     var display;
     (function (display) {
         var Sprite = (function (_super) {
             __extends(Sprite, _super);
-            function Sprite() {
-                _super.apply(this, arguments);
+            function Sprite(x, y, key, frame, name, components) {
+                if (name === void 0) { name = "dSprite"; }
+                if (components === void 0) { components = null; }
+                _super.call(this, dijon.mvc.Application.getInstance().game, x, y, key, frame);
+                this.name = name;
+                this._hasComponents = false;
+                this._componentKeys = [];
+                this._components = {};
+                this.addComponents = function (components) {
+                    if (typeof components.length === 'undefined')
+                        throw new Error('Dijon.UIGroup components must be an array');
+                    while (components.length > 0)
+                        this.addComponent(components.shift());
+                };
+                this.init();
+                this.buildInterface();
+                if (components)
+                    this.addComponents(components);
             }
+            Sprite.prototype.update = function () {
+                if (this._hasComponents)
+                    this.updateComponents();
+            };
+            Sprite.prototype.destroy = function () {
+                this.removeAllComponents();
+                _super.prototype.destroy.call(this);
+            };
+            Sprite.prototype.init = function () { };
+            Sprite.prototype.buildInterface = function () { };
+            Sprite.prototype._updateComponentKeys = function () {
+                this._componentKeys = Object.keys(this._components);
+                this._hasComponents = this._componentKeys.length > 0;
+            };
+            Sprite.prototype.addComponent = function (component) {
+                component.setOwner(this);
+                component.init();
+                component.buildInterface();
+                this._components[component.name] = component;
+                this._updateComponentKeys();
+                return component;
+            };
+            ;
+            Sprite.prototype.updateComponents = function () {
+                var _this = this;
+                this._componentKeys.forEach(function (componentName) {
+                    _this.updateComponent(componentName);
+                });
+            };
+            Sprite.prototype.updateComponent = function (componentName) {
+                this._components[componentName].update();
+            };
+            Sprite.prototype.removeAllComponents = function () {
+                while (this._componentKeys.length > 0) {
+                    this.removeComponent(this._componentKeys.pop());
+                }
+            };
+            Sprite.prototype.removeComponent = function (componentName) {
+                if (typeof this._components[componentName] === 'undefined')
+                    return;
+                this._components[componentName].destroy();
+                this._components[componentName] = null;
+                delete this._components[componentName];
+                this._updateComponentKeys();
+            };
             return Sprite;
         })(Phaser.Sprite);
         display.Sprite = Sprite;
     })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
 /// <reference path="../core/Game" />
+/// <reference path="../mvc/Application" />
 var dijon;
 (function (dijon) {
     var display;
     (function (display) {
         var Text = (function (_super) {
             __extends(Text, _super);
-            function Text() {
-                _super.apply(this, arguments);
+            function Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings) {
+                if (text === void 0) { text = ""; }
+                if (fontSize === void 0) { fontSize = Text.DEFAULT_FONT_SIZE; }
+                if (fontColor === void 0) { fontColor = Text.DEFAULT_FONT_COLOR; }
+                if (fontAlign === void 0) { fontAlign = 'left'; }
+                if (wordWrap === void 0) { wordWrap = false; }
+                if (width === void 0) { width = 0; }
+                if (lineSpacing === void 0) { lineSpacing = 0; }
+                if (settings === void 0) { settings = null; }
+                _super.call(this, dijon.mvc.Application.getInstance().game, x, y, text, Text._addSettings({
+                    font: fontSize + 'px ' + fontName,
+                    fill: fontColor,
+                    align: fontAlign,
+                    wordWrap: wordWrap,
+                    wordWrapWidth: width
+                }, settings));
+                this.lineSpacing = lineSpacing;
+                this.onAnimationComplete = new Phaser.Signal();
+                this._canUpdate = false;
+                this._textToAnimate = [];
+                this.stopAnimating = function () {
+                    this._canUpdate = false;
+                    this._textToAnimate = null;
+                    this.game.time.events.remove(this._delayTimer);
+                    this.game.time.events.remove(this._repeatTimer);
+                };
+                this.roundPixel = function () {
+                    this.position.set(Math.round(this.x), Math.round(this.y));
+                };
+                this.text = text.replace(/'/g, "\'");
+                this.resolution = this.game.resolution;
             }
+            Text.prototype.setText = function (text) {
+                _super.prototype.setText.call(this, text);
+                this._lowercaseText = this.text.toLowerCase();
+                if (this.game) {
+                    this.resolution = this.game.resolution;
+                }
+                return this;
+            };
+            ;
+            Text.prototype._startTextAnimation = function () {
+                this._canUpdate = true;
+                this._repeatTimer = this.game.time.events.repeat(this._letterTime * 100, this._textLength, this._updateTextAnimation, this);
+            };
+            ;
+            Text.prototype._updateTextAnimation = function () {
+                if (!this._canUpdate || !this._textToAnimate) {
+                    return false;
+                }
+                var index = this._textLength - this._textToAnimate.length;
+                this.addColor(this.style.fill, index);
+                this.addColor('rgba(0,0,0,0)', index + 1);
+                this._textToAnimate.shift();
+                if (this._textToAnimate.length === 0) {
+                    this.onAnimationComplete.dispatch();
+                }
+            };
+            Text.prototype.setColor = function (color) {
+                return this.highlightPhrase(this.text, color, false);
+            };
+            ;
+            Text.prototype.resetColor = function () {
+                return this.highlightPhrase(this.text, this.style.fill, false);
+            };
+            ;
+            Text.prototype.highlightPhrase = function (phrase, color, caseSensitive) {
+                if (caseSensitive === void 0) { caseSensitive = false; }
+                var text = caseSensitive ? this.text : this._lowercaseText;
+                phrase = caseSensitive ? phrase : phrase.toLowerCase();
+                var len = phrase.length;
+                var startIndex = text.indexOf(phrase);
+                var endIndex = startIndex + len;
+                while (startIndex <= endIndex) {
+                    this.addColor(color, startIndex);
+                    startIndex++;
+                }
+                this.addColor(this.style.fill, endIndex);
+            };
+            ;
+            Text.prototype.animate = function (letterTime, delay) {
+                if (letterTime === void 0) { letterTime = 0.1; }
+                if (delay === void 0) { delay = 0; }
+                this.game.time.events.remove(this._delayTimer);
+                this.game.time.events.remove(this._repeatTimer);
+                this._letterTime = letterTime;
+                this._textLength = this.text.length;
+                this._textToAnimate = this.text.split('');
+                var startIndex = 0;
+                var endIndex = this._textLength;
+                while (startIndex <= endIndex) {
+                    this.addColor('rgba(0,0,0,0)', startIndex);
+                    startIndex++;
+                }
+                this._delayTimer = this.game.time.events.add(delay * Phaser.Timer.SECOND, this._startTextAnimation, this);
+            };
+            ;
+            Text._addSettings = function (obj, settings) {
+                if (!settings)
+                    return obj;
+                for (var prop in settings) {
+                    if (settings.hasOwnProperty(prop)) {
+                        obj[prop] = settings[prop];
+                    }
+                }
+                return obj;
+            };
+            Text.DEFAULT_FONT_SIZE = 12;
+            Text.DEFAULT_FONT_COLOR = "#000000";
+            Text.DEFAULT_FONT = "Helvetica Neue, Arial";
+            Text.GLOBAL_PADDING_X = 0;
+            Text.GLOBAL_PADDING_Y = 0;
             return Text;
         })(Phaser.Text);
         display.Text = Text;
@@ -1029,42 +1367,71 @@ var dijon;
 (function (dijon) {
     var mvc;
     (function (mvc) {
-        var Mediator = (function () {
-            function Mediator() {
+        var Model = (function () {
+            function Model(dataKey) {
+                if (dataKey === void 0) { dataKey = null; }
+                this.game = mvc.Application.getInstance().game;
+                if (dataKey) {
+                    this.setData(dataKey);
+                }
             }
-            return Mediator;
+            Model.prototype.getKeyExists = function (key) {
+                return this.game.cache.getText(key) !== null;
+            };
+            Model.prototype.parseData = function (key) {
+                return JSON.parse(this.game.cache.getText(key));
+            };
+            Model.prototype.setData = function (dataKey) {
+                if (!this.getKeyExists(dataKey)) {
+                    console.log('cannot set data from key ' + dataKey + '. Is it in the Phaser cache?');
+                    return false;
+                }
+                this._data = this.parseData(dataKey);
+                return this._data;
+            };
+            Model.prototype.getData = function () {
+                return this._data;
+            };
+            return Model;
         })();
-        mvc.Mediator = Mediator;
+        mvc.Model = Model;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
 })(dijon || (dijon = {}));
-/// <reference path="./Application" />
 /// <reference path="../core/Game" />
+/// <reference path="./Application" />
+/// <reference path="./Model" />
 var dijon;
 (function (dijon) {
     var mvc;
     (function (mvc) {
-        var Models = (function () {
-            function Models() {
+        var CopyModel = (function (_super) {
+            __extends(CopyModel, _super);
+            function CopyModel(dataKey) {
+                if (dataKey === void 0) { dataKey = null; }
+                _super.call(this, dataKey);
+                this._languages = {};
+                this._languages['en'] = this._data;
             }
-            return Models;
-        })();
-        mvc.Models = Models;
-    })(mvc = dijon.mvc || (dijon.mvc = {}));
-})(dijon || (dijon = {}));
-/// <reference path="./Application" />
-/// <reference path="../core/Game" />
-var dijon;
-(function (dijon) {
-    var mvc;
-    (function (mvc) {
-        var Notification = (function (_super) {
-            __extends(Notification, _super);
-            function Notification() {
-                _super.apply(this, arguments);
-            }
-            return Notification;
-        })(Phaser.Signal);
-        mvc.Notification = Notification;
+            CopyModel.prototype.getCopy = function (groupId, itemId) {
+                return this.getCopyGroup(groupId)[itemId];
+            };
+            CopyModel.prototype.getCopyGroup = function (groupId) {
+                return this._data[groupId];
+            };
+            CopyModel.prototype.addLanguage = function (languageId, dataKey) {
+                if (!this.getKeyExists(dataKey)) {
+                    throw new Error('cannot add an alternate language from key ' + dataKey + '. Is it in the Phaser cache?');
+                }
+                this._languages[languageId] = this.parseData(dataKey);
+            };
+            CopyModel.prototype.changeLanguage = function (languageId) {
+                if (typeof this._languages[languageId] === 'undefined')
+                    throw new Error('there is no language ' + languageId);
+                this._data = this._languages[languageId];
+            };
+            return CopyModel;
+        })(mvc.Model);
+        mvc.CopyModel = CopyModel;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
 })(dijon || (dijon = {}));
 /// <reference path="./Application" />

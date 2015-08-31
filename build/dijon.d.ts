@@ -1,3 +1,35 @@
+/// <reference path="../src/lib.d.ts" />
+declare module dijon.mvc {
+    class Notification extends Phaser.Signal {
+    }
+}
+declare module dijon.mvc {
+    class Mediator {
+        private _name;
+        private _viewComponent;
+        game: core.Game;
+        constructor(_name: string, _viewComponent?: any, autoReg?: boolean);
+        private _register();
+        onRegister(): void;
+        listNotificationInterests(): string[];
+        handleNotification(note: Notification): void;
+        viewCompnent: any;
+        viewComponent: any;
+        name: string;
+    }
+}
+declare module dijon.mvc {
+    class Application {
+        static instance: any;
+        static SINGLETON_MSG: string;
+        game: core.Game;
+        private _mediators;
+        constructor();
+        initializeApplication(): void;
+        registerMediator(mediatorName: string, mediator: Mediator): void;
+        static getInstance(): Application;
+    }
+}
 declare module dijon.core {
     interface IAsset {
         url: string;
@@ -208,33 +240,6 @@ declare module dijon.core {
     }
 }
 declare module dijon.core {
-    class Game extends Phaser.Game {
-        asset: dijon.core.AssetManager;
-        sequence: dijon.core.SequenceManager;
-        transition: dijon.core.TransitionManager;
-        storage: dijon.core.StorageManager;
-        audio: dijon.core.AudioManager;
-        analytics: dijon.core.AnalyticsManager;
-        gameLayer: Phaser.Group;
-        uiLayer: Phaser.Group;
-        debugger: any;
-        constructor(config: Phaser.IGameConfig);
-        boot(): void;
-        addToGame(obj: Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group): Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group;
-        addToUI(obj: Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group): Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group;
-    }
-}
-declare module dijon.mvc {
-    class Application {
-        static instance: any;
-        static SINGLETON_MSG: string;
-        game: dijon.core.Game;
-        constructor();
-        initializeApplication(): void;
-        static getInstance(): Application;
-    }
-}
-declare module dijon.core {
     class AnalyticsManager {
         category: string;
         constructor(category?: string);
@@ -248,28 +253,132 @@ declare module dijon.core {
         constructor(message: string);
     }
 }
+declare module dijon.core {
+    class Game extends Phaser.Game {
+        asset: AssetManager;
+        sequence: SequenceManager;
+        transition: TransitionManager;
+        storage: StorageManager;
+        audio: AudioManager;
+        analytics: AnalyticsManager;
+        gameLayer: Phaser.Group;
+        uiLayer: Phaser.Group;
+        debugger: any;
+        constructor(config: Phaser.IGameConfig);
+        boot(): void;
+        addToGame(obj: Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group): Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group;
+        addToUI(obj: Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group): Phaser.Sprite | Phaser.Image | Phaser.Button | Phaser.Text | Phaser.BitmapData | Phaser.SpriteBatch | Phaser.Group;
+    }
+}
+declare module dijon.component {
+    class Component {
+        game: core.Game;
+        name: string;
+        owner: any;
+        constructor();
+        setOwner(owner: any): void;
+        init(): void;
+        buildInterface(): void;
+        update(): void;
+        destroy(): void;
+    }
+}
 declare module dijon.display {
     class Group extends Phaser.Group {
+        name: string;
+        game: core.Game;
+        protected _hasComponents: boolean;
+        protected _componentKeys: string[];
+        protected _components: {
+            [componentName: string]: component.Component;
+        };
+        constructor(x?: number, y?: number, name?: string, addToStage?: boolean, enableBody?: boolean, physicsBodyType?: number, components?: component.Component[]);
+        update(): void;
+        destroy(): void;
+        protected init(): void;
+        protected buildInterface(): void;
+        private _updateComponentKeys();
+        addComponents: (components: component.Component[]) => void;
+        addComponent(component: component.Component): component.Component;
+        updateComponents(): void;
+        updateComponent(componentName: string): void;
+        removeAllComponents(): void;
+        removeComponent(componentName: string): void;
     }
 }
 declare module dijon.display {
     class Sprite extends Phaser.Sprite {
+        name: string;
+        game: core.Game;
+        protected _hasComponents: boolean;
+        protected _componentKeys: string[];
+        protected _components: {
+            [componentName: string]: component.Component;
+        };
+        constructor(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: component.Component[]);
+        update(): void;
+        destroy(): void;
+        protected init(): void;
+        protected buildInterface(): void;
+        private _updateComponentKeys();
+        addComponents: (components: component.Component[]) => void;
+        addComponent(component: component.Component): component.Component;
+        updateComponents(): void;
+        updateComponent(componentName: string): void;
+        removeAllComponents(): void;
+        removeComponent(componentName: string): void;
     }
 }
 declare module dijon.display {
     class Text extends Phaser.Text {
+        lineSpacing: number;
+        game: core.Game;
+        style: any;
+        onAnimationComplete: Phaser.Signal;
+        protected _canUpdate: boolean;
+        protected _repeatTimer: Phaser.TimerEvent;
+        protected _delayTimer: Phaser.TimerEvent;
+        protected _lowercaseText: string;
+        protected _letterTime: number;
+        protected _textLength: number;
+        protected _textToAnimate: string[];
+        static DEFAULT_FONT_SIZE: number;
+        static DEFAULT_FONT_COLOR: string;
+        static DEFAULT_FONT: string;
+        static GLOBAL_PADDING_X: number;
+        static GLOBAL_PADDING_Y: number;
+        constructor(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object);
+        setText(text: string): Phaser.Text;
+        protected _startTextAnimation(): void;
+        protected _updateTextAnimation(): boolean;
+        setColor(color: string): void;
+        resetColor(): void;
+        highlightPhrase(phrase: string, color: string, caseSensitive?: boolean): void;
+        animate(letterTime?: number, delay?: number): void;
+        stopAnimating: () => void;
+        roundPixel: () => void;
+        private static _addSettings(obj, settings);
     }
 }
 declare module dijon.mvc {
-    class Mediator {
+    class Model {
+        game: core.Game;
+        protected _data: any;
+        constructor(dataKey?: string);
+        protected getKeyExists(key: string): boolean;
+        protected parseData(key: any): any;
+        setData(dataKey: string): any;
+        getData(): any;
     }
 }
 declare module dijon.mvc {
-    class Models {
-    }
-}
-declare module dijon.mvc {
-    class Notification extends Phaser.Signal {
+    class CopyModel extends Model {
+        private _languages;
+        constructor(dataKey?: string);
+        getCopy(groupId: string, itemId: string): string;
+        getCopyGroup(groupId: string): any;
+        addLanguage(languageId: string, dataKey: string): any;
+        changeLanguage(languageId: string): void;
     }
 }
 declare module dijon.mvc {
@@ -279,7 +388,7 @@ declare module dijon.mvc {
 declare module dijon.state {
     class State extends Phaser.State {
         private _audio;
-        game: dijon.core.Game;
+        game: core.Game;
         constructor();
         init(): void;
         preload(): void;

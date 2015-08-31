@@ -1,3 +1,4 @@
+/// <reference path="./Mediator" />
 /// <reference path="../core/Game" />
 
 module dijon.mvc{
@@ -6,7 +7,9 @@ module dijon.mvc{
 		static instance = null;
 		static SINGLETON_MSG = 'Application singleton already constructed!';
 		
-		public game:dijon.core.Game;
+		public game:core.Game;
+		
+		private _mediators:{[name:string]:Mediator} = {};
 		
 		constructor(){
 			if( Application.instance )
@@ -25,6 +28,11 @@ module dijon.mvc{
 				renderer: Phaser.AUTO, 
 				transparent: false
 			});
+		}
+		
+		public registerMediator(mediatorName:string, mediator:Mediator):void{
+			this._mediators[mediator.name] = mediator;
+			mediator.onRegister();
 		}
 		
 		public static getInstance():Application{

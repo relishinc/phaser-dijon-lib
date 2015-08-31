@@ -9,12 +9,12 @@ module dijon.core{
 	export class Game extends Phaser.Game{
 		// public variables
 		// managers
-		public asset:dijon.core.AssetManager;
-		public sequence:dijon.core.SequenceManager;
-		public transition:dijon.core.TransitionManager;
-		public storage:dijon.core.StorageManager;
-		public audio:dijon.core.AudioManager;
-		public analytics:dijon.core.AnalyticsManager;
+		public asset:AssetManager;
+		public sequence:SequenceManager;
+		public transition:TransitionManager;
+		public storage:StorageManager;
+		public audio:AudioManager;
+		public analytics:AnalyticsManager;
 		
 		// display layers
 		public gameLayer:Phaser.Group;
@@ -30,12 +30,12 @@ module dijon.core{
 		public boot(){ 
 			super.boot();
 			
-			this.asset = new dijon.core.AssetManager();
-			this.sequence = new dijon.core.SequenceManager();
-			this.transition = new dijon.core.TransitionManager();
-			this.storage = new dijon.core.StorageManager();
-			this.audio = new dijon.core.AudioManager();
-			this.analytics = new dijon.core.AnalyticsManager();
+			this.asset = new AssetManager();
+			this.sequence = new SequenceManager();
+			this.transition = new TransitionManager();
+			this.storage = new StorageManager();
+			this.audio = new AudioManager();
+			this.analytics = new AnalyticsManager();
 			
 			this.gameLayer = this.add.group();
 			this.uiLayer = this.add.group();  
