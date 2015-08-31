@@ -285,8 +285,8 @@ declare module dijon.core {
         debugger: any;
         constructor(config: Phaser.IGameConfig);
         boot(): void;
-        addToGame: Phaser.GameObjectFactory;
-        addToUI: Phaser.GameObjectFactory;
+        addToGame: core.GameObjectFactory;
+        addToUI: core.GameObjectFactory;
     }
 }
 declare module dijon.component {
@@ -408,6 +408,9 @@ declare module dijon.state {
     class State extends Phaser.State {
         private _audio;
         game: core.Game;
+        add: core.GameObjectFactory;
+        addToUI: core.GameObjectFactory;
+        addToGame: core.GameObjectFactory;
         constructor();
         init(): void;
         preload(): void;
