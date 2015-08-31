@@ -1181,8 +1181,8 @@ var dijon;
                 this.storage = new core.StorageManager();
                 this.audio = new core.AudioManager();
                 this.analytics = new core.AnalyticsManager();
-                this.gameLayer = this.add.group();
-                this.uiLayer = this.add.group();
+                this.gameLayer = this.add.group(this.world, '_game_layer');
+                this.uiLayer = this.add.group(this.world, '_ui_layer');
             };
             Object.defineProperty(Game.prototype, "addToGame", {
                 get: function () {

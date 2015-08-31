@@ -41,8 +41,8 @@ module dijon.core{
 			this.audio = new AudioManager();
 			this.analytics = new AnalyticsManager();
 			
-			this.gameLayer = this.add.group();
-			this.uiLayer = this.add.group();  
+			this.gameLayer = this.add.group(this.world, '_game_layer');
+			this.uiLayer = this.add.group(this.world, '_ui_layer');  
 		}
 		
 		// public methods
