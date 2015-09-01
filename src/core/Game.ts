@@ -55,8 +55,14 @@ module dijon.core{
 			this.uiLayer = this.add.group(this.world, '_ui_layer');  
 		}
 		
-		// getter / setter
+		// public methods
 		
+		public changeState(toState:string):void{
+			this.gameLayer.removeAll(true, true);
+			return this.state.start(toState, false, false);
+		}
+				
+		// getter / setter
 		/**
 		 * sets the default group for the gameObjectFactory to gameLayer before adding 
 		 * this way if we pass a null group to whatever method we call 

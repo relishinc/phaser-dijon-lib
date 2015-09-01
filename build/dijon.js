@@ -471,7 +471,7 @@ var dijon;
                 }
                 this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this._preloadComplete, this);
                 this.onTransitionInComplete.dispatch();
-                this.game.state.start(this._toState);
+                this.game.changeState(this._toState);
             };
             TransitionManager.prototype._transitionOutComplete = function () {
                 this._transition = null;
@@ -532,7 +532,7 @@ var dijon;
                 this._transition = this._getTransition(this._fromState, this._toState);
                 if (!this._transition) {
                     console.log('no transition found for:', this.game.state.current + ' to ' + state);
-                    this.game.state.start(this._toState);
+                    this.game.changeState(this._toState);
                 }
                 this.transitionIn();
             };
@@ -1026,6 +1026,10 @@ var dijon;
                 this.add = new core.GameObjectFactory(this);
                 this.gameLayer = this.add.group(this.world, '_game_layer');
                 this.uiLayer = this.add.group(this.world, '_ui_layer');
+            };
+            Game.prototype.changeState = function (toState) {
+                this.gameLayer.removeAll(true, true);
+                return this.state.start(toState, false, false);
             };
             Object.defineProperty(Game.prototype, "addToGame", {
                 get: function () {

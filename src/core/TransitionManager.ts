@@ -64,8 +64,8 @@ module dijon.core{
         
                         this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this._preloadComplete, this);
                         this.onTransitionInComplete.dispatch();
-                
-                        this.game.state.start(this._toState);
+                        
+                        this.game.changeState(this._toState);
                 }
         
                 _transitionOutComplete() {
@@ -177,7 +177,7 @@ module dijon.core{
                 
                         if (!this._transition) {
                                 console.log('no transition found for:', this.game.state.current + ' to ' + state);
-                                this.game.state.start(this._toState);
+                                this.game.changeState(this._toState);
                         }
                 
                         this.transitionIn();
