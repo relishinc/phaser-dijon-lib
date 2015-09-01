@@ -56,7 +56,13 @@ module dijon.core{
 		}
 		
 		// public methods
-		
+		/**
+		 * removes all items from the game layer
+		 * but allows the ui layer to persist
+		 * that way we can overlay the game without adding stuff to the phaser stage (for transitions)
+		 * @param {String} toState the new state we're changing to
+		 * @return {void}
+		 */
 		public changeState(toState:string):void{
 			this.gameLayer.removeAll(true, true);
 			return this.state.start(toState, false, false);
