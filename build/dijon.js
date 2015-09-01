@@ -1087,12 +1087,14 @@ var dijon;
     var mvc;
     (function (mvc) {
         var Mediator = (function () {
-            function Mediator(_name, _viewComponent, autoReg) {
+            function Mediator(mediatorName, _viewComponent, autoReg) {
+                if (mediatorName === void 0) { mediatorName = null; }
                 if (_viewComponent === void 0) { _viewComponent = null; }
                 if (autoReg === void 0) { autoReg = true; }
-                this._name = _name;
                 this._viewComponent = _viewComponent;
+                this.mediatorName = null;
                 this.app = mvc.Application.getInstance();
+                this.mediatorName = mediatorName;
                 if (autoReg) {
                     this.register();
                 }
@@ -1134,11 +1136,12 @@ var dijon;
             });
             Object.defineProperty(Mediator.prototype, "name", {
                 get: function () {
-                    return this._name;
+                    return this.mediatorName || Mediator.MEDIATOR_NAME;
                 },
                 enumerable: true,
                 configurable: true
             });
+            Mediator.MEDIATOR_NAME = 'Mediator';
             return Mediator;
         })();
         mvc.Mediator = Mediator;

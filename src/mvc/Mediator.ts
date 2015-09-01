@@ -6,16 +6,21 @@
 
 module dijon.mvc{
 	export class Mediator implements interfaces.IObserver{
+		public static MEDIATOR_NAME:string = 'Mediator';
+		
+		protected mediatorName:string = null;
 		protected app:Application;
 		protected game:core.Game;
 		
-		constructor(private _name:string, private _viewComponent:any=null, autoReg:boolean=true){
+		constructor(mediatorName:string=null, protected _viewComponent:any=null, autoReg:boolean=true){
 			this.app = Application.getInstance();
+			this.mediatorName = mediatorName;
 			
 			if (autoReg){
 				this.register();
 			}
 		}
+		
 		// private methods
 		protected register():void{
 			this.app.registerMediator(this);
@@ -61,7 +66,7 @@ module dijon.mvc{
 		}
 		
 		get name():string{
-			return this._name;
+			return this.mediatorName || Mediator.MEDIATOR_NAME;
 		}
 	}
 }

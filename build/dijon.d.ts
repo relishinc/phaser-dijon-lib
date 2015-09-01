@@ -273,11 +273,12 @@ declare module dijon.interfaces {
 }
 declare module dijon.mvc {
     class Mediator implements interfaces.IObserver {
-        private _name;
-        private _viewComponent;
+        protected _viewComponent: any;
+        static MEDIATOR_NAME: string;
+        protected mediatorName: string;
         protected app: Application;
         protected game: core.Game;
-        constructor(_name: string, _viewComponent?: any, autoReg?: boolean);
+        constructor(mediatorName?: string, _viewComponent?: any, autoReg?: boolean);
         protected register(): void;
         protected remove(): void;
         onRegister(): void;
