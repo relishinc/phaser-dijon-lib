@@ -228,6 +228,7 @@ declare module dijon.core {
 }
 declare module dijon.core {
     class Game extends Phaser.Game {
+        app: mvc.Application;
         asset: AssetManager;
         sequence: SequenceManager;
         transition: TransitionManager;
@@ -287,7 +288,6 @@ declare module dijon.mvc {
         listNotificationInterests(): string[];
         handleNotification(notification: interfaces.INotification): void;
         sendNotification(notificationName: string, notificationBody?: any): void;
-        viewCompnent: any;
         viewComponent: any;
         name: string;
     }

@@ -1011,14 +1011,15 @@ var dijon;
             }
             Game.prototype.boot = function () {
                 _super.prototype.boot.call(this);
-                this.add = null;
-                this.add = new core.GameObjectFactory(this);
+                this.app = dijon.mvc.Application.getInstance();
                 this.asset = new core.AssetManager();
                 this.sequence = new core.SequenceManager();
                 this.transition = new core.TransitionManager();
                 this.storage = new core.StorageManager();
                 this.audio = new core.AudioManager();
                 this.analytics = new core.AnalyticsManager();
+                this.add = null;
+                this.add = new core.GameObjectFactory(this);
                 this.gameLayer = this.add.group(this.world, '_game_layer');
                 this.uiLayer = this.add.group(this.world, '_ui_layer');
             };
@@ -1120,16 +1121,12 @@ var dijon;
             Mediator.prototype.sendNotification = function (notificationName, notificationBody) {
                 this.app.sendNotification(notificationName, notificationBody);
             };
-            Object.defineProperty(Mediator.prototype, "viewCompnent", {
-                set: function (viewComponent) {
-                    this._viewComponent = viewComponent;
-                },
-                enumerable: true,
-                configurable: true
-            });
             Object.defineProperty(Mediator.prototype, "viewComponent", {
                 get: function () {
                     return this._viewComponent;
+                },
+                set: function (viewComponent) {
+                    this._viewComponent = viewComponent;
                 },
                 enumerable: true,
                 configurable: true

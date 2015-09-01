@@ -57,7 +57,7 @@ module dijon.mvc{
 		}
 		
 		// getter / setter
-		set viewCompnent(viewComponent:any){
+		set viewComponent(viewComponent:any){
 			this._viewComponent = viewComponent;
 		}
 		

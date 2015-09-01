@@ -9,6 +9,9 @@
 module dijon.core{
 	export class Game extends Phaser.Game{
 		// public variables
+		// application
+		public app:mvc.Application;
+		
 		// managers
 		public asset:AssetManager;
 		public sequence:SequenceManager;
@@ -22,18 +25,20 @@ module dijon.core{
 		public gameLayer:Phaser.Group;
 		public uiLayer:Phaser.Group;
 		
+		// debugger (mmigh be deprecated)
 		public debugger:any = null;
 		
+		// Phaser.Game overrides
 		constructor(config:Phaser.IGameConfig){
 			super(config);
 		}
 		
-		// Phaser.Game overrides
 		public boot(){ 
 			super.boot();
-			this.add = null;
-			this.add = new GameObjectFactory(this);
 			
+			this.app = mvc.Application.getInstance();
+			
+			// add managers
 			this.asset = new AssetManager();
 			this.sequence = new SequenceManager();
 			this.transition = new TransitionManager();
@@ -41,11 +46,17 @@ module dijon.core{
 			this.audio = new AudioManager();
 			this.analytics = new AnalyticsManager();
 			
+			// replace Phaser.GameObjectFactory
+			this.add = null;
+			this.add = new GameObjectFactory(this);
+			
+			// adds game and ui layers
 			this.gameLayer = this.add.group(this.world, '_game_layer');
 			this.uiLayer = this.add.group(this.world, '_ui_layer');  
 		}
 		
 		// getter / setter
+		
 		/**
 		 * sets the default group for the gameObjectFactory to gameLayer before adding 
 		 * this way if we pass a null group to whatever method we call 
@@ -53,7 +64,6 @@ module dijon.core{
 		 * it will be added to the appropriate layer
 		 */
 		public get addToGame():core.GameObjectFactory{
-			
 			this.add.defaultGroup = this.gameLayer;
 			return this.add;
 		}
