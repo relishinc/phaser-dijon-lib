@@ -57,15 +57,15 @@ module dijon.mvc{
 		}
 		
 		// getter / setter
-		set viewComponent(viewComponent:any){
+		public set viewComponent(viewComponent:any){
 			this._viewComponent = viewComponent;
 		}
 		
-		get viewComponent():any{
+		public get viewComponent():any{
 			return this._viewComponent;
 		}
 		
-		get name():string{
+		public get name():string{
 			return this.mediatorName || Mediator.MEDIATOR_NAME;
 		}
 	}
