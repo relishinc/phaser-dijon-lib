@@ -293,14 +293,40 @@ declare module dijon.mvc {
     }
 }
 declare module dijon.mvc {
+    class Model {
+        private modelName;
+        app: Application;
+        game: core.Game;
+        protected _data: any;
+        static MODEL_NAME: string;
+        constructor(modelName?: string, dataKey?: string);
+        protected getKeyExists(key: string): boolean;
+        protected parseData(key: any): any;
+        setData(dataKey: string): any;
+        getData(): any;
+        destroy(): void;
+        name: string;
+    }
+}
+declare module dijon.mvc {
     class Application {
         static instance: any;
         static SINGLETON_MSG: string;
         game: core.Game;
-        private _mediators;
-        private _observerMap;
+        protected _models: {
+            [name: string]: Model;
+        };
+        protected _mediators: {
+            [name: string]: Mediator;
+        };
+        protected _observerMap: {
+            [name: string]: interfaces.IObserver[];
+        };
         constructor();
         initializeApplication(): void;
+        registerModel(model: Model): void;
+        retrieveModel(modelName: string): Model;
+        removeModel(modelToRemove: Model): void;
         registerMediator(mediator: Mediator): void;
         retrieveMediator(mediatorName: string): Mediator;
         removeMediator(mediatorToRemove: Mediator): void;
@@ -340,7 +366,8 @@ declare module dijon.core {
 }
 declare module dijon.core {
     class State extends Phaser.State {
-        private _audio;
+        protected _audio: Phaser.Sound[];
+        protected _mediator: mvc.Mediator;
         game: core.Game;
         add: core.GameObjectFactory;
         constructor();
@@ -356,6 +383,7 @@ declare module dijon.core {
         afterBuild(): void;
         addAudio(track: Phaser.Sound): Phaser.Sound;
         removeAudio(): void;
+        removeMediator(): void;
         preloadID: string;
         buildInterval: number;
     }
@@ -435,17 +463,6 @@ declare module dijon.display {
         stopAnimating: () => void;
         roundPixel: () => void;
         private static _addSettings(obj, settings);
-    }
-}
-declare module dijon.mvc {
-    class Model {
-        game: core.Game;
-        protected _data: any;
-        constructor(dataKey?: string);
-        protected getKeyExists(key: string): boolean;
-        protected parseData(key: any): any;
-        setData(dataKey: string): any;
-        getData(): any;
     }
 }
 declare module dijon.mvc {

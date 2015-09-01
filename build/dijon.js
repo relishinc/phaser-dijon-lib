@@ -1144,7 +1144,59 @@ var dijon;
         mvc.Mediator = Mediator;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
 })(dijon || (dijon = {}));
+/// <reference path="./Application" />
+/// <reference path="../core/Game" />
+var dijon;
+(function (dijon) {
+    var mvc;
+    (function (mvc) {
+        var Model = (function () {
+            function Model(modelName, dataKey) {
+                if (modelName === void 0) { modelName = null; }
+                if (dataKey === void 0) { dataKey = null; }
+                this.modelName = modelName;
+                this.app = mvc.Application.getInstance();
+                this.game = this.app.game;
+                if (dataKey) {
+                    this.setData(dataKey);
+                }
+                this.app.registerModel(this);
+            }
+            Model.prototype.getKeyExists = function (key) {
+                return this.game.cache.getText(key) !== null;
+            };
+            Model.prototype.parseData = function (key) {
+                return JSON.parse(this.game.cache.getText(key));
+            };
+            Model.prototype.setData = function (dataKey) {
+                if (!this.getKeyExists(dataKey)) {
+                    console.log('cannot set data from key ' + dataKey + '. Is it in the Phaser cache?');
+                    return false;
+                }
+                this._data = this.parseData(dataKey);
+                return this._data;
+            };
+            Model.prototype.getData = function () {
+                return this._data;
+            };
+            Model.prototype.destroy = function () {
+                this.app.removeModel(this);
+            };
+            Object.defineProperty(Model.prototype, "name", {
+                get: function () {
+                    return this.modelName || Model.MODEL_NAME;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Model.MODEL_NAME = 'Model';
+            return Model;
+        })();
+        mvc.Model = Model;
+    })(mvc = dijon.mvc || (dijon.mvc = {}));
+})(dijon || (dijon = {}));
 /// <reference path="./Mediator" />
+/// <reference path="./Model" />
 /// <reference path="../interfaces/IObserver" />
 /// <reference path="../core/Game" />
 var dijon;
@@ -1153,6 +1205,7 @@ var dijon;
     (function (mvc) {
         var Application = (function () {
             function Application() {
+                this._models = {};
                 this._mediators = {};
                 this._observerMap = {};
                 if (Application.instance)
@@ -1168,6 +1221,15 @@ var dijon;
                     renderer: Phaser.AUTO,
                     transparent: false
                 });
+            };
+            Application.prototype.registerModel = function (model) {
+                this._models[model.name] = model;
+            };
+            Application.prototype.retrieveModel = function (modelName) {
+                return this._models[modelName] || null;
+            };
+            Application.prototype.removeModel = function (modelToRemove) {
+                delete this._models[modelToRemove.name];
             };
             Application.prototype.registerMediator = function (mediator) {
                 this._mediators[mediator.name] = mediator;
@@ -1332,9 +1394,11 @@ var dijon;
             function State() {
                 _super.call(this);
                 this._audio = [];
+                this._mediator = null;
                 this.game = dijon.mvc.Application.getInstance().game;
             }
-            State.prototype.init = function () { };
+            State.prototype.init = function () {
+            };
             State.prototype.preload = function () {
                 if (this.preloadID)
                     this.game.asset.loadAssets(this.preloadID);
@@ -1350,6 +1414,7 @@ var dijon;
             };
             State.prototype.shutdown = function () {
                 this.removeAudio();
+                this.removeMediator();
             };
             State.prototype.listBuildSequence = function () {
                 return [];
@@ -1394,6 +1459,12 @@ var dijon;
                         sound.stop();
                     }
                 }
+            };
+            State.prototype.removeMediator = function () {
+                if (!this._mediator)
+                    return;
+                this._mediator.destroy();
+                this._mediator = null;
             };
             Object.defineProperty(State.prototype, "preloadID", {
                 get: function () {
@@ -1750,42 +1821,6 @@ Phaser.GameObjectFactory.prototype['dText'] = function (x, y, text, fontName, fo
     }
     return group.add(new dijon.display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
 };
-/// <reference path="./Application" />
-/// <reference path="../core/Game" />
-var dijon;
-(function (dijon) {
-    var mvc;
-    (function (mvc) {
-        var Model = (function () {
-            function Model(dataKey) {
-                if (dataKey === void 0) { dataKey = null; }
-                this.game = mvc.Application.getInstance().game;
-                if (dataKey) {
-                    this.setData(dataKey);
-                }
-            }
-            Model.prototype.getKeyExists = function (key) {
-                return this.game.cache.getText(key) !== null;
-            };
-            Model.prototype.parseData = function (key) {
-                return JSON.parse(this.game.cache.getText(key));
-            };
-            Model.prototype.setData = function (dataKey) {
-                if (!this.getKeyExists(dataKey)) {
-                    console.log('cannot set data from key ' + dataKey + '. Is it in the Phaser cache?');
-                    return false;
-                }
-                this._data = this.parseData(dataKey);
-                return this._data;
-            };
-            Model.prototype.getData = function () {
-                return this._data;
-            };
-            return Model;
-        })();
-        mvc.Model = Model;
-    })(mvc = dijon.mvc || (dijon.mvc = {}));
-})(dijon || (dijon = {}));
 /// <reference path="../core/Game" />
 /// <reference path="./Application" />
 /// <reference path="./Model" />
