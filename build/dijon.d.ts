@@ -1,35 +1,4 @@
 /// <reference path="../src/lib.d.ts" />
-declare module dijon.mvc {
-    class Notification extends Phaser.Signal {
-    }
-}
-declare module dijon.mvc {
-    class Mediator {
-        private _name;
-        private _viewComponent;
-        game: core.Game;
-        constructor(_name: string, _viewComponent?: any, autoReg?: boolean);
-        private _register();
-        onRegister(): void;
-        listNotificationInterests(): string[];
-        handleNotification(note: Notification): void;
-        viewCompnent: any;
-        viewComponent: any;
-        name: string;
-    }
-}
-declare module dijon.mvc {
-    class Application {
-        static instance: any;
-        static SINGLETON_MSG: string;
-        game: core.Game;
-        private _mediators;
-        constructor();
-        initializeApplication(): void;
-        registerMediator(mediatorName: string, mediator: Mediator): void;
-        static getInstance(): Application;
-    }
-}
 declare module dijon.core {
     interface IAsset {
         url: string;
@@ -240,20 +209,6 @@ declare module dijon.core {
     }
 }
 declare module dijon.core {
-    class AnalyticsManager {
-        category: string;
-        constructor(category?: string);
-        trackEvent(action?: string, label?: string, value?: string): void;
-        active: boolean;
-        ga: Function;
-    }
-    class AnalyticsException {
-        message: string;
-        name: string;
-        constructor(message: string);
-    }
-}
-declare module dijon.core {
     class GameObjectFactory extends Phaser.GameObjectFactory {
         protected _defaultGroup: Phaser.Group;
         image(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, group?: Phaser.Group): Phaser.Image;
@@ -289,7 +244,87 @@ declare module dijon.core {
         addToUI: core.GameObjectFactory;
     }
 }
-declare module dijon.component {
+declare module dijon.interfaces {
+    interface INotification {
+        getName(): string;
+        getBody(): any;
+        setBody(body: any): void;
+    }
+}
+declare module dijon.mvc {
+    class Notification implements interfaces.INotification {
+        private _name;
+        private _body;
+        constructor(_name: string, _body?: any);
+        getName(): string;
+        setBody(body: any): void;
+        getBody(): any;
+        destroy(): void;
+    }
+}
+declare module dijon.interfaces {
+    interface IObserver {
+        onRegister(): any;
+        onRemoved(): any;
+        destroy(): any;
+        listNotificationInterests(): string[];
+        handleNotification(notification: INotification): any;
+    }
+}
+declare module dijon.mvc {
+    class Mediator implements interfaces.IObserver {
+        private _name;
+        private _viewComponent;
+        protected app: Application;
+        protected game: core.Game;
+        constructor(_name: string, _viewComponent?: any, autoReg?: boolean);
+        protected register(): void;
+        protected remove(): void;
+        onRegister(): void;
+        onRemoved(): void;
+        destroy(): void;
+        listNotificationInterests(): string[];
+        handleNotification(notification: interfaces.INotification): void;
+        sendNotification(notificationName: string, notificationBody?: any): void;
+        viewCompnent: any;
+        viewComponent: any;
+        name: string;
+    }
+}
+declare module dijon.mvc {
+    class Application {
+        static instance: any;
+        static SINGLETON_MSG: string;
+        game: core.Game;
+        private _mediators;
+        private _observerMap;
+        constructor();
+        initializeApplication(): void;
+        registerMediator(mediator: Mediator): void;
+        retrieveMediator(mediatorName: string): Mediator;
+        removeMediator(mediatorToRemove: Mediator): void;
+        registerObserver(observer: interfaces.IObserver): void;
+        removeObserver(notificationName: string, observerToRemove: interfaces.IObserver): void;
+        sendNotification(notificationName: string, notficationBody?: any): void;
+        private _notifyObservers(notification);
+        static getInstance(): Application;
+    }
+}
+declare module dijon.core {
+    class AnalyticsManager {
+        category: string;
+        constructor(category?: string);
+        trackEvent(action?: string, label?: string, value?: string): void;
+        active: boolean;
+        ga: Function;
+    }
+    class AnalyticsException {
+        message: string;
+        name: string;
+        constructor(message: string);
+    }
+}
+declare module dijon.core {
     class Component {
         game: core.Game;
         name: string;
@@ -302,6 +337,28 @@ declare module dijon.component {
         destroy(): void;
     }
 }
+declare module dijon.core {
+    class State extends Phaser.State {
+        private _audio;
+        game: core.Game;
+        add: core.GameObjectFactory;
+        constructor();
+        init(): void;
+        preload(): void;
+        create(): void;
+        shutdown(): void;
+        listBuildSequence(): Function[];
+        buildInterface(): void;
+        afterBuildInterface(): void;
+        startBuild(): void;
+        preAfterBuild(): void;
+        afterBuild(): void;
+        addAudio(track: Phaser.Sound): Phaser.Sound;
+        removeAudio(): void;
+        preloadID: string;
+        buildInterval: number;
+    }
+}
 declare module dijon.display {
     class Group extends Phaser.Group {
         name: string;
@@ -309,16 +366,16 @@ declare module dijon.display {
         protected _hasComponents: boolean;
         protected _componentKeys: string[];
         protected _components: {
-            [componentName: string]: component.Component;
+            [componentName: string]: core.Component;
         };
-        constructor(x?: number, y?: number, name?: string, addToStage?: boolean, components?: component.Component[], enableBody?: boolean, physicsBodyType?: number);
+        constructor(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number);
         update(): void;
         destroy(): void;
         protected init(): void;
         protected buildInterface(): void;
         private _updateComponentKeys();
-        addComponents: (components: component.Component[]) => void;
-        addComponent(component: component.Component): component.Component;
+        addComponents: (components: core.Component[]) => void;
+        addComponent(component: core.Component): core.Component;
         updateComponents(): void;
         updateComponent(componentName: string): void;
         removeAllComponents(): void;
@@ -332,16 +389,16 @@ declare module dijon.display {
         protected _hasComponents: boolean;
         protected _componentKeys: string[];
         protected _components: {
-            [componentName: string]: component.Component;
+            [componentName: string]: core.Component;
         };
-        constructor(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: component.Component[]);
+        constructor(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: core.Component[]);
         update(): void;
         destroy(): void;
         protected init(): void;
         protected buildInterface(): void;
         private _updateComponentKeys();
-        addComponents: (components: component.Component[]) => void;
-        addComponent(component: component.Component): component.Component;
+        addComponents: (components: core.Component[]) => void;
+        addComponent(component: core.Component): core.Component;
         updateComponents(): void;
         updateComponent(componentName: string): void;
         removeAllComponents(): void;
@@ -398,31 +455,5 @@ declare module dijon.mvc {
         getCopyGroup(groupId: string): any;
         addLanguage(languageId: string, dataKey: string): any;
         changeLanguage(languageId: string): void;
-    }
-}
-declare module dijon.mvc {
-    class Notifier {
-    }
-}
-declare module dijon.state {
-    class State extends Phaser.State {
-        private _audio;
-        game: core.Game;
-        add: core.GameObjectFactory;
-        constructor();
-        init(): void;
-        preload(): void;
-        create(): void;
-        shutdown(): void;
-        listBuildSequence(): Function[];
-        buildInterface(): void;
-        afterBuildInterface(): void;
-        startBuild(): void;
-        preAfterBuild(): void;
-        afterBuild(): void;
-        addAudio(track: Phaser.Sound): Phaser.Sound;
-        removeAudio(): void;
-        preloadID: string;
-        buildInterval: number;
     }
 }

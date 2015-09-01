@@ -1,114 +1,3 @@
-/// <reference path="./Application" />
-/// <reference path="../core/Game" />
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var dijon;
-(function (dijon) {
-    var mvc;
-    (function (mvc) {
-        var Notification = (function (_super) {
-            __extends(Notification, _super);
-            function Notification() {
-                _super.apply(this, arguments);
-            }
-            return Notification;
-        })(Phaser.Signal);
-        mvc.Notification = Notification;
-    })(mvc = dijon.mvc || (dijon.mvc = {}));
-})(dijon || (dijon = {}));
-/// <reference path="./Application" />
-/// <reference path="./Notification" />
-/// <reference path="../core/Game" />
-var dijon;
-(function (dijon) {
-    var mvc;
-    (function (mvc) {
-        var Mediator = (function () {
-            function Mediator(_name, _viewComponent, autoReg) {
-                if (_viewComponent === void 0) { _viewComponent = null; }
-                if (autoReg === void 0) { autoReg = true; }
-                this._name = _name;
-                this._viewComponent = _viewComponent;
-            }
-            Mediator.prototype._register = function () {
-                mvc.Application.getInstance().registerMediator(this._name, this);
-            };
-            Mediator.prototype.onRegister = function () {
-            };
-            Mediator.prototype.listNotificationInterests = function () {
-                return [];
-            };
-            Mediator.prototype.handleNotification = function (note) {
-            };
-            Object.defineProperty(Mediator.prototype, "viewCompnent", {
-                set: function (viewComponent) {
-                    this._viewComponent = viewComponent;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(Mediator.prototype, "viewComponent", {
-                get: function () {
-                    return this._viewComponent;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(Mediator.prototype, "name", {
-                get: function () {
-                    return this._name;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            return Mediator;
-        })();
-        mvc.Mediator = Mediator;
-    })(mvc = dijon.mvc || (dijon.mvc = {}));
-})(dijon || (dijon = {}));
-/// <reference path="./Mediator" />
-/// <reference path="../core/Game" />
-var dijon;
-(function (dijon) {
-    var mvc;
-    (function (mvc) {
-        var Application = (function () {
-            function Application() {
-                this._mediators = {};
-                if (Application.instance)
-                    throw Error(Application.SINGLETON_MSG);
-                Application.instance = this;
-                this.initializeApplication();
-            }
-            Application.prototype.initializeApplication = function () {
-                this.game = new dijon.core.Game({
-                    width: 800,
-                    height: 600,
-                    parent: 'game-container',
-                    renderer: Phaser.AUTO,
-                    transparent: false
-                });
-            };
-            Application.prototype.registerMediator = function (mediatorName, mediator) {
-                this._mediators[mediator.name] = mediator;
-                mediator.onRegister();
-            };
-            Application.getInstance = function () {
-                if (!Application.instance)
-                    Application.instance = new Application();
-                return Application.instance;
-            };
-            Application.instance = null;
-            Application.SINGLETON_MSG = 'Application singleton already constructed!';
-            return Application;
-        })();
-        mvc.Application = Application;
-    })(mvc = dijon.mvc || (dijon.mvc = {}));
-})(dijon || (dijon = {}));
 /// <reference path="../mvc/Application" />
 /// <reference path="./Game" />
 var dijon;
@@ -955,64 +844,13 @@ var dijon;
         core.AudioManager = AudioManager;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../mvc/Application" />
-/// <reference path="./Game" />
-var dijon;
-(function (dijon) {
-    var core;
-    (function (core) {
-        var AnalyticsManager = (function () {
-            function AnalyticsManager(category) {
-                this.category = category;
-            }
-            AnalyticsManager.prototype.trackEvent = function (action, label, value) {
-                if (action === void 0) { action = null; }
-                if (label === void 0) { label = null; }
-                if (value === void 0) { value = null; }
-                if (!this.active) {
-                    return;
-                }
-                if (!action) {
-                    throw new AnalyticsException('No action defined');
-                }
-                if (value) {
-                    this.ga('send', 'event', this.category, action, label, value);
-                }
-                else if (label) {
-                    this.ga('send', 'event', this.category, action, label);
-                }
-                else {
-                    this.ga('send', 'event', this.category, action);
-                }
-            };
-            Object.defineProperty(AnalyticsManager.prototype, "active", {
-                get: function () {
-                    return (window['ga']) ? true : false;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(AnalyticsManager.prototype, "ga", {
-                get: function () {
-                    return window['ga'];
-                },
-                enumerable: true,
-                configurable: true
-            });
-            return AnalyticsManager;
-        })();
-        core.AnalyticsManager = AnalyticsManager;
-        var AnalyticsException = (function () {
-            function AnalyticsException(message) {
-                this.message = message;
-                this.name = 'AnalyticsException';
-            }
-            return AnalyticsException;
-        })();
-        core.AnalyticsException = AnalyticsException;
-    })(core = dijon.core || (dijon.core = {}));
-})(dijon || (dijon = {}));
 /// <reference path="../lib.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 var dijon;
 (function (dijon) {
     var core;
@@ -1205,12 +1043,266 @@ var dijon;
         core.Game = Game;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
+/// <reference path="./Application" />
+/// <reference path="../core/Game" />
+/// <reference path="../interfaces/INotification" />
+var dijon;
+(function (dijon) {
+    var mvc;
+    (function (mvc) {
+        var Notification = (function () {
+            function Notification(_name, _body) {
+                if (_body === void 0) { _body = null; }
+                this._name = _name;
+                this._body = _body;
+            }
+            Notification.prototype.getName = function () {
+                return this._name;
+            };
+            Notification.prototype.setBody = function (body) {
+                this._body = body;
+            };
+            Notification.prototype.getBody = function () {
+                return this._body;
+            };
+            Notification.prototype.destroy = function () {
+                this._body = null;
+                this._name = null;
+                delete this._body;
+                delete this._name;
+            };
+            return Notification;
+        })();
+        mvc.Notification = Notification;
+    })(mvc = dijon.mvc || (dijon.mvc = {}));
+})(dijon || (dijon = {}));
+/// <reference path="./INotification" />
+/// <reference path="./Application" />
+/// <reference path="./Notification" />
+/// <reference path="../core/Game" />
+/// <reference path="../interfaces/IObserver" />
+/// <reference path="../interfaces/INotification" />
+var dijon;
+(function (dijon) {
+    var mvc;
+    (function (mvc) {
+        var Mediator = (function () {
+            function Mediator(_name, _viewComponent, autoReg) {
+                if (_viewComponent === void 0) { _viewComponent = null; }
+                if (autoReg === void 0) { autoReg = true; }
+                this._name = _name;
+                this._viewComponent = _viewComponent;
+                this.app = mvc.Application.getInstance();
+                if (autoReg) {
+                    this.register();
+                }
+            }
+            Mediator.prototype.register = function () {
+                this.app.registerMediator(this);
+            };
+            Mediator.prototype.remove = function () {
+                this.app.removeMediator(this);
+            };
+            Mediator.prototype.onRegister = function () {
+            };
+            Mediator.prototype.onRemoved = function () {
+            };
+            Mediator.prototype.destroy = function () {
+                this.remove();
+            };
+            Mediator.prototype.listNotificationInterests = function () {
+                return [];
+            };
+            Mediator.prototype.handleNotification = function (notification) {
+            };
+            Mediator.prototype.sendNotification = function (notificationName, notificationBody) {
+                this.app.sendNotification(notificationName, notificationBody);
+            };
+            Object.defineProperty(Mediator.prototype, "viewCompnent", {
+                set: function (viewComponent) {
+                    this._viewComponent = viewComponent;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Mediator.prototype, "viewComponent", {
+                get: function () {
+                    return this._viewComponent;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Mediator.prototype, "name", {
+                get: function () {
+                    return this._name;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return Mediator;
+        })();
+        mvc.Mediator = Mediator;
+    })(mvc = dijon.mvc || (dijon.mvc = {}));
+})(dijon || (dijon = {}));
+/// <reference path="./Mediator" />
+/// <reference path="../interfaces/IObserver" />
+/// <reference path="../core/Game" />
+var dijon;
+(function (dijon) {
+    var mvc;
+    (function (mvc) {
+        var Application = (function () {
+            function Application() {
+                this._mediators = {};
+                this._observerMap = {};
+                if (Application.instance)
+                    throw Error(Application.SINGLETON_MSG);
+                Application.instance = this;
+                this.initializeApplication();
+            }
+            Application.prototype.initializeApplication = function () {
+                this.game = new dijon.core.Game({
+                    width: 800,
+                    height: 600,
+                    parent: 'game-container',
+                    renderer: Phaser.AUTO,
+                    transparent: false
+                });
+            };
+            Application.prototype.registerMediator = function (mediator) {
+                this._mediators[mediator.name] = mediator;
+                this.registerObserver(mediator);
+                mediator.onRegister();
+            };
+            Application.prototype.retrieveMediator = function (mediatorName) {
+                return this._mediators[mediatorName] || null;
+            };
+            Application.prototype.removeMediator = function (mediatorToRemove) {
+                var _this = this;
+                var name = mediatorToRemove.name;
+                var mediator = this._mediators[name];
+                mediator.listNotificationInterests().forEach(function (interest) {
+                    _this.removeObserver(interest, mediator);
+                });
+                mediator.onRemoved();
+                delete this._mediators[name];
+            };
+            Application.prototype.registerObserver = function (observer) {
+                var _this = this;
+                observer.listNotificationInterests().forEach(function (notificationName) {
+                    if (_this._observerMap[notificationName] === undefined) {
+                        _this._observerMap[notificationName] = [];
+                    }
+                    _this._observerMap[notificationName].push(observer);
+                });
+            };
+            Application.prototype.removeObserver = function (notificationName, observerToRemove) {
+                var observers = null, observer = null, i = 0;
+                observers = this._observerMap[notificationName];
+                i = observers.length;
+                while (i--) {
+                    observer = observers[i];
+                    if (observer === observerToRemove) {
+                        observers.splice(i, 1);
+                        break;
+                    }
+                }
+                if (observers.length == 0) {
+                    delete this._observerMap[notificationName];
+                }
+            };
+            Application.prototype.sendNotification = function (notificationName, notficationBody) {
+                var notification = new mvc.Notification(notificationName, notficationBody);
+                this._notifyObservers(notification);
+                notification.destroy();
+                notification = null;
+            };
+            Application.prototype._notifyObservers = function (notification) {
+                var observer = null, observers = null;
+                var notificationName = notification.getName();
+                var observersRef = this._observerMap[notificationName];
+                if (observersRef) {
+                    observers = observersRef.slice(0);
+                    observers.forEach(function (observer) {
+                        observer.handleNotification(notification);
+                    });
+                }
+            };
+            Application.getInstance = function () {
+                if (!Application.instance)
+                    Application.instance = new Application();
+                return Application.instance;
+            };
+            Application.instance = null;
+            Application.SINGLETON_MSG = 'Application singleton already constructed!';
+            return Application;
+        })();
+        mvc.Application = Application;
+    })(mvc = dijon.mvc || (dijon.mvc = {}));
+})(dijon || (dijon = {}));
+/// <reference path="../mvc/Application" />
+/// <reference path="./Game" />
+var dijon;
+(function (dijon) {
+    var core;
+    (function (core) {
+        var AnalyticsManager = (function () {
+            function AnalyticsManager(category) {
+                this.category = category;
+            }
+            AnalyticsManager.prototype.trackEvent = function (action, label, value) {
+                if (action === void 0) { action = null; }
+                if (label === void 0) { label = null; }
+                if (value === void 0) { value = null; }
+                if (!this.active) {
+                    return;
+                }
+                if (!action) {
+                    throw new AnalyticsException('No action defined');
+                }
+                if (value) {
+                    this.ga('send', 'event', this.category, action, label, value);
+                }
+                else if (label) {
+                    this.ga('send', 'event', this.category, action, label);
+                }
+                else {
+                    this.ga('send', 'event', this.category, action);
+                }
+            };
+            Object.defineProperty(AnalyticsManager.prototype, "active", {
+                get: function () {
+                    return (window['ga']) ? true : false;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(AnalyticsManager.prototype, "ga", {
+                get: function () {
+                    return window['ga'];
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return AnalyticsManager;
+        })();
+        core.AnalyticsManager = AnalyticsManager;
+        var AnalyticsException = (function () {
+            function AnalyticsException(message) {
+                this.message = message;
+                this.name = 'AnalyticsException';
+            }
+            return AnalyticsException;
+        })();
+        core.AnalyticsException = AnalyticsException;
+    })(core = dijon.core || (dijon.core = {}));
+})(dijon || (dijon = {}));
 /// <reference path="../core/Game" />
 /// <reference path="../mvc/Application" />
 var dijon;
 (function (dijon) {
-    var component;
-    (function (component) {
+    var core;
+    (function (core) {
         var Component = (function () {
             function Component() {
                 this.game = dijon.mvc.Application.getInstance().game;
@@ -1225,12 +1317,106 @@ var dijon;
             Component.prototype.destroy = function () { };
             return Component;
         })();
-        component.Component = Component;
-    })(component = dijon.component || (dijon.component = {}));
+        core.Component = Component;
+    })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
 /// <reference path="../mvc/Application" />
 /// <reference path="../core/Game" />
-/// <reference path="../component/Component" />
+/// <reference path="../core/GameObjectFactory" />
+var dijon;
+(function (dijon) {
+    var core;
+    (function (core) {
+        var State = (function (_super) {
+            __extends(State, _super);
+            function State() {
+                _super.call(this);
+                this._audio = [];
+                this.game = dijon.mvc.Application.getInstance().game;
+            }
+            State.prototype.init = function () { };
+            State.prototype.preload = function () {
+                if (this.preloadID)
+                    this.game.asset.loadAssets(this.preloadID);
+            };
+            State.prototype.create = function () {
+                if (!this.game.asset.allSoundsDecoded()) {
+                    this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this.create, this);
+                    return;
+                }
+                this.buildInterface();
+                this.afterBuildInterface();
+                this.startBuild();
+            };
+            State.prototype.shutdown = function () {
+                this.removeAudio();
+            };
+            State.prototype.listBuildSequence = function () {
+                return [];
+            };
+            State.prototype.buildInterface = function () { };
+            State.prototype.afterBuildInterface = function () { };
+            State.prototype.startBuild = function () {
+                this.game.sequence.run(this.listBuildSequence(), this, this.buildInterval, this.preAfterBuild, this);
+            };
+            State.prototype.preAfterBuild = function () {
+                if (this.game.debugger) {
+                    this.game.debugger.selectedObject = null;
+                    this.game.debugger.refresh();
+                }
+                if (typeof this.game.transition === 'undefined' || !this.game.transition.transitionOut()) {
+                    this.afterBuild();
+                }
+                else {
+                    this.game.transition.onTransitionOutComplete.addOnce(this.afterBuild, this);
+                    this.game.transition.transitionOut();
+                }
+            };
+            State.prototype.afterBuild = function () { };
+            State.prototype.addAudio = function (track) {
+                if (!this._audio) {
+                    this._audio = [];
+                }
+                this._audio.push(track);
+                return track;
+            };
+            State.prototype.removeAudio = function () {
+                var sound;
+                if (!this._audio) {
+                    return;
+                }
+                while (this._audio.length > 0) {
+                    sound = this._audio.pop();
+                    if (typeof sound !== 'undefined' && sound != null && typeof sound.stop !== 'undefined') {
+                        if (typeof sound.onStop !== 'undefined') {
+                            sound.onStop.removeAll();
+                        }
+                        sound.stop();
+                    }
+                }
+            };
+            Object.defineProperty(State.prototype, "preloadID", {
+                get: function () {
+                    return null;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(State.prototype, "buildInterval", {
+                get: function () {
+                    return 10;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return State;
+        })(Phaser.State);
+        core.State = State;
+    })(core = dijon.core || (dijon.core = {}));
+})(dijon || (dijon = {}));
+/// <reference path="../mvc/Application" />
+/// <reference path="../core/Game" />
+/// <reference path="../core/Component" />
 var dijon;
 (function (dijon) {
     var display;
@@ -1323,7 +1509,7 @@ Phaser.GameObjectFactory.prototype['dGroup'] = function (x, y, name, addToStage,
 /// <reference path="../lib.d.ts" />
 /// <reference path="../mvc/Application" />
 /// <reference path="../core/Game" />
-/// <reference path="../component/Component" />
+/// <reference path="../core/Component" />
 var dijon;
 (function (dijon) {
     var display;
@@ -1636,113 +1822,5 @@ var dijon;
         })(mvc.Model);
         mvc.CopyModel = CopyModel;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
-})(dijon || (dijon = {}));
-/// <reference path="./Application" />
-/// <reference path="../core/Game" />
-var dijon;
-(function (dijon) {
-    var mvc;
-    (function (mvc) {
-        var Notifier = (function () {
-            function Notifier() {
-            }
-            return Notifier;
-        })();
-        mvc.Notifier = Notifier;
-    })(mvc = dijon.mvc || (dijon.mvc = {}));
-})(dijon || (dijon = {}));
-/// <reference path="../mvc/Application" />
-/// <reference path="../core/Game" />
-/// <reference path="../core/GameObjectFactory" />
-var dijon;
-(function (dijon) {
-    var state;
-    (function (state) {
-        var State = (function (_super) {
-            __extends(State, _super);
-            function State() {
-                _super.call(this);
-                this._audio = [];
-                this.game = dijon.mvc.Application.getInstance().game;
-            }
-            State.prototype.init = function () { };
-            State.prototype.preload = function () {
-                if (this.preloadID)
-                    this.game.asset.loadAssets(this.preloadID);
-            };
-            State.prototype.create = function () {
-                if (!this.game.asset.allSoundsDecoded()) {
-                    this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this.create, this);
-                    return;
-                }
-                this.buildInterface();
-                this.afterBuildInterface();
-                this.startBuild();
-            };
-            State.prototype.shutdown = function () {
-                this.removeAudio();
-            };
-            State.prototype.listBuildSequence = function () {
-                return [];
-            };
-            State.prototype.buildInterface = function () { };
-            State.prototype.afterBuildInterface = function () { };
-            State.prototype.startBuild = function () {
-                this.game.sequence.run(this.listBuildSequence(), this, this.buildInterval, this.preAfterBuild, this);
-            };
-            State.prototype.preAfterBuild = function () {
-                if (this.game.debugger) {
-                    this.game.debugger.selectedObject = null;
-                    this.game.debugger.refresh();
-                }
-                if (typeof this.game.transition === 'undefined' || !this.game.transition.transitionOut()) {
-                    this.afterBuild();
-                }
-                else {
-                    this.game.transition.onTransitionOutComplete.addOnce(this.afterBuild, this);
-                    this.game.transition.transitionOut();
-                }
-            };
-            State.prototype.afterBuild = function () { };
-            State.prototype.addAudio = function (track) {
-                if (!this._audio) {
-                    this._audio = [];
-                }
-                this._audio.push(track);
-                return track;
-            };
-            State.prototype.removeAudio = function () {
-                var sound;
-                if (!this._audio) {
-                    return;
-                }
-                while (this._audio.length > 0) {
-                    sound = this._audio.pop();
-                    if (typeof sound !== 'undefined' && sound != null && typeof sound.stop !== 'undefined') {
-                        if (typeof sound.onStop !== 'undefined') {
-                            sound.onStop.removeAll();
-                        }
-                        sound.stop();
-                    }
-                }
-            };
-            Object.defineProperty(State.prototype, "preloadID", {
-                get: function () {
-                    return null;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(State.prototype, "buildInterval", {
-                get: function () {
-                    return 10;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            return State;
-        })(Phaser.State);
-        state.State = State;
-    })(state = dijon.state || (dijon.state = {}));
 })(dijon || (dijon = {}));
 //# sourceMappingURL=dijon.js.map

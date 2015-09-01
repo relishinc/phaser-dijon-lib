@@ -2,7 +2,7 @@
 /// <reference path="../mvc/Application" />
 
 
-module dijon.component{
+module dijon.core{
 	export class Component{
 		public game:core.Game;
 		public name:string;

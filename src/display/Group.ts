@@ -1,6 +1,6 @@
 /// <reference path="../mvc/Application" />
 /// <reference path="../core/Game" />
-/// <reference path="../component/Component" />
+/// <reference path="../core/Component" />
 
 module dijon.display{
 	export class Group extends Phaser.Group{
@@ -8,9 +8,9 @@ module dijon.display{
 		
 		protected _hasComponents:boolean = false;
 		protected _componentKeys:string[] = [];
-		protected _components:{[componentName:string]:component.Component} = {};
+		protected _components:{[componentName:string]:core.Component} = {};
 		
-		constructor(x:number=0, y:number=0, public name:string="dGroup", addToStage:boolean=false, components:component.Component[]=null, enableBody?:boolean, physicsBodyType?:number){
+		constructor(x:number=0, y:number=0, public name:string="dGroup", addToStage:boolean=false, components:core.Component[]=null, enableBody?:boolean, physicsBodyType?:number){
 			super(mvc.Application.getInstance().game, null, name, addToStage, enableBody, physicsBodyType);
 			
 			this.position.set(x, y);
@@ -74,7 +74,7 @@ module dijon.display{
 		* attaches a list of components to the Dijon.UIGroup
 		* @param {Array} components the list of components to add
 		*/
-		public addComponents = function(components:component.Component[]) {
+		public addComponents = function(components:core.Component[]) {
 			if (typeof components.length === 'undefined')
 				throw new Error('Dijon.UIGroup components must be an array');
 		
@@ -84,9 +84,9 @@ module dijon.display{
 		
 		/**
 		* attaches a component to the Dijon.UIGroup
-		* @param {dijon.component.Component} component to be attached
+		* @param {dijon.core.Component} component to be attached
 		*/
-		public addComponent(component:component.Component):component.Component {
+		public addComponent(component:core.Component):core.Component {
 			component.setOwner(this);
 			component.init();
 			component.buildInterface();
@@ -147,6 +147,6 @@ module dijon.display{
 }
 
 // Phaser addons
-Phaser.GameObjectFactory.prototype['dGroup'] = function(x:number=0, y:number=0, name:string="dGroup", addToStage:boolean=false, components:dijon.component.Component[]=null, enableBody?:boolean, physicsBodyType?:number) {
+Phaser.GameObjectFactory.prototype['dGroup'] = function(x:number=0, y:number=0, name:string="dGroup", addToStage:boolean=false, components:dijon.core.Component[]=null, enableBody?:boolean, physicsBodyType?:number) {
     return new dijon.display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
 };

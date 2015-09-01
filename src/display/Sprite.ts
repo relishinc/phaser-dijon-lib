@@ -1,7 +1,7 @@
 /// <reference path="../lib.d.ts" />
 /// <reference path="../mvc/Application" />
 /// <reference path="../core/Game" />
-/// <reference path="../component/Component" />
+/// <reference path="../core/Component" />
 
 module dijon.display{
 	export class Sprite extends Phaser.Sprite{
@@ -9,9 +9,9 @@ module dijon.display{
 		
 		protected _hasComponents:boolean = false;
 		protected _componentKeys:string[] = [];
-		protected _components:{[componentName:string]:component.Component} = {};
+		protected _components:{[componentName:string]:core.Component} = {};
 		
-		constructor(x?:number, y?:number, key?:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, public name:string="dSprite", components:component.Component[]=null){
+		constructor(x?:number, y?:number, key?:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, public name:string="dSprite", components:core.Component[]=null){
 			super(mvc.Application.getInstance().game, x, y, key, frame);
 			
 			this.init();
@@ -69,7 +69,7 @@ module dijon.display{
 		* attaches a list of components to the Dijon.UIGroup
 		* @param {Array} components the list of components to add
 		*/
-		public addComponents = function(components:component.Component[]) {
+		public addComponents = function(components:core.Component[]) {
 			if (typeof components.length === 'undefined')
 				throw new Error('Dijon.UIGroup components must be an array');
 		
@@ -79,9 +79,9 @@ module dijon.display{
 		
 		/**
 		* attaches a component to the Dijon.UIGroup
-		* @param {dijon.component.Component} component to be attached
+		* @param {dijon.core.Component} component to be attached
 		*/
-		public addComponent(component:component.Component):component.Component {
+		public addComponent(component:core.Component):core.Component {
 			component.setOwner(this);
 			component.init();
 			component.buildInterface();
@@ -142,11 +142,11 @@ module dijon.display{
 }
 
 // Phaser addons
-Phaser.GameObjectCreator.prototype['dSprite'] = function(x?:number, y?:number, key?:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, name:string="dSprite", components:dijon.component.Component[]=null) {
+Phaser.GameObjectCreator.prototype['dSprite'] = function(x?:number, y?:number, key?:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, name:string="dSprite", components:dijon.core.Component[]=null) {
     return new dijon.display.Sprite(x, y, key, frame, name, components);
 };
 
-Phaser.GameObjectFactory.prototype['dSprite'] = function(x?:number, y?:number, key?:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, name:string="dSprite", components:dijon.component.Component[]=null, group:Phaser.Group=null) {
+Phaser.GameObjectFactory.prototype['dSprite'] = function(x?:number, y?:number, key?:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, name:string="dSprite", components:dijon.core.Component[]=null, group:Phaser.Group=null) {
     if (!group) {
         group = this.world;
     }

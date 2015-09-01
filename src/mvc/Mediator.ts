@@ -1,21 +1,40 @@
 /// <reference path="./Application" />
 /// <reference path="./Notification" />
 /// <reference path="../core/Game" />
+/// <reference path="../interfaces/IObserver" />
+/// <reference path="../interfaces/INotification" />
 
 module dijon.mvc{
-	export class Mediator{
-		public game:core.Game;
+	export class Mediator implements interfaces.IObserver{
+		protected app:Application;
+		protected game:core.Game;
 		
 		constructor(private _name:string, private _viewComponent:any=null, autoReg:boolean=true){
+			this.app = Application.getInstance();
 			
+			if (autoReg){
+				this.register();
+			}
+		}
+		// private methods
+		protected register():void{
+			this.app.registerMediator(this);
 		}
 		
-		private _register():void{
-			Application.getInstance().registerMediator(this._name, this);
+		protected remove():void{
+			this.app.removeMediator(this);
 		}
 		
 		public onRegister():void{
 			// override me freely
+		}
+		
+		public onRemoved():void{
+			
+		}
+		
+		public destroy():void{
+			this.remove();
 		}
 		
 		public listNotificationInterests():string[]{
@@ -24,8 +43,12 @@ module dijon.mvc{
 			];
 		}
 		
-		public handleNotification(note:Notification):void{
+		public handleNotification(notification:interfaces.INotification){
 			
+		}
+		
+		public sendNotification(notificationName:string, notificationBody?:any){
+			this.app.sendNotification(notificationName, notificationBody);
 		}
 		
 		// getter / setter

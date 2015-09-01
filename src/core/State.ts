@@ -2,7 +2,7 @@
 /// <reference path="../core/Game" />
 /// <reference path="../core/GameObjectFactory" />
 
-module dijon.state{
+module dijon.core{
     export class State extends Phaser.State{
         private _audio:Phaser.Sound[] = [];
         public game:core.Game;
