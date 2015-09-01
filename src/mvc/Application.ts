@@ -1,4 +1,5 @@
 /// <reference path="./Mediator" />
+/// <reference path="./Model" />
 /// <reference path="../interfaces/IObserver" />
 /// <reference path="../core/Game" />
 
@@ -11,8 +12,9 @@ module dijon.mvc{
 		
 		public game:core.Game;
 		
-		private _mediators:{[name:string]:Mediator} = {};
-		private _observerMap:{[name:string]:interfaces.IObserver[]} = {};
+		protected _models:{[name:string]:Model} = {};
+		protected _mediators:{[name:string]:Mediator} = {};
+		protected _observerMap:{[name:string]:interfaces.IObserver[]} = {};
 		
 		constructor(){
 			if( Application.instance )
@@ -31,6 +33,18 @@ module dijon.mvc{
 				renderer: Phaser.AUTO, 
 				transparent: false
 			});
+		}
+		
+		public registerModel(model:Model):void{
+			this._models[model.name] = model;
+		}
+		
+		public retrieveModel(modelName:string):Model{
+			return this._models[modelName] || null;
+		}
+		
+		public removeModel(modelToRemove:Model):void{
+			delete this._models[modelToRemove.name];
 		}
 		
 		public registerMediator(mediator:Mediator):void{

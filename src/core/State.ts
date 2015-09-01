@@ -4,17 +4,20 @@
 
 module dijon.core{
     export class State extends Phaser.State{
-        private _audio:Phaser.Sound[] = [];
-        public game:core.Game;
+        protected _audio:Phaser.Sound[] = [];
+        protected _mediator:mvc.Mediator = null;
         
+        public game:core.Game;
         public add:core.GameObjectFactory;
         
         constructor(){
             super();
             this.game = mvc.Application.getInstance().game;
         }
-        
-        public init():void{}
+        // Phaser.State overrides
+        public init():void{
+            
+        }
         
         public preload():void{
             if (this.preloadID)
@@ -33,6 +36,7 @@ module dijon.core{
         
         public shutdown():void{
             this.removeAudio();
+            this.removeMediator();
         }
         
         // public methods
@@ -89,6 +93,13 @@ module dijon.core{
             }
         }
         
+        public removeMediator():void{
+            if (!this._mediator)
+                return;
+            this._mediator.destroy();
+            this._mediator = null;
+        }
+                
         // getter / setter
         get preloadID():string{
             return null;

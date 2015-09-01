@@ -3,15 +3,21 @@
 
 module dijon.mvc{
 	export class Model{
+		public app:Application;
 		public game:core.Game;
 		protected _data:any;
 		
-		constructor(dataKey:string=null){
-			this.game = Application.getInstance().game;
+		public static MODEL_NAME:string = 'Model';
+		
+		constructor(private modelName:string=null, dataKey:string=null){
+			this.app = Application.getInstance();
+			this.game = this.app.game;
 			
 			if (dataKey){
 				this.setData(dataKey);
 			}
+			
+			this.app.registerModel(this);
 		}
 		
 		protected getKeyExists(key:string):boolean{
@@ -35,5 +41,14 @@ module dijon.mvc{
 		public getData():any{
 			return this._data;
 		}
+		
+		public destroy():void{
+			this.app.removeModel(this);
+		}
+		
+		get name():string{
+			return this.modelName || Model.MODEL_NAME;
+		}
 	}
+	
 }
