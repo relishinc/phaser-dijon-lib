@@ -211,6 +211,7 @@ declare module dijon.core {
 declare module dijon.core {
     class GameObjectFactory extends Phaser.GameObjectFactory {
         protected _defaultGroup: Phaser.Group;
+        existing(object: any): any;
         image(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, group?: Phaser.Group): Phaser.Image;
         sprite(x?: number, y?: number, key?: string, frame?: string | number, group?: Phaser.Group): Phaser.Sprite;
         creature(x?: number, y?: number, key?: string, mesh?: any, group?: Phaser.Group): any;

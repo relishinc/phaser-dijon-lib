@@ -5,7 +5,18 @@ module dijon.core{
 		protected _defaultGroup:Phaser.Group = null;
 		
 		// overrides
-		 /**
+		/**
+		* Adds an existing display object to the game world.
+		* 
+		* @method Phaser.GameObjectFactory#existing
+		* @param {any} object - An instance of Phaser.Sprite, Phaser.Button or any other display object.
+		* @return {any} The child that was added to the World.
+		*/
+		existing(object):any {
+			let group = this.defaultGroup;
+			return group.add(object);
+		}
+		/**
 		* Create a new `Image` object.
 		* 
 		* An Image is a light-weight object you can use to display anything that doesn't need physics or animation.

@@ -861,6 +861,10 @@ var dijon;
                 _super.apply(this, arguments);
                 this._defaultGroup = null;
             }
+            GameObjectFactory.prototype.existing = function (object) {
+                var group = this.defaultGroup;
+                return group.add(object);
+            };
             GameObjectFactory.prototype.image = function (x, y, key, frame, group) {
                 if (x === void 0) { x = 0; }
                 if (y === void 0) { y = 0; }
