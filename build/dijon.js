@@ -8,6 +8,7 @@ var dijon;
             function AssetManager() {
                 this._data = {};
                 this._baseURL = '';
+                this._pathObj = {};
                 this._assetPath = null;
                 this._dataPath = null;
                 this._spriteSheetPath = null;
@@ -42,9 +43,9 @@ var dijon;
             }
             AssetManager.prototype._init = function () {
                 this.game = dijon.mvc.Application.getInstance().game;
-                this.setBaseURL(null);
-                this.setPaths(null);
-                this.setResolution(null);
+                this.setBaseURL();
+                this.setPaths();
+                this.setResolution();
             };
             AssetManager.prototype._parseAssetList = function (key, list) {
                 var _this = this;
@@ -159,19 +160,18 @@ var dijon;
                 if (baseURL && baseURL !== '' && baseURL.charAt(baseURL.length - 1) !== '/')
                     baseURL += '/';
                 this._baseURL = baseURL;
-                this.setPaths(null);
+                this.setPaths();
             };
             AssetManager.prototype.setPaths = function (pathObj) {
                 if (pathObj === void 0) { pathObj = null; }
-                if (!pathObj)
-                    return;
-                this._assetPath = this._baseURL + (pathObj.assetPath || 'assets');
-                this._dataPath = this._baseURL + (pathObj.dataPath || 'assets/data');
-                this._spriteSheetPath = this._baseURL + (pathObj.spritesheetPath || 'assets/img/spritesheets');
-                this._imgPath = this._baseURL + (pathObj.imgPath || 'assets/img');
-                this._fontPath = this._baseURL + (pathObj.fontPath || 'assets/fonts');
-                this._audioSpritePath = this._baseURL + (pathObj.audioSpritePath || 'assets/audio/sprite');
-                this._soundPath = this._baseURL + (pathObj.soundPath || 'assets/audio/sound');
+                this._pathObj = pathObj || {};
+                this._assetPath = this._baseURL + (this._pathObj.assetPath || 'assets');
+                this._dataPath = this._baseURL + (this._pathObj.dataPath || 'assets/data');
+                this._spriteSheetPath = this._baseURL + (this._pathObj.spritesheetPath || 'assets/img/spritesheets');
+                this._imgPath = this._baseURL + (this._pathObj.imgPath || 'assets/img');
+                this._fontPath = this._baseURL + (this._pathObj.fontPath || 'assets/fonts');
+                this._audioSpritePath = this._baseURL + (this._pathObj.audioSpritePath || 'assets/audio/sprite');
+                this._soundPath = this._baseURL + (this._pathObj.soundPath || 'assets/audio/sound');
             };
             AssetManager.prototype.setResolution = function (res) {
                 if (typeof res === 'undefined')

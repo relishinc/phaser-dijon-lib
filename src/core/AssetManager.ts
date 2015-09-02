@@ -42,6 +42,7 @@ module dijon.core{
         // private variables
         private _data = {};
         private _baseURL:string = '';
+        private _pathObj:IPathConfig|any = {};
         private _assetPath = null;
         private _dataPath = null;
         private _spriteSheetPath = null;
@@ -138,9 +139,9 @@ module dijon.core{
         */
         private _init() {
             this.game = dijon.mvc.Application.getInstance().game;
-            this.setBaseURL(null);
-            this.setPaths(null);
-            this.setResolution(null);
+            this.setBaseURL();
+            this.setPaths();
+            this.setResolution();
         }
     
         /**
@@ -375,22 +376,19 @@ module dijon.core{
                 baseURL += '/';
     
             this._baseURL = baseURL;
-            this.setPaths(null);
+            this.setPaths();
         }
-    
         
-    
-        setPaths(pathObj:IPathConfig = null) {
-            // prepend baseURL
-            if (!pathObj)
-                return;
-            this._assetPath = this._baseURL + (pathObj.assetPath || 'assets');
-            this._dataPath = this._baseURL + (pathObj.dataPath || 'assets/data');
-            this._spriteSheetPath = this._baseURL + (pathObj.spritesheetPath || 'assets/img/spritesheets');
-            this._imgPath = this._baseURL + (pathObj.imgPath || 'assets/img');
-            this._fontPath = this._baseURL + (pathObj.fontPath || 'assets/fonts');
-            this._audioSpritePath = this._baseURL + (pathObj.audioSpritePath || 'assets/audio/sprite');
-            this._soundPath = this._baseURL + (pathObj.soundPath || 'assets/audio/sound');
+        setPaths(pathObj:IPathConfig= null) {
+            this._pathObj = pathObj || {};
+            
+            this._assetPath = this._baseURL + (this._pathObj.assetPath || 'assets');
+            this._dataPath = this._baseURL + (this._pathObj.dataPath || 'assets/data');
+            this._spriteSheetPath = this._baseURL + (this._pathObj.spritesheetPath || 'assets/img/spritesheets');
+            this._imgPath = this._baseURL + (this._pathObj.imgPath || 'assets/img');
+            this._fontPath = this._baseURL + (this._pathObj.fontPath || 'assets/fonts');
+            this._audioSpritePath = this._baseURL + (this._pathObj.audioSpritePath || 'assets/audio/sprite');
+            this._soundPath = this._baseURL + (this._pathObj.soundPath || 'assets/audio/sound');
         }
     
         setResolution(res?:number) {

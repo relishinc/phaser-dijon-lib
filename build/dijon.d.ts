@@ -32,6 +32,7 @@ declare module dijon.core {
     class AssetManager {
         private _data;
         private _baseURL;
+        private _pathObj;
         private _assetPath;
         private _dataPath;
         private _spriteSheetPath;
