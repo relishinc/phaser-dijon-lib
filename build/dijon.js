@@ -844,7 +844,6 @@ var dijon;
         core.AudioManager = AudioManager;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../lib.d.ts" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1585,7 +1584,6 @@ Phaser.GameObjectFactory.prototype['dGroup'] = function (x, y, name, addToStage,
     if (components === void 0) { components = null; }
     return new dijon.display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
 };
-/// <reference path="../lib.d.ts" />
 /// <reference path="../mvc/Application" />
 /// <reference path="../core/Game" />
 /// <reference path="../core/Component" />

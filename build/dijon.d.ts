@@ -1,4 +1,3 @@
-/// <reference path="../src/lib.d.ts" />
 declare module dijon.core {
     interface IAsset {
         url: string;

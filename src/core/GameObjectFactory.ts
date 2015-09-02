@@ -1,5 +1,3 @@
-/// <reference path="../lib.d.ts" />
-
 module dijon.core{
 	export class GameObjectFactory extends Phaser.GameObjectFactory{
 		protected _defaultGroup:Phaser.Group = null;

@@ -1,1 +1,1 @@
-/// <reference path="../bower_components/phaser-official/typescript/phaser.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />

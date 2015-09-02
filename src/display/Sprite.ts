@@ -1,4 +1,3 @@
-/// <reference path="../lib.d.ts" />
 /// <reference path="../mvc/Application" />
 /// <reference path="../core/Game" />
 /// <reference path="../core/Component" />

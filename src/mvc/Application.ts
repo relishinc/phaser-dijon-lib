@@ -3,7 +3,6 @@
 /// <reference path="../interfaces/IObserver" />
 /// <reference path="../core/Game" />
 
-
 module dijon.mvc{
 	export class Application {
 		// static constants
@@ -92,6 +91,7 @@ module dijon.mvc{
 				i:number = 0;
 			
 			observers = this._observerMap[notificationName];
+			
 			//Find the observer for the notifyContext.
 			i = observers.length;
 			while( i-- ){
@@ -101,6 +101,7 @@ module dijon.mvc{
 					break;
 				}
 			}
+			
 			/*
 			 * Also, when a Notification's Observer list length falls to zero, delete the
 			 * notification key from the observer map.
