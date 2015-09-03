@@ -16,7 +16,9 @@ module dijon.core{
 		* @return {any} The child that was added to the World.
 		*/
 		existing(object):any {
-			return this.defaultGroup.add(object);
+			let group = this.defaultGroup; 
+			this.defaultGroup = null;
+			return group.add(object);
 		}
 		/**
 		* Create a new `Image` object.

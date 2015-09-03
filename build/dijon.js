@@ -1223,7 +1223,9 @@ var dijon;
                 this._defaultGroup = null;
             }
             GameObjectFactory.prototype.existing = function (object) {
-                return this.defaultGroup.add(object);
+                var group = this.defaultGroup;
+                this.defaultGroup = null;
+                return group.add(object);
             };
             GameObjectFactory.prototype.image = function (x, y, key, frame, group) {
                 if (x === void 0) { x = 0; }
