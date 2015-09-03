@@ -1,5 +1,7 @@
 /// <reference path="../mvc/Application" />
 /// <reference path="./Game" />
+/// <reference path="../interfaces/INotifier" />
+/// <reference path="../utils/Notifications" />
 
 module dijon.core{
     export interface IAsset{
@@ -38,7 +40,9 @@ module dijon.core{
     /**
     * Manager for loading and clearing assets
     */
-    export class AssetManager{
+    export class AssetManager implements dijon.interfaces.INotifier{
+        protected app:dijon.mvc.Application;
+        
         // private variables
         private _data = {};
         private _baseURL:string = '';
@@ -138,7 +142,8 @@ module dijon.core{
         * @private
         */
         private _init() {
-            this.game = dijon.mvc.Application.getInstance().game;
+            this.app = dijon.mvc.Application.getInstance();
+            this.game = this.app.game;
             this.setBaseURL();
             this.setPaths();
             this.setResolution();
@@ -587,6 +592,8 @@ module dijon.core{
             this._data = JSON.parse(textFileFromCache);
             this._loadData = {};
             this._parseData();
+            
+            this.sendNotification(dijon.utils.Notifications.ASSET_MANAGER_DATA_SET, this._data);
         }
     
         /**
@@ -617,6 +624,8 @@ module dijon.core{
             }
     
             this._completedLoads[id] = false;
+            
+            this.sendNotification(dijon.utils.Notifications.ASSET_MANAGER_ASSETS_CLEARED, id);
         }
     
         /**
@@ -672,6 +681,10 @@ module dijon.core{
         */
         hasLoadedAssets(id: string) {
             return this._completedLoads[id] === true;
+        }
+        
+        sendNotification(notificationName:string, notificationBody?:any){
+            return this.app.sendNotification(notificationName, notificationBody);
         }
     }
 }

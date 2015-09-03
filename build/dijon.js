@@ -1,5 +1,22 @@
+/// <reference path="./INotification" />
+var dijon;
+(function (dijon) {
+    var utils;
+    (function (utils) {
+        var Notifications = (function () {
+            function Notifications() {
+            }
+            Notifications.ASSET_MANAGER_DATA_SET = 'dijonAssetManagerDataSet';
+            Notifications.ASSET_MANAGER_ASSETS_CLEARED = 'dijonAssetManagerAssetsCleared';
+            return Notifications;
+        })();
+        utils.Notifications = Notifications;
+    })(utils = dijon.utils || (dijon.utils = {}));
+})(dijon || (dijon = {}));
 /// <reference path="../mvc/Application" />
 /// <reference path="./Game" />
+/// <reference path="../interfaces/INotifier" />
+/// <reference path="../utils/Notifications" />
 var dijon;
 (function (dijon) {
     var core;
@@ -42,7 +59,8 @@ var dijon;
                 this._init();
             }
             AssetManager.prototype._init = function () {
-                this.game = dijon.mvc.Application.getInstance().game;
+                this.app = dijon.mvc.Application.getInstance();
+                this.game = this.app.game;
                 this.setBaseURL();
                 this.setPaths();
                 this.setResolution();
@@ -316,6 +334,7 @@ var dijon;
                 this._data = JSON.parse(textFileFromCache);
                 this._loadData = {};
                 this._parseData();
+                this.sendNotification(dijon.utils.Notifications.ASSET_MANAGER_DATA_SET, this._data);
             };
             AssetManager.prototype.clearAssets = function (id, clearAudio, clearAtlasses, clearImages, clearText) {
                 if (clearAudio === void 0) { clearAudio = true; }
@@ -335,6 +354,7 @@ var dijon;
                     this.clearAsset(assets[i], clearAudio, clearAtlasses, clearImages, clearText);
                 }
                 this._completedLoads[id] = false;
+                this.sendNotification(dijon.utils.Notifications.ASSET_MANAGER_ASSETS_CLEARED, id);
             };
             AssetManager.prototype.clearAsset = function (asset, clearAudio, clearAtlasses, clearImages, clearText) {
                 if (clearAudio === void 0) { clearAudio = true; }
@@ -375,6 +395,9 @@ var dijon;
             };
             AssetManager.prototype.hasLoadedAssets = function (id) {
                 return this._completedLoads[id] === true;
+            };
+            AssetManager.prototype.sendNotification = function (notificationName, notificationBody) {
+                return this.app.sendNotification(notificationName, notificationBody);
             };
             AssetManager.AUDIO = 'audio';
             AssetManager.SOUND = 'sound';
@@ -1588,6 +1611,7 @@ var dijon;
 /// <reference path="./Mediator" />
 /// <reference path="./Model" />
 /// <reference path="../interfaces/IObserver" />
+/// <reference path="../interfaces/INotifier" />
 /// <reference path="../core/Game" />
 var dijon;
 (function (dijon) {
@@ -1762,7 +1786,11 @@ var dijon;
                 _super.call(this);
                 this._audio = [];
                 this._mediator = null;
-                this.game = dijon.mvc.Application.getInstance().game;
+                this.app = dijon.mvc.Application.getInstance();
+                this.game = this.app.game;
+                this.add = this.app.game.add;
+                this.addToGame = this.app.game.addToGame;
+                this.addToUI = this.app.game.addToUI;
             }
             State.prototype.init = function () {
             };

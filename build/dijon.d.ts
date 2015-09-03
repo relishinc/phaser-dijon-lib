@@ -1,3 +1,21 @@
+declare module dijon.interfaces {
+    interface INotification {
+        getName(): string;
+        getBody(): any;
+        setBody(body: any): void;
+    }
+}
+declare module dijon.interfaces {
+    interface INotifier {
+        sendNotification(notificationName: string, notificationBody?: any): any;
+    }
+}
+declare module dijon.utils {
+    class Notifications {
+        static ASSET_MANAGER_DATA_SET: string;
+        static ASSET_MANAGER_ASSETS_CLEARED: string;
+    }
+}
 declare module dijon.core {
     interface IAsset {
         url: string;
@@ -29,7 +47,8 @@ declare module dijon.core {
         audioSpritePath: string;
         soundPath: string;
     }
-    class AssetManager {
+    class AssetManager implements dijon.interfaces.INotifier {
+        protected app: dijon.mvc.Application;
         private _data;
         private _baseURL;
         private _pathObj;
@@ -110,6 +129,7 @@ declare module dijon.core {
         clearAssets(id: string, clearAudio?: boolean, clearAtlasses?: boolean, clearImages?: boolean, clearText?: boolean): void;
         clearAsset(asset: IAsset, clearAudio?: boolean, clearAtlasses?: boolean, clearImages?: boolean, clearText?: boolean): void;
         hasLoadedAssets(id: string): boolean;
+        sendNotification(notificationName: string, notificationBody?: any): void;
     }
 }
 declare module dijon.core {
@@ -340,13 +360,6 @@ declare module dijon.core {
         addToUI: core.GameObjectFactory;
     }
 }
-declare module dijon.interfaces {
-    interface INotification {
-        getName(): string;
-        getBody(): any;
-        setBody(body: any): void;
-    }
-}
 declare module dijon.mvc {
     class Notification implements interfaces.INotification {
         private _name;
@@ -404,7 +417,7 @@ declare module dijon.mvc {
     }
 }
 declare module dijon.mvc {
-    class Application {
+    class Application implements interfaces.INotifier {
         static instance: any;
         static SINGLETON_MSG: string;
         game: core.Game;
@@ -450,8 +463,11 @@ declare module dijon.core {
     class State extends Phaser.State {
         protected _audio: Phaser.Sound[];
         protected _mediator: mvc.Mediator;
+        protected app: mvc.Application;
         game: core.Game;
         add: core.GameObjectFactory;
+        addToGame: core.GameObjectFactory;
+        addToUI: core.GameObjectFactory;
         constructor();
         init(): void;
         preload(): void;

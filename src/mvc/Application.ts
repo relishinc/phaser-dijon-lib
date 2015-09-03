@@ -1,10 +1,11 @@
 /// <reference path="./Mediator" />
 /// <reference path="./Model" />
 /// <reference path="../interfaces/IObserver" />
+/// <reference path="../interfaces/INotifier" />
 /// <reference path="../core/Game" />
 
 module dijon.mvc{
-	export class Application {
+	export class Application implements interfaces.INotifier{
 		// static constants
 		static instance = null;
 		static SINGLETON_MSG = 'Application singleton already constructed!';
