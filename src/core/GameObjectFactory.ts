@@ -1,3 +1,8 @@
+/// <reference path="../display/Sprite" />
+/// <reference path="../display/Text" />
+/// <reference path="../display/Group" />
+/// <reference path="./Component" />
+
 module dijon.core{
 	export class GameObjectFactory extends Phaser.GameObjectFactory{
 		protected _defaultGroup:Phaser.Group = null;
@@ -271,6 +276,25 @@ module dijon.core{
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
 			return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size, align));
+		}
+		
+		// dijon specific display objects
+		dSprite(x?:number, y?:number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?:Component[], group?:Phaser.Group):display.Sprite{
+			if (group === undefined) { group = this.defaultGroup; }
+			this.defaultGroup = null;
+			return group.add(new display.Sprite(x, y, key, frame, name, components));
+		}
+		
+		dGroup(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number, group?:Phaser.Group):display.Group{
+			if (group === undefined) { group = this.defaultGroup; }
+			this.defaultGroup = null;
+			return group.add(new display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
+		}
+		
+		dText(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object ,group?:Phaser.Group):display.Text{
+			if (group === undefined) { group = this.defaultGroup; }
+			this.defaultGroup = null;
+			return group.add(new display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
 		}
 		
 		// getter / setter

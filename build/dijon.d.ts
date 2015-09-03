@@ -209,6 +209,96 @@ declare module dijon.core {
     }
 }
 declare module dijon.core {
+    class Component {
+        game: core.Game;
+        name: string;
+        owner: any;
+        constructor();
+        setOwner(owner: any): void;
+        init(): void;
+        buildInterface(): void;
+        update(): void;
+        destroy(): void;
+    }
+}
+declare module dijon.display {
+    class Sprite extends Phaser.Sprite {
+        name: string;
+        game: core.Game;
+        protected _hasComponents: boolean;
+        protected _componentKeys: string[];
+        protected _components: {
+            [componentName: string]: core.Component;
+        };
+        constructor(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: core.Component[]);
+        update(): void;
+        destroy(): void;
+        protected init(): void;
+        protected buildInterface(): void;
+        private _updateComponentKeys();
+        addComponents: (components: core.Component[]) => void;
+        addComponent(component: core.Component): core.Component;
+        updateComponents(): void;
+        updateComponent(componentName: string): void;
+        removeAllComponents(): void;
+        removeComponent(componentName: string): void;
+    }
+}
+declare module dijon.display {
+    class Text extends Phaser.Text {
+        lineSpacing: number;
+        game: core.Game;
+        style: any;
+        onAnimationComplete: Phaser.Signal;
+        protected _canUpdate: boolean;
+        protected _repeatTimer: Phaser.TimerEvent;
+        protected _delayTimer: Phaser.TimerEvent;
+        protected _lowercaseText: string;
+        protected _letterTime: number;
+        protected _textLength: number;
+        protected _textToAnimate: string[];
+        static DEFAULT_FONT_SIZE: number;
+        static DEFAULT_FONT_COLOR: string;
+        static DEFAULT_FONT: string;
+        static GLOBAL_PADDING_X: number;
+        static GLOBAL_PADDING_Y: number;
+        constructor(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object);
+        setText(text: string): Phaser.Text;
+        protected _startTextAnimation(): void;
+        protected _updateTextAnimation(): boolean;
+        setColor(color: string): void;
+        resetColor(): void;
+        highlightPhrase(phrase: string, color: string, caseSensitive?: boolean): void;
+        animate(letterTime?: number, delay?: number): void;
+        stopAnimating: () => void;
+        roundPixel: () => void;
+        private static _addSettings(obj, settings);
+    }
+}
+declare module dijon.display {
+    class Group extends Phaser.Group {
+        name: string;
+        game: core.Game;
+        protected _hasComponents: boolean;
+        protected _componentKeys: string[];
+        protected _components: {
+            [componentName: string]: core.Component;
+        };
+        constructor(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number);
+        update(): void;
+        destroy(): void;
+        protected init(): void;
+        protected buildInterface(): void;
+        private _updateComponentKeys();
+        addComponents: (components: core.Component[]) => void;
+        addComponent(component: core.Component): core.Component;
+        updateComponents(): void;
+        updateComponent(componentName: string): void;
+        removeAllComponents(): void;
+        removeComponent(componentName: string): void;
+    }
+}
+declare module dijon.core {
     class GameObjectFactory extends Phaser.GameObjectFactory {
         protected _defaultGroup: Phaser.Group;
         existing(object: any): any;
@@ -224,6 +314,9 @@ declare module dijon.core {
         button(x?: number, y?: number, key?: string, callback?: Function, callbackContext?: Object, overFrame?: string | number, outFrame?: string | number, downFrame?: string | number, upFrame?: string | number, group?: Phaser.Group): Phaser.Button;
         graphics(x?: number, y?: number, group?: Phaser.Group): Phaser.Graphics;
         bitmapText(x?: number, y?: number, font?: string, text?: string, size?: number, align?: string, group?: Phaser.Group): Phaser.BitmapText;
+        dSprite(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: Component[], group?: Phaser.Group): display.Sprite;
+        dGroup(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number, group?: Phaser.Group): display.Group;
+        dText(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object, group?: Phaser.Group): display.Text;
         defaultGroup: Phaser.Group;
     }
 }
@@ -354,19 +447,6 @@ declare module dijon.core {
     }
 }
 declare module dijon.core {
-    class Component {
-        game: core.Game;
-        name: string;
-        owner: any;
-        constructor();
-        setOwner(owner: any): void;
-        init(): void;
-        buildInterface(): void;
-        update(): void;
-        destroy(): void;
-    }
-}
-declare module dijon.core {
     class State extends Phaser.State {
         protected _audio: Phaser.Sound[];
         protected _mediator: mvc.Mediator;
@@ -388,83 +468,6 @@ declare module dijon.core {
         removeMediator(): void;
         preloadID: string;
         buildInterval: number;
-    }
-}
-declare module dijon.display {
-    class Group extends Phaser.Group {
-        name: string;
-        game: core.Game;
-        protected _hasComponents: boolean;
-        protected _componentKeys: string[];
-        protected _components: {
-            [componentName: string]: core.Component;
-        };
-        constructor(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number);
-        update(): void;
-        destroy(): void;
-        protected init(): void;
-        protected buildInterface(): void;
-        private _updateComponentKeys();
-        addComponents: (components: core.Component[]) => void;
-        addComponent(component: core.Component): core.Component;
-        updateComponents(): void;
-        updateComponent(componentName: string): void;
-        removeAllComponents(): void;
-        removeComponent(componentName: string): void;
-    }
-}
-declare module dijon.display {
-    class Sprite extends Phaser.Sprite {
-        name: string;
-        game: core.Game;
-        protected _hasComponents: boolean;
-        protected _componentKeys: string[];
-        protected _components: {
-            [componentName: string]: core.Component;
-        };
-        constructor(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: core.Component[]);
-        update(): void;
-        destroy(): void;
-        protected init(): void;
-        protected buildInterface(): void;
-        private _updateComponentKeys();
-        addComponents: (components: core.Component[]) => void;
-        addComponent(component: core.Component): core.Component;
-        updateComponents(): void;
-        updateComponent(componentName: string): void;
-        removeAllComponents(): void;
-        removeComponent(componentName: string): void;
-    }
-}
-declare module dijon.display {
-    class Text extends Phaser.Text {
-        lineSpacing: number;
-        game: core.Game;
-        style: any;
-        onAnimationComplete: Phaser.Signal;
-        protected _canUpdate: boolean;
-        protected _repeatTimer: Phaser.TimerEvent;
-        protected _delayTimer: Phaser.TimerEvent;
-        protected _lowercaseText: string;
-        protected _letterTime: number;
-        protected _textLength: number;
-        protected _textToAnimate: string[];
-        static DEFAULT_FONT_SIZE: number;
-        static DEFAULT_FONT_COLOR: string;
-        static DEFAULT_FONT: string;
-        static GLOBAL_PADDING_X: number;
-        static GLOBAL_PADDING_Y: number;
-        constructor(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object);
-        setText(text: string): Phaser.Text;
-        protected _startTextAnimation(): void;
-        protected _updateTextAnimation(): boolean;
-        setColor(color: string): void;
-        resetColor(): void;
-        highlightPhrase(phrase: string, color: string, caseSensitive?: boolean): void;
-        animate(letterTime?: number, delay?: number): void;
-        stopAnimating: () => void;
-        roundPixel: () => void;
-        private static _addSettings(obj, settings);
     }
 }
 declare module dijon.mvc {
