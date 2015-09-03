@@ -487,6 +487,9 @@ var dijon;
                 return typeof transition === 'undefined' ? null : transition;
             };
             TransitionManager.prototype._transitionInComplete = function () {
+                this._transition = this._getTransition(this._fromState, this._toState);
+                if (!this._transition)
+                    return false;
                 if (typeof this._transition.preloadHandler.loadStart === 'function')
                     this.game.asset.onLoadStart.addOnce(this._transition.preloadHandler.loadStart, this._transition.preloadHandler);
                 if (typeof this._transition.preloadHandler.loadProgress === 'function') {
@@ -501,13 +504,14 @@ var dijon;
                 this.onTransitionOutComplete.dispatch();
             };
             TransitionManager.prototype._preloadComplete = function () {
+                this._transition = this._getTransition(this._fromState, this._toState);
+                if (!this._transition)
+                    return false;
                 this.game.asset.onFileComplete.remove(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
                 if (typeof this._transition.preloadHandler.loadComplete === 'function')
                     this._transition.preloadHandler.loadComplete();
             };
             TransitionManager.prototype._clearTransition = function () {
-                if (!this._transition)
-                    return false;
                 this._transition.outHandler.transitionInComplete.remove(this._transitionOutComplete, this);
                 this._transition.inHandler.transitionOutComplete.remove(this._transitionInComplete, this);
                 this.game.asset.onLoadCompleteAndAudioDecoded.remove(this._preloadComplete, this);

@@ -170,10 +170,10 @@ declare module dijon.core {
         constructor();
         private _add(id, outHandler, preloadHandler, inHandler);
         _getTransition(inState: string, outState: string): any;
-        _transitionInComplete(): void;
+        _transitionInComplete(): boolean;
         _transitionOutComplete(): void;
-        _preloadComplete(): void;
-        _clearTransition(): boolean;
+        _preloadComplete(): boolean;
+        _clearTransition(): void;
         add(fromState: string, toState: string | IPreloadHandler, outHandler: ITransitionHandler, preloadHandler: IPreloadHandler, inHandler: ITransitionHandler): void;
         addException(state: string): void;
         remove(fromState: string, toState?: string): void;

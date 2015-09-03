@@ -54,6 +54,10 @@ module dijon.core{
                 }
         
                 _transitionInComplete() {
+                        this._transition = this._getTransition(this._fromState, this._toState);
+                        if (!this._transition)
+                                return false;
+                        
                         if (typeof this._transition.preloadHandler.loadStart === 'function')
                                 this.game.asset.onLoadStart.addOnce(this._transition.preloadHandler.loadStart, this._transition.preloadHandler);
                 
@@ -74,6 +78,10 @@ module dijon.core{
                 }
         
                 _preloadComplete() {
+                        this._transition = this._getTransition(this._fromState, this._toState);
+                        if (!this._transition)
+                                return false;
+                        
                         this.game.asset.onFileComplete.remove(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
                 
                         if (typeof this._transition.preloadHandler.loadComplete === 'function')
@@ -81,9 +89,6 @@ module dijon.core{
                         }
                 
                         _clearTransition() {
-                        
-                        if (!this._transition)
-                                return false;
                 
                         this._transition.outHandler.transitionInComplete.remove(this._transitionOutComplete, this);
                         this._transition.inHandler.transitionOutComplete.remove(this._transitionInComplete, this);
