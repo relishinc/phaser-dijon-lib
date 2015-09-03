@@ -1788,9 +1788,6 @@ var dijon;
                 this._mediator = null;
                 this.app = dijon.mvc.Application.getInstance();
                 this.game = this.app.game;
-                this.add = this.app.game.add;
-                this.addToGame = this.app.game.addToGame;
-                this.addToUI = this.app.game.addToUI;
             }
             State.prototype.init = function () {
             };

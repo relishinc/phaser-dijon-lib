@@ -10,18 +10,10 @@ module dijon.core{
         protected app:mvc.Application;
         public game:core.Game;
         
-        public add:core.GameObjectFactory;
-        public addToGame:core.GameObjectFactory;
-        public addToUI:core.GameObjectFactory;
-        
         constructor(){
             super();
             this.app = mvc.Application.getInstance();
             this.game = this.app.game;
-            
-            this.add = this.app.game.add;
-            this.addToGame = this.app.game.addToGame;
-            this.addToUI = this.app.game.addToUI;
         }
         // Phaser.State overrides
         public init():void{

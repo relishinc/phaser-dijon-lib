@@ -465,9 +465,6 @@ declare module dijon.core {
         protected _mediator: mvc.Mediator;
         protected app: mvc.Application;
         game: core.Game;
-        add: core.GameObjectFactory;
-        addToGame: core.GameObjectFactory;
-        addToUI: core.GameObjectFactory;
         constructor();
         init(): void;
         preload(): void;
