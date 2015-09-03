@@ -229,6 +229,20 @@ declare module dijon.core {
     }
 }
 declare module dijon.core {
+    class AnalyticsManager {
+        category: string;
+        constructor(category?: string);
+        trackEvent(action?: string, label?: string, value?: string): void;
+        active: boolean;
+        ga: Function;
+    }
+    class AnalyticsException {
+        message: string;
+        name: string;
+        constructor(message: string);
+    }
+}
+declare module dijon.core {
     class Component {
         game: core.Game;
         name: string;
@@ -293,29 +307,6 @@ declare module dijon.display {
         stopAnimating: () => void;
         roundPixel: () => void;
         private static _addSettings(obj, settings);
-    }
-}
-declare module dijon.display {
-    class Group extends Phaser.Group {
-        name: string;
-        game: core.Game;
-        protected _hasComponents: boolean;
-        protected _componentKeys: string[];
-        protected _components: {
-            [componentName: string]: core.Component;
-        };
-        constructor(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number);
-        update(): void;
-        destroy(): void;
-        protected init(): void;
-        protected buildInterface(): void;
-        private _updateComponentKeys();
-        addComponents: (components: core.Component[]) => void;
-        addComponent(component: core.Component): core.Component;
-        updateComponents(): void;
-        updateComponent(componentName: string): void;
-        removeAllComponents(): void;
-        removeComponent(componentName: string): void;
     }
 }
 declare module dijon.core {
@@ -445,18 +436,28 @@ declare module dijon.mvc {
         static getInstance(): Application;
     }
 }
-declare module dijon.core {
-    class AnalyticsManager {
-        category: string;
-        constructor(category?: string);
-        trackEvent(action?: string, label?: string, value?: string): void;
-        active: boolean;
-        ga: Function;
-    }
-    class AnalyticsException {
-        message: string;
+declare module dijon.display {
+    class Group extends Phaser.Group {
         name: string;
-        constructor(message: string);
+        game: core.Game;
+        protected _hasComponents: boolean;
+        protected _componentKeys: string[];
+        protected _components: {
+            [componentName: string]: core.Component;
+        };
+        constructor(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number);
+        update(): void;
+        destroy(): void;
+        protected init(): void;
+        protected buildInterface(): void;
+        private _updateComponentKeys();
+        addComponents: (components: core.Component[]) => void;
+        addComponent(component: core.Component): core.Component;
+        updateComponents(): void;
+        updateComponent(componentName: string): void;
+        removeAllComponents(): void;
+        removeComponent(componentName: string): void;
+        addInternal: core.GameObjectFactory;
     }
 }
 declare module dijon.core {
@@ -481,6 +482,7 @@ declare module dijon.core {
         removeMediator(): void;
         preloadID: string;
         buildInterval: number;
+        add: core.GameObjectFactory;
     }
 }
 declare module dijon.mvc {

@@ -185,10 +185,3 @@ module dijon.display{
 Phaser.GameObjectCreator.prototype['dText'] = function(x:number, y:number, text:string="", fontName?:string, fontSize:number=dijon.display.Text.DEFAULT_FONT_SIZE, fontColor:string=dijon.display.Text.DEFAULT_FONT_COLOR, fontAlign:string='left', wordWrap:boolean=false, width:number=0, lineSpacing:number=0, settings:Object=null) {
     return new dijon.display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings);
 };
-
-Phaser.GameObjectFactory.prototype['dText'] = function(x:number, y:number, text:string="", fontName?:string, fontSize:number=dijon.display.Text.DEFAULT_FONT_SIZE, fontColor:string=dijon.display.Text.DEFAULT_FONT_COLOR, fontAlign:string='left', wordWrap:boolean=false, width:number=0, lineSpacing:number=0, settings:Object=null, group:Phaser.Group=null) {
-    if (!group) {
-        group = this.world;
-    }
-    return group.add(new dijon.display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
-};

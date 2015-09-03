@@ -109,5 +109,9 @@ module dijon.core{
         get buildInterval():number{
             return 10;
         }
+        
+        public get add():core.GameObjectFactory{
+			return this.game.add;
+		}
     }
 }

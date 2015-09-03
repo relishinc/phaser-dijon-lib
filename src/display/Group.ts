@@ -1,5 +1,6 @@
 /// <reference path="../mvc/Application" />
 /// <reference path="../core/Game" />
+/// <reference path="../core/GameObjectFactory" />
 /// <reference path="../core/Component" />
 
 module dijon.display{
@@ -143,10 +144,10 @@ module dijon.display{
 		
 			this._updateComponentKeys();
 		}
+		
+		public get addInternal():core.GameObjectFactory{
+			this.game.add.defaultGroup = this;
+			return this.game.add;
+		}
 	}
 }
-
-// Phaser addons
-Phaser.GameObjectFactory.prototype['dGroup'] = function(x:number=0, y:number=0, name:string="dGroup", addToStage:boolean=false, components:dijon.core.Component[]=null, enableBody?:boolean, physicsBodyType?:number) {
-    return new dijon.display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
-};
