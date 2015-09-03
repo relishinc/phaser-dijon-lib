@@ -111,7 +111,7 @@ module dijon.core{
         }
         
         public get add():core.GameObjectFactory{
-			return this.game.add;
+			return this.game.addToGame;
 		}
     }
 }
