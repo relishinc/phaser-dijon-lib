@@ -10,9 +10,9 @@ module dijon.core{
         }
         
         export interface IPreloadHandler extends ITransitionHandler{
-                loadStart:Function;
-                loadProgress:Function;
-                loadComplete:Function;
+                loadStart();
+                loadProgress(progress?:number);
+                loadComplete();
         }
         
         export interface ITransition{

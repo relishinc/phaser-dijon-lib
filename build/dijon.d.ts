@@ -112,7 +112,7 @@ declare module dijon.core {
         setBaseURL(baseURL?: string): void;
         setPaths(pathObj?: IPathConfig): void;
         setResolution(res?: number): void;
-        setSoundDecodingModifier(num: number): void;
+        setSoundDecodingModifier(num?: number): void;
         getSoundDecodingModifier(): number;
         loadText(url: string): Phaser.Loader;
         loadAtlas(url: string): Phaser.Loader | string;
@@ -149,9 +149,9 @@ declare module dijon.core {
         transitionIn?: Function;
     }
     interface IPreloadHandler extends ITransitionHandler {
-        loadStart: Function;
-        loadProgress: Function;
-        loadComplete: Function;
+        loadStart(): any;
+        loadProgress(progress?: number): any;
+        loadComplete(): any;
     }
     interface ITransition {
         inHandler?: ITransitionHandler;

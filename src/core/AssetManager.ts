@@ -412,13 +412,13 @@ module dijon.core{
         * sets the percentage of the load we should allot to each sound
         * @param {Number} [num = 2] the percentage
         */
-        setSoundDecodingModifier(num:number) {
-            this._soundDecodingModifier = num || 2;
+        setSoundDecodingModifier(num:number=2) {
+            this._soundDecodingModifier = num;
         }
     
         
         getSoundDecodingModifier() {
-            return this._soundDecodingModifier || 2;
+            return this._soundDecodingModifier;
         }
     
         loadText(url:string) {

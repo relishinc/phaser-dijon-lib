@@ -197,10 +197,11 @@ var dijon;
                 this._resolution = '';
             };
             AssetManager.prototype.setSoundDecodingModifier = function (num) {
-                this._soundDecodingModifier = num || 2;
+                if (num === void 0) { num = 2; }
+                this._soundDecodingModifier = num;
             };
             AssetManager.prototype.getSoundDecodingModifier = function () {
-                return this._soundDecodingModifier || 2;
+                return this._soundDecodingModifier;
             };
             AssetManager.prototype.loadText = function (url) {
                 var key = this._getAssetKey(url);
