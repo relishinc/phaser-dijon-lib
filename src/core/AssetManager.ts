@@ -517,7 +517,7 @@ module dijon.core{
             }
     
             this._loadAssets(id);
-            this._hasFiles = this.game.load.isLoading;
+            this._hasFiles = this.game.load.totalQueuedFiles() > 0;
     
             if (background) {
                 this.game.load.onLoadStart.addOnce(this._backgroundLoadStart, this);
