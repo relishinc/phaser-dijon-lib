@@ -1,3 +1,4 @@
+/// <reference path="../src/lib.d.ts" />
 declare module dijon.interfaces {
     interface INotification {
         getName(): string;
@@ -141,23 +142,29 @@ declare module dijon.core {
         run(sequence: Array<Function>, context: Object, interval: number, completeCallback: Function, completeCallbackContext: Object): void;
     }
 }
-declare module dijon.core {
+declare module dijon.interfaces {
     interface ITransitionHandler {
         transitionInComplete: Phaser.Signal;
         transitionOutComplete: Phaser.Signal;
         transitionOut?: Function;
         transitionIn?: Function;
     }
+}
+declare module dijon.interfaces {
     interface IPreloadHandler extends ITransitionHandler {
         loadStart(): any;
         loadProgress(progress?: number): any;
         loadComplete(): any;
     }
+}
+declare module dijon.interfaces {
     interface ITransition {
         inHandler?: ITransitionHandler;
         preloadHandler?: IPreloadHandler;
         outHandler: ITransitionHandler;
     }
+}
+declare module dijon.core {
     class TransitionManager {
         game: dijon.core.Game;
         onTransitionOutComplete: Phaser.Signal;
@@ -174,7 +181,7 @@ declare module dijon.core {
         _transitionOutComplete(): void;
         _preloadComplete(): boolean;
         _clearTransition(): void;
-        add(fromState: string, toState: string | IPreloadHandler, outHandler: ITransitionHandler, preloadHandler: IPreloadHandler, inHandler: ITransitionHandler): void;
+        add(fromState: string, toState: string | interfaces.IPreloadHandler, outHandler?: interfaces.ITransitionHandler, preloadHandler?: interfaces.IPreloadHandler, inHandler?: interfaces.ITransitionHandler): void;
         addException(state: string): void;
         remove(fromState: string, toState?: string): void;
         to(state: string): void;

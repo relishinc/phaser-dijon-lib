@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
     typescript = require('gulp-tsc'), 
     uglify = require('gulp-uglify'),
-    sequwnce = require('run-sequence'), 
+    sequence = require('run-sequence'), 
     concat = require('gulp-concat');
  
 gulp.task('lib', function(){
@@ -27,5 +27,5 @@ gulp.task('uglify', function(){
 });
 
 gulp.task('compile', function(done){
-  return sequwnce('lib', 'uglify', done); 
+  return sequence('lib', 'uglify', done); 
 });

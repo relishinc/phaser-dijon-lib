@@ -18,6 +18,7 @@ module dijon.core{
         required:boolean;
         assets:Array<IAsset>;
     }
+    
     export interface ISound{
         isAudioSprite?:boolean;
         url?:string;

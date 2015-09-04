@@ -1,32 +1,16 @@
 /// <reference path="../mvc/Application" />
 /// <reference path="./Game" />
+/// <reference path="../interfaces/ITransition" />
+/// <reference path="../interfaces/ITransitionHandler" />
+/// <reference path="../interfaces/IPreloadHandler" />
 
 module dijon.core{
-        export interface ITransitionHandler{
-                transitionInComplete:Phaser.Signal;
-                transitionOutComplete:Phaser.Signal;
-                transitionOut?:Function;
-                transitionIn?:Function;
-        }
-        
-        export interface IPreloadHandler extends ITransitionHandler{
-                loadStart();
-                loadProgress(progress?:number);
-                loadComplete();
-        }
-        
-        export interface ITransition{
-                inHandler?:ITransitionHandler;
-                preloadHandler?:IPreloadHandler;
-                outHandler:ITransitionHandler;
-        }
-        
         export class TransitionManager{
                 public game:dijon.core.Game;
                 public onTransitionOutComplete:Phaser.Signal = new Phaser.Signal();
                 public onTransitionInComplete:Phaser.Signal = new Phaser.Signal();
                 
-                private _transition:ITransition = null;
+                private _transition:interfaces.ITransition = null;
                 private _transitions:Object = {};
                 private _exceptions:Object = {};
                 
@@ -37,7 +21,7 @@ module dijon.core{
                         this.game = mvc.Application.getInstance().game;
                 }	
                 
-                private _add(id:string, outHandler:ITransitionHandler, preloadHandler:IPreloadHandler, inHandler:ITransitionHandler):void{
+                private _add(id:string, outHandler:interfaces.ITransitionHandler, preloadHandler:interfaces.IPreloadHandler, inHandler:interfaces.ITransitionHandler):void{
                         this._transitions[id] = {
                                 outHandler: outHandler,
                                 preloadHandler: preloadHandler,
@@ -125,7 +109,7 @@ module dijon.core{
                 * @param {inHandler} inHandler - the instance that will handle the in transition when the toState is completely loaded
                 * @return {Object} transition reference that was added to _transitions
                 */
-                public add(fromState:string, toState:string | IPreloadHandler, outHandler:ITransitionHandler, preloadHandler:IPreloadHandler, inHandler:ITransitionHandler):void {
+                public add(fromState:string, toState:string | interfaces.IPreloadHandler, outHandler?:interfaces.ITransitionHandler, preloadHandler?:interfaces.IPreloadHandler, inHandler?:interfaces.ITransitionHandler):void {
                         var args;
                         if (arguments.length < 5) {
                                 if (fromState === 'all') {
