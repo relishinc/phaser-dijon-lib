@@ -348,6 +348,11 @@ declare module dijon.core {
         defaultGroup: Phaser.Group;
     }
 }
+declare module dijon.interfaces {
+    interface IGameConfig extends Phaser.IGameConfig {
+        resolution?: number;
+    }
+}
 declare module dijon.core {
     class Game extends Phaser.Game {
         app: mvc.Application;
@@ -361,7 +366,7 @@ declare module dijon.core {
         gameLayer: Phaser.Group;
         uiLayer: Phaser.Group;
         debugger: any;
-        constructor(config: Phaser.IGameConfig | any);
+        constructor(config: interfaces.IGameConfig);
         boot(): void;
         changeState(toState: string): void;
         addToGame: core.GameObjectFactory;

@@ -1391,6 +1391,7 @@ var dijon;
         core.GameObjectFactory = GameObjectFactory;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
+/// <reference path="../lib.d.ts" />
 /// <reference path="./AssetManager" />
 /// <reference path="./SequenceManager" />
 /// <reference path="./TransitionManager" />
@@ -1398,6 +1399,7 @@ var dijon;
 /// <reference path="./AudioManager" />
 /// <reference path="./AnalyticsManager" />
 /// <reference path="./GameObjectFactory" />
+/// <reference path="../interfaces/IGameConfig" />
 var dijon;
 (function (dijon) {
     var core;

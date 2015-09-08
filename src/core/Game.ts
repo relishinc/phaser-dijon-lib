@@ -5,6 +5,7 @@
 /// <reference path="./AudioManager" />
 /// <reference path="./AnalyticsManager" />
 /// <reference path="./GameObjectFactory" />
+/// <reference path="../interfaces/IGameConfig" />
 
 module dijon.core{
 	export class Game extends Phaser.Game{
@@ -29,7 +30,7 @@ module dijon.core{
 		public debugger:any = null;
 		
 		// Phaser.Game overrides
-		constructor(config:Phaser.IGameConfig|any){
+		constructor(config:interfaces.IGameConfig){
 			super(config);
 		}
 		
@@ -52,7 +53,7 @@ module dijon.core{
 			
 			// adds game and ui layers
 			this.gameLayer = this.add.group(this.world, '_game_layer');
-			this.uiLayer = this.add.group(this.world, '_ui_layer');  
+			this.uiLayer = this.add.group(this.world, '_ui_layer');   
 		}
 		
 		// public methods
