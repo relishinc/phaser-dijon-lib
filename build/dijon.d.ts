@@ -365,7 +365,7 @@ declare module dijon.core {
         add: GameObjectFactory;
         gameLayer: Phaser.Group;
         uiLayer: Phaser.Group;
-        debugger: any;
+        debugger: Phaser.Plugin;
         constructor(config: interfaces.IGameConfig);
         boot(): void;
         changeState(toState: string): void;

@@ -1423,6 +1423,7 @@ var dijon;
                 this.add = new core.GameObjectFactory(this);
                 this.gameLayer = this.add.group(this.world, '_game_layer');
                 this.uiLayer = this.add.group(this.world, '_ui_layer');
+                this.uiLayer.fixedToCamera = true;
             };
             Game.prototype.changeState = function (toState) {
                 this.gameLayer.removeAll(true, true);

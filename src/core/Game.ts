@@ -27,7 +27,7 @@ module dijon.core{
 		public uiLayer:Phaser.Group;
 		
 		// debugger (mmigh be deprecated)
-		public debugger:any = null;
+		public debugger:Phaser.Plugin = null;
 		
 		// Phaser.Game overrides
 		constructor(config:interfaces.IGameConfig){
@@ -53,7 +53,11 @@ module dijon.core{
 			
 			// adds game and ui layers
 			this.gameLayer = this.add.group(this.world, '_game_layer');
+			
+			// add ui layer and set the "fixedToCamera" property to true
+			// if the game's camera moves, anything in this group will stay in place
 			this.uiLayer = this.add.group(this.world, '_ui_layer');   
+			this.uiLayer.fixedToCamera = true;
 		}
 		
 		// public methods
