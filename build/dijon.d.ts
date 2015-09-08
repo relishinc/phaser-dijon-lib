@@ -363,14 +363,15 @@ declare module dijon.core {
         audio: AudioManager;
         analytics: AnalyticsManager;
         add: GameObjectFactory;
-        gameLayer: Phaser.Group;
-        uiLayer: Phaser.Group;
-        debugger: Phaser.Plugin;
+        gameLayer: dijon.display.Group;
+        uiLayer: dijon.display.Group;
+        stageLayer: dijon.display.Group;
         constructor(config: interfaces.IGameConfig);
         boot(): void;
         changeState(toState: string): void;
         addToGame: core.GameObjectFactory;
         addToUI: core.GameObjectFactory;
+        addToStage: core.GameObjectFactory;
     }
 }
 declare module dijon.mvc {

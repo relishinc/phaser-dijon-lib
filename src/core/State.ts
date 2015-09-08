@@ -54,11 +54,6 @@ module dijon.core{
         }
         
         public preAfterBuild():void{
-            if (this.game.debugger) {
-                this.game.debugger.selectedObject = null;
-                this.game.debugger.refresh();
-            }
-    
             if (typeof this.game.transition === 'undefined' || !this.game.transition.transitionOut()){
                 this.afterBuild();
             } else {

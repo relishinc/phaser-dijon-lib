@@ -1408,7 +1408,6 @@ var dijon;
             __extends(Game, _super);
             function Game(config) {
                 _super.call(this, config);
-                this.debugger = null;
             }
             Game.prototype.boot = function () {
                 _super.prototype.boot.call(this);
@@ -1421,9 +1420,10 @@ var dijon;
                 this.analytics = new core.AnalyticsManager();
                 this.add = null;
                 this.add = new core.GameObjectFactory(this);
-                this.gameLayer = this.add.group(this.world, '_game_layer');
-                this.uiLayer = this.add.group(this.world, '_ui_layer');
+                this.gameLayer = this.add.dGroup(0, 0, '_game_layer');
+                this.uiLayer = this.add.dGroup(0, 0, '_ui_layer');
                 this.uiLayer.fixedToCamera = true;
+                this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
             };
             Game.prototype.changeState = function (toState) {
                 this.gameLayer.removeAll(true, true);
@@ -1440,6 +1440,14 @@ var dijon;
             Object.defineProperty(Game.prototype, "addToUI", {
                 get: function () {
                     this.add.defaultGroup = this.uiLayer;
+                    return this.add;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Game.prototype, "addToStage", {
+                get: function () {
+                    this.add.defaultGroup = this.stageLayer;
                     return this.add;
                 },
                 enumerable: true,
@@ -1810,10 +1818,6 @@ var dijon;
                 this.game.sequence.run(this.listBuildSequence(), this, this.buildInterval, this.preAfterBuild, this);
             };
             State.prototype.preAfterBuild = function () {
-                if (this.game.debugger) {
-                    this.game.debugger.selectedObject = null;
-                    this.game.debugger.refresh();
-                }
                 if (typeof this.game.transition === 'undefined' || !this.game.transition.transitionOut()) {
                     this.afterBuild();
                 }

@@ -23,11 +23,9 @@ module dijon.core{
 		public add:GameObjectFactory;
 		
 		// display layers
-		public gameLayer:Phaser.Group;
-		public uiLayer:Phaser.Group;
-		
-		// debugger (mmigh be deprecated)
-		public debugger:Phaser.Plugin = null;
+		public gameLayer:dijon.display.Group;
+		public uiLayer:dijon.display.Group;
+		public stageLayer:dijon.display.Group;
 		
 		// Phaser.Game overrides
 		constructor(config:interfaces.IGameConfig){
@@ -52,12 +50,15 @@ module dijon.core{
 			this.add = new GameObjectFactory(this);
 			
 			// adds game and ui layers
-			this.gameLayer = this.add.group(this.world, '_game_layer');
+			this.gameLayer = this.add.dGroup(0, 0, '_game_layer');
 			
 			// add ui layer and set the "fixedToCamera" property to true
 			// if the game's camera moves, anything in this group will stay in place
-			this.uiLayer = this.add.group(this.world, '_ui_layer');   
+			this.uiLayer = this.add.dGroup(0, 0, '_ui_layer');   
 			this.uiLayer.fixedToCamera = true;
+			
+			// add a group to the Phaser.Stage (just in case)
+			this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
 		}
 		
 		// public methods
@@ -94,6 +95,12 @@ module dijon.core{
 		public get addToUI():core.GameObjectFactory{
 			// set the default group for the gameObjectFactory before adding
 			this.add.defaultGroup = this.uiLayer;
+			return this.add;
+		}
+		
+		public get addToStage():core.GameObjectFactory{
+			// set the default group for the gameObjectFactory before adding
+			this.add.defaultGroup = this.stageLayer;
 			return this.add;
 		}
 	}
