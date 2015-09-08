@@ -109,7 +109,7 @@ module dijon.core{
 		* @return {Phaser.Group} The newly created Group.
 		*/
 		group(parent?:any, name:string='group', addToStage:boolean=false, enableBody:boolean=false, physicsBodyType:number=0) {
-			if (parent === undefined) { parent = this.defaultGroup; }
+			if (parent === undefined && addToStage !== true) { parent = this.defaultGroup; }
 			this.defaultGroup = null;
 			return new Phaser.Group(this.game, parent, name, addToStage, enableBody, physicsBodyType);
 		}
@@ -287,7 +287,7 @@ module dijon.core{
 		}
 		
 		dGroup(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number, group?:Phaser.Group):display.Group{
-			if (group === undefined) { group = this.defaultGroup; }
+			if (group === undefined && addToStage !== true) { group = this.defaultGroup; }
 			this.defaultGroup = null;
 			return group.add(new display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
 		}

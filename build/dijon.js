@@ -1273,7 +1273,7 @@ var dijon;
                 if (addToStage === void 0) { addToStage = false; }
                 if (enableBody === void 0) { enableBody = false; }
                 if (physicsBodyType === void 0) { physicsBodyType = 0; }
-                if (parent === undefined) {
+                if (parent === undefined && addToStage !== true) {
                     parent = this.defaultGroup;
                 }
                 this.defaultGroup = null;
@@ -1363,7 +1363,7 @@ var dijon;
                 return group.add(new dijon.display.Sprite(x, y, key, frame, name, components));
             };
             GameObjectFactory.prototype.dGroup = function (x, y, name, addToStage, components, enableBody, physicsBodyType, group) {
-                if (group === undefined) {
+                if (group === undefined && addToStage !== true) {
                     group = this.defaultGroup;
                 }
                 this.defaultGroup = null;
