@@ -1365,9 +1365,10 @@ var dijon;
             GameObjectFactory.prototype.dGroup = function (x, y, name, addToStage, components, enableBody, physicsBodyType, group) {
                 if (group === undefined && addToStage !== true) {
                     group = this.defaultGroup;
+                    this.defaultGroup = null;
+                    return group.add(new dijon.display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
                 }
-                this.defaultGroup = null;
-                return group.add(new dijon.display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
+                return new dijon.display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
             };
             GameObjectFactory.prototype.dText = function (x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings, group) {
                 if (group === undefined) {

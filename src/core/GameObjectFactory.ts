@@ -287,9 +287,13 @@ module dijon.core{
 		}
 		
 		dGroup(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number, group?:Phaser.Group):display.Group{
-			if (group === undefined && addToStage !== true) { group = this.defaultGroup; }
-			this.defaultGroup = null;
-			return group.add(new display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
+			if (group === undefined && addToStage !== true) { 
+				group = this.defaultGroup; 
+				this.defaultGroup = null;
+				return group.add(new display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
+			}
+			
+			return new display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
 		}
 		
 		dText(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object ,group?:Phaser.Group):display.Text{
