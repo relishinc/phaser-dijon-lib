@@ -729,8 +729,6 @@ declare module PIXI {
     * This is an abstract class and should not be used on its own rather it should be extended.
     */
     export class DisplayObject {
-
-
         /**
         * The opacity of the object.
         */
@@ -921,7 +919,31 @@ declare module PIXI {
         touchstart(e: InteractionData): void;
         touchmove(e: InteractionData): void;
         updateTransform(parent?: PIXI.DisplayObjectContainer): void;
-
+        
+        // added for dijon lib
+        scales:number;
+        stopSounds():void;
+        
+        playOverSound():Phaser.Sound;
+        playDownSound():Phaser.Sound;
+        playOutSound():Phaser.Sound;
+        
+        addOverSound(marker:string, volume?:number):void;
+        addDownSound(marker:string, volume?:number):void;
+        addOutSound(marker:string, volume?:number):void;
+        
+        setPivot(pivotLocation:string):void;
+        centerPivot():void;
+        
+        static PIVOT_CENTER:string;
+        static PIVOT_RIGHT:string;
+        static PIVOT_LEFT:string;
+        static PIVOT_TOP:string;
+        static PIVOT_BOTTOM:string;
+        static PIVOT_TOP_LEFT:string;
+        static PIVOT_TOP_RIGHT:string;
+        static PIVOT_BOTTOM_LEFT:string;
+        static PIVOT_BOTTOM_RIGHT:string;
     }
 
 
