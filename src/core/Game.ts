@@ -29,7 +29,7 @@ module dijon.core{
 		public debugger:any = null;
 		
 		// Phaser.Game overrides
-		constructor(config:Phaser.IGameConfig){
+		constructor(config:Phaser.IGameConfig|any){
 			super(config);
 		}
 		
