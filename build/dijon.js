@@ -1148,6 +1148,7 @@ var dijon;
                 this._hasComponents = false;
                 this._componentKeys = [];
                 this._components = {};
+                this._mediator = null;
                 this.addComponents = function (components) {
                     if (typeof components.length === 'undefined')
                         throw new Error('Dijon.UIGroup components must be an array');
@@ -1168,6 +1169,7 @@ var dijon;
             };
             Group.prototype.destroy = function () {
                 this.removeAllComponents();
+                this.removeMediator();
                 _super.prototype.destroy.call(this);
             };
             Group.prototype.init = function () { };
@@ -1206,6 +1208,13 @@ var dijon;
                 this._components[componentName] = null;
                 delete this._components[componentName];
                 this._updateComponentKeys();
+            };
+            Group.prototype.removeMediator = function () {
+                if (!this._mediator) {
+                    return;
+                }
+                this._mediator.destroy();
+                this._mediator = null;
             };
             Object.defineProperty(Group.prototype, "addInternal", {
                 get: function () {

@@ -311,6 +311,7 @@ declare module dijon.display {
         protected _components: {
             [componentName: string]: core.Component;
         };
+        protected _mediator: dijon.mvc.Mediator;
         constructor(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number);
         update(): void;
         destroy(): void;
@@ -323,6 +324,7 @@ declare module dijon.display {
         updateComponent(componentName: string): void;
         removeAllComponents(): void;
         removeComponent(componentName: string): void;
+        removeMediator(): void;
         addInternal: core.GameObjectFactory;
     }
 }

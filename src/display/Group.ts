@@ -11,6 +11,8 @@ module dijon.display{
 		protected _componentKeys:string[] = [];
 		protected _components:{[componentName:string]:core.Component} = {};
 		
+		protected _mediator:dijon.mvc.Mediator = null;
+		
 		constructor(x:number=0, y:number=0, public name:string="dGroup", addToStage:boolean=false, components:core.Component[]=null, enableBody?:boolean, physicsBodyType?:number){
 			super(mvc.Application.getInstance().game, null, name, addToStage, enableBody, physicsBodyType);
 			
@@ -45,12 +47,14 @@ module dijon.display{
 		*/
 		public destroy():void{
 			this.removeAllComponents();
+			this.removeMediator();
 			super.destroy();
 		}
 	
 		// private methods
 		/**
 		* initialize variables
+		* add mediator, if needed
 		* @return {void}
 		*/
 		protected init():void{}
@@ -143,6 +147,18 @@ module dijon.display{
 			delete this._components[componentName];
 		
 			this._updateComponentKeys();
+		}
+		
+		/**
+		* removes the mediator, if it exists
+		* @return {void}
+		*/
+		public removeMediator():void{
+			if (!this._mediator){
+				return;
+			}
+			this._mediator.destroy();
+            this._mediator = null;
 		}
 		
 		public get addInternal():core.GameObjectFactory{
