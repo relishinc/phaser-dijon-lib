@@ -483,9 +483,11 @@ module dijon.core{
             if (exts.indexOf(',') >= 0) {
                 exts = exts.split(',');
             }
+
             if (this.game.device.iOS && exts.indexOf('m4a') === -1) {
                 exts.unshift('m4a');
             }
+            
             if (typeof exts === 'object') {
                 path = [];
                 for (var i = 0; i < exts.length; i++) {

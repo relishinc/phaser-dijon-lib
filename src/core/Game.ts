@@ -54,9 +54,13 @@ module dijon.core{
 			this.add = null;
 			this.add = new GameObjectFactory(this);
 			
+			this.addLayers();
+		}
+		
+		// private methods
+		protected addLayers(): void {
 			// adds game and ui layers
 			this.gameLayer = this.add.dGroup(0, 0, '_game_layer');
-			
 			// add ui layer and set the "fixedToCamera" property to true
 			// if the game's camera moves, anything in this group will stay in place
 			this.uiLayer = this.add.dGroup(0, 0, '_ui_layer');   

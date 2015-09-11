@@ -376,6 +376,7 @@ declare module dijon.core {
         stageLayer: dijon.display.Group;
         constructor(config: interfaces.IGameConfig);
         boot(): void;
+        protected addLayers(): void;
         disableElementInput(el: any): any;
         enableElementInput(el: any): any;
         disableInput(group: Phaser.Group): any;
@@ -448,6 +449,7 @@ declare module dijon.mvc {
         static instance: any;
         static SINGLETON_MSG: string;
         game: core.Game;
+        protected _mediator: mvc.Mediator;
         protected _models: {
             [name: string]: Model;
         };

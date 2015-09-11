@@ -1562,6 +1562,9 @@ var dijon;
                 this.analytics = new core.AnalyticsManager();
                 this.add = null;
                 this.add = new core.GameObjectFactory(this);
+                this.addLayers();
+            };
+            Game.prototype.addLayers = function () {
                 this.gameLayer = this.add.dGroup(0, 0, '_game_layer');
                 this.uiLayer = this.add.dGroup(0, 0, '_ui_layer');
                 this.uiLayer.fixedToCamera = true;
@@ -1707,6 +1710,7 @@ var dijon;
                 this._viewComponent = _viewComponent;
                 this.mediatorName = null;
                 this.app = mvc.Application.getInstance();
+                this.game = this.app.game;
                 this.mediatorName = mediatorName;
                 if (autoReg) {
                     this.register();
@@ -1815,6 +1819,7 @@ var dijon;
     (function (mvc) {
         var Application = (function () {
             function Application() {
+                this._mediator = null;
                 this._models = {};
                 this._mediators = {};
                 this._observerMap = {};
@@ -1833,6 +1838,9 @@ var dijon;
                 });
             };
             Application.prototype.registerModel = function (model) {
+                if (this._models[model.name]) {
+                    throw (new Error('Application:: a model with the name "' + model.name + '" already exists.'));
+                }
                 this._models[model.name] = model;
                 return model;
             };
@@ -1843,6 +1851,9 @@ var dijon;
                 delete this._models[modelToRemove.name];
             };
             Application.prototype.registerMediator = function (mediator) {
+                if (this._mediators[mediator.name]) {
+                    throw (new Error('Application:: a mediator with the name "' + mediator.name + '" already exists.'));
+                }
                 this._mediators[mediator.name] = mediator;
                 this.registerObserver(mediator);
                 mediator.onRegister();

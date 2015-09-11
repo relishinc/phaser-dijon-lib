@@ -8,12 +8,13 @@ module dijon.mvc{
 	export class Mediator implements interfaces.IObserver{
 		public static MEDIATOR_NAME:string = 'Mediator';
 		
-		protected mediatorName:string = null;
+		protected mediatorName: string = null;
 		protected app:Application;
 		protected game:core.Game;
 		
 		constructor(protected _viewComponent:any=null, autoReg:boolean=true, mediatorName:string=null){
 			this.app = Application.getInstance();
+			this.game = this.app.game;
 			this.mediatorName = mediatorName;
 			
 			if (autoReg){
@@ -43,9 +44,7 @@ module dijon.mvc{
 		}
 		
 		public listNotificationInterests():string[]{
-			return [
-				
-			];
+			return [];
 		}
 		
 		public handleNotification(notification:interfaces.INotification){

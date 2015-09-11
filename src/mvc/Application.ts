@@ -10,8 +10,9 @@ module dijon.mvc{
 		static instance = null;
 		static SINGLETON_MSG = 'Application singleton already constructed!';
 
-		public game:core.Game;
-
+		public game: core.Game;
+		
+		protected _mediator: mvc.Mediator = null;
 		protected _models:{[name:string]:Model} = {};
 		protected _mediators:{[name:string]:Mediator} = {};
 		protected _observerMap:{[name:string]:interfaces.IObserver[]} = {};
@@ -36,6 +37,9 @@ module dijon.mvc{
 		}
 
 		public registerModel(model: Model): Model{
+			if (this._models[model.name]) { 
+				throw (new Error('Application:: a model with the name "' + model.name + '" already exists.'));
+			}
 			this._models[model.name] = model;
 			return model;
 		}
@@ -48,7 +52,11 @@ module dijon.mvc{
 			delete this._models[modelToRemove.name];
 		}
 
-		public registerMediator(mediator:Mediator):void{
+		public registerMediator(mediator: Mediator): void{
+			if (this._mediators[mediator.name]) { 
+				throw (new Error('Application:: a mediator with the name "' + mediator.name + '" already exists.'));
+			}
+				    
 			this._mediators[mediator.name] = mediator;
 			this.registerObserver(mediator);
 
