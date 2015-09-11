@@ -33,7 +33,8 @@ module dijon.core{
         dataPath:string;
         spritesheetPath:string;
         imgPath:string;
-        fontPath:string;
+        fontPath: string;
+        bitmapFontPath: string;
         audioSpritePath:string;
         soundPath:string;
     }
@@ -53,6 +54,7 @@ module dijon.core{
         private _spriteSheetPath = null;
         private _imgPath = null;
         private _fontPath = null;
+        private _bitmapFontPath = null;
         private _audioSpritePath = null;
         private _soundPath = null;
         private _soundDecodingModifier:number = 2;
@@ -123,6 +125,11 @@ module dijon.core{
         * @static
         */
         public static TEXT:string = 'text';
+        /**
+        * @type {String}
+        * @static
+        */
+        public static JSON:string = 'json';
         
         /**
         * @type {String}
@@ -359,6 +366,9 @@ module dijon.core{
                 case AssetManager.TEXT:
                     this.loadText(url);
                     break;
+                case AssetManager.JSON:
+                    this.loadJSON(url);
+                    break;
             }
         }
     
@@ -393,6 +403,7 @@ module dijon.core{
             this._spriteSheetPath = this._baseURL + (this._pathObj.spritesheetPath || 'assets/img/spritesheets');
             this._imgPath = this._baseURL + (this._pathObj.imgPath || 'assets/img');
             this._fontPath = this._baseURL + (this._pathObj.fontPath || 'assets/fonts');
+            this._bitmapFontPath = this._baseURL + (this._pathObj.bitmapFontPath || 'assets/fonts/bitmap');
             this._audioSpritePath = this._baseURL + (this._pathObj.audioSpritePath || 'assets/audio/sprite');
             this._soundPath = this._baseURL + (this._pathObj.soundPath || 'assets/audio/sound');
         }
@@ -426,6 +437,11 @@ module dijon.core{
             var key = this._getAssetKey(url);
             return this.game.load.text(key, this._dataPath + '/' + url);
         }
+        
+        loadJSON(url:string) {
+            var key = this._getAssetKey(url);
+            return this.game.load.json(key, this._dataPath + '/' + url);
+        }
     
         loadAtlas(url:string):Phaser.Loader | string{
             if (this.game.cache.checkImageKey(url)) {
@@ -447,8 +463,8 @@ module dijon.core{
             return this.game.load.image(key, this._imgPath + '/' + url);
         }
         
-        loadBitmapFont(url:string) {
-            this.game.load.bitmapFont(url, this._fontPath + '/' + url + '.png', this._fontPath + '/' + url + '.fnt');
+        loadBitmapFont(url: string) {
+            this.game.load.bitmapFont(url, this._bitmapFontPath + '/' + url + this._resolution + '.png', this._bitmapFontPath + '/' + url + this._resolution + '.json');
         }
     
         
@@ -589,11 +605,11 @@ module dijon.core{
         * triggers the _parseData internal method, which stores the asset list for later use
         * @param {String} textFileFromCache the id of the file in the Phaser.Cache
         */
-        setData(textFileFromCache:string) {
-            this._data = JSON.parse(textFileFromCache);
+        setData(data:Object) {
+            this._data = data;
             this._loadData = {};
             this._parseData();
-            
+             
             this.sendNotification(dijon.utils.Notifications.ASSET_MANAGER_DATA_SET, this._data);
         }
     
@@ -606,7 +622,7 @@ module dijon.core{
         * @param  {Boolean} [clearText = true]     whether to clear text files
         * @return {void}
         */
-        clearAssets(id:string, clearAudio:boolean = true, clearAtlasses:boolean = true, clearImages:boolean = true, clearText:boolean = true) {
+        clearAssets(id:string, clearAudio:boolean = true, clearAtlasses:boolean = true, clearImages:boolean = true, clearText:boolean = true, clearJSON:boolean = true) {
             var assets = this._data[id];
     
             console.log('clearing: ', id);
@@ -615,13 +631,8 @@ module dijon.core{
                 return console.log('no assets', assets);
             }
     
-            clearAudio = clearAudio !== false;
-            clearAtlasses = clearAtlasses !== false;
-            clearImages = clearImages !== false;
-            clearText = clearText !== false;
-    
             for (var i = 0; i < assets.length; i++) {
-                this.clearAsset(assets[i], clearAudio, clearAtlasses, clearImages, clearText);
+                this.clearAsset(assets[i], clearAudio, clearAtlasses, clearImages, clearText, clearJSON);
             }
     
             this._completedLoads[id] = false;
@@ -638,7 +649,7 @@ module dijon.core{
         * @param  {Boolean} [clearText = true]     whether to clear text files
         * @return {void}
         */
-        clearAsset(asset:IAsset, clearAudio:boolean = true, clearAtlasses:boolean = true, clearImages:boolean = true, clearText:boolean = true) {
+        clearAsset(asset: IAsset, clearAudio: boolean = true, clearAtlasses: boolean = true, clearImages: boolean = true, clearText: boolean = true, clearJSON: boolean = true) {
             var type = asset.type,
                 url = asset.url,
                 required = asset.required;
@@ -672,6 +683,11 @@ module dijon.core{
                         this.game.cache.removeText(url);
                     }
                     break;
+                case AssetManager.JSON:
+                    if (clearJSON) { 
+                        this.game.cache.removeJSON(url); 
+                    }    
+                    break;    
             }
         }
     

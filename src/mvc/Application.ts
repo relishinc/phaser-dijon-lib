@@ -9,67 +9,68 @@ module dijon.mvc{
 		// static constants
 		static instance = null;
 		static SINGLETON_MSG = 'Application singleton already constructed!';
-		
+
 		public game:core.Game;
-		
+
 		protected _models:{[name:string]:Model} = {};
 		protected _mediators:{[name:string]:Mediator} = {};
 		protected _observerMap:{[name:string]:interfaces.IObserver[]} = {};
-		
+
 		constructor(){
 			if( Application.instance )
 					throw Error( Application.SINGLETON_MSG );
-	
+
 			Application.instance = this;
-			
-			this.initializeApplication();
-		} 
-		
+
+			this.initializeApplication(); 
+		}
+
 		public initializeApplication(){
 			this.game = new dijon.core.Game({
-				width: 800, 
-				height: 600, 
-				parent: 'game-container', 
-				renderer: Phaser.AUTO, 
+				width: 800,
+				height: 600,
+				parent: 'game-container',
+				renderer: Phaser.AUTO,
 				transparent: false
 			});
 		}
-		
-		public registerModel(model:Model):void{
+
+		public registerModel(model: Model): Model{
 			this._models[model.name] = model;
+			return model;
 		}
-		
+
 		public retrieveModel(modelName:string):Model{
 			return this._models[modelName] || null;
 		}
-		
+
 		public removeModel(modelToRemove:Model):void{
 			delete this._models[modelToRemove.name];
 		}
-		
+
 		public registerMediator(mediator:Mediator):void{
 			this._mediators[mediator.name] = mediator;
 			this.registerObserver(mediator);
-			
+
 			mediator.onRegister();
 		}
-		
+
 		public retrieveMediator(mediatorName:string):Mediator{
 			return this._mediators[mediatorName] || null;
 		}
-		
+
 		public removeMediator(mediatorToRemove:Mediator):void{
 			let name = mediatorToRemove.name;
 			let mediator = this._mediators[name];
-			
+
 			mediator.listNotificationInterests().forEach( interest => {
 				this.removeObserver(interest, mediator);
 			});
-			
+
 			mediator.onRemoved();
 			delete this._mediators[name];
 		}
-		
+
 		public registerObserver(observer:interfaces.IObserver):void{
 			observer.listNotificationInterests().forEach( notificationName => {
 				if (this._observerMap[notificationName] === undefined){
@@ -78,7 +79,7 @@ module dijon.mvc{
 				this._observerMap[notificationName].push(observer);
 			});
 		}
-		
+
 		/**
 		 * stops an observer from being interested in a notification
 		 * @param {String} notificationName
@@ -90,9 +91,9 @@ module dijon.mvc{
 			let observers:interfaces.IObserver[] = null,
 				observer:interfaces.IObserver = null,
 				i:number = 0;
-			
+
 			observers = this._observerMap[notificationName];
-			
+
 			//Find the observer for the notifyContext.
 			i = observers.length;
 			while( i-- ){
@@ -102,7 +103,7 @@ module dijon.mvc{
 					break;
 				}
 			}
-			
+
 			/*
 			 * Also, when a Notification's Observer list length falls to zero, delete the
 			 * notification key from the observer map.
@@ -111,22 +112,22 @@ module dijon.mvc{
 				delete this._observerMap[notificationName];
 			}
 		}
-		
+
 		public sendNotification(notificationName:string, notficationBody?:any):void{
 			let notification = new Notification(notificationName, notficationBody);
 			this._notifyObservers(notification);
-			
+
 			notification.destroy();
 			notification = null;
 		}
-		
+
 		private _notifyObservers(notification:interfaces.INotification){
-			let observer:interfaces.IObserver = null, 
+			let observer:interfaces.IObserver = null,
 				observers:interfaces.IObserver[] = null;
-				
+
 			const notificationName:string = notification.getName();
 			const observersRef:interfaces.IObserver[] = this._observerMap[notificationName];
-		
+
 			if(observersRef)
 			{
 				// clone the array in case an observer gets removed while the notification is being sent
@@ -136,12 +137,12 @@ module dijon.mvc{
 				});
 			}
 		}
-		
+
 		public static getInstance():Application{
 			if( !Application.instance )
 				Application.instance = new Application();
-				
+
 			return Application.instance;
-		}	
+		}
 	}
 }

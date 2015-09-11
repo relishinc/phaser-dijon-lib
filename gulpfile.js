@@ -29,3 +29,7 @@ gulp.task('uglify', function(){
 gulp.task('compile', function(done){
   return sequence('lib', 'uglify', done); 
 });
+
+gulp.task('default', ['compile'], function () { 
+    return gulp.watch(['src/**/*.ts'], ['compile']);
+});

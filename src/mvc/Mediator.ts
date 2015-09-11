@@ -12,7 +12,7 @@ module dijon.mvc{
 		protected app:Application;
 		protected game:core.Game;
 		
-		constructor(mediatorName:string=null, protected _viewComponent:any=null, autoReg:boolean=true){
+		constructor(protected _viewComponent:any=null, autoReg:boolean=true, mediatorName:string=null){
 			this.app = Application.getInstance();
 			this.mediatorName = mediatorName;
 			

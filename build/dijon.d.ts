@@ -45,6 +45,7 @@ declare module dijon.core {
         spritesheetPath: string;
         imgPath: string;
         fontPath: string;
+        bitmapFontPath: string;
         audioSpritePath: string;
         soundPath: string;
     }
@@ -58,6 +59,7 @@ declare module dijon.core {
         private _spriteSheetPath;
         private _imgPath;
         private _fontPath;
+        private _bitmapFontPath;
         private _audioSpritePath;
         private _soundPath;
         private _soundDecodingModifier;
@@ -90,6 +92,7 @@ declare module dijon.core {
         static IMAGE: string;
         static ATLAS: string;
         static TEXT: string;
+        static JSON: string;
         static ASSET_LIST: string;
         static RESOLUTION_2X: string;
         static RESOLUTION_3X: string;
@@ -116,6 +119,7 @@ declare module dijon.core {
         setSoundDecodingModifier(num?: number): void;
         getSoundDecodingModifier(): number;
         loadText(url: string): Phaser.Loader;
+        loadJSON(url: string): Phaser.Loader;
         loadAtlas(url: string): Phaser.Loader | string;
         loadImage(url: string): Phaser.Loader | string;
         loadBitmapFont(url: string): void;
@@ -126,9 +130,9 @@ declare module dijon.core {
         loadQueue(): void;
         getLoadProgress(progress: number): number;
         allSoundsDecoded(): boolean;
-        setData(textFileFromCache: string): void;
-        clearAssets(id: string, clearAudio?: boolean, clearAtlasses?: boolean, clearImages?: boolean, clearText?: boolean): void;
-        clearAsset(asset: IAsset, clearAudio?: boolean, clearAtlasses?: boolean, clearImages?: boolean, clearText?: boolean): void;
+        setData(data: Object): void;
+        clearAssets(id: string, clearAudio?: boolean, clearAtlasses?: boolean, clearImages?: boolean, clearText?: boolean, clearJSON?: boolean): void;
+        clearAsset(asset: IAsset, clearAudio?: boolean, clearAtlasses?: boolean, clearImages?: boolean, clearText?: boolean, clearJSON?: boolean): void;
         hasLoadedAssets(id: string): boolean;
         sendNotification(notificationName: string, notificationBody?: any): void;
     }
@@ -411,7 +415,7 @@ declare module dijon.mvc {
         protected mediatorName: string;
         protected app: Application;
         protected game: core.Game;
-        constructor(mediatorName?: string, _viewComponent?: any, autoReg?: boolean);
+        constructor(_viewComponent?: any, autoReg?: boolean, mediatorName?: string);
         protected register(): void;
         protected remove(): void;
         onRegister(): void;
@@ -431,9 +435,8 @@ declare module dijon.mvc {
         game: core.Game;
         protected _data: any;
         static MODEL_NAME: string;
-        constructor(modelName?: string, dataKey?: string);
+        constructor(dataKey?: string, modelName?: string);
         protected getKeyExists(key: string): boolean;
-        protected parseData(key: any): any;
         setData(dataKey: string): any;
         getData(): any;
         destroy(): void;
@@ -456,7 +459,7 @@ declare module dijon.mvc {
         };
         constructor();
         initializeApplication(): void;
-        registerModel(model: Model): void;
+        registerModel(model: Model): Model;
         retrieveModel(modelName: string): Model;
         removeModel(modelToRemove: Model): void;
         registerMediator(mediator: Mediator): void;
@@ -510,11 +513,13 @@ declare module dijon.core {
 }
 declare module dijon.mvc {
     class CopyModel extends Model {
+        static MODEL_NAME: string;
         private _languages;
         constructor(dataKey?: string);
         getCopy(groupId: string, itemId: string): string;
         getCopyGroup(groupId: string): any;
         addLanguage(languageId: string, dataKey: string): any;
         changeLanguage(languageId: string): void;
+        name: string;
     }
 }

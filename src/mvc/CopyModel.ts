@@ -4,6 +4,8 @@
 
 module dijon.mvc{
 	export class CopyModel extends Model{
+		public static MODEL_NAME: string = 'copyModel';
+		
 		private _languages:{[languageName:string]:any} = {};
 		
 		constructor(dataKey:string=null){
@@ -25,7 +27,7 @@ module dijon.mvc{
 				throw new Error('cannot add an alternate language from key ' + dataKey + '. Is it in the Phaser cache?');
 			}
 			
-			this._languages[languageId] = this.parseData(dataKey);
+			this._languages[languageId] = this.game.cache.getJSON(dataKey);
 		}
 		
 		public changeLanguage(languageId:string):void {
@@ -33,6 +35,10 @@ module dijon.mvc{
 				throw new Error('there is no language ' + languageId);
 		
 			this._data = this._languages[languageId];
+		}
+		
+		get name(): string { 
+			return CopyModel.MODEL_NAME;
 		}
 	}
 }

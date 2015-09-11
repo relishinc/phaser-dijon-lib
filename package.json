@@ -5,7 +5,7 @@
   "main": "gulpfile.js",
   "repository": {
     "type": "git",
-    "url": "https://anthonysapp@bitbucket.org/relishinc/dijon-es6.git"
+    "url": "https://anthonysapp@bitbucket.org/relishinc/dijon-lib.git"
   },
   "author": "anthonysapp <anthony@reli.sh>",
   "license": "MIT",

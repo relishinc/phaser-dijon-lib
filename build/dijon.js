@@ -31,6 +31,7 @@ var dijon;
                 this._spriteSheetPath = null;
                 this._imgPath = null;
                 this._fontPath = null;
+                this._bitmapFontPath = null;
                 this._audioSpritePath = null;
                 this._soundPath = null;
                 this._soundDecodingModifier = 2;
@@ -165,6 +166,9 @@ var dijon;
                     case AssetManager.TEXT:
                         this.loadText(url);
                         break;
+                    case AssetManager.JSON:
+                        this.loadJSON(url);
+                        break;
                 }
             };
             AssetManager.prototype._parseData = function () {
@@ -188,6 +192,7 @@ var dijon;
                 this._spriteSheetPath = this._baseURL + (this._pathObj.spritesheetPath || 'assets/img/spritesheets');
                 this._imgPath = this._baseURL + (this._pathObj.imgPath || 'assets/img');
                 this._fontPath = this._baseURL + (this._pathObj.fontPath || 'assets/fonts');
+                this._bitmapFontPath = this._baseURL + (this._pathObj.bitmapFontPath || 'assets/fonts/bitmap');
                 this._audioSpritePath = this._baseURL + (this._pathObj.audioSpritePath || 'assets/audio/sprite');
                 this._soundPath = this._baseURL + (this._pathObj.soundPath || 'assets/audio/sound');
             };
@@ -207,6 +212,10 @@ var dijon;
                 var key = this._getAssetKey(url);
                 return this.game.load.text(key, this._dataPath + '/' + url);
             };
+            AssetManager.prototype.loadJSON = function (url) {
+                var key = this._getAssetKey(url);
+                return this.game.load.json(key, this._dataPath + '/' + url);
+            };
             AssetManager.prototype.loadAtlas = function (url) {
                 if (this.game.cache.checkImageKey(url)) {
                     return url;
@@ -222,7 +231,7 @@ var dijon;
                 return this.game.load.image(key, this._imgPath + '/' + url);
             };
             AssetManager.prototype.loadBitmapFont = function (url) {
-                this.game.load.bitmapFont(url, this._fontPath + '/' + url + '.png', this._fontPath + '/' + url + '.fnt');
+                this.game.load.bitmapFont(url, this._bitmapFontPath + '/' + url + this._resolution + '.png', this._bitmapFontPath + '/' + url + this._resolution + '.json');
             };
             AssetManager.prototype.loadAudio = function (url, exts, isAudioSprite) {
                 var type, path;
@@ -331,37 +340,35 @@ var dijon;
             AssetManager.prototype.allSoundsDecoded = function () {
                 return this._soundsToDecode.length === 0;
             };
-            AssetManager.prototype.setData = function (textFileFromCache) {
-                this._data = JSON.parse(textFileFromCache);
+            AssetManager.prototype.setData = function (data) {
+                this._data = data;
                 this._loadData = {};
                 this._parseData();
                 this.sendNotification(dijon.utils.Notifications.ASSET_MANAGER_DATA_SET, this._data);
             };
-            AssetManager.prototype.clearAssets = function (id, clearAudio, clearAtlasses, clearImages, clearText) {
+            AssetManager.prototype.clearAssets = function (id, clearAudio, clearAtlasses, clearImages, clearText, clearJSON) {
                 if (clearAudio === void 0) { clearAudio = true; }
                 if (clearAtlasses === void 0) { clearAtlasses = true; }
                 if (clearImages === void 0) { clearImages = true; }
                 if (clearText === void 0) { clearText = true; }
+                if (clearJSON === void 0) { clearJSON = true; }
                 var assets = this._data[id];
                 console.log('clearing: ', id);
                 if (!assets || typeof assets === 'undefined' || assets.length < 1) {
                     return console.log('no assets', assets);
                 }
-                clearAudio = clearAudio !== false;
-                clearAtlasses = clearAtlasses !== false;
-                clearImages = clearImages !== false;
-                clearText = clearText !== false;
                 for (var i = 0; i < assets.length; i++) {
-                    this.clearAsset(assets[i], clearAudio, clearAtlasses, clearImages, clearText);
+                    this.clearAsset(assets[i], clearAudio, clearAtlasses, clearImages, clearText, clearJSON);
                 }
                 this._completedLoads[id] = false;
                 this.sendNotification(dijon.utils.Notifications.ASSET_MANAGER_ASSETS_CLEARED, id);
             };
-            AssetManager.prototype.clearAsset = function (asset, clearAudio, clearAtlasses, clearImages, clearText) {
+            AssetManager.prototype.clearAsset = function (asset, clearAudio, clearAtlasses, clearImages, clearText, clearJSON) {
                 if (clearAudio === void 0) { clearAudio = true; }
                 if (clearAtlasses === void 0) { clearAtlasses = true; }
                 if (clearImages === void 0) { clearImages = true; }
                 if (clearText === void 0) { clearText = true; }
+                if (clearJSON === void 0) { clearJSON = true; }
                 var type = asset.type, url = asset.url, required = asset.required;
                 if (required) {
                     console.log('the ' + type + ' asset: ' + url + ' is required and will not be cleared');
@@ -392,6 +399,11 @@ var dijon;
                             this.game.cache.removeText(url);
                         }
                         break;
+                    case AssetManager.JSON:
+                        if (clearJSON) {
+                            this.game.cache.removeJSON(url);
+                        }
+                        break;
                 }
             };
             AssetManager.prototype.hasLoadedAssets = function (id) {
@@ -406,6 +418,7 @@ var dijon;
             AssetManager.IMAGE = 'image';
             AssetManager.ATLAS = 'atlas';
             AssetManager.TEXT = 'text';
+            AssetManager.JSON = 'json';
             AssetManager.ASSET_LIST = 'assetList';
             AssetManager.RESOLUTION_2X = "@2x";
             AssetManager.RESOLUTION_3X = "@3x";
@@ -1687,10 +1700,10 @@ var dijon;
     var mvc;
     (function (mvc) {
         var Mediator = (function () {
-            function Mediator(mediatorName, _viewComponent, autoReg) {
-                if (mediatorName === void 0) { mediatorName = null; }
+            function Mediator(_viewComponent, autoReg, mediatorName) {
                 if (_viewComponent === void 0) { _viewComponent = null; }
                 if (autoReg === void 0) { autoReg = true; }
+                if (mediatorName === void 0) { mediatorName = null; }
                 this._viewComponent = _viewComponent;
                 this.mediatorName = null;
                 this.app = mvc.Application.getInstance();
@@ -1750,9 +1763,9 @@ var dijon;
     var mvc;
     (function (mvc) {
         var Model = (function () {
-            function Model(modelName, dataKey) {
-                if (modelName === void 0) { modelName = null; }
+            function Model(dataKey, modelName) {
                 if (dataKey === void 0) { dataKey = null; }
+                if (modelName === void 0) { modelName = null; }
                 this.modelName = modelName;
                 this.app = mvc.Application.getInstance();
                 this.game = this.app.game;
@@ -1762,17 +1775,14 @@ var dijon;
                 this.app.registerModel(this);
             }
             Model.prototype.getKeyExists = function (key) {
-                return this.game.cache.getText(key) !== null;
-            };
-            Model.prototype.parseData = function (key) {
-                return JSON.parse(this.game.cache.getText(key));
+                return this.game.cache.getJSON(key) !== null;
             };
             Model.prototype.setData = function (dataKey) {
                 if (!this.getKeyExists(dataKey)) {
-                    console.log('cannot set data from key ' + dataKey + '. Is it in the Phaser cache?');
+                    console.log('Model:: cannot set data from key ' + dataKey + '. Is it in the Phaser cache?');
                     return false;
                 }
-                this._data = this.parseData(dataKey);
+                this._data = this.game.cache.getJSON(dataKey);
                 return this._data;
             };
             Model.prototype.getData = function () {
@@ -1824,6 +1834,7 @@ var dijon;
             };
             Application.prototype.registerModel = function (model) {
                 this._models[model.name] = model;
+                return model;
             };
             Application.prototype.retrieveModel = function (modelName) {
                 return this._models[modelName] || null;
@@ -2091,13 +2102,21 @@ var dijon;
                 if (!this.getKeyExists(dataKey)) {
                     throw new Error('cannot add an alternate language from key ' + dataKey + '. Is it in the Phaser cache?');
                 }
-                this._languages[languageId] = this.parseData(dataKey);
+                this._languages[languageId] = this.game.cache.getJSON(dataKey);
             };
             CopyModel.prototype.changeLanguage = function (languageId) {
                 if (typeof this._languages[languageId] === 'undefined')
                     throw new Error('there is no language ' + languageId);
                 this._data = this._languages[languageId];
             };
+            Object.defineProperty(CopyModel.prototype, "name", {
+                get: function () {
+                    return CopyModel.MODEL_NAME;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            CopyModel.MODEL_NAME = 'copyModel';
             return CopyModel;
         })(mvc.Model);
         mvc.CopyModel = CopyModel;

@@ -9,7 +9,7 @@ module dijon.mvc{
 		
 		public static MODEL_NAME:string = 'Model';
 		
-		constructor(private modelName:string=null, dataKey:string=null){
+		constructor(dataKey:string=null, private modelName:string=null){
 			this.app = Application.getInstance();
 			this.game = this.app.game;
 			
@@ -21,20 +21,16 @@ module dijon.mvc{
 		}
 		
 		protected getKeyExists(key:string):boolean{
-			return this.game.cache.getText(key) !== null;
-		}
-		
-		protected parseData(key:any):any{
-			return JSON.parse(this.game.cache.getText(key));
+			return this.game.cache.getJSON(key) !== null;
 		}
 		
 		public setData(dataKey:string):any{
 			if (!this.getKeyExists(dataKey)){
-				console.log('cannot set data from key ' + dataKey + '. Is it in the Phaser cache?');
+				console.log('Model:: cannot set data from key ' + dataKey + '. Is it in the Phaser cache?');
         		return false;
 			}
 			
-			this._data = this.parseData(dataKey);
+			this._data = this.game.cache.getJSON(dataKey);
 			return this._data;
 		}
 		
