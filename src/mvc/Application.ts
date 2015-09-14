@@ -8,8 +8,8 @@ module dijon.mvc {
 	export class Application implements interfaces.INotifier {
 		// static constants
 		protected static instance = null;
-		public static SINGLETON_MSG = 'Application singleton already constructed!';
-
+		protected static SINGLETON_MSG = 'Application singleton already constructed!';
+		
 		public game: core.Game;
 
 		protected _mediator: mvc.Mediator = null;

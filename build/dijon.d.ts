@@ -449,7 +449,7 @@ declare module dijon.mvc {
 declare module dijon.mvc {
     class Application implements interfaces.INotifier {
         protected static instance: any;
-        static SINGLETON_MSG: string;
+        protected static SINGLETON_MSG: string;
         game: core.Game;
         protected _mediator: mvc.Mediator;
         protected _models: {
