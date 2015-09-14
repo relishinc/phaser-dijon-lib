@@ -119,7 +119,7 @@ declare module dijon.core {
         setSoundDecodingModifier(num?: number): void;
         getSoundDecodingModifier(): number;
         loadText(url: string): Phaser.Loader;
-        loadJSON(url: string): Phaser.Loader;
+        loadJSON(key: string): Phaser.Loader;
         loadAtlas(url: string): Phaser.Loader | string;
         loadImage(url: string): Phaser.Loader | string;
         loadBitmapFont(url: string): void;

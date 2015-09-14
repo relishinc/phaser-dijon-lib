@@ -139,6 +139,8 @@ var dijon;
                 }
             };
             AssetManager.prototype._getAssetKey = function (fileName) {
+                if (fileName.indexOf('.') < 0)
+                    return fileName;
                 var ext = fileName.split('.');
                 ext.pop();
                 return ext.join('');
@@ -212,9 +214,10 @@ var dijon;
                 var key = this._getAssetKey(url);
                 return this.game.load.text(key, this._dataPath + '/' + url);
             };
-            AssetManager.prototype.loadJSON = function (url) {
-                var key = this._getAssetKey(url);
-                return this.game.load.json(key, this._dataPath + '/' + url);
+            AssetManager.prototype.loadJSON = function (key) {
+                key = this._getAssetKey(key);
+                console.log(this._dataPath + '/' + key + '.json');
+                return this.game.load.json(key, this._dataPath + '/' + key + '.json');
             };
             AssetManager.prototype.loadAtlas = function (url) {
                 if (this.game.cache.checkImageKey(url)) {

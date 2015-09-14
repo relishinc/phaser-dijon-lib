@@ -321,7 +321,9 @@ module dijon.core {
         * @return {Stirng}          the asset key (the filename with its extension stripped)
         * @private
         */
-        private _getAssetKey(fileName: string) {
+        private _getAssetKey(fileName: string): string {
+            if (fileName.indexOf('.') < 0)
+                return fileName;
             var ext = fileName.split('.');
             ext.pop();
 
@@ -334,7 +336,7 @@ module dijon.core {
         * @return {String}          the extension
         * @private
         */
-        private _getExtension(fileName: string) {
+        private _getExtension(fileName: string): string {
             return fileName.split('.').pop();
         }
     
@@ -438,9 +440,11 @@ module dijon.core {
             return this.game.load.text(key, this._dataPath + '/' + url);
         }
 
-        loadJSON(url: string) {
-            var key = this._getAssetKey(url);
-            return this.game.load.json(key, this._dataPath + '/' + url);
+        loadJSON(key: string) {
+            key = this._getAssetKey(key);
+            console.log(this._dataPath + '/' + key + '.json');
+
+            return this.game.load.json(key, this._dataPath + '/' + key + '.json');
         }
 
         loadAtlas(url: string): Phaser.Loader | string {
