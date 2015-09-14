@@ -1,10 +1,10 @@
 /// <reference path="../lib.d.ts" />
 /// <reference path="./ITransitionHandler" />
 
-module dijon.interfaces{
-	export interface IPreloadHandler extends ITransitionHandler{
+module dijon.interfaces {
+	export interface IPreloadHandler extends ITransitionHandler {
 		loadStart();
-		loadProgress(progress?:number);
+		loadProgress(progress?: number);
 		loadComplete();
 	}
 }

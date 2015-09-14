@@ -3,9 +3,9 @@
 /// <reference path="../display/Group" />
 /// <reference path="./Component" />
 
-module dijon.core{
-	export class GameObjectFactory extends Phaser.GameObjectFactory{
-		protected _defaultGroup:Phaser.Group = null;
+module dijon.core {
+	export class GameObjectFactory extends Phaser.GameObjectFactory {
+		protected _defaultGroup: Phaser.Group = null;
 		
 		// overrides
 		/**
@@ -15,8 +15,8 @@ module dijon.core{
 		* @param {any} object - An instance of Phaser.Sprite, Phaser.Button or any other display object.
 		* @return {any} The child that was added to the World.
 		*/
-		existing(object):any {
-			let group = this.defaultGroup; 
+		existing(object): any {
+			let group = this.defaultGroup;
 			this.defaultGroup = null;
 			return group.add(object);
 		}
@@ -36,10 +36,10 @@ module dijon.core{
 		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
 		* @returns {Phaser.Image} The newly created Image object.
 		*/
-		image(x:number=0, y:number=0, key?:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?:string|number, group?:Phaser.Group):Phaser.Image{
+		image(x: number = 0, y: number = 0, key?: string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, group?: Phaser.Group): Phaser.Image {
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
-			
+
 			return group.add(new Phaser.Image(this.game, x, y, key, frame));
 		}
 		
@@ -58,10 +58,10 @@ module dijon.core{
 		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
 		* @returns {Phaser.Sprite} The newly created Sprite object.
 		*/
-		sprite(x:number=0, y:number=0, key?:string, frame?:string|number, group?:Phaser.Group):Phaser.Sprite {
+		sprite(x: number = 0, y: number = 0, key?: string, frame?: string|number, group?: Phaser.Group): Phaser.Sprite {
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
-	
+
 			return group.create(x, y, key, frame);
 		}
 		
@@ -86,14 +86,14 @@ module dijon.core{
 		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
 		* @returns {Phaser.Creature} The newly created Sprite object.
 		*/
-		creature(x:number=0, y:number=0, key?:string, mesh?:any, group?:Phaser.Group):any {
+		creature(x: number = 0, y: number = 0, key?: string, mesh?: any, group?: Phaser.Group): any {
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
-	
+
 			var obj = new Phaser['Creature'](this.game, x, y, key, mesh);
-	
+
 			group.add(obj);
-	
+
 			return obj;
 		}
 		
@@ -108,7 +108,7 @@ module dijon.core{
 		* @param {number} [physicsBodyType=0] - If enableBody is true this is the type of physics body that is created on new Sprites. Phaser.Physics.ARCADE, Phaser.Physics.P2, Phaser.Physics.NINJA, etc.
 		* @return {Phaser.Group} The newly created Group.
 		*/
-		group(parent?:any, name:string='group', addToStage:boolean=false, enableBody:boolean=false, physicsBodyType:number=0) {
+		group(parent?: any, name: string = 'group', addToStage: boolean = false, enableBody: boolean = false, physicsBodyType: number = 0) {
 			if (parent === undefined && addToStage !== true) { parent = this.defaultGroup; }
 			this.defaultGroup = null;
 			return new Phaser.Group(this.game, parent, name, addToStage, enableBody, physicsBodyType);
@@ -127,7 +127,7 @@ module dijon.core{
 		* @param {boolean} [addToStage=false] - If set to true this Group will be added directly to the Game.Stage instead of Game.World.
 		* @return {Phaser.Group} The newly created Group.
 		*/
-		physicsGroup(physicsBodyType:number=0, parent?:any, name:string='group', addToStage:boolean=false):Phaser.Group{
+		physicsGroup(physicsBodyType: number = 0, parent?: any, name: string = 'group', addToStage: boolean = false): Phaser.Group {
 			if (parent === undefined) { parent = this.defaultGroup; }
 			this.defaultGroup = null;
 			return new Phaser.Group(this.game, parent, name, addToStage, true, physicsBodyType);
@@ -144,48 +144,48 @@ module dijon.core{
 		* @param {boolean} [addToStage=false] - If set to true this Sprite Batch will be added directly to the Game.Stage instead of the parent.
 		* @return {Phaser.SpriteBatch} The newly created Sprite Batch.
 		*/
-		spriteBatch(parent?:any, name:string="spriteBatch", addToStage:boolean=false):Phaser.SpriteBatch {
+		spriteBatch(parent?: any, name: string = "spriteBatch", addToStage: boolean = false): Phaser.SpriteBatch {
 			if (parent === undefined) { parent = this.defaultGroup }
 			this.defaultGroup = null;
 			return new Phaser.SpriteBatch(this.game, parent, name, addToStage);
 		}
 		
-		 /**
-		* Creates a new TileSprite object.
-		*
-		* @method Phaser.GameObjectFactory#tileSprite
-		* @param {number} x - The x coordinate of the TileSprite. The coordinate is relative to any parent container this TileSprite may be in.
-		* @param {number} y - The y coordinate of the TileSprite. The coordinate is relative to any parent container this TileSprite may be in.
-		* @param {number} width - The width of the TileSprite.
-		* @param {number} height - The height of the TileSprite.
-		* @param {string|Phaser.RenderTexture|Phaser.BitmapData|Phaser.Video|PIXI.Texture} key - The image used as a texture by this display object during rendering. If a string Phaser will get for an entry in the Image Cache. Or it can be an instance of a RenderTexture, BitmapData, Video or PIXI.Texture.
-		* @param {string|number} [frame] - If a Texture Atlas or Sprite Sheet is used this allows you to specify the frame to be used. Use either an integer for a Frame ID or a string for a frame name.
-		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
-		* @return {Phaser.TileSprite} The newly created TileSprite object.
-		*/
-		tileSprite(x:number=0, y:number=0, width:number=0, height:number=0, key?:string, frame?:string|number, group?:Phaser.Group):Phaser.TileSprite {
-	
+		/**
+	   * Creates a new TileSprite object.
+	   *
+	   * @method Phaser.GameObjectFactory#tileSprite
+	   * @param {number} x - The x coordinate of the TileSprite. The coordinate is relative to any parent container this TileSprite may be in.
+	   * @param {number} y - The y coordinate of the TileSprite. The coordinate is relative to any parent container this TileSprite may be in.
+	   * @param {number} width - The width of the TileSprite.
+	   * @param {number} height - The height of the TileSprite.
+	   * @param {string|Phaser.RenderTexture|Phaser.BitmapData|Phaser.Video|PIXI.Texture} key - The image used as a texture by this display object during rendering. If a string Phaser will get for an entry in the Image Cache. Or it can be an instance of a RenderTexture, BitmapData, Video or PIXI.Texture.
+	   * @param {string|number} [frame] - If a Texture Atlas or Sprite Sheet is used this allows you to specify the frame to be used. Use either an integer for a Frame ID or a string for a frame name.
+	   * @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
+	   * @return {Phaser.TileSprite} The newly created TileSprite object.
+	   */
+		tileSprite(x: number = 0, y: number = 0, width: number = 0, height: number = 0, key?: string, frame?: string|number, group?: Phaser.Group): Phaser.TileSprite {
+
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
 			return group.add(new Phaser.TileSprite(this.game, x, y, width, height, key, frame));
-	
+
 		}
 		
-		 /**
-		* Creates a new Rope object.
-		*
-		* Example usage: https://github.com/codevinsky/phaser-rope-demo/blob/master/dist/demo.js
-		*
-		* @method Phaser.GameObjectFactory#rope
-		* @param {number} [x=0] - The x coordinate of the Rope. The coordinate is relative to any parent container this rope may be in.
-		* @param {number} [y=0] - The y coordinate of the Rope. The coordinate is relative to any parent container this rope may be in.
-		* @param {string|Phaser.RenderTexture|Phaser.BitmapData|Phaser.Video|PIXI.Texture} [key] - The image used as a texture by this display object during rendering. If a string Phaser will get for an entry in the Image Cache. Or it can be an instance of a RenderTexture, BitmapData, Video or PIXI.Texture.
-		* @param {string|number} [frame] - If a Texture Atlas or Sprite Sheet is used this allows you to specify the frame to be used. Use either an integer for a Frame ID or a string for a frame name.
-		* @param {Array} points - An array of {Phaser.Point}.
-		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
-		* @return {Phaser.Rope} The newly created Rope object.
-		*/
-		rope(x:number=0, y:number=0, key?:string, frame?:string|number, points?:Phaser.Point[], group?:Phaser.Group):Phaser.Rope {
+		/**
+	   * Creates a new Rope object.
+	   *
+	   * Example usage: https://github.com/codevinsky/phaser-rope-demo/blob/master/dist/demo.js
+	   *
+	   * @method Phaser.GameObjectFactory#rope
+	   * @param {number} [x=0] - The x coordinate of the Rope. The coordinate is relative to any parent container this rope may be in.
+	   * @param {number} [y=0] - The y coordinate of the Rope. The coordinate is relative to any parent container this rope may be in.
+	   * @param {string|Phaser.RenderTexture|Phaser.BitmapData|Phaser.Video|PIXI.Texture} [key] - The image used as a texture by this display object during rendering. If a string Phaser will get for an entry in the Image Cache. Or it can be an instance of a RenderTexture, BitmapData, Video or PIXI.Texture.
+	   * @param {string|number} [frame] - If a Texture Atlas or Sprite Sheet is used this allows you to specify the frame to be used. Use either an integer for a Frame ID or a string for a frame name.
+	   * @param {Array} points - An array of {Phaser.Point}.
+	   * @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
+	   * @return {Phaser.Rope} The newly created Rope object.
+	   */
+		rope(x: number = 0, y: number = 0, key?: string, frame?: string|number, points?: Phaser.Point[], group?: Phaser.Group): Phaser.Rope {
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
 			return group.add(new Phaser.Rope(this.game, x, y, key, frame, points));
@@ -202,7 +202,7 @@ module dijon.core{
 		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
 		* @return {Phaser.Text} The newly created text object.
 		*/
-		text(x:number=0, y:number=0, text:string='', style?:Phaser.PhaserTextStyle, group?:Phaser.Group):Phaser.Text{
+		text(x: number = 0, y: number = 0, text: string = '', style?: Phaser.PhaserTextStyle, group?: Phaser.Group): Phaser.Text {
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
 			return group.add(new Phaser.Text(this.game, x, y, text, style));
@@ -224,7 +224,7 @@ module dijon.core{
 		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
 		* @return {Phaser.Button} The newly created Button object.
 		*/
-		button(x:number=0, y:number=0, key?:string, callback?:Function, callbackContext?:Object, overFrame?:string|number, outFrame?:string|number, downFrame?:string|number, upFrame?:string|number, group?:Phaser.Group):Phaser.Button {
+		button(x: number = 0, y: number = 0, key?: string, callback?: Function, callbackContext?: Object, overFrame?: string|number, outFrame?: string|number, downFrame?: string|number, upFrame?: string|number, group?: Phaser.Group): Phaser.Button {
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
 			return group.add(new Phaser.Button(this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame));
@@ -239,7 +239,7 @@ module dijon.core{
 		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
 		* @return {Phaser.Graphics} The newly created graphics object.
 		*/
-		graphics(x:number=0, y:number=0, group?:Phaser.Group):Phaser.Graphics {
+		graphics(x: number = 0, y: number = 0, group?: Phaser.Group): Phaser.Graphics {
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
 			return group.add(new Phaser.Graphics(this.game, x, y));
@@ -273,41 +273,41 @@ module dijon.core{
 		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
 		* @return {Phaser.BitmapText} The newly created bitmapText object.
 		*/
-		bitmapText(x?:number, y?:number, font?:string, text:string="", size:number=32, align?:string, group?:Phaser.Group):Phaser.BitmapText {
+		bitmapText(x?: number, y?: number, font?: string, text: string = "", size: number = 32, align?: string, group?: Phaser.Group): Phaser.BitmapText {
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
 			return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size, align));
 		}
 		
 		// dijon specific display objects
-		dSprite(x?:number, y?:number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?:Component[], group?:Phaser.Group):display.Sprite{
+		dSprite(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: Component[], group?: Phaser.Group): display.Sprite {
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
 			return group.add(new display.Sprite(x, y, key, frame, name, components));
 		}
-		
-		dGroup(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number, group?:Phaser.Group):display.Group{
-			if (group === undefined && addToStage !== true) { 
-				group = this.defaultGroup; 
+
+		dGroup(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number, group?: Phaser.Group): display.Group {
+			if (group === undefined && addToStage !== true) {
+				group = this.defaultGroup;
 				this.defaultGroup = null;
 				return group.add(new display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
 			}
-			
+
 			return new display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
 		}
-		
-		dText(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object ,group?:Phaser.Group):display.Text{
+
+		dText(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object, group?: Phaser.Group): display.Text {
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
 			return group.add(new display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
 		}
 		
 		// getter / setter
-		set defaultGroup(value:Phaser.Group){
+		set defaultGroup(value: Phaser.Group) {
 			this._defaultGroup = value;
 		}
-		
-		get defaultGroup():Phaser.Group{
+
+		get defaultGroup(): Phaser.Group {
 			return this._defaultGroup || this.world;
 		}
 	}

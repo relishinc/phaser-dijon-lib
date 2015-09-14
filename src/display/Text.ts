@@ -1,31 +1,31 @@
 /// <reference path="../core/Game" />
 /// <reference path="../mvc/Application" />
 
-module dijon.display{
-	export class Text extends Phaser.Text{
-		public game:core.Game;
-		public style:any;
-		public onAnimationComplete:Phaser.Signal = new Phaser.Signal();
-		
-		protected _canUpdate=false;
-		protected _repeatTimer:Phaser.TimerEvent;
-		protected _delayTimer:Phaser.TimerEvent;
-		protected _lowercaseText:string;
-		protected _letterTime:number;
-		protected _textLength:number;
-		protected _textToAnimate:string[] = [];
-		
-		public static DEFAULT_FONT_SIZE:number = 12;
-		public static DEFAULT_FONT_COLOR:string = "#000000";
-		public static DEFAULT_FONT:string = "Helvetica Neue, Arial"
-		public static GLOBAL_PADDING_X:number=0;
-		public static GLOBAL_PADDING_Y:number=0;
-		
-		constructor(x:number, y:number, text:string="", fontName?:string, fontSize:number=Text.DEFAULT_FONT_SIZE, fontColor:string = Text.DEFAULT_FONT_COLOR, fontAlign:string='left', wordWrap:boolean=false, width:number=0, public lineSpacing:number=0, settings:Object=null){
+module dijon.display {
+	export class Text extends Phaser.Text {
+		public game: core.Game;
+		public style: any;
+		public onAnimationComplete: Phaser.Signal = new Phaser.Signal();
+
+		protected _canUpdate = false;
+		protected _repeatTimer: Phaser.TimerEvent;
+		protected _delayTimer: Phaser.TimerEvent;
+		protected _lowercaseText: string;
+		protected _letterTime: number;
+		protected _textLength: number;
+		protected _textToAnimate: string[] = [];
+
+		public static DEFAULT_FONT_SIZE: number = 12;
+		public static DEFAULT_FONT_COLOR: string = "#000000";
+		public static DEFAULT_FONT: string = "Helvetica Neue, Arial"
+		public static GLOBAL_PADDING_X: number = 0;
+		public static GLOBAL_PADDING_Y: number = 0;
+
+		constructor(x: number, y: number, text: string = "", fontName?: string, fontSize: number = Text.DEFAULT_FONT_SIZE, fontColor: string = Text.DEFAULT_FONT_COLOR, fontAlign: string = 'left', wordWrap: boolean = false, width: number = 0, public lineSpacing: number = 0, settings: Object = null) {
 			super(
 				mvc.Application.getInstance().game,
-				x, 
-				y, 
+				x,
+				y,
 				text,
 				Text._addSettings({
 					font: fontSize + 'px ' + fontName,
@@ -34,22 +34,22 @@ module dijon.display{
 					wordWrap: wordWrap,
 					wordWrapWidth: width
 				}, settings)
-			);
-			
+				);
+
 			this.text = text.replace(/'/g, "\'");
-			this.resolution  = this.game.resolution;
+			this.resolution = this.game.resolution;
 		}
 		
 		// Phaser.Text overrides
-		public setText(text:string):Phaser.Text {
+		public setText(text: string): Phaser.Text {
 			super.setText(text);
-			
+
 			this._lowercaseText = this.text.toLowerCase();
-			
+
 			if (this.game) {
 				this.resolution = this.game.resolution;
 			}
-			
+
 			return this;
 		};
 		
@@ -59,11 +59,11 @@ module dijon.display{
 		* @return {void}
 		* @private
 		*/
-		protected _startTextAnimation():void {
+		protected _startTextAnimation(): void {
 			this._canUpdate = true;
 			this._repeatTimer = this.game.time.events.repeat(this._letterTime * 100, this._textLength, this._updateTextAnimation, this);
 		};
-		
+
 		protected _updateTextAnimation() {
 			if (!this._canUpdate || !this._textToAnimate) {
 				return false;
@@ -72,7 +72,7 @@ module dijon.display{
 			this.addColor(this.style.fill, index);
 			this.addColor('rgba(0,0,0,0)', index + 1);
 			this._textToAnimate.shift();
-		
+
 			if (this._textToAnimate.length === 0) {
 				this.onAnimationComplete.dispatch();
 			}
@@ -84,7 +84,7 @@ module dijon.display{
 		* @param {String} color css color string (such as "#ff0000")
 		* @return {Dijon.UIText.highlightPhrase} calls the highlightPhrase method and "highlights" the entire text string
 		*/
-		public setColor(color:string) {
+		public setColor(color: string) {
 			return this.highlightPhrase(this.text, color, false);
 		};
 		
@@ -103,21 +103,21 @@ module dijon.display{
 		* @param  {Boolean} [caseSensitive = false] whether the search for the phrase within this text should be case sensitive
 		* @return {void}
 		*/
-		public highlightPhrase(phrase:string, color:string, caseSensitive:boolean=false) {
+		public highlightPhrase(phrase: string, color: string, caseSensitive: boolean = false) {
 			var text = caseSensitive ? this.text : this._lowercaseText;
-		
+
 			phrase = caseSensitive ? phrase : phrase.toLowerCase();
-		
+
 			var len = phrase.length;
-		
+
 			var startIndex = text.indexOf(phrase);
 			var endIndex = startIndex + len;
-		
+
 			while (startIndex <= endIndex) {
 				this.addColor(color, startIndex);
 				startIndex++;
 			}
-		
+
 			this.addColor(this.style.fill, endIndex);
 		};
 		
@@ -127,22 +127,22 @@ module dijon.display{
 		* @param  {Number} [letterTime = 0.1]  the time (in seconds) between each character
 		* @param  {int} [delay = 0]            the delay before starting the animation
 		*/
-		public animate(letterTime:number=0.1, delay:number=0) {
+		public animate(letterTime: number = 0.1, delay: number = 0) {
 			this.game.time.events.remove(this._delayTimer);
 			this.game.time.events.remove(this._repeatTimer);
-			
+
 			this._letterTime = letterTime;
 			this._textLength = this.text.length;
 			this._textToAnimate = this.text.split('');
-		
+
 			var startIndex = 0;
 			var endIndex = this._textLength;
-		
+
 			while (startIndex <= endIndex) {
 				this.addColor('rgba(0,0,0,0)', startIndex);
 				startIndex++;
 			}
-		
+
 			this._delayTimer = this.game.time.events.add(delay * Phaser.Timer.SECOND, this._startTextAnimation, this);
 		};
 		
@@ -166,22 +166,22 @@ module dijon.display{
 		};
 	
 		// static methods
-		private static _addSettings(obj:Object, settings:Object):Object{
+		private static _addSettings(obj: Object, settings: Object): Object {
 			if (!settings)
 				return obj;
-				
+
 			for (var prop in settings) {
 				if (settings.hasOwnProperty(prop)) {
 					obj[prop] = settings[prop];
 				}
-			}	
-			
-			return obj;	
+			}
+
+			return obj;
 		}
 	}
 }
 
 // Phaser addons
-Phaser.GameObjectCreator.prototype['dText'] = function(x:number, y:number, text:string="", fontName?:string, fontSize:number=dijon.display.Text.DEFAULT_FONT_SIZE, fontColor:string=dijon.display.Text.DEFAULT_FONT_COLOR, fontAlign:string='left', wordWrap:boolean=false, width:number=0, lineSpacing:number=0, settings:Object=null) {
+Phaser.GameObjectCreator.prototype['dText'] = function(x: number, y: number, text: string = "", fontName?: string, fontSize: number = dijon.display.Text.DEFAULT_FONT_SIZE, fontColor: string = dijon.display.Text.DEFAULT_FONT_COLOR, fontAlign: string = 'left', wordWrap: boolean = false, width: number = 0, lineSpacing: number = 0, settings: Object = null) {
     return new dijon.display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings);
 };

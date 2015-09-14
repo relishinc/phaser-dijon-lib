@@ -4,29 +4,29 @@
 /// <reference path="../interfaces/INotifier" />
 /// <reference path="../core/Game" />
 
-module dijon.mvc{
-	export class Application implements interfaces.INotifier{
+module dijon.mvc {
+	export class Application implements interfaces.INotifier {
 		// static constants
 		static instance = null;
 		static SINGLETON_MSG = 'Application singleton already constructed!';
 
 		public game: core.Game;
-		
-		protected _mediator: mvc.Mediator = null;
-		protected _models:{[name:string]:Model} = {};
-		protected _mediators:{[name:string]:Mediator} = {};
-		protected _observerMap:{[name:string]:interfaces.IObserver[]} = {};
 
-		constructor(){
-			if( Application.instance )
-					throw Error( Application.SINGLETON_MSG );
+		protected _mediator: mvc.Mediator = null;
+		protected _models: { [name: string]: Model } = {};
+		protected _mediators: { [name: string]: Mediator } = {};
+		protected _observerMap: { [name: string]: interfaces.IObserver[] } = {};
+
+		constructor() {
+			if (Application.instance)
+				throw Error(Application.SINGLETON_MSG);
 
 			Application.instance = this;
 
-			this.initializeApplication(); 
+			this.initializeApplication();
 		}
 
-		public initializeApplication(){
+		public initializeApplication() {
 			this.game = new dijon.core.Game({
 				width: 800,
 				height: 600,
@@ -36,42 +36,42 @@ module dijon.mvc{
 			});
 		}
 
-		public registerModel(model: Model): Model{
-			if (this._models[model.name]) { 
+		public registerModel(model: Model): Model {
+			if (this._models[model.name]) {
 				throw (new Error('Application:: a model with the name "' + model.name + '" already exists.'));
 			}
 			this._models[model.name] = model;
 			return model;
 		}
 
-		public retrieveModel(modelName:string):Model{
+		public retrieveModel(modelName: string): Model {
 			return this._models[modelName] || null;
 		}
 
-		public removeModel(modelToRemove:Model):void{
+		public removeModel(modelToRemove: Model): void {
 			delete this._models[modelToRemove.name];
 		}
 
-		public registerMediator(mediator: Mediator): void{
-			if (this._mediators[mediator.name]) { 
+		public registerMediator(mediator: Mediator): void {
+			if (this._mediators[mediator.name]) {
 				throw (new Error('Application:: a mediator with the name "' + mediator.name + '" already exists.'));
 			}
-				    
+
 			this._mediators[mediator.name] = mediator;
 			this.registerObserver(mediator);
 
 			mediator.onRegister();
 		}
 
-		public retrieveMediator(mediatorName:string):Mediator{
+		public retrieveMediator(mediatorName: string): Mediator {
 			return this._mediators[mediatorName] || null;
 		}
 
-		public removeMediator(mediatorToRemove:Mediator):void{
+		public removeMediator(mediatorToRemove: Mediator): void {
 			let name = mediatorToRemove.name;
 			let mediator = this._mediators[name];
 
-			mediator.listNotificationInterests().forEach( interest => {
+			mediator.listNotificationInterests().forEach(interest => {
 				this.removeObserver(interest, mediator);
 			});
 
@@ -79,9 +79,9 @@ module dijon.mvc{
 			delete this._mediators[name];
 		}
 
-		public registerObserver(observer:interfaces.IObserver):void{
-			observer.listNotificationInterests().forEach( notificationName => {
-				if (this._observerMap[notificationName] === undefined){
+		public registerObserver(observer: interfaces.IObserver): void {
+			observer.listNotificationInterests().forEach(notificationName => {
+				if (this._observerMap[notificationName] === undefined) {
 					this._observerMap[notificationName] = [];
 				}
 				this._observerMap[notificationName].push(observer);
@@ -94,20 +94,20 @@ module dijon.mvc{
 		 * @param {dijon.interfaces.IObserver} observerToRemove
 		 * @return {void}
 		 */
-		public removeObserver(notificationName:string, observerToRemove:interfaces.IObserver):void{
+		public removeObserver(notificationName: string, observerToRemove: interfaces.IObserver): void {
 			//The observer list for the notification under inspection
-			let observers:interfaces.IObserver[] = null,
-				observer:interfaces.IObserver = null,
-				i:number = 0;
+			let observers: interfaces.IObserver[] = null,
+				observer: interfaces.IObserver = null,
+				i: number = 0;
 
 			observers = this._observerMap[notificationName];
 
 			//Find the observer for the notifyContext.
 			i = observers.length;
-			while( i-- ){
-				observer =  observers[i];
-				if(observer === observerToRemove){
-					observers.splice(i,1);
+			while (i--) {
+				observer = observers[i];
+				if (observer === observerToRemove) {
+					observers.splice(i, 1);
 					break;
 				}
 			}
@@ -116,12 +116,12 @@ module dijon.mvc{
 			 * Also, when a Notification's Observer list length falls to zero, delete the
 			 * notification key from the observer map.
 			 */
-			if( observers.length == 0 ){
+			if (observers.length == 0) {
 				delete this._observerMap[notificationName];
 			}
 		}
 
-		public sendNotification(notificationName:string, notficationBody?:any):void{
+		public sendNotification(notificationName: string, notficationBody?: any): void {
 			let notification = new Notification(notificationName, notficationBody);
 			this._notifyObservers(notification);
 
@@ -129,25 +129,24 @@ module dijon.mvc{
 			notification = null;
 		}
 
-		private _notifyObservers(notification:interfaces.INotification){
-			let observer:interfaces.IObserver = null,
-				observers:interfaces.IObserver[] = null;
+		private _notifyObservers(notification: interfaces.INotification) {
+			let observer: interfaces.IObserver = null,
+				observers: interfaces.IObserver[] = null;
 
-			const notificationName:string = notification.getName();
-			const observersRef:interfaces.IObserver[] = this._observerMap[notificationName];
+			const notificationName: string = notification.getName();
+			const observersRef: interfaces.IObserver[] = this._observerMap[notificationName];
 
-			if(observersRef)
-			{
+			if (observersRef) {
 				// clone the array in case an observer gets removed while the notification is being sent
 				observers = observersRef.slice(0);
-				observers.forEach( observer => {
+				observers.forEach(observer => {
 					observer.handleNotification(notification);
 				});
 			}
 		}
 
-		public static getInstance():Application{
-			if( !Application.instance )
+		public static getInstance(): Application {
+			if (!Application.instance)
 				Application.instance = new Application();
 
 			return Application.instance;

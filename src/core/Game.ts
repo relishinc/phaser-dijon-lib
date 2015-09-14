@@ -8,38 +8,38 @@
 /// <reference path="../interfaces/IGameConfig" />
 /// <reference path="../utils/addons.ts" />
 
-module dijon.core{
-	export class Game extends Phaser.Game{
+module dijon.core {
+	export class Game extends Phaser.Game {
 		// public variables
 		// application
-		public app:mvc.Application;
+		public app: mvc.Application;
 		
 		// managers
-		public asset:AssetManager;
-		public sequence:SequenceManager;
-		public transition:TransitionManager;
-		public storage:StorageManager;
-		public audio:AudioManager;
-		public analytics:AnalyticsManager;
-		public add:GameObjectFactory;
+		public asset: AssetManager;
+		public sequence: SequenceManager;
+		public transition: TransitionManager;
+		public storage: StorageManager;
+		public audio: AudioManager;
+		public analytics: AnalyticsManager;
+		public add: GameObjectFactory;
 		
 		// signals
-		public onWorldInputDisabled:Phaser.Signal = new Phaser.Signal();
-    	public onWorldInputEnabled:Phaser.Signal = new Phaser.Signal();
+		public onWorldInputDisabled: Phaser.Signal = new Phaser.Signal();
+		public onWorldInputEnabled: Phaser.Signal = new Phaser.Signal();
 		
 		// display layers
-		public gameLayer:dijon.display.Group;
-		public uiLayer:dijon.display.Group;
-		public stageLayer:dijon.display.Group;
+		public gameLayer: dijon.display.Group;
+		public uiLayer: dijon.display.Group;
+		public stageLayer: dijon.display.Group;
 		
 		// Phaser.Game overrides
-		constructor(config:interfaces.IGameConfig){
+		constructor(config: interfaces.IGameConfig) {
 			super(config);
 		}
-		
-		public boot(){ 
+
+		public boot() {
 			super.boot();
-			
+
 			this.app = mvc.Application.getInstance();
 			
 			// add managers
@@ -53,7 +53,7 @@ module dijon.core{
 			// replace Phaser.GameObjectFactory
 			this.add = null;
 			this.add = new GameObjectFactory(this);
-			
+
 			this.addLayers();
 		}
 		
@@ -63,7 +63,7 @@ module dijon.core{
 			this.gameLayer = this.add.dGroup(0, 0, '_game_layer');
 			// add ui layer and set the "fixedToCamera" property to true
 			// if the game's camera moves, anything in this group will stay in place
-			this.uiLayer = this.add.dGroup(0, 0, '_ui_layer');   
+			this.uiLayer = this.add.dGroup(0, 0, '_ui_layer');
 			this.uiLayer.fixedToCamera = true;
 			
 			// add a group to the Phaser.Stage (just in case)
@@ -71,7 +71,7 @@ module dijon.core{
 		}
 		
 		// public methods
-		public disableElementInput(el:any):any{
+		public disableElementInput(el: any): any {
 			if (el.input && el.input.enabled === true) {
 				el.wasEnabled = true;
 				el.input.enabled = false;
@@ -82,8 +82,8 @@ module dijon.core{
 				}
 			}
 		};
-	
-		public enableElementInput(el:any):any{
+
+		public enableElementInput(el: any): any {
 			if (el.input && el.input.enabled === false && el.wasEnabled) {
 				el.wasEnabled = false;
 				el.input.enabled = true;
@@ -94,8 +94,8 @@ module dijon.core{
 				}
 			}
 		};
-	
-		public disableInput(group:Phaser.Group):any{
+
+		public disableInput(group: Phaser.Group): any {
 			return group.forEach(function(el) {
 				if (el instanceof Phaser.Group) {
 					return this.disableInput(el);
@@ -104,8 +104,8 @@ module dijon.core{
 				}
 			}, this);
 		};
-	
-		public enableInput(group:Phaser.Group):any{
+
+		public enableInput(group: Phaser.Group): any {
 			return group.forEach(function(el) {
 				if (el instanceof Phaser.Group) {
 					return this.enableInput(el);
@@ -114,12 +114,12 @@ module dijon.core{
 				}
 			}, this);
 		};
-		
+
 		public disableGameInput() {
 			this.disableInput(this.gameLayer);
 			this.onWorldInputDisabled.dispatch();
 		};
-	
+
 		public enableGameInput() {
 			this.enableInput(this.gameLayer);
 			this.onWorldInputEnabled.dispatch();
@@ -132,7 +132,7 @@ module dijon.core{
 		 * @param {String} toState the new state we're changing to
 		 * @return {void}
 		 */
-		public changeState(toState:string):void{
+		public changeState(toState: string): void {
 			this.gameLayer.removeAll(true, true);
 			return this.state.start(toState, false, false);
 		}
@@ -144,7 +144,7 @@ module dijon.core{
 		 * ie (this.game.addToGame.image(0, 0, key, frame));
 		 * it will be added to the appropriate layer
 		 */
-		public get addToGame():core.GameObjectFactory{
+		public get addToGame(): core.GameObjectFactory {
 			this.add.defaultGroup = this.gameLayer;
 			return this.add;
 		}
@@ -155,13 +155,13 @@ module dijon.core{
 		 * ie (this.game.addToUI.image(0, 0, key, frame));
 		 * it will be added to the appropriate layer
 		 */
-		public get addToUI():core.GameObjectFactory{
+		public get addToUI(): core.GameObjectFactory {
 			// set the default group for the gameObjectFactory before adding
 			this.add.defaultGroup = this.uiLayer;
 			return this.add;
 		}
-		
-		public get addToStage():core.GameObjectFactory{
+
+		public get addToStage(): core.GameObjectFactory {
 			// set the default group for the gameObjectFactory before adding
 			this.add.defaultGroup = this.stageLayer;
 			return this.add;

@@ -4,7 +4,7 @@
  * Centers the pivot point
  */
 PIXI.DisplayObject.prototype.centerPivot = function() {
-	this.pivot.set(this.width >> 1, this.height >> 1);
+    this.pivot.set(this.width >> 1, this.height >> 1);
 };
 
 /**
@@ -110,12 +110,12 @@ PIXI.DisplayObject.prototype.playOverSound = function() {
     if (this.outSound && this.outSound.isPlaying) {
         this.outSound.stop();
     }
-	if (typeof this.overSoundMarker === 'undefined'){
-		console.log('no over sound defined')
-		return null;
-	}
+    if (typeof this.overSoundMarker === 'undefined') {
+        console.log('no over sound defined')
+        return null;
+    }
     this.overSound = this.game.audio.playAudio(this.overSoundMarker, this.overSoundVolume);
-	return this.overSound;
+    return this.overSound;
 };
 
 /**
@@ -124,12 +124,12 @@ PIXI.DisplayObject.prototype.playOverSound = function() {
  */
 PIXI.DisplayObject.prototype.playOutSound = function() {
     this.stopSounds();
-	if (typeof this.outSoundMarker === 'undefined'){
-		console.log('no out sound defined')
-		return null;
-	}
+    if (typeof this.outSoundMarker === 'undefined') {
+        console.log('no out sound defined')
+        return null;
+    }
     this.outSound = this.game.audio.playAudio(this.outSoundMarker, this.outSoundVolume);
-	return this.outSound;
+    return this.outSound;
 };
 
 /**
@@ -138,12 +138,12 @@ PIXI.DisplayObject.prototype.playOutSound = function() {
  */
 PIXI.DisplayObject.prototype.playDownSound = function() {
     this.stopSounds();
-	if (typeof this.downSoundMarker === 'undefined'){
-		console.log('no down sound defined')
-		return null;
-	}
+    if (typeof this.downSoundMarker === 'undefined') {
+        console.log('no down sound defined')
+        return null;
+    }
     this.downSound = this.game.audio.playAudio(this.downSoundMarker, this.downSoundVolume);
-	return this.downSound;
+    return this.downSound;
 };
 
 /**
