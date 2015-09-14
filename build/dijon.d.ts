@@ -139,7 +139,7 @@ declare module dijon.core {
 }
 declare module dijon.core {
     class SequenceManager {
-        game: dijon.core.Game;
+        game: Game;
         private _defaultInterval;
         constructor();
         private _executeMethod(sequence, context, callback, callbackContext);
@@ -180,11 +180,11 @@ declare module dijon.core {
         private _toState;
         constructor();
         private _add(id, outHandler, preloadHandler, inHandler);
-        _getTransition(inState: string, outState: string): any;
-        _transitionInComplete(): boolean;
-        _transitionOutComplete(): void;
-        _preloadComplete(): boolean;
-        _clearTransition(): void;
+        private _getTransition(inState, outState);
+        private _transitionInComplete();
+        private _transitionOutComplete();
+        private _preloadComplete();
+        private _clearTransition();
         add(fromState: string, toState: string | interfaces.IPreloadHandler, outHandler?: interfaces.ITransitionHandler, preloadHandler?: interfaces.IPreloadHandler, inHandler?: interfaces.ITransitionHandler): void;
         addException(state: string): void;
         remove(fromState: string, toState?: string): void;
@@ -278,6 +278,11 @@ declare module dijon.display {
 declare module dijon.display {
     class Text extends Phaser.Text {
         lineSpacing: number;
+        static DEFAULT_FONT_SIZE: number;
+        static DEFAULT_FONT_COLOR: string;
+        static DEFAULT_FONT: string;
+        static GLOBAL_PADDING_X: number;
+        static GLOBAL_PADDING_Y: number;
         game: core.Game;
         style: any;
         onAnimationComplete: Phaser.Signal;
@@ -288,11 +293,6 @@ declare module dijon.display {
         protected _letterTime: number;
         protected _textLength: number;
         protected _textToAnimate: string[];
-        static DEFAULT_FONT_SIZE: number;
-        static DEFAULT_FONT_COLOR: string;
-        static DEFAULT_FONT: string;
-        static GLOBAL_PADDING_X: number;
-        static GLOBAL_PADDING_Y: number;
         constructor(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object);
         setText(text: string): Phaser.Text;
         protected _startTextAnimation(): void;
@@ -446,7 +446,7 @@ declare module dijon.mvc {
 }
 declare module dijon.mvc {
     class Application implements interfaces.INotifier {
-        static instance: any;
+        protected static instance: any;
         static SINGLETON_MSG: string;
         game: core.Game;
         protected _mediator: mvc.Mediator;
@@ -492,8 +492,6 @@ declare module dijon.core {
     class State extends Phaser.State {
         protected _audio: Phaser.Sound[];
         protected _mediator: mvc.Mediator;
-        protected app: mvc.Application;
-        game: core.Game;
         constructor();
         init(): void;
         preload(): void;
@@ -511,6 +509,8 @@ declare module dijon.core {
         preloadID: string;
         buildInterval: number;
         add: core.GameObjectFactory;
+        app: mvc.Application;
+        game: core.Game;
     }
 }
 declare module dijon.mvc {

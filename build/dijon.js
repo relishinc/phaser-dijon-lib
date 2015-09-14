@@ -999,11 +999,6 @@ var dijon;
         display.Sprite = Sprite;
     })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
-Phaser.GameObjectCreator.prototype['dSprite'] = function (x, y, key, frame, name, components) {
-    if (name === void 0) { name = "dSprite"; }
-    if (components === void 0) { components = null; }
-    return new dijon.display.Sprite(x, y, key, frame, name, components);
-};
 /// <reference path="../core/Game" />
 /// <reference path="../mvc/Application" />
 var dijon;
@@ -1129,17 +1124,6 @@ var dijon;
         display.Text = Text;
     })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
-Phaser.GameObjectCreator.prototype['dText'] = function (x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings) {
-    if (text === void 0) { text = ""; }
-    if (fontSize === void 0) { fontSize = dijon.display.Text.DEFAULT_FONT_SIZE; }
-    if (fontColor === void 0) { fontColor = dijon.display.Text.DEFAULT_FONT_COLOR; }
-    if (fontAlign === void 0) { fontAlign = 'left'; }
-    if (wordWrap === void 0) { wordWrap = false; }
-    if (width === void 0) { width = 0; }
-    if (lineSpacing === void 0) { lineSpacing = 0; }
-    if (settings === void 0) { settings = null; }
-    return new dijon.display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings);
-};
 /// <reference path="../mvc/Application" />
 /// <reference path="../core/Game" />
 /// <reference path="../core/GameObjectFactory" />
@@ -1994,8 +1978,6 @@ var dijon;
                 _super.call(this);
                 this._audio = [];
                 this._mediator = null;
-                this.app = dijon.mvc.Application.getInstance();
-                this.game = this.app.game;
             }
             State.prototype.init = function () {
             };
@@ -2079,6 +2061,20 @@ var dijon;
             Object.defineProperty(State.prototype, "add", {
                 get: function () {
                     return this.game.addToGame;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(State.prototype, "app", {
+                get: function () {
+                    return dijon.mvc.Application.getInstance();
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(State.prototype, "game", {
+                get: function () {
+                    return this.app.game;
                 },
                 enumerable: true,
                 configurable: true

@@ -281,11 +281,11 @@ module dijon.core {
 		/**
 		* Sets the default volume for all sounds (used in the case where a volume is not supplied to the playAudio, playSound, or playSpriteMarker methods)
 		*/
-		set defaultVolume(vol: number) {
+		public set defaultVolume(vol: number) {
 			this._defaultVolume = vol;
 		}
 
-		get defaultVolume(): number {
+		public get defaultVolume(): number {
 			return this._defaultVolume;
 		}
 	}

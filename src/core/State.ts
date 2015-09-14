@@ -7,13 +7,8 @@ module dijon.core {
         protected _audio: Phaser.Sound[] = [];
         protected _mediator: mvc.Mediator = null;
 
-        protected app: mvc.Application;
-        public game: core.Game;
-
         constructor() {
             super();
-            this.app = mvc.Application.getInstance();
-            this.game = this.app.game;
         }
         // Phaser.State overrides
         public init(): void {
@@ -97,16 +92,24 @@ module dijon.core {
         }
                 
         // getter / setter
-        get preloadID(): string {
+        public get preloadID(): string {
             return null;
         }
 
-        get buildInterval(): number {
+        public get buildInterval(): number {
             return 10;
         }
 
         public get add(): core.GameObjectFactory {
             return this.game.addToGame;
+        }
+
+        public get app(): mvc.Application {
+            return mvc.Application.getInstance();
+        }
+
+        public get game(): core.Game {
+            return this.app.game;
         }
     }
 }

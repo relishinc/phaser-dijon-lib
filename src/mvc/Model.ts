@@ -42,7 +42,7 @@ module dijon.mvc {
 			this.app.removeModel(this);
 		}
 
-		get name(): string {
+		public get name(): string {
 			return this.modelName || Model.MODEL_NAME;
 		}
 	}

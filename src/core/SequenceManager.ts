@@ -3,7 +3,7 @@
 
 module dijon.core {
     export class SequenceManager {
-        public game: dijon.core.Game;
+        public game:Game;
 
         private _defaultInterval = 20;
 

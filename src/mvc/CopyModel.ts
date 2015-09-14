@@ -37,7 +37,7 @@ module dijon.mvc {
 			this._data = this._languages[languageId];
 		}
 
-		get name(): string {
+		public get name(): string {
 			return CopyModel.MODEL_NAME;
 		}
 	}

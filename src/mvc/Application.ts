@@ -7,8 +7,8 @@
 module dijon.mvc {
 	export class Application implements interfaces.INotifier {
 		// static constants
-		static instance = null;
-		static SINGLETON_MSG = 'Application singleton already constructed!';
+		protected static instance = null;
+		public static SINGLETON_MSG = 'Application singleton already constructed!';
 
 		public game: core.Game;
 

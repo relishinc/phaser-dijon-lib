@@ -139,8 +139,3 @@ module dijon.display {
 		}
 	}
 }
-
-// Phaser addons
-Phaser.GameObjectCreator.prototype['dSprite'] = function(x?: number, y?: number, key?: string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, name: string = "dSprite", components: dijon.core.Component[] = null) {
-    return new dijon.display.Sprite(x, y, key, frame, name, components);
-};

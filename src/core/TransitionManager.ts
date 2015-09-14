@@ -29,7 +29,7 @@ module dijon.core {
             };
         }
 
-        _getTransition(inState: string, outState: string) {
+        private _getTransition(inState: string, outState: string) {
             var transition = this._transitions[inState + '/' + outState];
             if (typeof transition === 'undefined')
                 transition = this._transitions['all'];
@@ -37,7 +37,7 @@ module dijon.core {
             return typeof transition === 'undefined' ? null : transition;
         }
 
-        _transitionInComplete() {
+        private _transitionInComplete() {
             this._transition = this._getTransition(this._fromState, this._toState);
             if (!this._transition)
                 return false;
@@ -56,12 +56,12 @@ module dijon.core {
             this.game.changeState(this._toState);
         }
 
-        _transitionOutComplete() {
+        private _transitionOutComplete() {
             this._transition = null;
             this.onTransitionOutComplete.dispatch();
         }
 
-        _preloadComplete() {
+        private _preloadComplete() {
             this._transition = this._getTransition(this._fromState, this._toState);
             if (!this._transition)
                 return false;
@@ -72,8 +72,7 @@ module dijon.core {
                 this._transition.preloadHandler.loadComplete();
         }
 
-        _clearTransition() {
-
+        private _clearTransition() {
             this._transition.outHandler.transitionInComplete.remove(this._transitionOutComplete, this);
             this._transition.inHandler.transitionOutComplete.remove(this._transitionInComplete, this);
             this.game.asset.onLoadCompleteAndAudioDecoded.remove(this._preloadComplete, this);

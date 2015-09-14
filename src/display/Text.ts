@@ -3,6 +3,13 @@
 
 module dijon.display {
 	export class Text extends Phaser.Text {
+		// constants
+		public static DEFAULT_FONT_SIZE: number = 12;
+		public static DEFAULT_FONT_COLOR: string = "#000000";
+		public static DEFAULT_FONT: string = "Helvetica Neue, Arial";
+		public static GLOBAL_PADDING_X: number = 0;
+		public static GLOBAL_PADDING_Y: number = 0;
+		
 		public game: core.Game;
 		public style: any;
 		public onAnimationComplete: Phaser.Signal = new Phaser.Signal();
@@ -14,12 +21,6 @@ module dijon.display {
 		protected _letterTime: number;
 		protected _textLength: number;
 		protected _textToAnimate: string[] = [];
-
-		public static DEFAULT_FONT_SIZE: number = 12;
-		public static DEFAULT_FONT_COLOR: string = "#000000";
-		public static DEFAULT_FONT: string = "Helvetica Neue, Arial"
-		public static GLOBAL_PADDING_X: number = 0;
-		public static GLOBAL_PADDING_Y: number = 0;
 
 		constructor(x: number, y: number, text: string = "", fontName?: string, fontSize: number = Text.DEFAULT_FONT_SIZE, fontColor: string = Text.DEFAULT_FONT_COLOR, fontAlign: string = 'left', wordWrap: boolean = false, width: number = 0, public lineSpacing: number = 0, settings: Object = null) {
 			super(
@@ -180,8 +181,3 @@ module dijon.display {
 		}
 	}
 }
-
-// Phaser addons
-Phaser.GameObjectCreator.prototype['dText'] = function(x: number, y: number, text: string = "", fontName?: string, fontSize: number = dijon.display.Text.DEFAULT_FONT_SIZE, fontColor: string = dijon.display.Text.DEFAULT_FONT_COLOR, fontAlign: string = 'left', wordWrap: boolean = false, width: number = 0, lineSpacing: number = 0, settings: Object = null) {
-    return new dijon.display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings);
-};
