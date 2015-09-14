@@ -74,6 +74,8 @@ module dijon.core {
         private _numSounds: number = 0;
         private _soundsDecoded: number = 0;
         
+        private _cacheBustVersion: string = '';
+        
         // public variables
         public game: dijon.core.Game;
 
@@ -152,9 +154,9 @@ module dijon.core {
         private _init() {
             this.app = dijon.mvc.Application.getInstance();
             this.game = this.app.game;
-            this.setBaseURL();
-            this.setPaths();
-            this.setResolution();
+            this.baseURL = '';
+            this.paths = null;
+            this.resolution = 2;
         }
     
         /**
@@ -307,7 +309,7 @@ module dijon.core {
             }
 
             this._soundsDecoded++;
-            this._maxPercent = (100 - (this._numSounds * this.getSoundDecodingModifier())) + (this._soundsDecoded * this.getSoundDecodingModifier());
+            this._maxPercent = (100 - (this._numSounds * this.soundDecodingModifier) + (this._soundsDecoded * this.soundDecodingModifier));
             this._gameFileComplete(100);
 
             if (this._soundsToDecode.length === 0) {
@@ -379,7 +381,7 @@ module dijon.core {
         * @return {void}
         * @private
         */
-        _parseData() {
+        private _parseData() {
             var key;
 
             for (key in this._data) {
@@ -387,75 +389,33 @@ module dijon.core {
             }
         }
         
+        private _getCacheBustedUrl(url: string): string { 
+            if (this._cacheBustVersion === '') { 
+                return url;
+            }
+            
+            return url + '?v=' + this._cacheBustVersion;
+        }
         // public methods
-        setBaseURL(baseURL: string = "") {
-            // ensure trailing slash
-            if (baseURL && baseURL !== '' && baseURL.charAt(baseURL.length - 1) !== '/')
-                baseURL += '/';
-
-            this._baseURL = baseURL;
-            this.setPaths();
-        }
-
-        setPaths(pathObj: IPathConfig = null) {
-            this._pathObj = pathObj || {};
-
-            this._assetPath = this._baseURL + (this._pathObj.assetPath || 'assets');
-            this._dataPath = this._baseURL + (this._pathObj.dataPath || 'assets/data');
-            this._spriteSheetPath = this._baseURL + (this._pathObj.spritesheetPath || 'assets/img/spritesheets');
-            this._imgPath = this._baseURL + (this._pathObj.imgPath || 'assets/img');
-            this._fontPath = this._baseURL + (this._pathObj.fontPath || 'assets/fonts');
-            this._bitmapFontPath = this._baseURL + (this._pathObj.bitmapFontPath || 'assets/fonts/bitmap');
-            this._audioSpritePath = this._baseURL + (this._pathObj.audioSpritePath || 'assets/audio/sprite');
-            this._soundPath = this._baseURL + (this._pathObj.soundPath || 'assets/audio/sound');
-        }
-
-        setResolution(res?: number) {
-            if (typeof res === 'undefined')
-                res = this.game.resolution;
-
-            this._resolution = '';
-            // leave this out for now
-            /*
-            if (res > 1.5) {
-                this._resolution = AssetManager.RESOLUTION_2X;
-            }*/
-        }
-    
-        /**
-        * sets the percentage of the load we should allot to each sound
-        * @param {Number} [num = 2] the percentage
-        */
-        setSoundDecodingModifier(num: number = 2) {
-            this._soundDecodingModifier = num;
-        }
-
-
-        getSoundDecodingModifier() {
-            return this._soundDecodingModifier;
-        }
-
-        loadText(url: string) {
+        public loadText(url: string) {
             var key = this._getAssetKey(url);
-            return this.game.load.text(key, this._dataPath + '/' + url);
+            return this.game.load.text(key, this._getCacheBustedUrl(this._dataPath + '/' + url));
         }
 
-        loadJSON(key: string) {
+        public loadJSON(key: string) {
             key = this._getAssetKey(key);
-            console.log(this._dataPath + '/' + key + '.json');
-
-            return this.game.load.json(key, this._dataPath + '/' + key + '.json');
+            return this.game.load.json(key, this._getCacheBustedUrl(this._dataPath + '/' + key + '.json'));
         }
 
-        loadAtlas(url: string): Phaser.Loader | string {
+        public loadAtlas(url: string): Phaser.Loader | string {
             if (this.game.cache.checkImageKey(url)) {
                 return url;
             }
 
-            return this.game.load.atlasJSONHash(url, this._spriteSheetPath + '/' + url + this._resolution + '.png', this._spriteSheetPath + '/' + url + this._resolution + '.json');
+            return this.game.load.atlasJSONHash(url, this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + this._resolution + '.png'), this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + this._resolution + '.json'));
         }
 
-        loadImage(url: string): Phaser.Loader | string {
+        public loadImage(url: string): Phaser.Loader | string {
             const key: string = this._getAssetKey(url);
 
             if (this.game.cache.checkImageKey(key)) {
@@ -464,15 +424,15 @@ module dijon.core {
             }
             url = key + this._resolution + '.' + this._getExtension(url);
 
-            return this.game.load.image(key, this._imgPath + '/' + url);
+            return this.game.load.image(key, this._getCacheBustedUrl(this._imgPath + '/' + url));
         }
 
-        loadBitmapFont(url: string) {
-            this.game.load.bitmapFont(url, this._bitmapFontPath + '/' + url + this._resolution + '.png', this._bitmapFontPath + '/' + url + this._resolution + '.json');
+        public loadBitmapFont(url: string) {
+            this.game.load.bitmapFont(url, this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + this._resolution + '.png'), this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + this._resolution + '.json'));
         }
 
 
-        loadAudio(url: string, exts: any, isAudioSprite: boolean) {
+        public loadAudio(url: string, exts: any, isAudioSprite: boolean) {
             var type, path;
             if (this.game.cache.checkSoundKey(url) && this.game.cache.getSound(url).isDecoded) {
                 return;
@@ -495,10 +455,10 @@ module dijon.core {
             if (typeof exts === 'object') {
                 path = [];
                 for (var i = 0; i < exts.length; i++) {
-                    path.push((isAudioSprite ? this._audioSpritePath : this._soundPath) + '/' + url + '.' + exts[i]);
+                    path.push(this._getCacheBustedUrl((isAudioSprite ? this._audioSpritePath : this._soundPath) + '/' + url + '.' + exts[i]));
                 }
             } else {
-                path = (isAudioSprite ? this._audioSpritePath : this._soundPath) + '/' + type + '/' + url + '.' + exts;
+                path = this._getCacheBustedUrl((isAudioSprite ? this._audioSpritePath : this._soundPath) + '/' + type + '/' + url + '.' + exts);
             }
 
             if (isAudioSprite) {
@@ -513,15 +473,15 @@ module dijon.core {
             });
         }
 
-        loadSound(url: string, exts: any) {
+        public loadSound(url: string, exts: any) {
             return this.loadAudio(url, exts, false);
         }
 
-        loadAudioSprite(url: string, exts: any) {
+        public loadAudioSprite(url: string, exts: any) {
             return this.loadAudio(url, exts, true);
         }
 
-        loadAssets(id: string, background: boolean = false) {
+        public loadAssets(id: string, background: boolean = false) {
             this._currentAssetList = id;
             this.game.load.onFileComplete.remove(this._backgroundFileComplete, this);
             this.game.load.onFileComplete.remove(this._gameFileComplete, this);
@@ -561,12 +521,12 @@ module dijon.core {
 
             this._numSounds = this._soundsToDecode.length;
             this._soundsDecoded = 0;
-            this._maxPercent = 100 - (this._numSounds * this.getSoundDecodingModifier());
+            this._maxPercent = 100 - (this._numSounds * this.soundDecodingModifier);
 
             return this.game.load.start();
         }
 
-        loadQueue() {
+        public loadQueue() {
             if (this._isLoadingQueue) {
                 return;
             }
@@ -594,13 +554,13 @@ module dijon.core {
         }
 
 
-        getLoadProgress(progress: number) {
+        public getLoadProgress(progress: number) {
             var adjustedProgress = progress * this._maxPercent / 100;
             return adjustedProgress;
         }
 
 
-        allSoundsDecoded() {
+        public allSoundsDecoded() {
             //console.log('sounds to decode', this._soundsToDecode.length);
             return this._soundsToDecode.length === 0;
         }
@@ -611,7 +571,7 @@ module dijon.core {
         * triggers the _parseData internal method, which stores the asset list for later use
         * @param {String} textFileFromCache the id of the file in the Phaser.Cache
         */
-        setData(data: Object) {
+        public setData(data: Object) {
             this._data = data;
             this._loadData = {};
             this._parseData();
@@ -628,7 +588,7 @@ module dijon.core {
         * @param  {Boolean} [clearText = true]     whether to clear text files
         * @return {void}
         */
-        clearAssets(id: string, clearAudio: boolean = true, clearAtlasses: boolean = true, clearImages: boolean = true, clearText: boolean = true, clearJSON: boolean = true) {
+        public clearAssets(id: string, clearAudio: boolean = true, clearAtlasses: boolean = true, clearImages: boolean = true, clearText: boolean = true, clearJSON: boolean = true) {
             var assets = this._data[id];
 
             console.log('clearing: ', id);
@@ -655,7 +615,7 @@ module dijon.core {
         * @param  {Boolean} [clearText = true]     whether to clear text files
         * @return {void}
         */
-        clearAsset(asset: IAsset, clearAudio: boolean = true, clearAtlasses: boolean = true, clearImages: boolean = true, clearText: boolean = true, clearJSON: boolean = true) {
+        public clearAsset(asset: IAsset, clearAudio: boolean = true, clearAtlasses: boolean = true, clearImages: boolean = true, clearText: boolean = true, clearJSON: boolean = true) {
             var type = asset.type,
                 url = asset.url,
                 required = asset.required;
@@ -702,12 +662,66 @@ module dijon.core {
         * @param  {String}  id the asset list id to check
         * @return {Boolean}    whether it has been loaded already
         */
-        hasLoadedAssets(id: string) {
+        public hasLoadedAssets(id: string) {
             return this._completedLoads[id] === true;
         }
 
-        sendNotification(notificationName: string, notificationBody?: any) {
+        public sendNotification(notificationName: string, notificationBody?: any): void {
             return this.app.sendNotification(notificationName, notificationBody);
+        }
+        
+        // getter / setter
+        public set baseURL(baseURL: string) {
+            // ensure trailing slash
+            if (baseURL && baseURL !== undefined && baseURL.charAt(baseURL.length - 1) !== '/')
+                baseURL += '/';
+
+            this._baseURL = baseURL;
+        }
+
+        public set paths(pathObj: IPathConfig) {
+            this._pathObj = pathObj || {};
+
+            this._assetPath = this._baseURL + (this._pathObj.assetPath || 'assets');
+            this._dataPath = this._baseURL + (this._pathObj.dataPath || 'assets/data');
+            this._spriteSheetPath = this._baseURL + (this._pathObj.spritesheetPath || 'assets/img/spritesheets');
+            this._imgPath = this._baseURL + (this._pathObj.imgPath || 'assets/img');
+            this._fontPath = this._baseURL + (this._pathObj.fontPath || 'assets/fonts');
+            this._bitmapFontPath = this._baseURL + (this._pathObj.bitmapFontPath || 'assets/fonts/bitmap');
+            this._audioSpritePath = this._baseURL + (this._pathObj.audioSpritePath || 'assets/audio/sprite');
+            this._soundPath = this._baseURL + (this._pathObj.soundPath || 'assets/audio/sound');
+        }
+
+        public set resolution(res: number) {
+            if (res === undefined) {
+                res = this.game.resolution;
+            }
+
+            this._resolution = '';
+            // leave this out for now
+            /*
+            if (res > 1.5) {
+                this._resolution = AssetManager.RESOLUTION_2X;
+            }*/
+        }
+    
+        /**
+        * sets the percentage of the load we should allot to each sound
+        * @param {Number} [num = 2] the percentage
+        */
+        public set soundDecodingModifier(num: number) {
+            if (num === undefined) { 
+                num = 2;
+            }
+            this._soundDecodingModifier = num;
+        }
+
+        public get soundDecodingModifier() {
+            return this._soundDecodingModifier;
+        }
+        
+        public set cacheBustVersion(version: string|number) { 
+            this._cacheBustVersion = '' + version;
         }
     }
 }

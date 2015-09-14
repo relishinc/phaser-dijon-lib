@@ -75,6 +75,7 @@ declare module dijon.core {
         private _maxPercent;
         private _numSounds;
         private _soundsDecoded;
+        private _cacheBustVersion;
         game: dijon.core.Game;
         onLoadStart: Phaser.Signal;
         onFileStart: Phaser.Signal;
@@ -112,12 +113,8 @@ declare module dijon.core {
         private _getAssetKey(fileName);
         private _getExtension(fileName);
         private _loadAsset(asset);
-        _parseData(): void;
-        setBaseURL(baseURL?: string): void;
-        setPaths(pathObj?: IPathConfig): void;
-        setResolution(res?: number): void;
-        setSoundDecodingModifier(num?: number): void;
-        getSoundDecodingModifier(): number;
+        private _parseData();
+        private _getCacheBustedUrl(url);
         loadText(url: string): Phaser.Loader;
         loadJSON(key: string): Phaser.Loader;
         loadAtlas(url: string): Phaser.Loader | string;
@@ -135,6 +132,11 @@ declare module dijon.core {
         clearAsset(asset: IAsset, clearAudio?: boolean, clearAtlasses?: boolean, clearImages?: boolean, clearText?: boolean, clearJSON?: boolean): void;
         hasLoadedAssets(id: string): boolean;
         sendNotification(notificationName: string, notificationBody?: any): void;
+        baseURL: string;
+        paths: IPathConfig;
+        resolution: number;
+        soundDecodingModifier: number;
+        cacheBustVersion: string | number;
     }
 }
 declare module dijon.core {

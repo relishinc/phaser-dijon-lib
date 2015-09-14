@@ -47,6 +47,7 @@ var dijon;
                 this._maxPercent = 100;
                 this._numSounds = 0;
                 this._soundsDecoded = 0;
+                this._cacheBustVersion = '';
                 this.onLoadStart = new Phaser.Signal();
                 this.onFileStart = new Phaser.Signal();
                 this.onFileComplete = new Phaser.Signal();
@@ -62,9 +63,9 @@ var dijon;
             AssetManager.prototype._init = function () {
                 this.app = dijon.mvc.Application.getInstance();
                 this.game = this.app.game;
-                this.setBaseURL();
-                this.setPaths();
-                this.setResolution();
+                this.baseURL = '';
+                this.paths = null;
+                this.resolution = 2;
             };
             AssetManager.prototype._parseAssetList = function (key, list) {
                 var _this = this;
@@ -132,7 +133,7 @@ var dijon;
                     this.game.audio.addAudio(sound.key, sound.__isAudioSprite);
                 }
                 this._soundsDecoded++;
-                this._maxPercent = (100 - (this._numSounds * this.getSoundDecodingModifier())) + (this._soundsDecoded * this.getSoundDecodingModifier());
+                this._maxPercent = (100 - (this._numSounds * this.soundDecodingModifier) + (this._soundsDecoded * this.soundDecodingModifier));
                 this._gameFileComplete(100);
                 if (this._soundsToDecode.length === 0) {
                     sound.eventToDispatch.dispatch();
@@ -179,51 +180,25 @@ var dijon;
                     this._parseAssetList(key, this._data[key]);
                 }
             };
-            AssetManager.prototype.setBaseURL = function (baseURL) {
-                if (baseURL === void 0) { baseURL = ""; }
-                if (baseURL && baseURL !== '' && baseURL.charAt(baseURL.length - 1) !== '/')
-                    baseURL += '/';
-                this._baseURL = baseURL;
-                this.setPaths();
-            };
-            AssetManager.prototype.setPaths = function (pathObj) {
-                if (pathObj === void 0) { pathObj = null; }
-                this._pathObj = pathObj || {};
-                this._assetPath = this._baseURL + (this._pathObj.assetPath || 'assets');
-                this._dataPath = this._baseURL + (this._pathObj.dataPath || 'assets/data');
-                this._spriteSheetPath = this._baseURL + (this._pathObj.spritesheetPath || 'assets/img/spritesheets');
-                this._imgPath = this._baseURL + (this._pathObj.imgPath || 'assets/img');
-                this._fontPath = this._baseURL + (this._pathObj.fontPath || 'assets/fonts');
-                this._bitmapFontPath = this._baseURL + (this._pathObj.bitmapFontPath || 'assets/fonts/bitmap');
-                this._audioSpritePath = this._baseURL + (this._pathObj.audioSpritePath || 'assets/audio/sprite');
-                this._soundPath = this._baseURL + (this._pathObj.soundPath || 'assets/audio/sound');
-            };
-            AssetManager.prototype.setResolution = function (res) {
-                if (typeof res === 'undefined')
-                    res = this.game.resolution;
-                this._resolution = '';
-            };
-            AssetManager.prototype.setSoundDecodingModifier = function (num) {
-                if (num === void 0) { num = 2; }
-                this._soundDecodingModifier = num;
-            };
-            AssetManager.prototype.getSoundDecodingModifier = function () {
-                return this._soundDecodingModifier;
+            AssetManager.prototype._getCacheBustedUrl = function (url) {
+                if (this._cacheBustVersion === '') {
+                    return url;
+                }
+                return url + '?v=' + this._cacheBustVersion;
             };
             AssetManager.prototype.loadText = function (url) {
                 var key = this._getAssetKey(url);
-                return this.game.load.text(key, this._dataPath + '/' + url);
+                return this.game.load.text(key, this._getCacheBustedUrl(this._dataPath + '/' + url));
             };
             AssetManager.prototype.loadJSON = function (key) {
                 key = this._getAssetKey(key);
-                console.log(this._dataPath + '/' + key + '.json');
-                return this.game.load.json(key, this._dataPath + '/' + key + '.json');
+                return this.game.load.json(key, this._getCacheBustedUrl(this._dataPath + '/' + key + '.json'));
             };
             AssetManager.prototype.loadAtlas = function (url) {
                 if (this.game.cache.checkImageKey(url)) {
                     return url;
                 }
-                return this.game.load.atlasJSONHash(url, this._spriteSheetPath + '/' + url + this._resolution + '.png', this._spriteSheetPath + '/' + url + this._resolution + '.json');
+                return this.game.load.atlasJSONHash(url, this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + this._resolution + '.png'), this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + this._resolution + '.json'));
             };
             AssetManager.prototype.loadImage = function (url) {
                 var key = this._getAssetKey(url);
@@ -231,10 +206,10 @@ var dijon;
                     return key;
                 }
                 url = key + this._resolution + '.' + this._getExtension(url);
-                return this.game.load.image(key, this._imgPath + '/' + url);
+                return this.game.load.image(key, this._getCacheBustedUrl(this._imgPath + '/' + url));
             };
             AssetManager.prototype.loadBitmapFont = function (url) {
-                this.game.load.bitmapFont(url, this._bitmapFontPath + '/' + url + this._resolution + '.png', this._bitmapFontPath + '/' + url + this._resolution + '.json');
+                this.game.load.bitmapFont(url, this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + this._resolution + '.png'), this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + this._resolution + '.json'));
             };
             AssetManager.prototype.loadAudio = function (url, exts, isAudioSprite) {
                 var type, path;
@@ -253,11 +228,11 @@ var dijon;
                 if (typeof exts === 'object') {
                     path = [];
                     for (var i = 0; i < exts.length; i++) {
-                        path.push((isAudioSprite ? this._audioSpritePath : this._soundPath) + '/' + url + '.' + exts[i]);
+                        path.push(this._getCacheBustedUrl((isAudioSprite ? this._audioSpritePath : this._soundPath) + '/' + url + '.' + exts[i]));
                     }
                 }
                 else {
-                    path = (isAudioSprite ? this._audioSpritePath : this._soundPath) + '/' + type + '/' + url + '.' + exts;
+                    path = this._getCacheBustedUrl((isAudioSprite ? this._audioSpritePath : this._soundPath) + '/' + type + '/' + url + '.' + exts);
                 }
                 if (isAudioSprite) {
                     this.game.load.audiosprite(url, path, this._audioSpritePath + '/' + url + '.json');
@@ -311,7 +286,7 @@ var dijon;
                 }
                 this._numSounds = this._soundsToDecode.length;
                 this._soundsDecoded = 0;
-                this._maxPercent = 100 - (this._numSounds * this.getSoundDecodingModifier());
+                this._maxPercent = 100 - (this._numSounds * this.soundDecodingModifier);
                 return this.game.load.start();
             };
             AssetManager.prototype.loadQueue = function () {
@@ -415,6 +390,60 @@ var dijon;
             AssetManager.prototype.sendNotification = function (notificationName, notificationBody) {
                 return this.app.sendNotification(notificationName, notificationBody);
             };
+            Object.defineProperty(AssetManager.prototype, "baseURL", {
+                set: function (baseURL) {
+                    if (baseURL && baseURL !== undefined && baseURL.charAt(baseURL.length - 1) !== '/')
+                        baseURL += '/';
+                    this._baseURL = baseURL;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(AssetManager.prototype, "paths", {
+                set: function (pathObj) {
+                    this._pathObj = pathObj || {};
+                    this._assetPath = this._baseURL + (this._pathObj.assetPath || 'assets');
+                    this._dataPath = this._baseURL + (this._pathObj.dataPath || 'assets/data');
+                    this._spriteSheetPath = this._baseURL + (this._pathObj.spritesheetPath || 'assets/img/spritesheets');
+                    this._imgPath = this._baseURL + (this._pathObj.imgPath || 'assets/img');
+                    this._fontPath = this._baseURL + (this._pathObj.fontPath || 'assets/fonts');
+                    this._bitmapFontPath = this._baseURL + (this._pathObj.bitmapFontPath || 'assets/fonts/bitmap');
+                    this._audioSpritePath = this._baseURL + (this._pathObj.audioSpritePath || 'assets/audio/sprite');
+                    this._soundPath = this._baseURL + (this._pathObj.soundPath || 'assets/audio/sound');
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(AssetManager.prototype, "resolution", {
+                set: function (res) {
+                    if (res === undefined) {
+                        res = this.game.resolution;
+                    }
+                    this._resolution = '';
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(AssetManager.prototype, "soundDecodingModifier", {
+                get: function () {
+                    return this._soundDecodingModifier;
+                },
+                set: function (num) {
+                    if (num === undefined) {
+                        num = 2;
+                    }
+                    this._soundDecodingModifier = num;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(AssetManager.prototype, "cacheBustVersion", {
+                set: function (version) {
+                    this._cacheBustVersion = '' + version;
+                },
+                enumerable: true,
+                configurable: true
+            });
             AssetManager.AUDIO = 'audio';
             AssetManager.SOUND = 'sound';
             AssetManager.AUDIO_SPRITE = 'audioSprite';
