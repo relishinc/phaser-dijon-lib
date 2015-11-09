@@ -163,7 +163,7 @@ var dijon;
                     res = parseFloat(res);
                 }
                 if (res === undefined) {
-                    res = this.game.resolution;
+                    res = this.resolution;
                 }
                 if (res > 1.5) {
                     result = AssetManager.RESOLUTION_2X;
