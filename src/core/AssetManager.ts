@@ -11,6 +11,7 @@ module dijon.core {
         required?: boolean;
         id?: string;
         key?: string;
+        resolution: number;
     }
 
     export interface IAssetList {
@@ -58,6 +59,7 @@ module dijon.core {
         private _audioSpritePath = null;
         private _soundPath = null;
         private _soundDecodingModifier: number = 2;
+        private _res: number = 1;
         private _resolution: string = null;
 
         private _loadData = {};
@@ -156,7 +158,7 @@ module dijon.core {
             this.game = this.app.game;
             this.baseURL = '';
             this.paths = null;
-            this.resolution = 2;
+            this.resolution = this.game.resolution;
         }
     
         /**
@@ -252,6 +254,10 @@ module dijon.core {
         * @private
         */
         private _gameFileComplete(progress: number, id?: string, fileIndex?: number, totalFiles?: number) {
+            var texture = <PIXI.BaseTexture>this.game.cache.getBaseTexture(id, Phaser.Cache.TEXTURE_ATLAS);
+            if (texture.source.src.indexOf('@' + this.resolution + 'x') >= 0) { 
+                texture.resolution = this.resolution;
+            }
             this.onFileComplete.dispatch(this.getLoadProgress(progress), id, fileIndex, totalFiles);
         }
     
@@ -341,6 +347,30 @@ module dijon.core {
         private _getExtension(fileName: string): string {
             return fileName.split('.').pop();
         }
+        
+        /**
+        * gets the extension of a given file
+        * @param  {String} fileName
+        * @return {String}          the extension
+        * @private
+        */
+        private _getResolution(res: any): string {
+            var result = '';
+            
+            if (typeof res === 'string') { 
+                res = parseFloat(res);
+            }
+            
+            if (res === undefined) {
+                res = this.game.resolution;
+            }
+
+            if (res > 1.5) {
+                result  = AssetManager.RESOLUTION_2X;
+            }
+            
+            return result;
+        }
     
         /**
         * determines what kind of asset we're dealing with and adds it to the load queue
@@ -362,10 +392,10 @@ module dijon.core {
                     this.loadAudioSprite(url, asset.extensions);
                     break;
                 case AssetManager.IMAGE:
-                    this.loadImage(url);
+                    this.loadImage(url, this._getResolution(asset.resolution));
                     break;
                 case AssetManager.ATLAS:
-                    this.loadAtlas(url);
+                    this.loadAtlas(url, this._getResolution(asset.resolution));
                     break;
                 case AssetManager.TEXT:
                     this.loadText(url);
@@ -407,28 +437,37 @@ module dijon.core {
             return this.game.load.json(key, this._getCacheBustedUrl(this._dataPath + '/' + key + '.json'));
         }
 
-        public loadAtlas(url: string): Phaser.Loader | string {
+        public loadAtlas(url: string, resolution?: any): Phaser.Loader | string {
+            if (typeof resolution !== 'string') { 
+                resolution = this._getResolution(resolution);
+            }
             if (this.game.cache.checkImageKey(url)) {
                 return url;
             }
 
-            return this.game.load.atlasJSONHash(url, this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + this._resolution + '.png'), this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + this._resolution + '.json'));
+            return this.game.load.atlasJSONHash(url, this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + resolution + '.png'), this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + resolution + '.json'));
         }
 
-        public loadImage(url: string): Phaser.Loader | string {
+        public loadImage(url: string, resolution?: any): Phaser.Loader | string {
+            if (typeof resolution !== 'string') { 
+                resolution = this._getResolution(resolution);
+            }
             const key: string = this._getAssetKey(url);
 
             if (this.game.cache.checkImageKey(key)) {
                 // if the image key already exists, don't reload the image and return the key
                 return key;
             }
-            url = key + this._resolution + '.' + this._getExtension(url);
+            url = key + resolution + '.' + this._getExtension(url);
 
             return this.game.load.image(key, this._getCacheBustedUrl(this._imgPath + '/' + url));
         }
 
-        public loadBitmapFont(url: string) {
-            this.game.load.bitmapFont(url, this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + this._resolution + '.png'), this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + this._resolution + '.json'));
+        public loadBitmapFont(url: string, resolution?: any) {
+            if (typeof resolution !== 'string') { 
+                resolution = this._getResolution(resolution);
+            }
+            this.game.load.bitmapFont(url, this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + resolution + '.png'), this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + resolution + '.json'));
         }
 
 
@@ -696,15 +735,18 @@ module dijon.core {
             if (res === undefined) {
                 res = this.game.resolution;
             }
-
+            
+            this._res = res;
             this._resolution = '';
-            // leave this out for now
-            /*
-            if (res > 1.5) {
+
+            if (this._res > 1.5) {
                 this._resolution = AssetManager.RESOLUTION_2X;
-            }*/
+            }
         }
-    
+        
+        public get resolution(): number { 
+            return this._res;
+        }
         /**
         * sets the percentage of the load we should allot to each sound
         * @param {Number} [num = 2] the percentage

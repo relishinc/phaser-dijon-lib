@@ -137,5 +137,9 @@ module dijon.display {
 
 			this._updateComponentKeys();
 		}
+		
+		public get resolution(): number { 
+			return this.texture.baseTexture.resolution;
+		}
 	}
 }
