@@ -35,6 +35,7 @@ var dijon;
                 this._audioSpritePath = null;
                 this._soundPath = null;
                 this._soundDecodingModifier = 2;
+                this._res = 1;
                 this._resolution = null;
                 this._loadData = {};
                 this._autoLoadData = {};
@@ -65,7 +66,7 @@ var dijon;
                 this.game = this.app.game;
                 this.baseURL = '';
                 this.paths = null;
-                this.resolution = 2;
+                this.resolution = this.game.resolution;
             };
             AssetManager.prototype._parseAssetList = function (key, list) {
                 var _this = this;
@@ -100,8 +101,15 @@ var dijon;
                 this.onFileStart.dispatch();
             };
             AssetManager.prototype._gameFileComplete = function (progress, id, fileIndex, totalFiles) {
+                this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
                 this.onFileComplete.dispatch(this.getLoadProgress(progress), id, fileIndex, totalFiles);
             };
+            AssetManager.prototype._setBaseTextureResolution = function (texture) {
+                if (texture && texture.source.src.indexOf('@' + this.resolution + 'x') >= 0) {
+                    texture.resolution = this.resolution;
+                }
+            };
+            ;
             AssetManager.prototype._gameLoadComplete = function () {
                 this._completedLoads[this._currentAssetList] = true;
                 this.onLoadComplete.dispatch();
@@ -149,6 +157,19 @@ var dijon;
             AssetManager.prototype._getExtension = function (fileName) {
                 return fileName.split('.').pop();
             };
+            AssetManager.prototype._getResolution = function (res) {
+                var result = '';
+                if (typeof res === 'string') {
+                    res = parseFloat(res);
+                }
+                if (res === undefined) {
+                    res = this.game.resolution;
+                }
+                if (res > 1.5) {
+                    result = AssetManager.RESOLUTION_2X;
+                }
+                return result;
+            };
             AssetManager.prototype._loadAsset = function (asset) {
                 var type = asset.type, url = asset.url || asset.key;
                 switch (type) {
@@ -161,10 +182,10 @@ var dijon;
                         this.loadAudioSprite(url, asset.extensions);
                         break;
                     case AssetManager.IMAGE:
-                        this.loadImage(url);
+                        this.loadImage(url, this._getResolution(asset.resolution));
                         break;
                     case AssetManager.ATLAS:
-                        this.loadAtlas(url);
+                        this.loadAtlas(url, this._getResolution(asset.resolution));
                         break;
                     case AssetManager.TEXT:
                         this.loadText(url);
@@ -194,22 +215,31 @@ var dijon;
                 key = this._getAssetKey(key);
                 return this.game.load.json(key, this._getCacheBustedUrl(this._dataPath + '/' + key + '.json'));
             };
-            AssetManager.prototype.loadAtlas = function (url) {
+            AssetManager.prototype.loadAtlas = function (url, resolution) {
+                if (typeof resolution !== 'string') {
+                    resolution = this._getResolution(resolution);
+                }
                 if (this.game.cache.checkImageKey(url)) {
                     return url;
                 }
-                return this.game.load.atlasJSONHash(url, this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + this._resolution + '.png'), this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + this._resolution + '.json'));
+                return this.game.load.atlasJSONHash(url, this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + resolution + '.png'), this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + resolution + '.json'));
             };
-            AssetManager.prototype.loadImage = function (url) {
+            AssetManager.prototype.loadImage = function (url, resolution) {
+                if (typeof resolution !== 'string') {
+                    resolution = this._getResolution(resolution);
+                }
                 var key = this._getAssetKey(url);
                 if (this.game.cache.checkImageKey(key)) {
                     return key;
                 }
-                url = key + this._resolution + '.' + this._getExtension(url);
+                url = key + resolution + '.' + this._getExtension(url);
                 return this.game.load.image(key, this._getCacheBustedUrl(this._imgPath + '/' + url));
             };
-            AssetManager.prototype.loadBitmapFont = function (url) {
-                this.game.load.bitmapFont(url, this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + this._resolution + '.png'), this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + this._resolution + '.json'));
+            AssetManager.prototype.loadBitmapFont = function (url, resolution) {
+                if (typeof resolution !== 'string') {
+                    resolution = this._getResolution(resolution);
+                }
+                this.game.load.bitmapFont(url, this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + resolution + '.png'), this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + resolution + '.json'));
             };
             AssetManager.prototype.loadAudio = function (url, exts, isAudioSprite) {
                 var type, path;
@@ -415,11 +445,18 @@ var dijon;
                 configurable: true
             });
             Object.defineProperty(AssetManager.prototype, "resolution", {
+                get: function () {
+                    return this._res;
+                },
                 set: function (res) {
                     if (res === undefined) {
                         res = this.game.resolution;
                     }
+                    this._res = res;
                     this._resolution = '';
+                    if (this._res > 1.5) {
+                        this._resolution = AssetManager.RESOLUTION_2X;
+                    }
                 },
                 enumerable: true,
                 configurable: true
@@ -1026,6 +1063,13 @@ var dijon;
                 delete this._components[componentName];
                 this._updateComponentKeys();
             };
+            Object.defineProperty(Sprite.prototype, "resolution", {
+                get: function () {
+                    return this.texture.baseTexture.resolution;
+                },
+                enumerable: true,
+                configurable: true
+            });
             return Sprite;
         })(Phaser.Sprite);
         display.Sprite = Sprite;

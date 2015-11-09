@@ -25,6 +25,7 @@ declare module dijon.core {
         required?: boolean;
         id?: string;
         key?: string;
+        resolution: number;
     }
     interface IAssetList {
         autoload: boolean;
@@ -63,6 +64,7 @@ declare module dijon.core {
         private _audioSpritePath;
         private _soundPath;
         private _soundDecodingModifier;
+        private _res;
         private _resolution;
         private _loadData;
         private _autoLoadData;
@@ -107,19 +109,21 @@ declare module dijon.core {
         private _gameLoadStart();
         private _gameFileStart();
         private _gameFileComplete(progress, id?, fileIndex?, totalFiles?);
+        private _setBaseTextureResolution(texture);
         private _gameLoadComplete();
         private _checkSoundDecoding(eventToDispatch);
         private _onSoundDecoded(sound);
         private _getAssetKey(fileName);
         private _getExtension(fileName);
+        private _getResolution(res);
         private _loadAsset(asset);
         private _parseData();
         private _getCacheBustedUrl(url);
         loadText(url: string): Phaser.Loader;
         loadJSON(key: string): Phaser.Loader;
-        loadAtlas(url: string): Phaser.Loader | string;
-        loadImage(url: string): Phaser.Loader | string;
-        loadBitmapFont(url: string): void;
+        loadAtlas(url: string, resolution?: any): Phaser.Loader | string;
+        loadImage(url: string, resolution?: any): Phaser.Loader | string;
+        loadBitmapFont(url: string, resolution?: any): void;
         loadAudio(url: string, exts: any, isAudioSprite: boolean): void;
         loadSound(url: string, exts: any): void;
         loadAudioSprite(url: string, exts: any): void;
@@ -275,6 +279,7 @@ declare module dijon.display {
         updateComponent(componentName: string): void;
         removeAllComponents(): void;
         removeComponent(componentName: string): void;
+        resolution: number;
     }
 }
 declare module dijon.display {

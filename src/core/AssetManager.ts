@@ -254,12 +254,16 @@ module dijon.core {
         * @private
         */
         private _gameFileComplete(progress: number, id?: string, fileIndex?: number, totalFiles?: number) {
-            var texture = <PIXI.BaseTexture>this.game.cache.getBaseTexture(id, Phaser.Cache.TEXTURE_ATLAS);
-            if (texture.source.src.indexOf('@' + this.resolution + 'x') >= 0) { 
-                texture.resolution = this.resolution;
-            }
+            this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
+            
             this.onFileComplete.dispatch(this.getLoadProgress(progress), id, fileIndex, totalFiles);
         }
+        
+        private _setBaseTextureResolution(texture: PIXI.BaseTexture): void { 
+            if(texture && texture.source.src.indexOf('@' + this.resolution + 'x') >= 0) { 
+                texture.resolution = this.resolution;
+            }
+        };
     
         /**
         * when the background load completes - dispatches the onLoadComplete signal, starts checking for decoded sounds
