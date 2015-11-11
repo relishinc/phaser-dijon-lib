@@ -1633,6 +1633,7 @@ var dijon;
                 this.uiLayer.fixedToCamera = true;
                 this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
             };
+            ;
             Game.prototype.addStats = function () {
                 this.stats = new Stats();
                 this.stats.setMode(0);
@@ -1641,6 +1642,7 @@ var dijon;
                 this.stats.domElement.style.left = '0px';
                 this.canvas.parentElement.appendChild(this.stats.domElement);
             };
+            ;
             Game.prototype.disableElementInput = function (el) {
                 if (el.input && el.input.enabled === true) {
                     el.wasEnabled = true;
@@ -1697,10 +1699,23 @@ var dijon;
                 this.onWorldInputEnabled.dispatch();
             };
             ;
+            Game.prototype.beginStats = function () {
+                if (!this.stats)
+                    return;
+                this.stats.begin();
+            };
+            ;
+            Game.prototype.endStats = function () {
+                if (!this.stats)
+                    return;
+                this.stats.end();
+            };
+            ;
             Game.prototype.changeState = function (toState) {
                 this.gameLayer.removeAll(true, true);
                 return this.state.start(toState, false, false);
             };
+            ;
             Object.defineProperty(Game.prototype, "addToGame", {
                 get: function () {
                     this.add.defaultGroup = this.gameLayer;
@@ -1709,6 +1724,7 @@ var dijon;
                 enumerable: true,
                 configurable: true
             });
+            ;
             Object.defineProperty(Game.prototype, "addToUI", {
                 get: function () {
                     this.add.defaultGroup = this.uiLayer;
@@ -1717,6 +1733,7 @@ var dijon;
                 enumerable: true,
                 configurable: true
             });
+            ;
             Object.defineProperty(Game.prototype, "addToStage", {
                 get: function () {
                     this.add.defaultGroup = this.stageLayer;
@@ -1725,6 +1742,7 @@ var dijon;
                 enumerable: true,
                 configurable: true
             });
+            ;
             return Game;
         })(Phaser.Game);
         core.Game = Game;

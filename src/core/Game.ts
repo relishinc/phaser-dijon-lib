@@ -79,19 +79,16 @@ module dijon.core {
 			
 			// add a group to the Phaser.Stage (just in case)
 			this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
-		}
+		};
 		
 		protected addStats(): void { 
 			this.stats = new Stats();
-			
 			this.stats.setMode(0);
-			
 			this.stats.domElement.style.position = 'absolute';
 			this.stats.domElement.style.top = '0px';
 			this.stats.domElement.style.left = '0px';
-			
 			this.canvas.parentElement.appendChild(this.stats.domElement);
-		}
+		};
 		
 		// public methods
 		public disableElementInput(el: any): any {
@@ -148,6 +145,18 @@ module dijon.core {
 			this.onWorldInputEnabled.dispatch();
 		};
 		
+		public beginStats(): void { 
+			if (!this.stats)
+				return;
+			this.stats.begin();
+		};
+		
+		public endStats(): void { 
+			if (!this.stats)
+				return;
+			this.stats.end();
+		};
+		
 		/**
 		 * removes all items from the game layer
 		 * but allows the ui layer to persist
@@ -158,7 +167,7 @@ module dijon.core {
 		public changeState(toState: string): void {
 			this.gameLayer.removeAll(true, true);
 			return this.state.start(toState, false, false);
-		}
+		};
 				
 		// getter / setter
 		/**
@@ -170,7 +179,7 @@ module dijon.core {
 		public get addToGame(): core.GameObjectFactory {
 			this.add.defaultGroup = this.gameLayer;
 			return this.add;
-		}
+		};
 		
 		/**
 		 * sets the default group for the gameObjectFactory to uiLayer before adding 
@@ -182,12 +191,12 @@ module dijon.core {
 			// set the default group for the gameObjectFactory before adding
 			this.add.defaultGroup = this.uiLayer;
 			return this.add;
-		}
+		};
 
 		public get addToStage(): core.GameObjectFactory {
 			// set the default group for the gameObjectFactory before adding
 			this.add.defaultGroup = this.stageLayer;
 			return this.add;
-		}
+		};
 	}
 }

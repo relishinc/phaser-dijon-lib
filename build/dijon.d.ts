@@ -394,6 +394,8 @@ declare module dijon.core {
         enableInput(group: Phaser.Group): any;
         disableGameInput(): void;
         enableGameInput(): void;
+        beginStats(): void;
+        endStats(): void;
         changeState(toState: string): void;
         addToGame: core.GameObjectFactory;
         addToUI: core.GameObjectFactory;
