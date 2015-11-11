@@ -11,8 +11,10 @@
 module dijon.core {
 	export class Game extends Phaser.Game {
 		// public variables
+		
 		// application
 		public app: mvc.Application;
+		public config: interfaces.IGameConfig;
 		
 		// managers
 		public asset: AssetManager;
@@ -31,6 +33,10 @@ module dijon.core {
 		public gameLayer: dijon.display.Group;
 		public uiLayer: dijon.display.Group;
 		public stageLayer: dijon.display.Group;
+		
+		// stats (fps debug) requires stats.min.js to be loaded
+		// https://github.com/mrdoob/stats.js
+		public stats: Stats;
 		
 		// Phaser.Game overrides
 		constructor(config: interfaces.IGameConfig) {
@@ -53,7 +59,12 @@ module dijon.core {
 			// replace Phaser.GameObjectFactory
 			this.add = null;
 			this.add = new GameObjectFactory(this);
-
+			
+			// add stats js
+			if (this.config.stats === true) { 
+				this.addStats();
+			}
+			
 			this.addLayers();
 		}
 		
@@ -68,6 +79,18 @@ module dijon.core {
 			
 			// add a group to the Phaser.Stage (just in case)
 			this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
+		}
+		
+		protected addStats(): void { 
+			this.stats = new Stats();
+			
+			this.stats.setMode(0);
+			
+			this.stats.domElement.style.position = 'absolute';
+			this.stats.domElement.style.top = '0px';
+			this.stats.domElement.style.left = '0px';
+			
+			this.canvas.parentElement.appendChild(this.stats.domElement);
 		}
 		
 		// public methods

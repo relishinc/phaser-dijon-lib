@@ -364,11 +364,13 @@ declare module dijon.core {
 declare module dijon.interfaces {
     interface IGameConfig extends Phaser.IGameConfig {
         resolution?: number;
+        stats?: boolean;
     }
 }
 declare module dijon.core {
     class Game extends Phaser.Game {
         app: mvc.Application;
+        config: interfaces.IGameConfig;
         asset: AssetManager;
         sequence: SequenceManager;
         transition: TransitionManager;
@@ -381,9 +383,11 @@ declare module dijon.core {
         gameLayer: dijon.display.Group;
         uiLayer: dijon.display.Group;
         stageLayer: dijon.display.Group;
+        stats: Stats;
         constructor(config: interfaces.IGameConfig);
         boot(): void;
         protected addLayers(): void;
+        protected addStats(): void;
         disableElementInput(el: any): any;
         enableElementInput(el: any): any;
         disableInput(group: Phaser.Group): any;

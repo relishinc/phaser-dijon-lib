@@ -3,5 +3,6 @@
 module dijon.interfaces {
 	export interface IGameConfig extends Phaser.IGameConfig {
 		resolution?: number;
+		stats?: boolean;
 	}
 }

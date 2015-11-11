@@ -1622,6 +1622,9 @@ var dijon;
                 this.analytics = new core.AnalyticsManager();
                 this.add = null;
                 this.add = new core.GameObjectFactory(this);
+                if (this.config.stats === true) {
+                    this.addStats();
+                }
                 this.addLayers();
             };
             Game.prototype.addLayers = function () {
@@ -1629,6 +1632,14 @@ var dijon;
                 this.uiLayer = this.add.dGroup(0, 0, '_ui_layer');
                 this.uiLayer.fixedToCamera = true;
                 this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
+            };
+            Game.prototype.addStats = function () {
+                this.stats = new Stats();
+                this.stats.setMode(0);
+                this.stats.domElement.style.position = 'absolute';
+                this.stats.domElement.style.top = '0px';
+                this.stats.domElement.style.left = '0px';
+                this.canvas.parentElement.appendChild(this.stats.domElement);
             };
             Game.prototype.disableElementInput = function (el) {
                 if (el.input && el.input.enabled === true) {
