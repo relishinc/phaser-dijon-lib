@@ -1635,12 +1635,17 @@ var dijon;
             };
             ;
             Game.prototype.addStats = function () {
-                this.stats = new Stats();
-                this.stats.setMode(0);
-                this.stats.domElement.style.position = 'absolute';
-                this.stats.domElement.style.top = '0px';
-                this.stats.domElement.style.left = '0px';
-                this.canvas.parentElement.appendChild(this.stats.domElement);
+                try {
+                    this.stats = new Stats();
+                    this.stats.setMode(0);
+                    this.stats.domElement.style.position = 'absolute';
+                    this.stats.domElement.style.top = '0px';
+                    this.stats.domElement.style.left = '0px';
+                    this.canvas.parentElement.appendChild(this.stats.domElement);
+                }
+                catch (e) {
+                    console.log("Couldn't enable stats");
+                }
             };
             ;
             Game.prototype.disableElementInput = function (el) {

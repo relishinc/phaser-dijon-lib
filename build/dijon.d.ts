@@ -344,7 +344,7 @@ declare module dijon.core {
         protected _defaultGroup: Phaser.Group;
         existing(object: any): any;
         image(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, group?: Phaser.Group): Phaser.Image;
-        sprite(x?: number, y?: number, key?: string, frame?: string | number, group?: Phaser.Group): Phaser.Sprite;
+        sprite(x?: number, y?: number, key?: string | PIXI.Texture, frame?: string | number, group?: Phaser.Group): Phaser.Sprite;
         creature(x?: number, y?: number, key?: string, mesh?: any, group?: Phaser.Group): any;
         group(parent?: any, name?: string, addToStage?: boolean, enableBody?: boolean, physicsBodyType?: number): Phaser.Group;
         physicsGroup(physicsBodyType?: number, parent?: any, name?: string, addToStage?: boolean): Phaser.Group;
@@ -383,7 +383,7 @@ declare module dijon.core {
         gameLayer: dijon.display.Group;
         uiLayer: dijon.display.Group;
         stageLayer: dijon.display.Group;
-        stats: Stats;
+        stats: Stats | any;
         constructor(config: interfaces.IGameConfig);
         boot(): void;
         protected addLayers(): void;

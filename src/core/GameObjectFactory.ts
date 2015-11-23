@@ -58,7 +58,7 @@ module dijon.core {
 		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
 		* @returns {Phaser.Sprite} The newly created Sprite object.
 		*/
-		public sprite(x: number = 0, y: number = 0, key?: string, frame?: string|number, group?: Phaser.Group): Phaser.Sprite {
+		public sprite(x: number = 0, y: number = 0, key?: string | PIXI.Texture, frame?: string|number, group?: Phaser.Group): Phaser.Sprite {
 			if (group === undefined) { group = this.defaultGroup; }
 			this.defaultGroup = null;
 

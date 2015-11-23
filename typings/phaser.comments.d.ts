@@ -8705,7 +8705,7 @@ declare module Phaser {
         * @param exists The default exists state of the Sprite. - Default: true
         * @return The child that was created: will be a {@link Phaser.Sprite} unless {@link #classType} has been changed.
         */
-        create(x: number, y: number, key: string, frame?: any, exists?: boolean): any;
+        create(x: number, y: number, key: string| PIXI.Texture, frame?: any, exists?: boolean): any;
 
         /**
         * Creates multiple Phaser.Sprite objects and adds them to the top of this group.

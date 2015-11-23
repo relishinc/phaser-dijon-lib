@@ -36,7 +36,7 @@ module dijon.core {
 		
 		// stats (fps debug) requires stats.min.js to be loaded
 		// https://github.com/mrdoob/stats.js
-		public stats: Stats;
+		public stats: Stats | any;
 		
 		// Phaser.Game overrides
 		constructor(config: interfaces.IGameConfig) {
@@ -82,12 +82,17 @@ module dijon.core {
 		};
 		
 		protected addStats(): void { 
-			this.stats = new Stats();
-			this.stats.setMode(0);
-			this.stats.domElement.style.position = 'absolute';
-			this.stats.domElement.style.top = '0px';
-			this.stats.domElement.style.left = '0px';
-			this.canvas.parentElement.appendChild(this.stats.domElement);
+			try {
+				this.stats = new Stats();
+				this.stats.setMode(0);
+				this.stats.domElement.style.position = 'absolute';
+				this.stats.domElement.style.top = '0px';
+				this.stats.domElement.style.left = '0px';
+				this.canvas.parentElement.appendChild(this.stats.domElement);
+			} catch (e) { 
+				console.log("Couldn't enable stats")
+			}
+			
 		};
 		
 		// public methods
