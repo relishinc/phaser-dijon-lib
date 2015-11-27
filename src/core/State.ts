@@ -99,7 +99,7 @@ module dijon.core {
         public get buildInterval(): number {
             return 10;
         }
-
+        
         public get add(): core.GameObjectFactory {
             return this.game.addToGame;
         }

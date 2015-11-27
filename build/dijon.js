@@ -1113,17 +1113,23 @@ var dijon;
                     this.position.set(Math.round(this.x), Math.round(this.y));
                 };
                 this.text = text.replace(/'/g, "\'");
-                this.resolution = this.game.resolution;
+                this.setResolution();
             }
             Text.prototype.setText = function (text) {
                 _super.prototype.setText.call(this, text);
                 this._lowercaseText = this.text.toLowerCase();
-                if (this.game) {
-                    this.resolution = this.game.resolution;
-                }
+                this.setResolution();
                 return this;
             };
             ;
+            Text.prototype.setResolution = function () {
+                if (!this.game || !this.game.device.cocoonJS) {
+                    return;
+                }
+                else if (this.game.device.cocoonJS) {
+                    this.resolution = this.game.resolution * this.game.resolution;
+                }
+            };
             Text.prototype._startTextAnimation = function () {
                 this._canUpdate = true;
                 this._repeatTimer = this.game.time.events.repeat(this._letterTime * 100, this._textLength, this._updateTextAnimation, this);

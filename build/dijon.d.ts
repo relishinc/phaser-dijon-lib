@@ -302,6 +302,7 @@ declare module dijon.display {
         protected _textToAnimate: string[];
         constructor(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object);
         setText(text: string): Phaser.Text;
+        protected setResolution(): void;
         protected _startTextAnimation(): void;
         protected _updateTextAnimation(): boolean;
         setColor(color: string): void;

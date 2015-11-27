@@ -38,7 +38,7 @@ module dijon.display {
 				);
 
 			this.text = text.replace(/'/g, "\'");
-			this.resolution = this.game.resolution;
+			this.setResolution();
 		}
 		
 		// Phaser.Text overrides
@@ -46,13 +46,20 @@ module dijon.display {
 			super.setText(text);
 
 			this._lowercaseText = this.text.toLowerCase();
-
-			if (this.game) {
-				this.resolution = this.game.resolution;
-			}
+			this.setResolution();
 
 			return this;
 		};
+		
+		protected setResolution(): void { 
+			if (!this.game || !this.game.device.cocoonJS) { 
+				return;
+			}
+			else if (this.game.device.cocoonJS) {
+				// fix for fonts looking really blurry in cocoonJS
+				this.resolution = this.game.resolution * this.game.resolution;
+			}
+		}
 		
 		// private methods		
 		/**
