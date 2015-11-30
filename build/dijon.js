@@ -87,6 +87,9 @@ var dijon;
                 this.onBackgroundLoadStart.dispatch();
             };
             AssetManager.prototype._backgroundFileComplete = function (progress, id, fileIndex, totalFiles) {
+                if (this.game.cache.checkKey(Phaser.Cache.IMAGE, id)) {
+                    this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
+                }
                 this.onBackgroundFileComplete.dispatch(progress, id, fileIndex, totalFiles);
             };
             AssetManager.prototype._backgroundLoadComplete = function () {
@@ -101,7 +104,9 @@ var dijon;
                 this.onFileStart.dispatch();
             };
             AssetManager.prototype._gameFileComplete = function (progress, id, fileIndex, totalFiles) {
-                this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
+                if (this.game.cache.checkKey(Phaser.Cache.IMAGE, id)) {
+                    this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
+                }
                 this.onFileComplete.dispatch(this.getLoadProgress(progress), id, fileIndex, totalFiles);
             };
             AssetManager.prototype._setBaseTextureResolution = function (texture) {
@@ -175,6 +180,7 @@ var dijon;
                 switch (type) {
                     case AssetManager.ASSET_LIST:
                         return this._loadAssets(asset.id);
+                        break;
                     case AssetManager.SOUND:
                         this.loadSound(url, asset.extensions);
                         break;
@@ -286,7 +292,6 @@ var dijon;
                 this._currentAssetList = id;
                 this.game.load.onFileComplete.remove(this._backgroundFileComplete, this);
                 this.game.load.onFileComplete.remove(this._gameFileComplete, this);
-                this.game.load.reset();
                 this._hasFiles = false;
                 this._soundsToDecode = [];
                 if (typeof this._data === 'undefined') {
@@ -317,7 +322,9 @@ var dijon;
                 this._numSounds = this._soundsToDecode.length;
                 this._soundsDecoded = 0;
                 this._maxPercent = 100 - (this._numSounds * this.soundDecodingModifier);
-                return this.game.load.start();
+                if (background) {
+                    this.game.load.start();
+                }
             };
             AssetManager.prototype.loadQueue = function () {
                 if (this._isLoadingQueue) {

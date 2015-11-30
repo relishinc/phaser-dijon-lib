@@ -213,6 +213,9 @@ module dijon.core {
         * @private
         */
         private _backgroundFileComplete(progress: number, id: string, fileIndex: number, totalFiles: number) {
+            if (this.game.cache.checkKey(Phaser.Cache.IMAGE, id)) {
+                this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
+            }
             this.onBackgroundFileComplete.dispatch(progress, id, fileIndex, totalFiles);
         }
     
@@ -254,8 +257,9 @@ module dijon.core {
         * @private
         */
         private _gameFileComplete(progress: number, id?: string, fileIndex?: number, totalFiles?: number) {
-            this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
-            
+            if (this.game.cache.checkKey(Phaser.Cache.IMAGE, id)) {
+                this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
+            }
             this.onFileComplete.dispatch(this.getLoadProgress(progress), id, fileIndex, totalFiles);
         }
         
@@ -389,6 +393,7 @@ module dijon.core {
             switch (type) {
                 case AssetManager.ASSET_LIST:
                     return this._loadAssets(asset.id);
+                    break;
                 case AssetManager.SOUND:
                     this.loadSound(url, asset.extensions);
                     break;
@@ -448,7 +453,6 @@ module dijon.core {
             if (this.game.cache.checkImageKey(url)) {
                 return url;
             }
-
             return this.game.load.atlasJSONHash(url, this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + resolution + '.png'), this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + resolution + '.json'));
         }
 
@@ -529,7 +533,6 @@ module dijon.core {
             this.game.load.onFileComplete.remove(this._backgroundFileComplete, this);
             this.game.load.onFileComplete.remove(this._gameFileComplete, this);
 
-            this.game.load.reset();
             this._hasFiles = false;
             this._soundsToDecode = [];
 
@@ -543,7 +546,7 @@ module dijon.core {
 
             this._loadAssets(id);
             this._hasFiles = this.game.load.totalQueuedFiles() > 0;
-
+                
             if (background) {
                 this.game.load.onLoadStart.addOnce(this._backgroundLoadStart, this);
                 this.game.load.onFileComplete.add(this._backgroundFileComplete, this);
@@ -565,8 +568,10 @@ module dijon.core {
             this._numSounds = this._soundsToDecode.length;
             this._soundsDecoded = 0;
             this._maxPercent = 100 - (this._numSounds * this.soundDecodingModifier);
-
-            return this.game.load.start();
+            
+            if (background) { 
+                this.game.load.start();
+            }
         }
 
         public loadQueue() {
