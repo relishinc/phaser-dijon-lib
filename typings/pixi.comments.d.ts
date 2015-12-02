@@ -1,7 +1,8 @@
 // Type definitions for PIXI with Phaser Deviations. 
 
 declare module PIXI {
-
+    export var Float32Array: any;
+    export var Uint32Array: any;
     export var WEBGL_RENDERER: number;
     export var CANVAS_RENDERER: number;
     export var VERSION: string;
@@ -2234,6 +2235,7 @@ declare module PIXI {
         * @return the framing rectangle
         */
         getBounds(matrix?: Matrix): Rectangle;
+        drawMode: number;
 
     }
 
