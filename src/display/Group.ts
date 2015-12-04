@@ -36,6 +36,7 @@ module dijon.display {
 		* @override
 		*/
 		public update(): void {
+			Phaser.Group.prototype.update.apply(this); 
 			if (this._hasComponents)
 				this.updateComponents();
 		}

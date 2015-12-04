@@ -1250,6 +1250,7 @@ var dijon;
                     this.addComponents(components);
             }
             Group.prototype.update = function () {
+                Phaser.Group.prototype.update.apply(this);
                 if (this._hasComponents)
                     this.updateComponents();
             };
