@@ -10,8 +10,10 @@ module dijon.mvc {
 		protected static instance = null;
 		protected static SINGLETON_MSG = 'Application singleton already constructed!';
 		
+		// public 
 		public game: core.Game;
 
+		// protected        
 		protected _mediator: mvc.Mediator = null;
 		protected _models: { [name: string]: Model } = {};
 		protected _mediators: { [name: string]: Mediator } = {};
@@ -24,8 +26,9 @@ module dijon.mvc {
 			Application.instance = this;
 
 			this.initializeApplication();
-		}
-
+		};
+		
+		// public methods
 		public initializeApplication() {
 			this.game = new dijon.core.Game({
 				width: 800,
@@ -34,23 +37,23 @@ module dijon.mvc {
 				renderer: Phaser.AUTO,
 				transparent: false
 			});
-		}
-
+		};
+		
 		public registerModel(model: Model): Model {
 			if (this._models[model.name]) {
 				throw (new Error('Application:: a model with the name "' + model.name + '" already exists.'));
 			}
 			this._models[model.name] = model;
 			return model;
-		}
+		};
 
 		public retrieveModel(modelName: string): Model {
 			return this._models[modelName] || null;
-		}
+		};
 
 		public removeModel(modelToRemove: Model): void {
 			delete this._models[modelToRemove.name];
-		}
+		};
 
 		public registerMediator(mediator: Mediator): void {
 			if (this._mediators[mediator.name]) {
@@ -61,11 +64,11 @@ module dijon.mvc {
 			this.registerObserver(mediator);
 
 			mediator.onRegister();
-		}
+		};
 
 		public retrieveMediator(mediatorName: string): Mediator {
 			return this._mediators[mediatorName] || null;
-		}
+		};
 
 		public removeMediator(mediatorToRemove: Mediator): void {
 			let name = mediatorToRemove.name;
@@ -77,7 +80,7 @@ module dijon.mvc {
 
 			mediator.onRemoved();
 			delete this._mediators[name];
-		}
+		};
 
 		public registerObserver(observer: interfaces.IObserver): void {
 			observer.listNotificationInterests().forEach(notificationName => {
@@ -86,7 +89,7 @@ module dijon.mvc {
 				}
 				this._observerMap[notificationName].push(observer);
 			});
-		}
+		};
 
 		/**
 		 * stops an observer from being interested in a notification
@@ -119,7 +122,7 @@ module dijon.mvc {
 			if (observers.length == 0) {
 				delete this._observerMap[notificationName];
 			}
-		}
+		};
 
 		public sendNotification(notificationName: string, notficationBody?: any): void {
 			let notification = new Notification(notificationName, notficationBody);
@@ -127,8 +130,10 @@ module dijon.mvc {
 
 			notification.destroy();
 			notification = null;
-		}
-
+		};
+		
+		// private methods
+		
 		private _notifyObservers(notification: interfaces.INotification) {
 			let observer: interfaces.IObserver = null,
 				observers: interfaces.IObserver[] = null;
@@ -143,13 +148,13 @@ module dijon.mvc {
 					observer.handleNotification(notification);
 				});
 			}
-		}
+		};
 
 		public static getInstance(): Application {
 			if (!Application.instance)
 				Application.instance = new Application();
 
 			return Application.instance;
-		}
+		};
 	}
 }
