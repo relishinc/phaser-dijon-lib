@@ -1936,6 +1936,7 @@ var dijon;
                 Application.instance = this;
                 this.initializeApplication();
             }
+            ;
             Application.prototype.initializeApplication = function () {
                 this.game = new dijon.core.Game({
                     width: 800,
@@ -1945,6 +1946,7 @@ var dijon;
                     transparent: false
                 });
             };
+            ;
             Application.prototype.registerModel = function (model) {
                 if (this._models[model.name]) {
                     throw (new Error('Application:: a model with the name "' + model.name + '" already exists.'));
@@ -1952,12 +1954,15 @@ var dijon;
                 this._models[model.name] = model;
                 return model;
             };
+            ;
             Application.prototype.retrieveModel = function (modelName) {
                 return this._models[modelName] || null;
             };
+            ;
             Application.prototype.removeModel = function (modelToRemove) {
                 delete this._models[modelToRemove.name];
             };
+            ;
             Application.prototype.registerMediator = function (mediator) {
                 if (this._mediators[mediator.name]) {
                     throw (new Error('Application:: a mediator with the name "' + mediator.name + '" already exists.'));
@@ -1966,9 +1971,11 @@ var dijon;
                 this.registerObserver(mediator);
                 mediator.onRegister();
             };
+            ;
             Application.prototype.retrieveMediator = function (mediatorName) {
                 return this._mediators[mediatorName] || null;
             };
+            ;
             Application.prototype.removeMediator = function (mediatorToRemove) {
                 var _this = this;
                 var name = mediatorToRemove.name;
@@ -1979,6 +1986,7 @@ var dijon;
                 mediator.onRemoved();
                 delete this._mediators[name];
             };
+            ;
             Application.prototype.registerObserver = function (observer) {
                 var _this = this;
                 observer.listNotificationInterests().forEach(function (notificationName) {
@@ -1988,6 +1996,7 @@ var dijon;
                     _this._observerMap[notificationName].push(observer);
                 });
             };
+            ;
             Application.prototype.removeObserver = function (notificationName, observerToRemove) {
                 var observers = null, observer = null, i = 0;
                 observers = this._observerMap[notificationName];
@@ -2003,12 +2012,14 @@ var dijon;
                     delete this._observerMap[notificationName];
                 }
             };
+            ;
             Application.prototype.sendNotification = function (notificationName, notficationBody) {
                 var notification = new mvc.Notification(notificationName, notficationBody);
                 this._notifyObservers(notification);
                 notification.destroy();
                 notification = null;
             };
+            ;
             Application.prototype._notifyObservers = function (notification) {
                 var observer = null, observers = null;
                 var notificationName = notification.getName();
@@ -2020,11 +2031,13 @@ var dijon;
                     });
                 }
             };
+            ;
             Application.getInstance = function () {
                 if (!Application.instance)
                     Application.instance = new Application();
                 return Application.instance;
             };
+            ;
             Application.instance = null;
             Application.SINGLETON_MSG = 'Application singleton already constructed!';
             return Application;
@@ -2061,6 +2074,11 @@ var dijon;
                 else {
                     this.ga('send', 'event', this.category, action);
                 }
+            };
+            AnalyticsManager.prototype.trackOmnitureEvent = function (gameName, activity, isGameEvent) {
+                if (typeof window['trackFlashEvent'] === 'undefined')
+                    return false;
+                window['trackFlashEvent'](gameName, activity, isGameEvent);
             };
             Object.defineProperty(AnalyticsManager.prototype, "active", {
                 get: function () {

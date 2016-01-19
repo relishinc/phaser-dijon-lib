@@ -493,6 +493,7 @@ declare module dijon.core {
         category: string;
         constructor(category?: string);
         trackEvent(action?: string, label?: string, value?: string): void;
+        trackOmnitureEvent(gameName: string, activity: string, isGameEvent: boolean): boolean;
         active: boolean;
         ga: Function;
     }
