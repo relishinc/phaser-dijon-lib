@@ -528,6 +528,17 @@ declare module dijon.core {
         game: core.Game;
     }
 }
+declare module dijon.display {
+    class InvisibleButton extends dijon.display.Sprite {
+        private _hitWidth;
+        private _hitHeight;
+        constructor(x?: number, y?: number, name?: string, w?: number, h?: number);
+        init(): void;
+        buildInterface(): void;
+        private _addHitRect();
+        setSize(w: any, h: any): void;
+    }
+}
 declare module dijon.mvc {
     class CopyModel extends Model {
         static MODEL_NAME: string;

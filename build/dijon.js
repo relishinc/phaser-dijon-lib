@@ -2226,6 +2226,40 @@ var dijon;
         core.State = State;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
+var dijon;
+(function (dijon) {
+    var display;
+    (function (display) {
+        var InvisibleButton = (function (_super) {
+            __extends(InvisibleButton, _super);
+            function InvisibleButton(x, y, name, w, h) {
+                this.setSize(w, h);
+                _super.call(this, x, y, name);
+            }
+            InvisibleButton.prototype.init = function () {
+                this.inputEnabled = true;
+            };
+            ;
+            InvisibleButton.prototype.buildInterface = function () {
+                this._addHitRect();
+            };
+            ;
+            InvisibleButton.prototype._addHitRect = function () {
+                if (this._hitWidth > 0 && this._hitHeight > 0) {
+                    this.hitArea = new Phaser.Rectangle(0, 0, this._hitWidth, this._hitHeight);
+                }
+            };
+            ;
+            InvisibleButton.prototype.setSize = function (w, h) {
+                this._hitWidth = w || 0;
+                this._hitHeight = h || 0;
+                this._addHitRect();
+            };
+            return InvisibleButton;
+        })(dijon.display.Sprite);
+        display.InvisibleButton = InvisibleButton;
+    })(display = dijon.display || (dijon.display = {}));
+})(dijon || (dijon = {}));
 /// <reference path="../core/Game" />
 /// <reference path="./Application" />
 /// <reference path="./Model" />
