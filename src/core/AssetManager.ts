@@ -71,6 +71,7 @@ module dijon.core {
         private _hasFiles: boolean = false;
         private _soundsToDecode: Array<ISound> = [];
         private _isLoadingQueue: boolean = false;
+        private _fileCompleteProgress:number = 0;
         private _maxPercent: number = 100;
 
         private _numSounds: number = 0;
@@ -216,6 +217,7 @@ module dijon.core {
             if (this.game.cache.checkKey(Phaser.Cache.IMAGE, id)) {
                 this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
             }
+            this._fileCompleteProgress = progress;
             this.onBackgroundFileComplete.dispatch(progress, id, fileIndex, totalFiles);
         }
     
@@ -260,7 +262,8 @@ module dijon.core {
             if (this.game.cache.checkKey(Phaser.Cache.IMAGE, id)) {
                 this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
             }
-            this.onFileComplete.dispatch(this.getLoadProgress(progress), id, fileIndex, totalFiles);
+            this._fileCompleteProgress = progress;
+            this.onFileComplete.dispatch(this.getLoadProgress(), id, fileIndex, totalFiles);
         }
         
         private _setBaseTextureResolution(texture: PIXI.BaseTexture): void { 
@@ -582,13 +585,16 @@ module dijon.core {
             if (typeof this._data === 'undefined') {
                 return console.log('no preload queue to load');
             }
-            var assets;
+            
+            let assets:any, 
+                state:string, 
+                i:number;
 
-            for (var state in this._data) {
+            for (state in this._data) {
                 if (this._autoLoadData[state]) {
 
                     assets = this._data[state];
-                    for (var i = 0; i < assets.length; i++) {
+                    for (i = 0; i < assets.length; i++) {
                         this._loadAsset(assets[i]);
                     }
                 }
@@ -602,8 +608,8 @@ module dijon.core {
         }
 
 
-        public getLoadProgress(progress: number) {
-            var adjustedProgress = progress * this._maxPercent / 100;
+        public getLoadProgress() {
+            const adjustedProgress = this._fileCompleteProgress * this._maxPercent / 100;
             return adjustedProgress;
         }
 

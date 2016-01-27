@@ -1,4 +1,3 @@
-/// <reference path="./INotification" />
 var dijon;
 (function (dijon) {
     var utils;
@@ -13,10 +12,6 @@ var dijon;
         utils.Notifications = Notifications;
     })(utils = dijon.utils || (dijon.utils = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../mvc/Application" />
-/// <reference path="./Game" />
-/// <reference path="../interfaces/INotifier" />
-/// <reference path="../utils/Notifications" />
 var dijon;
 (function (dijon) {
     var core;
@@ -45,6 +40,7 @@ var dijon;
                 this._hasFiles = false;
                 this._soundsToDecode = [];
                 this._isLoadingQueue = false;
+                this._fileCompleteProgress = 0;
                 this._maxPercent = 100;
                 this._numSounds = 0;
                 this._soundsDecoded = 0;
@@ -90,6 +86,7 @@ var dijon;
                 if (this.game.cache.checkKey(Phaser.Cache.IMAGE, id)) {
                     this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
                 }
+                this._fileCompleteProgress = progress;
                 this.onBackgroundFileComplete.dispatch(progress, id, fileIndex, totalFiles);
             };
             AssetManager.prototype._backgroundLoadComplete = function () {
@@ -107,7 +104,8 @@ var dijon;
                 if (this.game.cache.checkKey(Phaser.Cache.IMAGE, id)) {
                     this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
                 }
-                this.onFileComplete.dispatch(this.getLoadProgress(progress), id, fileIndex, totalFiles);
+                this._fileCompleteProgress = progress;
+                this.onFileComplete.dispatch(this.getLoadProgress(), id, fileIndex, totalFiles);
             };
             AssetManager.prototype._setBaseTextureResolution = function (texture) {
                 if (texture && texture.source.src.indexOf('@' + this.resolution + 'x') >= 0) {
@@ -333,11 +331,11 @@ var dijon;
                 if (typeof this._data === 'undefined') {
                     return console.log('no preload queue to load');
                 }
-                var assets;
-                for (var state in this._data) {
+                var assets, state, i;
+                for (state in this._data) {
                     if (this._autoLoadData[state]) {
                         assets = this._data[state];
-                        for (var i = 0; i < assets.length; i++) {
+                        for (i = 0; i < assets.length; i++) {
                             this._loadAsset(assets[i]);
                         }
                     }
@@ -348,8 +346,8 @@ var dijon;
                 this.game.load.onFileComplete.add(this._backgroundFileComplete, this);
                 this.game.load.onLoadComplete.addOnce(this._backgroundLoadComplete, this);
             };
-            AssetManager.prototype.getLoadProgress = function (progress) {
-                var adjustedProgress = progress * this._maxPercent / 100;
+            AssetManager.prototype.getLoadProgress = function () {
+                var adjustedProgress = this._fileCompleteProgress * this._maxPercent / 100;
                 return adjustedProgress;
             };
             AssetManager.prototype.allSoundsDecoded = function () {
@@ -503,8 +501,6 @@ var dijon;
         core.AssetManager = AssetManager;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../mvc/Application" />
-/// <reference path="./Game" />
 var dijon;
 (function (dijon) {
     var core;
@@ -546,16 +542,6 @@ var dijon;
         core.SequenceManager = SequenceManager;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../lib.d.ts" />
-/// <reference path="../lib.d.ts" />
-/// <reference path="./ITransitionHandler" />
-/// <reference path="./ITransitionHandler" />
-/// <reference path="./IPreloadHandler" />
-/// <reference path="../mvc/Application" />
-/// <reference path="./Game" />
-/// <reference path="../interfaces/ITransition" />
-/// <reference path="../interfaces/ITransitionHandler" />
-/// <reference path="../interfaces/IPreloadHandler" />
 var dijon;
 (function (dijon) {
     var core;
@@ -685,8 +671,6 @@ var dijon;
         core.TransitionManager = TransitionManager;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../mvc/Application" />
-/// <reference path="./Game" />
 var dijon;
 (function (dijon) {
     var core;
@@ -761,8 +745,6 @@ var dijon;
         core.StorageManager = StorageManager;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../mvc/Application" />
-/// <reference path="./Game" />
 var dijon;
 (function (dijon) {
     var core;
@@ -969,8 +951,6 @@ var dijon;
         core.AudioManager = AudioManager;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../core/Game" />
-/// <reference path="../mvc/Application" />
 var dijon;
 (function (dijon) {
     var core;
@@ -992,9 +972,6 @@ var dijon;
         core.Component = Component;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../mvc/Application" />
-/// <reference path="../core/Game" />
-/// <reference path="../core/Component" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1020,10 +997,12 @@ var dijon;
                     while (components.length > 0)
                         this.addComponent(components.shift());
                 };
-                this.init();
-                this.buildInterface();
-                if (components)
-                    this.addComponents(components);
+                if (this.autoBuild) {
+                    this.init();
+                    this.buildInterface();
+                    if (components)
+                        this.addComponents(components);
+                }
             }
             Sprite.prototype.update = function () {
                 if (this._hasComponents)
@@ -1077,13 +1056,18 @@ var dijon;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(Sprite.prototype, "autoBuild", {
+                get: function () {
+                    return true;
+                },
+                enumerable: true,
+                configurable: true
+            });
             return Sprite;
         })(Phaser.Sprite);
         display.Sprite = Sprite;
     })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../core/Game" />
-/// <reference path="../mvc/Application" />
 var dijon;
 (function (dijon) {
     var display;
@@ -1213,10 +1197,6 @@ var dijon;
         display.Text = Text;
     })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../mvc/Application" />
-/// <reference path="../core/Game" />
-/// <reference path="../core/GameObjectFactory" />
-/// <reference path="../core/Component" />
 var dijon;
 (function (dijon) {
     var display;
@@ -1242,12 +1222,16 @@ var dijon;
                         this.addComponent(components.shift());
                 };
                 this.position.set(x, y);
-                this.init();
+                if (this.autoBuild) {
+                    this.init();
+                }
                 if (!addToStage)
                     this.game.add.existing(this);
-                this.buildInterface();
-                if (components)
-                    this.addComponents(components);
+                if (this.autoBuild) {
+                    this.buildInterface();
+                    if (components)
+                        this.addComponents(components);
+                }
             }
             Group.prototype.update = function () {
                 Phaser.Group.prototype.update.apply(this);
@@ -1311,15 +1295,18 @@ var dijon;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(Group.prototype, "autoBuild", {
+                get: function () {
+                    return true;
+                },
+                enumerable: true,
+                configurable: true
+            });
             return Group;
         })(Phaser.Group);
         display.Group = Group;
     })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../display/Sprite" />
-/// <reference path="../display/Text" />
-/// <reference path="../display/Group" />
-/// <reference path="./Component" />
 var dijon;
 (function (dijon) {
     var core;
@@ -1488,8 +1475,6 @@ var dijon;
         core.GameObjectFactory = GameObjectFactory;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../lib.d.ts" />
-/// <reference path="../lib.d.ts" />
 PIXI.DisplayObject.prototype.centerPivot = function () {
     this.pivot.set(this.width >> 1, this.height >> 1);
 };
@@ -1605,15 +1590,6 @@ Object.defineProperty(PIXI.DisplayObject.prototype, "scales", {
         this.scale.set(value, value);
     }
 });
-/// <reference path="./AssetManager" />
-/// <reference path="./SequenceManager" />
-/// <reference path="./TransitionManager" />
-/// <reference path="./StorageManager" />
-/// <reference path="./AudioManager" />
-/// <reference path="./AnalyticsManager" />
-/// <reference path="./GameObjectFactory" />
-/// <reference path="../interfaces/IGameConfig" />
-/// <reference path="../utils/addons.ts" />
 var dijon;
 (function (dijon) {
     var core;
@@ -1767,9 +1743,6 @@ var dijon;
         core.Game = Game;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/// <reference path="./Application" />
-/// <reference path="../core/Game" />
-/// <reference path="../interfaces/INotification" />
 var dijon;
 (function (dijon) {
     var mvc;
@@ -1800,12 +1773,6 @@ var dijon;
         mvc.Notification = Notification;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
 })(dijon || (dijon = {}));
-/// <reference path="./INotification" />
-/// <reference path="./Application" />
-/// <reference path="./Notification" />
-/// <reference path="../core/Game" />
-/// <reference path="../interfaces/IObserver" />
-/// <reference path="../interfaces/INotification" />
 var dijon;
 (function (dijon) {
     var mvc;
@@ -1868,8 +1835,6 @@ var dijon;
         mvc.Mediator = Mediator;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
 })(dijon || (dijon = {}));
-/// <reference path="./Application" />
-/// <reference path="../core/Game" />
 var dijon;
 (function (dijon) {
     var mvc;
@@ -1916,11 +1881,6 @@ var dijon;
         mvc.Model = Model;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
 })(dijon || (dijon = {}));
-/// <reference path="./Mediator" />
-/// <reference path="./Model" />
-/// <reference path="../interfaces/IObserver" />
-/// <reference path="../interfaces/INotifier" />
-/// <reference path="../core/Game" />
 var dijon;
 (function (dijon) {
     var mvc;
@@ -2045,8 +2005,6 @@ var dijon;
         mvc.Application = Application;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../mvc/Application" />
-/// <reference path="./Game" />
 var dijon;
 (function (dijon) {
     var core;
@@ -2107,9 +2065,6 @@ var dijon;
         core.AnalyticsException = AnalyticsException;
     })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../mvc/Application" />
-/// <reference path="../core/Game" />
-/// <reference path="../core/GameObjectFactory" />
 var dijon;
 (function (dijon) {
     var core;
@@ -2260,9 +2215,6 @@ var dijon;
         display.InvisibleButton = InvisibleButton;
     })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../core/Game" />
-/// <reference path="./Application" />
-/// <reference path="./Model" />
 var dijon;
 (function (dijon) {
     var mvc;

@@ -17,15 +17,19 @@ module dijon.display {
 			super(mvc.Application.getInstance().game, null, name, addToStage, enableBody, physicsBodyType);
 
 			this.position.set(x, y);
-			this.init();
+            if (this.autoBuild){
+                this.init();
+            }
 
 			if (!addToStage)
 				this.game.add.existing(this);
-
-			this.buildInterface();
-
-			if (components)
-				this.addComponents(components);
+            
+            if (this.autoBuild){
+                this.buildInterface();
+            
+                if (components)
+                    this.addComponents(components);
+            }
 		}
 		
 		// Phaser.Group overrides
@@ -166,5 +170,9 @@ module dijon.display {
 			this.game.add.defaultGroup = this;
 			return this.game.add;
 		}
+        
+        protected get autoBuild():boolean{
+            return true;
+        }
 	}
 }

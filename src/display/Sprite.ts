@@ -12,12 +12,14 @@ module dijon.display {
 
 		constructor(x?: number, y?: number, key?: string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, public name: string = "dSprite", components: core.Component[] = null) {
 			super(mvc.Application.getInstance().game, x, y, key, frame);
+            
+            if (this.autoBuild){
+                this.init();
+                this.buildInterface();
 
-			this.init();
-			this.buildInterface();
-
-			if (components)
-				this.addComponents(components);
+                if (components)
+                    this.addComponents(components);
+            }
 		}
 		// Phaser.Sprite overrides
 		/**
@@ -141,5 +143,9 @@ module dijon.display {
 		public get resolution(): number { 
 			return this.texture.baseTexture.resolution;
 		}
+        
+        protected get autoBuild():boolean{
+            return true;
+        }
 	}
 }

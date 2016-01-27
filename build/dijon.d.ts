@@ -74,6 +74,7 @@ declare module dijon.core {
         private _hasFiles;
         private _soundsToDecode;
         private _isLoadingQueue;
+        private _fileCompleteProgress;
         private _maxPercent;
         private _numSounds;
         private _soundsDecoded;
@@ -129,7 +130,7 @@ declare module dijon.core {
         loadAudioSprite(url: string, exts: any): void;
         loadAssets(id: string, background?: boolean): void;
         loadQueue(): void;
-        getLoadProgress(progress: number): number;
+        getLoadProgress(): number;
         allSoundsDecoded(): boolean;
         setData(data: Object): void;
         clearAssets(id: string, clearAudio?: boolean, clearAtlasses?: boolean, clearImages?: boolean, clearText?: boolean, clearJSON?: boolean): void;
@@ -280,6 +281,7 @@ declare module dijon.display {
         removeAllComponents(): void;
         removeComponent(componentName: string): void;
         resolution: number;
+        protected autoBuild: boolean;
     }
 }
 declare module dijon.display {
@@ -338,6 +340,7 @@ declare module dijon.display {
         removeComponent(componentName: string): void;
         removeMediator(): void;
         addInternal: core.GameObjectFactory;
+        protected autoBuild: boolean;
     }
 }
 declare module dijon.core {
