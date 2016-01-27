@@ -49,7 +49,6 @@ module dijon.core {
                 this.game.asset.onFileComplete.add(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
             }
 
-
             this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this._preloadComplete, this);
             this.onTransitionInComplete.dispatch();
 
@@ -180,21 +179,18 @@ module dijon.core {
                 this._transition.outHandler.transitionIn();
             }
         }
+
+        public canTransitionOut(): boolean {
+            return !this._exceptions[this.game.state.current] && this._transition && this._transition.inHandler && typeof this._transition.inHandler.transitionOut === 'function';
+        }
         
         /**
         * After the state is fully loaded and 'built' a call to this is made
         * this is currently made from BaseState in the 'afterBuild' method
         */
         public transitionOut() {
-            if (!this._transition)
-                return false;
-            if (this._exceptions[this.game.state.current])
-                return false;
-            if (typeof this._transition.inHandler.transitionOut === 'function') {
-                this._transition.inHandler.transitionOutComplete.addOnce(this._transitionOutComplete, this);
-                this._transition.inHandler.transitionOut();
-            }
-            return true;
+            this._transition.inHandler.transitionOutComplete.addOnce(this._transitionOutComplete, this);
+            this._transition.inHandler.transitionOut();
         }
     }
 }

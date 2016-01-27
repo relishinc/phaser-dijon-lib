@@ -49,11 +49,13 @@ module dijon.core {
         }
 
         public preAfterBuild(): void {
-            if (typeof this.game.transition === 'undefined' || !this.game.transition.transitionOut()) {
+            if (typeof this.game.transition === 'undefined' || !this.game.transition.canTransitionOut()) {
                 this.afterBuild();
             } else {
-                this.game.transition.onTransitionOutComplete.addOnce(this.afterBuild, this);
-                this.game.transition.transitionOut();
+                if (this.game.transition.canTransitionOut()) {
+                    this.game.transition.onTransitionOutComplete.addOnce(this.afterBuild, this);
+                    this.game.transition.transitionOut();
+                }
             }
         }
 
@@ -99,7 +101,7 @@ module dijon.core {
         public get buildInterval(): number {
             return 10;
         }
-        
+
         public get add(): core.GameObjectFactory {
             return this.game.addToGame;
         }

@@ -38,6 +38,7 @@ module dijon.display {
 				);
 
 			this.text = text.replace(/'/g, "\'");
+            this._lowercaseText = this.text.toLowerCase();
 			this.setResolution();
 		}
 		
@@ -112,14 +113,14 @@ module dijon.display {
 		* @return {void}
 		*/
 		public highlightPhrase(phrase: string, color: string, caseSensitive: boolean = false) {
-			var text = caseSensitive ? this.text : this._lowercaseText;
+			let text = caseSensitive ? this.text : this._lowercaseText;
 
 			phrase = caseSensitive ? phrase : phrase.toLowerCase();
 
-			var len = phrase.length;
+			let len = phrase.length;
 
-			var startIndex = text.indexOf(phrase);
-			var endIndex = startIndex + len;
+			let startIndex = text.indexOf(phrase);
+			let endIndex = startIndex + len;
 
 			while (startIndex <= endIndex) {
 				this.addColor(color, startIndex);

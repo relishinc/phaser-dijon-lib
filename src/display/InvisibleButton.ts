@@ -5,7 +5,7 @@ module dijon.display {
         
         constructor(x?: number, y?: number, name?: string, w?: number, h?: number) {
             this.setSize(w, h);
-            super(x, y, name);
+            super(x, y, null,null, name);
         }
 
         public init() {
