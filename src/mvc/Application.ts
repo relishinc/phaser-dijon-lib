@@ -74,7 +74,10 @@ module dijon.mvc {
 		public removeMediator(mediatorToRemove: Mediator): void {
 			let name = mediatorToRemove.name;
 			let mediator = this._mediators[name];
-
+            
+            if (!mediator)
+                return;
+            
 			mediator.listNotificationInterests().forEach(interest => {
 				this.removeObserver(interest, mediator);
 			});
