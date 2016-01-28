@@ -40,7 +40,6 @@ module dijon.mvc {
 		};
 		
 		public registerModel(model: Model): Model {
-            console.log('reg model', model.name);
 			if (this._models[model.name]) {
 				throw (new Error('Application:: a model with the name "' + model.name + '" already exists.'));
 			}
