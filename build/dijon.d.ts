@@ -248,21 +248,6 @@ declare module dijon.core {
     }
 }
 declare module dijon.core {
-    class AnalyticsManager {
-        category: string;
-        constructor(category?: string);
-        trackEvent(action?: string, label?: string, value?: string): void;
-        trackOmnitureEvent(gameName: string, activity: string, isGameEvent: boolean): boolean;
-        active: boolean;
-        ga: Function;
-    }
-    class AnalyticsException {
-        message: string;
-        name: string;
-        constructor(message: string);
-    }
-}
-declare module dijon.core {
     class Component {
         game: core.Game;
         name: string;
@@ -330,6 +315,33 @@ declare module dijon.display {
         stopAnimating: () => void;
         roundPixel: () => void;
         private static _addSettings(obj, settings);
+    }
+}
+declare module dijon.display {
+    class Group extends Phaser.Group {
+        name: string;
+        game: core.Game;
+        protected _hasComponents: boolean;
+        protected _componentKeys: string[];
+        protected _components: {
+            [componentName: string]: core.Component;
+        };
+        protected _mediator: dijon.mvc.Mediator;
+        constructor(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number);
+        update(): void;
+        destroy(): void;
+        protected init(): void;
+        protected buildInterface(): void;
+        private _updateComponentKeys();
+        addComponents: (components: core.Component[]) => void;
+        addComponent(component: core.Component): core.Component;
+        updateComponents(): void;
+        updateComponent(componentName: string): void;
+        removeAllComponents(): void;
+        removeComponent(componentName: string): void;
+        removeMediator(): void;
+        addInternal: core.GameObjectFactory;
+        protected autoBuild: boolean;
     }
 }
 declare module dijon.core {
@@ -478,44 +490,22 @@ declare module dijon.mvc {
         sendNotification(notificationName: string, notficationBody?: any): void;
         private _notifyObservers(notification);
         static getInstance(): Application;
+        static getMobileOperatingSystem(): string;
     }
 }
-declare module dijon.display {
-    class Group extends Phaser.Group {
+declare module dijon.core {
+    class AnalyticsManager {
+        category: string;
+        constructor(category?: string);
+        trackEvent(action?: string, label?: string, value?: string): void;
+        trackOmnitureEvent(gameName: string, activity: string, isGameEvent: boolean): boolean;
+        active: boolean;
+        ga: Function;
+    }
+    class AnalyticsException {
+        message: string;
         name: string;
-        game: core.Game;
-        protected _hasComponents: boolean;
-        protected _componentKeys: string[];
-        protected _components: {
-            [componentName: string]: core.Component;
-        };
-        protected _mediator: dijon.mvc.Mediator;
-        constructor(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number);
-        update(): void;
-        destroy(): void;
-        protected init(): void;
-        protected buildInterface(): void;
-        private _updateComponentKeys();
-        addComponents: (components: core.Component[]) => void;
-        addComponent(component: core.Component): core.Component;
-        updateComponents(): void;
-        updateComponent(componentName: string): void;
-        removeAllComponents(): void;
-        removeComponent(componentName: string): void;
-        removeMediator(): void;
-        addInternal: core.GameObjectFactory;
-        protected autoBuild: boolean;
-    }
-}
-declare module dijon.display {
-    class InvisibleButton extends dijon.display.Sprite {
-        private _hitWidth;
-        private _hitHeight;
-        constructor(x?: number, y?: number, name?: string, w?: number, h?: number);
-        init(): void;
-        buildInterface(): void;
-        private _addHitRect();
-        setSize(w: any, h: any): void;
+        constructor(message: string);
     }
 }
 declare module dijon.core {
@@ -543,6 +533,17 @@ declare module dijon.core {
         game: core.Game;
     }
 }
+declare module dijon.display {
+    class InvisibleButton extends dijon.display.Sprite {
+        private _hitWidth;
+        private _hitHeight;
+        constructor(x?: number, y?: number, name?: string, w?: number, h?: number);
+        init(): void;
+        buildInterface(): void;
+        private _addHitRect();
+        setSize(w: any, h: any): void;
+    }
+}
 declare module dijon.mvc {
     class CopyModel extends Model {
         static MODEL_NAME: string;
@@ -553,5 +554,12 @@ declare module dijon.mvc {
         addLanguage(languageId: string, dataKey: string): any;
         changeLanguage(languageId: string): void;
         name: string;
+    }
+}
+declare module dijon.utils {
+    class Device {
+        static IOS: string;
+        static ANDROID: string;
+        static UNKNOWN: string;
     }
 }
