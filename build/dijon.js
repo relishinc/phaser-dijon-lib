@@ -32,6 +32,7 @@ var dijon;
                 this._imgPath = null;
                 this._fontPath = null;
                 this._bitmapFontPath = null;
+                this._physicsPath = null;
                 this._audioSpritePath = null;
                 this._soundPath = null;
                 this._soundDecodingModifier = 2;
@@ -202,6 +203,9 @@ var dijon;
                     case AssetManager.JSON:
                         this.loadJSON(url);
                         break;
+                    case AssetManager.PHYSICS:
+                        this.loadPhysics(url);
+                        break;
                 }
             };
             AssetManager.prototype._parseData = function () {
@@ -223,6 +227,10 @@ var dijon;
             AssetManager.prototype.loadJSON = function (key) {
                 key = this._getAssetKey(key);
                 return this.game.load.json(key, this._getCacheBustedUrl(this._dataPath + '/' + key + '.json'));
+            };
+            AssetManager.prototype.loadPhysics = function (key) {
+                key = this._getAssetKey(key);
+                return this.game.load.physics(key, this._getCacheBustedUrl(this._physicsPath + '/' + key + '.json'));
             };
             AssetManager.prototype.loadAtlas = function (url, resolution) {
                 if (typeof resolution !== 'string') {
@@ -422,6 +430,11 @@ var dijon;
                             this.game.cache.removeJSON(url);
                         }
                         break;
+                    case AssetManager.PHYSICS:
+                        if (clearJSON) {
+                            this.game.cache.removePhysics(url);
+                        }
+                        break;
                 }
             };
             AssetManager.prototype.hasLoadedAssets = function (id) {
@@ -450,6 +463,7 @@ var dijon;
                     this._bitmapFontPath = this._baseURL + (this._pathObj.bitmapFontPath || 'assets/fonts/bitmap');
                     this._audioSpritePath = this._baseURL + (this._pathObj.audioSpritePath || 'assets/audio/sprite');
                     this._soundPath = this._baseURL + (this._pathObj.soundPath || 'assets/audio/sound');
+                    this._physicsPath = this._baseURL + (this._pathObj.physicsPath || 'assets/data/physics');
                 },
                 enumerable: true,
                 configurable: true
@@ -498,6 +512,7 @@ var dijon;
             AssetManager.ATLAS = 'atlas';
             AssetManager.TEXT = 'text';
             AssetManager.JSON = 'json';
+            AssetManager.PHYSICS = 'physics';
             AssetManager.ASSET_LIST = 'assetList';
             AssetManager.RESOLUTION_2X = "@2x";
             AssetManager.RESOLUTION_3X = "@3x";
@@ -1936,8 +1951,24 @@ var dijon;
         mvc.Model = Model;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
 })(dijon || (dijon = {}));
+var dijon;
+(function (dijon) {
+    var utils;
+    (function (utils) {
+        var Device = (function () {
+            function Device() {
+            }
+            Device.IOS = 'iOS';
+            Device.ANDROID = 'android';
+            Device.UNKNOWN = 'unknown';
+            return Device;
+        })();
+        utils.Device = Device;
+    })(utils = dijon.utils || (dijon.utils = {}));
+})(dijon || (dijon = {}));
 /// <reference path="./Mediator" />
 /// <reference path="./Model" />
+/// <reference path="../utils/Device" />
 /// <reference path="../interfaces/IObserver" />
 /// <reference path="../interfaces/INotifier" />
 /// <reference path="../core/Game" />
@@ -2047,16 +2078,19 @@ var dijon;
                     Application.instance = new Application();
                 return Application.instance;
             };
+            Application.isMobile = function () {
+                return Application.getMobileOperatingSystem() !== dijon.utils.Device.UNKNOWN;
+            };
             Application.getMobileOperatingSystem = function () {
                 var userAgent = navigator.userAgent || navigator.vendor || window['opera'];
                 if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
-                    return 'iOS';
+                    return dijon.utils.Device.IOS;
                 }
                 else if (userAgent.match(/Android/i)) {
-                    return 'Android';
+                    return dijon.utils.Device.ANDROID;
                 }
                 else {
-                    return 'unknown';
+                    return dijon.utils.Device.UNKNOWN;
                 }
             };
             Application.instance = null;
@@ -2327,20 +2361,5 @@ var dijon;
         })(mvc.Model);
         mvc.CopyModel = CopyModel;
     })(mvc = dijon.mvc || (dijon.mvc = {}));
-})(dijon || (dijon = {}));
-var dijon;
-(function (dijon) {
-    var utils;
-    (function (utils) {
-        var Device = (function () {
-            function Device() {
-            }
-            Device.IOS = 'iOS';
-            Device.ANDROID = 'android';
-            Device.UNKNOWN = 'unknown';
-            return Device;
-        })();
-        utils.Device = Device;
-    })(utils = dijon.utils || (dijon.utils = {}));
 })(dijon || (dijon = {}));
 //# sourceMappingURL=dijon.js.map

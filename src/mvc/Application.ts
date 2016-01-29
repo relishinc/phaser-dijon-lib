@@ -1,5 +1,6 @@
 /// <reference path="./Mediator" />
 /// <reference path="./Model" />
+/// <reference path="../utils/Device" />
 /// <reference path="../interfaces/IObserver" />
 /// <reference path="../interfaces/INotifier" />
 /// <reference path="../core/Game" />
@@ -159,15 +160,19 @@ module dijon.mvc {
 
             return Application.instance;
         }
-
+        
+        public static isMobile():boolean{
+            return Application.getMobileOperatingSystem() !== utils.Device.UNKNOWN;
+        }
+        
         public static getMobileOperatingSystem() {
             var userAgent = navigator.userAgent || navigator.vendor || window['opera'];
             if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
-                return 'iOS';
+                return utils.Device.IOS;
             } else if (userAgent.match(/Android/i)) {
-                return 'Android';
+                return utils.Device.ANDROID;
             } else {
-                return 'unknown';
+                return utils.Device.UNKNOWN;
             }
         }
     }

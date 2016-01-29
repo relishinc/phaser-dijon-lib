@@ -48,6 +48,7 @@ declare module dijon.core {
         fontPath: string;
         bitmapFontPath: string;
         audioSpritePath: string;
+        physicsPath: string;
         soundPath: string;
     }
     class AssetManager implements dijon.interfaces.INotifier {
@@ -61,6 +62,7 @@ declare module dijon.core {
         private _imgPath;
         private _fontPath;
         private _bitmapFontPath;
+        private _physicsPath;
         private _audioSpritePath;
         private _soundPath;
         private _soundDecodingModifier;
@@ -97,6 +99,7 @@ declare module dijon.core {
         static ATLAS: string;
         static TEXT: string;
         static JSON: string;
+        static PHYSICS: string;
         static ASSET_LIST: string;
         static RESOLUTION_2X: string;
         static RESOLUTION_3X: string;
@@ -122,6 +125,7 @@ declare module dijon.core {
         private _getCacheBustedUrl(url);
         loadText(url: string): Phaser.Loader;
         loadJSON(key: string): Phaser.Loader;
+        loadPhysics(key: string): Phaser.Loader;
         loadAtlas(url: string, resolution?: any): Phaser.Loader | string;
         loadImage(url: string, resolution?: any): Phaser.Loader | string;
         loadBitmapFont(url: string, resolution?: any): void;
@@ -462,6 +466,13 @@ declare module dijon.mvc {
         name: string;
     }
 }
+declare module dijon.utils {
+    class Device {
+        static IOS: string;
+        static ANDROID: string;
+        static UNKNOWN: string;
+    }
+}
 declare module dijon.mvc {
     class Application implements interfaces.INotifier {
         protected static instance: any;
@@ -490,6 +501,7 @@ declare module dijon.mvc {
         sendNotification(notificationName: string, notficationBody?: any): void;
         private _notifyObservers(notification);
         static getInstance(): Application;
+        static isMobile(): boolean;
         static getMobileOperatingSystem(): string;
     }
 }
@@ -554,12 +566,5 @@ declare module dijon.mvc {
         addLanguage(languageId: string, dataKey: string): any;
         changeLanguage(languageId: string): void;
         name: string;
-    }
-}
-declare module dijon.utils {
-    class Device {
-        static IOS: string;
-        static ANDROID: string;
-        static UNKNOWN: string;
     }
 }

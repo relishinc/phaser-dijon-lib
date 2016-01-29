@@ -37,6 +37,7 @@ module dijon.core {
         fontPath: string;
         bitmapFontPath: string;
         audioSpritePath: string;
+        physicsPath: string;
         soundPath: string;
     }
     
@@ -49,15 +50,16 @@ module dijon.core {
         // private variables
         private _data = {};
         private _baseURL: string = '';
-        private _pathObj: IPathConfig|any = {};
-        private _assetPath = null;
-        private _dataPath = null;
-        private _spriteSheetPath = null;
-        private _imgPath = null;
-        private _fontPath = null;
-        private _bitmapFontPath = null;
-        private _audioSpritePath = null;
-        private _soundPath = null;
+        private _pathObj: IPathConfig | any = {};
+        private _assetPath: string = null;
+        private _dataPath: string = null;
+        private _spriteSheetPath: string = null;
+        private _imgPath: string = null;
+        private _fontPath: string = null;
+        private _bitmapFontPath: string = null;
+        private _physicsPath: string = null;
+        private _audioSpritePath: string = null;
+        private _soundPath: string = null;
         private _soundDecodingModifier: number = 2;
         private _res: number = 1;
         private _resolution: string = null;
@@ -71,12 +73,12 @@ module dijon.core {
         private _hasFiles: boolean = false;
         private _soundsToDecode: Array<ISound> = [];
         private _isLoadingQueue: boolean = false;
-        private _fileCompleteProgress:number = 0;
+        private _fileCompleteProgress: number = 0;
         private _maxPercent: number = 100;
 
         private _numSounds: number = 0;
         private _soundsDecoded: number = 0;
-        
+
         private _cacheBustVersion: string = '';
         
         // public variables
@@ -135,6 +137,12 @@ module dijon.core {
         * @static
         */
         public static JSON: string = 'json';
+        
+        /**
+        * @type {String}
+        * @static
+        */
+        public static PHYSICS: string = 'physics';
         
         /**
         * @type {String}
@@ -265,9 +273,9 @@ module dijon.core {
             this._fileCompleteProgress = progress;
             this.onFileComplete.dispatch(this.getLoadProgress(), id, fileIndex, totalFiles);
         }
-        
-        private _setBaseTextureResolution(texture: PIXI.BaseTexture): void { 
-            if(texture && texture.source.src.indexOf('@' + this.resolution + 'x') >= 0) { 
+
+        private _setBaseTextureResolution(texture: PIXI.BaseTexture): void {
+            if (texture && texture.source.src.indexOf('@' + this.resolution + 'x') >= 0) {
                 texture.resolution = this.resolution;
             }
         };
@@ -367,19 +375,19 @@ module dijon.core {
         */
         private _getResolution(res: any): string {
             var result = '';
-            
-            if (typeof res === 'string') { 
+
+            if (typeof res === 'string') {
                 res = parseFloat(res);
             }
-            
+
             if (res === undefined) {
                 res = this.resolution;
             }
 
             if (res > 1.5) {
-                result  = AssetManager.RESOLUTION_2X;
+                result = AssetManager.RESOLUTION_2X;
             }
-            
+
             return result;
         }
     
@@ -415,6 +423,9 @@ module dijon.core {
                 case AssetManager.JSON:
                     this.loadJSON(url);
                     break;
+                case AssetManager.PHYSICS:
+                    this.loadPhysics(url);
+                    break;
             }
         }
     
@@ -430,12 +441,12 @@ module dijon.core {
                 this._parseAssetList(key, this._data[key]);
             }
         }
-        
-        private _getCacheBustedUrl(url: string): string { 
-            if (this._cacheBustVersion === '') { 
+
+        private _getCacheBustedUrl(url: string): string {
+            if (this._cacheBustVersion === '') {
                 return url;
             }
-            
+
             return url + '?v=' + this._cacheBustVersion;
         }
         // public methods
@@ -449,8 +460,13 @@ module dijon.core {
             return this.game.load.json(key, this._getCacheBustedUrl(this._dataPath + '/' + key + '.json'));
         }
 
+        public loadPhysics(key: string) {
+            key = this._getAssetKey(key);
+            return this.game.load.physics(key, this._getCacheBustedUrl(this._physicsPath + '/' + key + '.json'));
+        }
+
         public loadAtlas(url: string, resolution?: any): Phaser.Loader | string {
-            if (typeof resolution !== 'string') { 
+            if (typeof resolution !== 'string') {
                 resolution = this._getResolution(resolution);
             }
             if (this.game.cache.checkImageKey(url)) {
@@ -460,7 +476,7 @@ module dijon.core {
         }
 
         public loadImage(url: string, resolution?: any): Phaser.Loader | string {
-            if (typeof resolution !== 'string') { 
+            if (typeof resolution !== 'string') {
                 resolution = this._getResolution(resolution);
             }
             const key: string = this._getAssetKey(url);
@@ -475,7 +491,7 @@ module dijon.core {
         }
 
         public loadBitmapFont(url: string, resolution?: any) {
-            if (typeof resolution !== 'string') { 
+            if (typeof resolution !== 'string') {
                 resolution = this._getResolution(resolution);
             }
             this.game.load.bitmapFont(url, this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + resolution + '.png'), this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + resolution + '.json'));
@@ -549,7 +565,7 @@ module dijon.core {
 
             this._loadAssets(id);
             this._hasFiles = this.game.load.totalQueuedFiles() > 0;
-                
+
             if (background) {
                 this.game.load.onLoadStart.addOnce(this._backgroundLoadStart, this);
                 this.game.load.onFileComplete.add(this._backgroundFileComplete, this);
@@ -571,8 +587,8 @@ module dijon.core {
             this._numSounds = this._soundsToDecode.length;
             this._soundsDecoded = 0;
             this._maxPercent = 100 - (this._numSounds * this.soundDecodingModifier);
-            
-            if (background) { 
+
+            if (background) {
                 this.game.load.start();
             }
         }
@@ -585,10 +601,10 @@ module dijon.core {
             if (typeof this._data === 'undefined') {
                 return console.log('no preload queue to load');
             }
-            
-            let assets:any, 
-                state:string, 
-                i:number;
+
+            let assets: any,
+                state: string,
+                i: number;
 
             for (state in this._data) {
                 if (this._autoLoadData[state]) {
@@ -708,6 +724,11 @@ module dijon.core {
                         this.game.cache.removeJSON(url);
                     }
                     break;
+                case AssetManager.PHYSICS:
+                    if (clearJSON) {
+                        this.game.cache.removePhysics(url);
+                    }
+                    break;
             }
         }
     
@@ -744,13 +765,14 @@ module dijon.core {
             this._bitmapFontPath = this._baseURL + (this._pathObj.bitmapFontPath || 'assets/fonts/bitmap');
             this._audioSpritePath = this._baseURL + (this._pathObj.audioSpritePath || 'assets/audio/sprite');
             this._soundPath = this._baseURL + (this._pathObj.soundPath || 'assets/audio/sound');
+            this._physicsPath = this._baseURL + (this._pathObj.physicsPath || 'assets/data/physics');
         }
 
         public set resolution(res: number) {
             if (res === undefined) {
                 res = this.game.resolution;
             }
-            
+
             this._res = res;
             this._resolution = '';
 
@@ -758,8 +780,8 @@ module dijon.core {
                 this._resolution = AssetManager.RESOLUTION_2X;
             }
         }
-        
-        public get resolution(): number { 
+
+        public get resolution(): number {
             return this._res;
         }
         /**
@@ -767,7 +789,7 @@ module dijon.core {
         * @param {Number} [num = 2] the percentage
         */
         public set soundDecodingModifier(num: number) {
-            if (num === undefined) { 
+            if (num === undefined) {
                 num = 2;
             }
             this._soundDecodingModifier = num;
@@ -776,8 +798,8 @@ module dijon.core {
         public get soundDecodingModifier() {
             return this._soundDecodingModifier;
         }
-        
-        public set cacheBustVersion(version: string|number) { 
+
+        public set cacheBustVersion(version: string | number) {
             this._cacheBustVersion = '' + version;
         }
     }
