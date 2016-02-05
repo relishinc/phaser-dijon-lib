@@ -3,10 +3,11 @@
 
 module dijon.core {
     export class AnalyticsManager {
-        constructor(public category?: string) { }
+        
+        constructor(public enabled:boolean = true, public category:string = null) { }
 
         public trackEvent(action: string = null, label: string = null, value: string = null) {
-            if (!this.active) {
+            if (!this.active || !this.enabled) {
                 return;
             }
 
@@ -26,6 +27,9 @@ module dijon.core {
         }
 
         trackOmnitureEvent(gameName:string, activity:string, isGameEvent:boolean) {
+            if (!this.enabled) {
+                return;
+            }
             //console.log('tracking omniture', gameName, activity, isGameEvent);
             if (typeof window['trackFlashEvent'] === 'undefined')
                 return false;

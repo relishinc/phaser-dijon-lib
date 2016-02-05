@@ -374,6 +374,7 @@ declare module dijon.interfaces {
     interface IGameConfig extends Phaser.IGameConfig {
         resolution?: number;
         stats?: boolean;
+        analytics?: boolean;
     }
 }
 declare module dijon.core {
@@ -507,8 +508,9 @@ declare module dijon.mvc {
 }
 declare module dijon.core {
     class AnalyticsManager {
+        enabled: boolean;
         category: string;
-        constructor(category?: string);
+        constructor(enabled?: boolean, category?: string);
         trackEvent(action?: string, label?: string, value?: string): void;
         trackOmnitureEvent(gameName: string, activity: string, isGameEvent: boolean): boolean;
         active: boolean;

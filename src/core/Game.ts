@@ -54,7 +54,7 @@ module dijon.core {
 			this.transition = new TransitionManager();
 			this.storage = new StorageManager();
 			this.audio = new AudioManager();
-			this.analytics = new AnalyticsManager();
+			this.analytics = new AnalyticsManager(this.config.analytics);
 			
 			// replace Phaser.GameObjectFactory
 			this.add = null;

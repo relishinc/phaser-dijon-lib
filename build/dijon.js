@@ -1668,7 +1668,7 @@ var dijon;
                 this.transition = new core.TransitionManager();
                 this.storage = new core.StorageManager();
                 this.audio = new core.AudioManager();
-                this.analytics = new core.AnalyticsManager();
+                this.analytics = new core.AnalyticsManager(this.config.analytics);
                 this.add = null;
                 this.add = new core.GameObjectFactory(this);
                 if (this.config.stats === true) {
@@ -2107,14 +2107,17 @@ var dijon;
     var core;
     (function (core) {
         var AnalyticsManager = (function () {
-            function AnalyticsManager(category) {
+            function AnalyticsManager(enabled, category) {
+                if (enabled === void 0) { enabled = true; }
+                if (category === void 0) { category = null; }
+                this.enabled = enabled;
                 this.category = category;
             }
             AnalyticsManager.prototype.trackEvent = function (action, label, value) {
                 if (action === void 0) { action = null; }
                 if (label === void 0) { label = null; }
                 if (value === void 0) { value = null; }
-                if (!this.active) {
+                if (!this.active || !this.enabled) {
                     return;
                 }
                 if (!action) {
@@ -2131,6 +2134,9 @@ var dijon;
                 }
             };
             AnalyticsManager.prototype.trackOmnitureEvent = function (gameName, activity, isGameEvent) {
+                if (!this.enabled) {
+                    return;
+                }
                 if (typeof window['trackFlashEvent'] === 'undefined')
                     return false;
                 window['trackFlashEvent'](gameName, activity, isGameEvent);
