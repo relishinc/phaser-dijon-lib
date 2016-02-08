@@ -160,20 +160,5 @@ module dijon.mvc {
 
             return Application.instance;
         }
-        
-        public static isMobile():boolean{
-            return Application.getMobileOperatingSystem() !== utils.Device.UNKNOWN;
-        }
-        
-        public static getMobileOperatingSystem() {
-            var userAgent = navigator.userAgent || navigator.vendor || window['opera'];
-            if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
-                return utils.Device.IOS;
-            } else if (userAgent.match(/Android/i)) {
-                return utils.Device.ANDROID;
-            } else {
-                return utils.Device.UNKNOWN;
-            }
-        }
     }
 }
