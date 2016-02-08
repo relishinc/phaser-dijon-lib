@@ -463,6 +463,8 @@ declare module dijon.utils {
         static UNKNOWN: string;
         static mobile: boolean;
         static mobileOS: string;
+        static pixelRatio: number;
+        static customPixelRatio: number;
     }
 }
 declare module dijon.mvc {
@@ -533,18 +535,6 @@ declare module dijon.display {
         setSize(w: any, h: any): void;
     }
 }
-declare module dijon.mvc {
-    class CopyModel extends Model {
-        static MODEL_NAME: string;
-        private _languages;
-        constructor(dataKey?: string);
-        getCopy(groupId: string, itemId: string): string;
-        getCopyGroup(groupId: string): any;
-        addLanguage(languageId: string, dataKey: string): any;
-        changeLanguage(languageId: string): void;
-        name: string;
-    }
-}
 declare module dijon.core {
     class State extends Phaser.State {
         protected _audio: Phaser.Sound[];
@@ -568,5 +558,17 @@ declare module dijon.core {
         add: core.GameObjectFactory;
         app: mvc.Application;
         game: core.Game;
+    }
+}
+declare module dijon.mvc {
+    class CopyModel extends Model {
+        static MODEL_NAME: string;
+        private _languages;
+        constructor(dataKey?: string);
+        getCopy(groupId: string, itemId: string): string;
+        getCopyGroup(groupId: string): any;
+        addLanguage(languageId: string, dataKey: string): any;
+        changeLanguage(languageId: string): void;
+        name: string;
     }
 }

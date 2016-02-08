@@ -1935,6 +1935,20 @@ var dijon;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(Device, "pixelRatio", {
+                get: function () {
+                    return typeof window.devicePixelRatio !== undefined ? window.devicePixelRatio : 1;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Device, "customPixelRatio", {
+                get: function () {
+                    return Device.pixelRatio >= 1.5 ? 2 : 1;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Device.IOS = 'iOS';
             Device.ANDROID = 'android';
             Device.UNKNOWN = 'unknown';
@@ -2210,51 +2224,6 @@ var dijon;
         display.InvisibleButton = InvisibleButton;
     })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
-/// <reference path="../core/Game" />
-/// <reference path="./Application" />
-/// <reference path="./Model" />
-var dijon;
-(function (dijon) {
-    var mvc;
-    (function (mvc) {
-        var CopyModel = (function (_super) {
-            __extends(CopyModel, _super);
-            function CopyModel(dataKey) {
-                if (dataKey === void 0) { dataKey = null; }
-                _super.call(this, dataKey);
-                this._languages = {};
-                this._languages['en'] = this._data;
-            }
-            CopyModel.prototype.getCopy = function (groupId, itemId) {
-                return this.getCopyGroup(groupId)[itemId];
-            };
-            CopyModel.prototype.getCopyGroup = function (groupId) {
-                return this._data[groupId];
-            };
-            CopyModel.prototype.addLanguage = function (languageId, dataKey) {
-                if (!this.getKeyExists(dataKey)) {
-                    throw new Error('cannot add an alternate language from key ' + dataKey + '. Is it in the Phaser cache?');
-                }
-                this._languages[languageId] = this.game.cache.getJSON(dataKey);
-            };
-            CopyModel.prototype.changeLanguage = function (languageId) {
-                if (typeof this._languages[languageId] === 'undefined')
-                    throw new Error('there is no language ' + languageId);
-                this._data = this._languages[languageId];
-            };
-            Object.defineProperty(CopyModel.prototype, "name", {
-                get: function () {
-                    return CopyModel.MODEL_NAME;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            CopyModel.MODEL_NAME = 'copyModel';
-            return CopyModel;
-        })(mvc.Model);
-        mvc.CopyModel = CopyModel;
-    })(mvc = dijon.mvc || (dijon.mvc = {}));
-})(dijon || (dijon = {}));
 /// <reference path="../mvc/Application" />
 /// <reference path="../core/Game" />
 /// <reference path="../core/GameObjectFactory" />
@@ -2375,5 +2344,50 @@ var dijon;
         })(Phaser.State);
         core.State = State;
     })(core = dijon.core || (dijon.core = {}));
+})(dijon || (dijon = {}));
+/// <reference path="../core/Game" />
+/// <reference path="./Application" />
+/// <reference path="./Model" />
+var dijon;
+(function (dijon) {
+    var mvc;
+    (function (mvc) {
+        var CopyModel = (function (_super) {
+            __extends(CopyModel, _super);
+            function CopyModel(dataKey) {
+                if (dataKey === void 0) { dataKey = null; }
+                _super.call(this, dataKey);
+                this._languages = {};
+                this._languages['en'] = this._data;
+            }
+            CopyModel.prototype.getCopy = function (groupId, itemId) {
+                return this.getCopyGroup(groupId)[itemId];
+            };
+            CopyModel.prototype.getCopyGroup = function (groupId) {
+                return this._data[groupId];
+            };
+            CopyModel.prototype.addLanguage = function (languageId, dataKey) {
+                if (!this.getKeyExists(dataKey)) {
+                    throw new Error('cannot add an alternate language from key ' + dataKey + '. Is it in the Phaser cache?');
+                }
+                this._languages[languageId] = this.game.cache.getJSON(dataKey);
+            };
+            CopyModel.prototype.changeLanguage = function (languageId) {
+                if (typeof this._languages[languageId] === 'undefined')
+                    throw new Error('there is no language ' + languageId);
+                this._data = this._languages[languageId];
+            };
+            Object.defineProperty(CopyModel.prototype, "name", {
+                get: function () {
+                    return CopyModel.MODEL_NAME;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            CopyModel.MODEL_NAME = 'copyModel';
+            return CopyModel;
+        })(mvc.Model);
+        mvc.CopyModel = CopyModel;
+    })(mvc = dijon.mvc || (dijon.mvc = {}));
 })(dijon || (dijon = {}));
 //# sourceMappingURL=dijon.js.map

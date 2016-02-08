@@ -18,5 +18,13 @@ module dijon.utils {
                 return utils.Device.UNKNOWN;
             }
         }
+
+        public static get pixelRatio() {
+            return typeof window.devicePixelRatio !== undefined ? window.devicePixelRatio : 1;
+        }
+        
+        public static get customPixelRatio(){
+            return Device.pixelRatio >= 1.5 ? 2 : 1;
+        }
     }
 }
