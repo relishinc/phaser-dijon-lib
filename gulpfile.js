@@ -10,7 +10,7 @@ gulp.task('lib', function(){
       out:'dijon.js',
       outDir:'build/', 
       target:"ES5", 
-      module:"commonjs", 
+      module:"system", 
       emitError:false,
       declaration:true,
       removeComments:true,

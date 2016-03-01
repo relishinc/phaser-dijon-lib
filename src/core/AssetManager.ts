@@ -403,7 +403,7 @@ module dijon.core {
 
             switch (type) {
                 case AssetManager.ASSET_LIST:
-                    return this._loadAssets(asset.id);
+                    this._loadAssets(asset.id);
                     break;
                 case AssetManager.SOUND:
                     this.loadSound(url, asset.extensions);

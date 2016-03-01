@@ -3,9 +3,9 @@ module dijon.display {
         private _hitWidth:number;
         private _hitHeight:number;
         
-        constructor(x?: number, y?: number, name?: string, w?: number, h?: number) {
-            this.setSize(w, h);
+        constructor(x: number, y: number, name: string, w: number, h: number) {
             super(x, y, null,null, name);
+            this.setSize(w, h);
         }
 
         public init() {
