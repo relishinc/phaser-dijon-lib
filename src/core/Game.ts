@@ -34,10 +34,6 @@ module dijon.core {
         public uiLayer: dijon.display.Group;
         public stageLayer: dijon.display.Group;
 		
-        // stats (fps debug) requires stats.min.js to be loaded
-        // https://github.com/mrdoob/stats.js
-        public stats: Stats | any;
-		
         // Phaser.Game overrides
         constructor(config: interfaces.IGameConfig) {
             super(config);
@@ -59,12 +55,6 @@ module dijon.core {
             // replace Phaser.GameObjectFactory
             this.add = null;
             this.add = new GameObjectFactory(this);
-			
-            // add stats js
-            if (this.config.stats === true) {
-                this.addStats();
-            }
-
             this.addLayers();
         }
 
@@ -89,22 +79,8 @@ module dijon.core {
 			
             // add a group to the Phaser.Stage (just in case)
             this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
-        };
+        }
 
-        protected addStats(): void {
-            try {
-                this.stats = new Stats();
-                this.stats.setMode(0);
-                this.stats.domElement.style.position = 'absolute';
-                this.stats.domElement.style.top = '0px';
-                this.stats.domElement.style.left = '0px';
-                this.canvas.parentElement.appendChild(this.stats.domElement);
-            } catch (e) {
-                console.log("Couldn't enable stats")
-            }
-
-        };
-		
         // public methods
         public disableElementInput(el: any): any {
             if (el.input && el.inputEnabled === true) {
@@ -116,7 +92,7 @@ module dijon.core {
                     this.disableElementInput(el.children[i]);
                 }
             }
-        };
+        }
 
         public enableElementInput(el: any): any {
             if (el.input && el.inputEnabled === false && el.wasEnabled) {
@@ -128,7 +104,7 @@ module dijon.core {
                     this.enableElementInput(el.children[i]);
                 }
             }
-        };
+        }
 
         public disableInput(group: Phaser.Group): any {
             return group.forEach(function(el) {
@@ -138,7 +114,7 @@ module dijon.core {
                     return this.disableElementInput(el);
                 }
             }, this);
-        };
+        }
 
         public enableInput(group: Phaser.Group): any {
             return group.forEach(function(el) {
@@ -148,29 +124,17 @@ module dijon.core {
                     return this.enableElementInput(el);
                 }
             }, this);
-        };
+        }
 
         public disableGameInput() {
             this.disableInput(this.gameLayer);
             this.onWorldInputDisabled.dispatch();
-        };
+        }
 
         public enableGameInput() {
             this.enableInput(this.gameLayer);
             this.onWorldInputEnabled.dispatch();
-        };
-
-        public beginStats(): void {
-            if (!this.stats)
-                return;
-            this.stats.begin();
-        };
-
-        public endStats(): void {
-            if (!this.stats)
-                return;
-            this.stats.end();
-        };
+        }
 		
 		/**
 		 * removes all items from the game layer
