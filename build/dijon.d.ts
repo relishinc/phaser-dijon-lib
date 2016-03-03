@@ -496,7 +496,8 @@ declare module dijon.mvc {
             [name: string]: interfaces.IObserver[];
         };
         constructor();
-        initializeApplication(): void;
+        protected createGame(): void;
+        protected startGame(): void;
         registerModel(model: Model): Model;
         retrieveModel(modelName: string): Model;
         removeModel(modelToRemove: Model): void;

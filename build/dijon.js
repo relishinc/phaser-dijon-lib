@@ -1968,9 +1968,10 @@ var dijon;
                 if (Application.instance)
                     throw Error(Application.SINGLETON_MSG);
                 Application.instance = this;
-                this.initializeApplication();
+                this.createGame();
+                this.startGame();
             }
-            Application.prototype.initializeApplication = function () {
+            Application.prototype.createGame = function () {
                 this.game = new dijon.core.Game({
                     width: 800,
                     height: 600,
@@ -1978,6 +1979,8 @@ var dijon;
                     renderer: Phaser.AUTO,
                     transparent: false
                 });
+            };
+            Application.prototype.startGame = function () {
             };
             Application.prototype.registerModel = function (model) {
                 if (this._models[model.name]) {

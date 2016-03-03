@@ -26,11 +26,12 @@ module dijon.mvc {
 
             Application.instance = this;
 
-            this.initializeApplication();
+            this.createGame();
+            this.startGame();
         }
 		
         // public methods
-        public initializeApplication() {
+        protected createGame():void {
             this.game = new dijon.core.Game({
                 width: 800,
                 height: 600,
@@ -38,6 +39,10 @@ module dijon.mvc {
                 renderer: Phaser.AUTO,
                 transparent: false
             });
+        }
+        
+        protected startGame():void{
+            // start the app's initial state here
         }
 
         public registerModel(model: Model): Model {
@@ -137,7 +142,6 @@ module dijon.mvc {
         }
 		
         // private methods
-		
         private _notifyObservers(notification: interfaces.INotification) {
             let observer: interfaces.IObserver = null,
                 observers: interfaces.IObserver[] = null;
