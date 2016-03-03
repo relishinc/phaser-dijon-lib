@@ -1,4 +1,11 @@
 module dijon.utils {
+    export interface IBrowser{
+        firefox?:boolean;
+        ie?:boolean;
+        safari?:boolean;
+        chrome?:boolean;
+    }
+    
     export class Device {
         public static IOS: string = 'iOS';
         public static ANDROID: string = 'android';
@@ -16,6 +23,16 @@ module dijon.utils {
                 return utils.Device.ANDROID;
             } else {
                 return utils.Device.UNKNOWN;
+            }
+        }
+        
+        public static get browser():IBrowser{ 
+            const ua:string = navigator.userAgent.toLowerCase();
+            return{
+                firefox:ua.indexOf('firefox') > -1,
+                ie:ua.indexOf('ie') > -1,
+                safari:ua.indexOf('safari') > -1,
+                chrome:ua.indexOf('chrome') > -1,
             }
         }
 

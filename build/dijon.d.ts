@@ -454,12 +454,19 @@ declare module dijon.mvc {
     }
 }
 declare module dijon.utils {
+    interface IBrowser {
+        firefox?: boolean;
+        ie?: boolean;
+        safari?: boolean;
+        chrome?: boolean;
+    }
     class Device {
         static IOS: string;
         static ANDROID: string;
         static UNKNOWN: string;
         static mobile: boolean;
         static mobileOS: string;
+        static browser: IBrowser;
         static pixelRatio: number;
         static customPixelRatio: number;
     }

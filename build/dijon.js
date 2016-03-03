@@ -1853,6 +1853,19 @@ var dijon;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(Device, "browser", {
+                get: function () {
+                    var ua = navigator.userAgent.toLowerCase();
+                    return {
+                        firefox: ua.indexOf('firefox') > -1,
+                        ie: ua.indexOf('ie') > -1,
+                        safari: ua.indexOf('safari') > -1,
+                        chrome: ua.indexOf('chrome') > -1,
+                    };
+                },
+                enumerable: true,
+                configurable: true
+            });
             Object.defineProperty(Device, "pixelRatio", {
                 get: function () {
                     return typeof window.devicePixelRatio !== undefined ? window.devicePixelRatio : 1;
