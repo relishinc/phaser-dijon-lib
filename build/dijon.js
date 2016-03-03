@@ -1982,6 +1982,9 @@ var dijon;
             };
             Application.prototype.startGame = function () {
             };
+            Application.prototype.addPlugins = function () {
+                this.game.addPlugins();
+            };
             Application.prototype.registerModel = function (model) {
                 if (this._models[model.name]) {
                     throw (new Error('Application:: a model with the name "' + model.name + '" already exists.'));

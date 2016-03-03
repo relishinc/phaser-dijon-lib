@@ -44,6 +44,10 @@ module dijon.mvc {
         protected startGame():void{
             // start the app's initial state here
         }
+        
+        public addPlugins() {
+            this.game.addPlugins();
+        }
 
         public registerModel(model: Model): Model {
             if (this._models[model.name]) {

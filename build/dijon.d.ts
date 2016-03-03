@@ -498,6 +498,7 @@ declare module dijon.mvc {
         constructor();
         protected createGame(): void;
         protected startGame(): void;
+        addPlugins(): void;
         registerModel(model: Model): Model;
         retrieveModel(modelName: string): Model;
         removeModel(modelToRemove: Model): void;
