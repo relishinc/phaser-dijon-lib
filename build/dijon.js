@@ -1332,7 +1332,7 @@ var dijon;
             }
             GameObjectFactory.prototype.existing = function (object) {
                 var group = this.targetGroup;
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return group.add(object);
             };
             GameObjectFactory.prototype.image = function (x, y, key, frame, group) {
@@ -1341,7 +1341,7 @@ var dijon;
                 if (group === undefined) {
                     group = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return group.add(new Phaser.Image(this.game, x, y, key, frame));
             };
             GameObjectFactory.prototype.sprite = function (x, y, key, frame, group) {
@@ -1350,7 +1350,7 @@ var dijon;
                 if (group === undefined) {
                     group = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return group.create(x, y, key, frame);
             };
             GameObjectFactory.prototype.creature = function (x, y, key, mesh, group) {
@@ -1359,7 +1359,7 @@ var dijon;
                 if (group === undefined) {
                     group = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 var obj = new Phaser['Creature'](this.game, x, y, key, mesh);
                 group.add(obj);
                 return obj;
@@ -1372,7 +1372,7 @@ var dijon;
                 if (parent === undefined && addToStage !== true) {
                     parent = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return new Phaser.Group(this.game, parent, name, addToStage, enableBody, physicsBodyType);
             };
             GameObjectFactory.prototype.physicsGroup = function (physicsBodyType, parent, name, addToStage) {
@@ -1382,7 +1382,7 @@ var dijon;
                 if (parent === undefined) {
                     parent = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return new Phaser.Group(this.game, parent, name, addToStage, true, physicsBodyType);
             };
             GameObjectFactory.prototype.spriteBatch = function (parent, name, addToStage) {
@@ -1391,7 +1391,7 @@ var dijon;
                 if (parent === undefined) {
                     parent = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return new Phaser.SpriteBatch(this.game, parent, name, addToStage);
             };
             GameObjectFactory.prototype.tileSprite = function (x, y, width, height, key, frame, group) {
@@ -1402,7 +1402,7 @@ var dijon;
                 if (group === undefined) {
                     group = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return group.add(new Phaser.TileSprite(this.game, x, y, width, height, key, frame));
             };
             GameObjectFactory.prototype.rope = function (x, y, key, frame, points, group) {
@@ -1411,7 +1411,7 @@ var dijon;
                 if (group === undefined) {
                     group = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return group.add(new Phaser.Rope(this.game, x, y, key, frame, points));
             };
             GameObjectFactory.prototype.text = function (x, y, text, style, group) {
@@ -1421,7 +1421,7 @@ var dijon;
                 if (group === undefined) {
                     group = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return group.add(new Phaser.Text(this.game, x, y, text, style));
             };
             GameObjectFactory.prototype.button = function (x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame, group) {
@@ -1430,16 +1430,15 @@ var dijon;
                 if (group === undefined) {
                     group = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return group.add(new Phaser.Button(this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame));
             };
             GameObjectFactory.prototype.graphics = function (x, y, group) {
                 if (x === void 0) { x = 0; }
                 if (y === void 0) { y = 0; }
                 if (group === undefined) {
-                    group = this.targetGroup;
+                    group = this.world;
                 }
-                this.targetGroup = null;
                 return group.add(new Phaser.Graphics(this.game, x, y));
             };
             GameObjectFactory.prototype.bitmapText = function (x, y, font, text, size, align, group) {
@@ -1448,20 +1447,20 @@ var dijon;
                 if (group === undefined) {
                     group = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size, align));
             };
             GameObjectFactory.prototype.dSprite = function (x, y, key, frame, name, components, group) {
                 if (group === undefined) {
                     group = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return group.add(new dijon.display.Sprite(x, y, key, frame, name, components));
             };
             GameObjectFactory.prototype.dGroup = function (x, y, name, addToStage, components, enableBody, physicsBodyType, group) {
                 if (group === undefined && addToStage !== true) {
                     group = this.targetGroup;
-                    this.targetGroup = null;
+                    this._targetGroup = null;
                     return group.add(new dijon.display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
                 }
                 return new dijon.display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
@@ -1470,7 +1469,7 @@ var dijon;
                 if (group === undefined) {
                     group = this.targetGroup;
                 }
-                this.targetGroup = null;
+                this._targetGroup = null;
                 return group.add(new dijon.display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
             };
             GameObjectFactory.prototype.setDefaultLayer = function (value) {

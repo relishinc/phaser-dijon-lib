@@ -21,7 +21,7 @@ module dijon.core {
 		*/
 		public existing(object): any {
 			let group = this.targetGroup;
-			this.targetGroup = null;
+			this._targetGroup = null;
 			return group.add(object);
 		}
 		/**
@@ -42,7 +42,7 @@ module dijon.core {
 		*/
 		public image(x: number = 0, y: number = 0, key?: string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, group?: Phaser.Group): Phaser.Image {
 			if (group === undefined) { group = this.targetGroup; }
-			this.targetGroup = null;
+			this._targetGroup = null;
 
 			return group.add(new Phaser.Image(this.game, x, y, key, frame));
 		}
@@ -64,7 +64,7 @@ module dijon.core {
 		*/
 		public sprite(x: number = 0, y: number = 0, key?: string | PIXI.Texture, frame?: string|number, group?: Phaser.Group): Phaser.Sprite {
 			if (group === undefined) { group = this.targetGroup; }
-			this.targetGroup = null;
+			this._targetGroup = null;
 
 			return group.create(x, y, key, frame);
 		}
@@ -87,12 +87,12 @@ module dijon.core {
 		* @param {number} [x=0] - The x coordinate of the creature. The coordinate is relative to any parent container this creature may be in.
 		* @param {number} [y=0] - The y coordinate of the creature. The coordinate is relative to any parent container this creature may be in.
 		* @param {string|PIXI.Texture} [key] - The image used as a texture by this creature object during rendering. If a string Phaser will get for an entry in the Image Cache. Or it can be an instance of a PIXI.Texture.
-		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
+		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the Default Layer group.
 		* @returns {Phaser.Creature} The newly created Sprite object.
 		*/
 		public creature(x: number = 0, y: number = 0, key?: string, mesh?: any, group?: Phaser.Group): any {
 			if (group === undefined) { group = this.targetGroup; }
-			this.targetGroup = null;
+			this._targetGroup = null;
 
 			var obj = new Phaser['Creature'](this.game, x, y, key, mesh);
 
@@ -114,7 +114,7 @@ module dijon.core {
 		*/
 		public group(parent?: any, name: string = 'group', addToStage: boolean = false, enableBody: boolean = false, physicsBodyType: number = 0) {
 			if (parent === undefined && addToStage !== true) { parent = this.targetGroup; }
-			this.targetGroup = null;
+			this._targetGroup = null;
 			return new Phaser.Group(this.game, parent, name, addToStage, enableBody, physicsBodyType);
 		}
 		
@@ -133,7 +133,7 @@ module dijon.core {
 		*/
 		public physicsGroup(physicsBodyType: number = 0, parent?: any, name: string = 'group', addToStage: boolean = false): Phaser.Group {
 			if (parent === undefined) { parent = this.targetGroup; }
-			this.targetGroup = null;
+			this._targetGroup = null;
 			return new Phaser.Group(this.game, parent, name, addToStage, true, physicsBodyType);
 		}
 		
@@ -150,7 +150,7 @@ module dijon.core {
 		*/
 		public spriteBatch(parent?: any, name: string = "spriteBatch", addToStage: boolean = false): Phaser.SpriteBatch {
 			if (parent === undefined) { parent = this.targetGroup }
-			this.targetGroup = null;
+			this._targetGroup = null;
 			return new Phaser.SpriteBatch(this.game, parent, name, addToStage);
 		}
 		
@@ -164,12 +164,12 @@ module dijon.core {
 	   * @param {number} height - The height of the TileSprite.
 	   * @param {string|Phaser.RenderTexture|Phaser.BitmapData|Phaser.Video|PIXI.Texture} key - The image used as a texture by this display object during rendering. If a string Phaser will get for an entry in the Image Cache. Or it can be an instance of a RenderTexture, BitmapData, Video or PIXI.Texture.
 	   * @param {string|number} [frame] - If a Texture Atlas or Sprite Sheet is used this allows you to specify the frame to be used. Use either an integer for a Frame ID or a string for a frame name.
-	   * @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
+	   * @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the Default Layer group.
 	   * @return {Phaser.TileSprite} The newly created TileSprite object.
 	   */
 		public tileSprite(x: number = 0, y: number = 0, width: number = 0, height: number = 0, key?: string, frame?: string|number, group?: Phaser.Group): Phaser.TileSprite {
 			if (group === undefined) { group = this.targetGroup; }
-			this.targetGroup = null;
+			this._targetGroup = null;
 			return group.add(new Phaser.TileSprite(this.game, x, y, width, height, key, frame));
 		}
 		
@@ -184,12 +184,12 @@ module dijon.core {
 	   * @param {string|Phaser.RenderTexture|Phaser.BitmapData|Phaser.Video|PIXI.Texture} [key] - The image used as a texture by this display object during rendering. If a string Phaser will get for an entry in the Image Cache. Or it can be an instance of a RenderTexture, BitmapData, Video or PIXI.Texture.
 	   * @param {string|number} [frame] - If a Texture Atlas or Sprite Sheet is used this allows you to specify the frame to be used. Use either an integer for a Frame ID or a string for a frame name.
 	   * @param {Array} points - An array of {Phaser.Point}.
-	   * @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
+	   * @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the Default Layer group.
 	   * @return {Phaser.Rope} The newly created Rope object.
 	   */
 		public rope(x: number = 0, y: number = 0, key?: string, frame?: string|number, points?: Phaser.Point[], group?: Phaser.Group): Phaser.Rope {
 			if (group === undefined) { group = this.targetGroup; }
-			this.targetGroup = null;
+			this._targetGroup = null;
 			return group.add(new Phaser.Rope(this.game, x, y, key, frame, points));
 		}
 	
@@ -201,12 +201,12 @@ module dijon.core {
 		* @param {number} [y=0] - The y coordinate of the Text. The coordinate is relative to any parent container this text may be in.
 		* @param {string} [text=''] - The text string that will be displayed.
 		* @param {object} [style] - The style object containing style attributes like font, font size , etc.
-		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
+		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the Default Layer group.
 		* @return {Phaser.Text} The newly created text object.
 		*/
 		public text(x: number = 0, y: number = 0, text: string = '', style?: Phaser.PhaserTextStyle, group?: Phaser.Group): Phaser.Text {
 			if (group === undefined) { group = this.targetGroup; }
-			this.targetGroup = null;
+			this._targetGroup = null;
 			return group.add(new Phaser.Text(this.game, x, y, text, style));
 		}
 	
@@ -223,12 +223,12 @@ module dijon.core {
 		* @param {string|number} [outFrame] - This is the frame or frameName that will be set when this button is in an out state. Give either a number to use a frame ID or a string for a frame name.
 		* @param {string|number} [downFrame] - This is the frame or frameName that will be set when this button is in a down state. Give either a number to use a frame ID or a string for a frame name.
 		* @param {string|number} [upFrame] - This is the frame or frameName that will be set when this button is in an up state. Give either a number to use a frame ID or a string for a frame name.
-		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
+		* @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the Default Layer group.
 		* @return {Phaser.Button} The newly created Button object.
 		*/
 		public button(x: number = 0, y: number = 0, key?: string, callback?: Function, callbackContext?: Object, overFrame?: string|number, outFrame?: string|number, downFrame?: string|number, upFrame?: string|number, group?: Phaser.Group): Phaser.Button {
 			if (group === undefined) { group = this.targetGroup; }
-			this.targetGroup = null;
+			this._targetGroup = null;
 			return group.add(new Phaser.Button(this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame));
 		}
 	
@@ -242,8 +242,7 @@ module dijon.core {
 		* @return {Phaser.Graphics} The newly created graphics object.
 		*/
 		public graphics(x: number = 0, y: number = 0, group?: Phaser.Group): Phaser.Graphics {
-			if (group === undefined) { group = this.targetGroup; }
-			this.targetGroup = null;
+			if (group === undefined) { group = this.world; }
 			return group.add(new Phaser.Graphics(this.game, x, y));
 		}
 		
@@ -277,21 +276,21 @@ module dijon.core {
 		*/
 		public bitmapText(x?: number, y?: number, font?: string, text: string = "", size: number = 32, align?: string, group?: Phaser.Group): Phaser.BitmapText {
 			if (group === undefined) { group = this.targetGroup; }
-			this.targetGroup = null;
+			this._targetGroup = null;
 			return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size, align));
 		}
 		
 		// dijon specific display objects
 		public dSprite(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: Component[], group?: Phaser.Group): display.Sprite {
 			if (group === undefined) { group = this.targetGroup; }
-			this.targetGroup = null;
+			this._targetGroup = null;
 			return group.add(new display.Sprite(x, y, key, frame, name, components));
 		}
 
 		public dGroup(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number, group?: Phaser.Group): display.Group {
 			if (group === undefined && addToStage !== true) {
 				group = this.targetGroup;
-				this.targetGroup = null;
+				this._targetGroup = null;
 				return group.add(new display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
 			}
 
@@ -300,7 +299,7 @@ module dijon.core {
 
 		public dText(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object, group?: Phaser.Group): display.Text {
 			if (group === undefined) { group = this.targetGroup; }
-			this.targetGroup = null;
+			this._targetGroup = null;
 			return group.add(new display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
 		}
 		
