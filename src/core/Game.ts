@@ -57,7 +57,7 @@ module dijon.core {
             this.add = new GameObjectFactory(this);
             this.addLayers();
         }
-
+        
         public addPlugins(): void {
             if (this.config.plugins && this.config.plugins.length > 0) {
                 this.config.plugins.forEach(pluginName => {
@@ -68,6 +68,13 @@ module dijon.core {
             }
         }
 		
+        // Override this.world as the default layer that 
+        // .add calls will be created on.
+        public setFactoryDefaultLayer(newLayer: Phaser.Group) {
+            this.add.setDefaultLayer(newLayer || this.world);
+        }
+        
+        public setDefault
         // private methods
         protected addLayers(): void {
             // adds game and ui layers
@@ -150,31 +157,37 @@ module dijon.core {
 				
         // getter / setter
 		/**
-		 * sets the default group for the gameObjectFactory to gameLayer before adding 
+		 * sets the target group for the gameObjectFactory to gameLayer before adding 
 		 * this way if we pass a null group to whatever method we call 
 		 * ie (this.game.addToGame.image(0, 0, key, frame));
 		 * it will be added to the appropriate layer
 		 */
         public get addToGame(): core.GameObjectFactory {
-            this.add.defaultGroup = this.gameLayer;
+            this.add.targetGroup = this.gameLayer;
             return this.add;
         };
 		
 		/**
-		 * sets the default group for the gameObjectFactory to uiLayer before adding 
+		 * sets the target group for the gameObjectFactory to uiLayer before adding 
 		 * this way if we pass a null group to whatever method we call 
 		 * ie (this.game.addToUI.image(0, 0, key, frame));
 		 * it will be added to the appropriate layer
 		 */
         public get addToUI(): core.GameObjectFactory {
-            // set the default group for the gameObjectFactory before adding
-            this.add.defaultGroup = this.uiLayer;
+            // set the target group for the gameObjectFactory before adding
+            this.add.targetGroup = this.uiLayer;
             return this.add;
         };
 
         public get addToStage(): core.GameObjectFactory {
-            // set the default group for the gameObjectFactory before adding
-            this.add.defaultGroup = this.stageLayer;
+            // set the target group for the gameObjectFactory before adding
+            this.add.targetGroup = this.stageLayer;
+            return this.add;
+        };
+        
+        public get addToWorld(): core.GameObjectFactory {
+            // set the target group for the gameObjectFactory before adding
+            this.add.targetGroup = this.world;
             return this.add;
         };
     }

@@ -5,8 +5,12 @@
 
 module dijon.core {
 	export class GameObjectFactory extends Phaser.GameObjectFactory {
-		protected _defaultGroup: Phaser.Group = null;
-		
+        // The layer the current object will be added to. This is used by helper functions in Game.ts.
+        protected _targetGroup: Phaser.Group = null;
+        
+        // This is the layer that standard .add calls will be applied to.
+        protected _defaultLayer: Phaser.Group = this.world;
+        
 		// overrides
 		/**
 		* Adds an existing display object to the game world.
@@ -16,8 +20,8 @@ module dijon.core {
 		* @return {any} The child that was added to the World.
 		*/
 		public existing(object): any {
-			let group = this.defaultGroup;
-			this.defaultGroup = null;
+			let group = this.targetGroup;
+			this.targetGroup = null;
 			return group.add(object);
 		}
 		/**
@@ -37,8 +41,8 @@ module dijon.core {
 		* @returns {Phaser.Image} The newly created Image object.
 		*/
 		public image(x: number = 0, y: number = 0, key?: string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame?: string|number, group?: Phaser.Group): Phaser.Image {
-			if (group === undefined) { group = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (group === undefined) { group = this.targetGroup; }
+			this.targetGroup = null;
 
 			return group.add(new Phaser.Image(this.game, x, y, key, frame));
 		}
@@ -59,8 +63,8 @@ module dijon.core {
 		* @returns {Phaser.Sprite} The newly created Sprite object.
 		*/
 		public sprite(x: number = 0, y: number = 0, key?: string | PIXI.Texture, frame?: string|number, group?: Phaser.Group): Phaser.Sprite {
-			if (group === undefined) { group = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (group === undefined) { group = this.targetGroup; }
+			this.targetGroup = null;
 
 			return group.create(x, y, key, frame);
 		}
@@ -87,8 +91,8 @@ module dijon.core {
 		* @returns {Phaser.Creature} The newly created Sprite object.
 		*/
 		public creature(x: number = 0, y: number = 0, key?: string, mesh?: any, group?: Phaser.Group): any {
-			if (group === undefined) { group = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (group === undefined) { group = this.targetGroup; }
+			this.targetGroup = null;
 
 			var obj = new Phaser['Creature'](this.game, x, y, key, mesh);
 
@@ -109,8 +113,8 @@ module dijon.core {
 		* @return {Phaser.Group} The newly created Group.
 		*/
 		public group(parent?: any, name: string = 'group', addToStage: boolean = false, enableBody: boolean = false, physicsBodyType: number = 0) {
-			if (parent === undefined && addToStage !== true) { parent = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (parent === undefined && addToStage !== true) { parent = this.targetGroup; }
+			this.targetGroup = null;
 			return new Phaser.Group(this.game, parent, name, addToStage, enableBody, physicsBodyType);
 		}
 		
@@ -128,8 +132,8 @@ module dijon.core {
 		* @return {Phaser.Group} The newly created Group.
 		*/
 		public physicsGroup(physicsBodyType: number = 0, parent?: any, name: string = 'group', addToStage: boolean = false): Phaser.Group {
-			if (parent === undefined) { parent = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (parent === undefined) { parent = this.targetGroup; }
+			this.targetGroup = null;
 			return new Phaser.Group(this.game, parent, name, addToStage, true, physicsBodyType);
 		}
 		
@@ -145,8 +149,8 @@ module dijon.core {
 		* @return {Phaser.SpriteBatch} The newly created Sprite Batch.
 		*/
 		public spriteBatch(parent?: any, name: string = "spriteBatch", addToStage: boolean = false): Phaser.SpriteBatch {
-			if (parent === undefined) { parent = this.defaultGroup }
-			this.defaultGroup = null;
+			if (parent === undefined) { parent = this.targetGroup }
+			this.targetGroup = null;
 			return new Phaser.SpriteBatch(this.game, parent, name, addToStage);
 		}
 		
@@ -164,8 +168,8 @@ module dijon.core {
 	   * @return {Phaser.TileSprite} The newly created TileSprite object.
 	   */
 		public tileSprite(x: number = 0, y: number = 0, width: number = 0, height: number = 0, key?: string, frame?: string|number, group?: Phaser.Group): Phaser.TileSprite {
-			if (group === undefined) { group = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (group === undefined) { group = this.targetGroup; }
+			this.targetGroup = null;
 			return group.add(new Phaser.TileSprite(this.game, x, y, width, height, key, frame));
 		}
 		
@@ -184,8 +188,8 @@ module dijon.core {
 	   * @return {Phaser.Rope} The newly created Rope object.
 	   */
 		public rope(x: number = 0, y: number = 0, key?: string, frame?: string|number, points?: Phaser.Point[], group?: Phaser.Group): Phaser.Rope {
-			if (group === undefined) { group = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (group === undefined) { group = this.targetGroup; }
+			this.targetGroup = null;
 			return group.add(new Phaser.Rope(this.game, x, y, key, frame, points));
 		}
 	
@@ -201,8 +205,8 @@ module dijon.core {
 		* @return {Phaser.Text} The newly created text object.
 		*/
 		public text(x: number = 0, y: number = 0, text: string = '', style?: Phaser.PhaserTextStyle, group?: Phaser.Group): Phaser.Text {
-			if (group === undefined) { group = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (group === undefined) { group = this.targetGroup; }
+			this.targetGroup = null;
 			return group.add(new Phaser.Text(this.game, x, y, text, style));
 		}
 	
@@ -223,8 +227,8 @@ module dijon.core {
 		* @return {Phaser.Button} The newly created Button object.
 		*/
 		public button(x: number = 0, y: number = 0, key?: string, callback?: Function, callbackContext?: Object, overFrame?: string|number, outFrame?: string|number, downFrame?: string|number, upFrame?: string|number, group?: Phaser.Group): Phaser.Button {
-			if (group === undefined) { group = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (group === undefined) { group = this.targetGroup; }
+			this.targetGroup = null;
 			return group.add(new Phaser.Button(this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame));
 		}
 	
@@ -238,8 +242,8 @@ module dijon.core {
 		* @return {Phaser.Graphics} The newly created graphics object.
 		*/
 		public graphics(x: number = 0, y: number = 0, group?: Phaser.Group): Phaser.Graphics {
-			if (group === undefined) { group = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (group === undefined) { group = this.targetGroup; }
+			this.targetGroup = null;
 			return group.add(new Phaser.Graphics(this.game, x, y));
 		}
 		
@@ -272,22 +276,22 @@ module dijon.core {
 		* @return {Phaser.BitmapText} The newly created bitmapText object.
 		*/
 		public bitmapText(x?: number, y?: number, font?: string, text: string = "", size: number = 32, align?: string, group?: Phaser.Group): Phaser.BitmapText {
-			if (group === undefined) { group = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (group === undefined) { group = this.targetGroup; }
+			this.targetGroup = null;
 			return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size, align));
 		}
 		
 		// dijon specific display objects
 		public dSprite(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: Component[], group?: Phaser.Group): display.Sprite {
-			if (group === undefined) { group = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (group === undefined) { group = this.targetGroup; }
+			this.targetGroup = null;
 			return group.add(new display.Sprite(x, y, key, frame, name, components));
 		}
 
 		public dGroup(x?: number, y?: number, name?: string, addToStage?: boolean, components?: core.Component[], enableBody?: boolean, physicsBodyType?: number, group?: Phaser.Group): display.Group {
 			if (group === undefined && addToStage !== true) {
-				group = this.defaultGroup;
-				this.defaultGroup = null;
+				group = this.targetGroup;
+				this.targetGroup = null;
 				return group.add(new display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
 			}
 
@@ -295,18 +299,26 @@ module dijon.core {
 		}
 
 		public dText(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object, group?: Phaser.Group): display.Text {
-			if (group === undefined) { group = this.defaultGroup; }
-			this.defaultGroup = null;
+			if (group === undefined) { group = this.targetGroup; }
+			this.targetGroup = null;
 			return group.add(new display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
 		}
 		
+        public setDefaultLayer(value: Phaser.Group) {
+            console.log("CAUTION: Changing the default layer will change the target group for .add");
+            this._defaultLayer = value;
+        }
+        
+        public get defaultLayer() {
+            return this._defaultLayer;
+        }
 		// getter / setter
-		public set defaultGroup(value: Phaser.Group) {
-			this._defaultGroup = value;
+		public set targetGroup(value: Phaser.Group) {
+			this._targetGroup = value;
 		}
 
-		public get defaultGroup(): Phaser.Group {
-			return this._defaultGroup || this.world;
+		public get targetGroup(): Phaser.Group {
+			return this._targetGroup || this._defaultLayer;
 		}
 	}
 }

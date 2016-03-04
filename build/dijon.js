@@ -971,72 +971,6 @@ var dijon;
 (function (dijon) {
     var core;
     (function (core) {
-        var AnalyticsManager = (function () {
-            function AnalyticsManager(enabled, category) {
-                if (enabled === void 0) { enabled = true; }
-                if (category === void 0) { category = null; }
-                this.enabled = enabled;
-                this.category = category;
-            }
-            AnalyticsManager.prototype.trackEvent = function (action, label, value) {
-                if (action === void 0) { action = null; }
-                if (label === void 0) { label = null; }
-                if (value === void 0) { value = null; }
-                if (!this.active || !this.enabled) {
-                    return;
-                }
-                if (!action) {
-                    throw new AnalyticsException('No action defined');
-                }
-                if (value) {
-                    this.ga('send', 'event', this.category, action, label, value);
-                }
-                else if (label) {
-                    this.ga('send', 'event', this.category, action, label);
-                }
-                else {
-                    this.ga('send', 'event', this.category, action);
-                }
-            };
-            AnalyticsManager.prototype.trackOmnitureEvent = function (gameName, activity, isGameEvent) {
-                if (!this.enabled) {
-                    return;
-                }
-                if (typeof window['trackFlashEvent'] === 'undefined')
-                    return false;
-                window['trackFlashEvent'](gameName, activity, isGameEvent);
-            };
-            Object.defineProperty(AnalyticsManager.prototype, "active", {
-                get: function () {
-                    return (window['ga']) ? true : false;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(AnalyticsManager.prototype, "ga", {
-                get: function () {
-                    return window['ga'];
-                },
-                enumerable: true,
-                configurable: true
-            });
-            return AnalyticsManager;
-        }());
-        core.AnalyticsManager = AnalyticsManager;
-        var AnalyticsException = (function () {
-            function AnalyticsException(message) {
-                this.message = message;
-                this.name = 'AnalyticsException';
-            }
-            return AnalyticsException;
-        }());
-        core.AnalyticsException = AnalyticsException;
-    })(core = dijon.core || (dijon.core = {}));
-})(dijon || (dijon = {}));
-var dijon;
-(function (dijon) {
-    var core;
-    (function (core) {
         var Component = (function () {
             function Component() {
                 this.game = dijon.mvc.Application.getInstance().game;
@@ -1277,44 +1211,155 @@ var dijon;
 })(dijon || (dijon = {}));
 var dijon;
 (function (dijon) {
+    var display;
+    (function (display) {
+        var Group = (function (_super) {
+            __extends(Group, _super);
+            function Group(x, y, name, addToStage, components, enableBody, physicsBodyType) {
+                if (x === void 0) { x = 0; }
+                if (y === void 0) { y = 0; }
+                if (name === void 0) { name = "dGroup"; }
+                if (addToStage === void 0) { addToStage = false; }
+                if (components === void 0) { components = null; }
+                _super.call(this, dijon.mvc.Application.getInstance().game, null, name, addToStage, enableBody, physicsBodyType);
+                this.name = name;
+                this._hasComponents = false;
+                this._componentKeys = [];
+                this._components = {};
+                this._mediator = null;
+                this.addComponents = function (components) {
+                    if (typeof components.length === 'undefined')
+                        throw new Error('Dijon.UIGroup components must be an array');
+                    while (components.length > 0)
+                        this.addComponent(components.shift());
+                };
+                this.position.set(x, y);
+                if (this.autoBuild) {
+                    this.init();
+                }
+                if (!addToStage)
+                    this.game.add.existing(this);
+                if (this.autoBuild) {
+                    this.buildInterface();
+                    if (components)
+                        this.addComponents(components);
+                }
+            }
+            Group.prototype.update = function () {
+                Phaser.Group.prototype.update.apply(this);
+                if (this._hasComponents)
+                    this.updateComponents();
+            };
+            Group.prototype.destroy = function () {
+                this.removeAllComponents();
+                this.removeMediator();
+                _super.prototype.destroy.call(this);
+            };
+            Group.prototype.init = function () { };
+            Group.prototype.buildInterface = function () { };
+            Group.prototype._updateComponentKeys = function () {
+                this._componentKeys = Object.keys(this._components);
+                this._hasComponents = this._componentKeys.length > 0;
+            };
+            Group.prototype.addComponent = function (component) {
+                component.setOwner(this);
+                component.init();
+                component.buildInterface();
+                this._components[component.name] = component;
+                this._updateComponentKeys();
+                return component;
+            };
+            ;
+            Group.prototype.updateComponents = function () {
+                var _this = this;
+                this._componentKeys.forEach(function (componentName) {
+                    _this.updateComponent(componentName);
+                });
+            };
+            Group.prototype.updateComponent = function (componentName) {
+                this._components[componentName].update();
+            };
+            Group.prototype.removeAllComponents = function () {
+                while (this._componentKeys.length > 0) {
+                    this.removeComponent(this._componentKeys.pop());
+                }
+            };
+            Group.prototype.removeComponent = function (componentName) {
+                if (typeof this._components[componentName] === 'undefined')
+                    return;
+                this._components[componentName].destroy();
+                this._components[componentName] = null;
+                delete this._components[componentName];
+                this._updateComponentKeys();
+            };
+            Group.prototype.removeMediator = function () {
+                if (!this._mediator) {
+                    return;
+                }
+                this._mediator.destroy();
+                this._mediator = null;
+            };
+            Object.defineProperty(Group.prototype, "addInternal", {
+                get: function () {
+                    this.game.add.targetGroup = this;
+                    return this.game.add;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Group.prototype, "autoBuild", {
+                get: function () {
+                    return true;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return Group;
+        }(Phaser.Group));
+        display.Group = Group;
+    })(display = dijon.display || (dijon.display = {}));
+})(dijon || (dijon = {}));
+var dijon;
+(function (dijon) {
     var core;
     (function (core) {
         var GameObjectFactory = (function (_super) {
             __extends(GameObjectFactory, _super);
             function GameObjectFactory() {
                 _super.apply(this, arguments);
-                this._defaultGroup = null;
+                this._targetGroup = null;
+                this._defaultLayer = this.world;
             }
             GameObjectFactory.prototype.existing = function (object) {
-                var group = this.defaultGroup;
-                this.defaultGroup = null;
+                var group = this.targetGroup;
+                this.targetGroup = null;
                 return group.add(object);
             };
             GameObjectFactory.prototype.image = function (x, y, key, frame, group) {
                 if (x === void 0) { x = 0; }
                 if (y === void 0) { y = 0; }
                 if (group === undefined) {
-                    group = this.defaultGroup;
+                    group = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return group.add(new Phaser.Image(this.game, x, y, key, frame));
             };
             GameObjectFactory.prototype.sprite = function (x, y, key, frame, group) {
                 if (x === void 0) { x = 0; }
                 if (y === void 0) { y = 0; }
                 if (group === undefined) {
-                    group = this.defaultGroup;
+                    group = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return group.create(x, y, key, frame);
             };
             GameObjectFactory.prototype.creature = function (x, y, key, mesh, group) {
                 if (x === void 0) { x = 0; }
                 if (y === void 0) { y = 0; }
                 if (group === undefined) {
-                    group = this.defaultGroup;
+                    group = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 var obj = new Phaser['Creature'](this.game, x, y, key, mesh);
                 group.add(obj);
                 return obj;
@@ -1325,9 +1370,9 @@ var dijon;
                 if (enableBody === void 0) { enableBody = false; }
                 if (physicsBodyType === void 0) { physicsBodyType = 0; }
                 if (parent === undefined && addToStage !== true) {
-                    parent = this.defaultGroup;
+                    parent = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return new Phaser.Group(this.game, parent, name, addToStage, enableBody, physicsBodyType);
             };
             GameObjectFactory.prototype.physicsGroup = function (physicsBodyType, parent, name, addToStage) {
@@ -1335,18 +1380,18 @@ var dijon;
                 if (name === void 0) { name = 'group'; }
                 if (addToStage === void 0) { addToStage = false; }
                 if (parent === undefined) {
-                    parent = this.defaultGroup;
+                    parent = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return new Phaser.Group(this.game, parent, name, addToStage, true, physicsBodyType);
             };
             GameObjectFactory.prototype.spriteBatch = function (parent, name, addToStage) {
                 if (name === void 0) { name = "spriteBatch"; }
                 if (addToStage === void 0) { addToStage = false; }
                 if (parent === undefined) {
-                    parent = this.defaultGroup;
+                    parent = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return new Phaser.SpriteBatch(this.game, parent, name, addToStage);
             };
             GameObjectFactory.prototype.tileSprite = function (x, y, width, height, key, frame, group) {
@@ -1355,18 +1400,18 @@ var dijon;
                 if (width === void 0) { width = 0; }
                 if (height === void 0) { height = 0; }
                 if (group === undefined) {
-                    group = this.defaultGroup;
+                    group = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return group.add(new Phaser.TileSprite(this.game, x, y, width, height, key, frame));
             };
             GameObjectFactory.prototype.rope = function (x, y, key, frame, points, group) {
                 if (x === void 0) { x = 0; }
                 if (y === void 0) { y = 0; }
                 if (group === undefined) {
-                    group = this.defaultGroup;
+                    group = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return group.add(new Phaser.Rope(this.game, x, y, key, frame, points));
             };
             GameObjectFactory.prototype.text = function (x, y, text, style, group) {
@@ -1374,66 +1419,77 @@ var dijon;
                 if (y === void 0) { y = 0; }
                 if (text === void 0) { text = ''; }
                 if (group === undefined) {
-                    group = this.defaultGroup;
+                    group = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return group.add(new Phaser.Text(this.game, x, y, text, style));
             };
             GameObjectFactory.prototype.button = function (x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame, group) {
                 if (x === void 0) { x = 0; }
                 if (y === void 0) { y = 0; }
                 if (group === undefined) {
-                    group = this.defaultGroup;
+                    group = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return group.add(new Phaser.Button(this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame));
             };
             GameObjectFactory.prototype.graphics = function (x, y, group) {
                 if (x === void 0) { x = 0; }
                 if (y === void 0) { y = 0; }
                 if (group === undefined) {
-                    group = this.defaultGroup;
+                    group = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return group.add(new Phaser.Graphics(this.game, x, y));
             };
             GameObjectFactory.prototype.bitmapText = function (x, y, font, text, size, align, group) {
                 if (text === void 0) { text = ""; }
                 if (size === void 0) { size = 32; }
                 if (group === undefined) {
-                    group = this.defaultGroup;
+                    group = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size, align));
             };
             GameObjectFactory.prototype.dSprite = function (x, y, key, frame, name, components, group) {
                 if (group === undefined) {
-                    group = this.defaultGroup;
+                    group = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return group.add(new dijon.display.Sprite(x, y, key, frame, name, components));
             };
             GameObjectFactory.prototype.dGroup = function (x, y, name, addToStage, components, enableBody, physicsBodyType, group) {
                 if (group === undefined && addToStage !== true) {
-                    group = this.defaultGroup;
-                    this.defaultGroup = null;
+                    group = this.targetGroup;
+                    this.targetGroup = null;
                     return group.add(new dijon.display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
                 }
                 return new dijon.display.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
             };
             GameObjectFactory.prototype.dText = function (x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings, group) {
                 if (group === undefined) {
-                    group = this.defaultGroup;
+                    group = this.targetGroup;
                 }
-                this.defaultGroup = null;
+                this.targetGroup = null;
                 return group.add(new dijon.display.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
             };
-            Object.defineProperty(GameObjectFactory.prototype, "defaultGroup", {
+            GameObjectFactory.prototype.setDefaultLayer = function (value) {
+                console.log("CAUTION: Changing the default layer will change the target group for .add");
+                this._defaultLayer = value;
+            };
+            Object.defineProperty(GameObjectFactory.prototype, "defaultLayer", {
                 get: function () {
-                    return this._defaultGroup || this.world;
+                    return this._defaultLayer;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(GameObjectFactory.prototype, "targetGroup", {
+                get: function () {
+                    return this._targetGroup || this._defaultLayer;
                 },
                 set: function (value) {
-                    this._defaultGroup = value;
+                    this._targetGroup = value;
                 },
                 enumerable: true,
                 configurable: true
@@ -1592,6 +1648,9 @@ var dijon;
                     });
                 }
             };
+            Game.prototype.setFactoryDefaultLayer = function (newLayer) {
+                this.add.setDefaultLayer(newLayer || this.world);
+            };
             Game.prototype.addLayers = function () {
                 this.gameLayer = this.add.dGroup(0, 0, '_game_layer');
                 this.uiLayer = this.add.dGroup(0, 0, '_ui_layer');
@@ -1655,7 +1714,7 @@ var dijon;
             ;
             Object.defineProperty(Game.prototype, "addToGame", {
                 get: function () {
-                    this.add.defaultGroup = this.gameLayer;
+                    this.add.targetGroup = this.gameLayer;
                     return this.add;
                 },
                 enumerable: true,
@@ -1664,7 +1723,7 @@ var dijon;
             ;
             Object.defineProperty(Game.prototype, "addToUI", {
                 get: function () {
-                    this.add.defaultGroup = this.uiLayer;
+                    this.add.targetGroup = this.uiLayer;
                     return this.add;
                 },
                 enumerable: true,
@@ -1673,7 +1732,16 @@ var dijon;
             ;
             Object.defineProperty(Game.prototype, "addToStage", {
                 get: function () {
-                    this.add.defaultGroup = this.stageLayer;
+                    this.add.targetGroup = this.stageLayer;
+                    return this.add;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            ;
+            Object.defineProperty(Game.prototype, "addToWorld", {
+                get: function () {
+                    this.add.targetGroup = this.world;
                     return this.add;
                 },
                 enumerable: true,
@@ -2009,147 +2077,69 @@ var dijon;
 })(dijon || (dijon = {}));
 var dijon;
 (function (dijon) {
-    var display;
-    (function (display) {
-        var Group = (function (_super) {
-            __extends(Group, _super);
-            function Group(x, y, name, addToStage, components, enableBody, physicsBodyType) {
-                if (x === void 0) { x = 0; }
-                if (y === void 0) { y = 0; }
-                if (name === void 0) { name = "dGroup"; }
-                if (addToStage === void 0) { addToStage = false; }
-                if (components === void 0) { components = null; }
-                _super.call(this, dijon.mvc.Application.getInstance().game, null, name, addToStage, enableBody, physicsBodyType);
-                this.name = name;
-                this._hasComponents = false;
-                this._componentKeys = [];
-                this._components = {};
-                this._mediator = null;
-                this.addComponents = function (components) {
-                    if (typeof components.length === 'undefined')
-                        throw new Error('Dijon.UIGroup components must be an array');
-                    while (components.length > 0)
-                        this.addComponent(components.shift());
-                };
-                this.position.set(x, y);
-                if (this.autoBuild) {
-                    this.init();
-                }
-                if (!addToStage)
-                    this.game.add.existing(this);
-                if (this.autoBuild) {
-                    this.buildInterface();
-                    if (components)
-                        this.addComponents(components);
-                }
+    var core;
+    (function (core) {
+        var AnalyticsManager = (function () {
+            function AnalyticsManager(enabled, category) {
+                if (enabled === void 0) { enabled = true; }
+                if (category === void 0) { category = null; }
+                this.enabled = enabled;
+                this.category = category;
             }
-            Group.prototype.update = function () {
-                Phaser.Group.prototype.update.apply(this);
-                if (this._hasComponents)
-                    this.updateComponents();
-            };
-            Group.prototype.destroy = function () {
-                this.removeAllComponents();
-                this.removeMediator();
-                _super.prototype.destroy.call(this);
-            };
-            Group.prototype.init = function () { };
-            Group.prototype.buildInterface = function () { };
-            Group.prototype._updateComponentKeys = function () {
-                this._componentKeys = Object.keys(this._components);
-                this._hasComponents = this._componentKeys.length > 0;
-            };
-            Group.prototype.addComponent = function (component) {
-                component.setOwner(this);
-                component.init();
-                component.buildInterface();
-                this._components[component.name] = component;
-                this._updateComponentKeys();
-                return component;
-            };
-            ;
-            Group.prototype.updateComponents = function () {
-                var _this = this;
-                this._componentKeys.forEach(function (componentName) {
-                    _this.updateComponent(componentName);
-                });
-            };
-            Group.prototype.updateComponent = function (componentName) {
-                this._components[componentName].update();
-            };
-            Group.prototype.removeAllComponents = function () {
-                while (this._componentKeys.length > 0) {
-                    this.removeComponent(this._componentKeys.pop());
-                }
-            };
-            Group.prototype.removeComponent = function (componentName) {
-                if (typeof this._components[componentName] === 'undefined')
-                    return;
-                this._components[componentName].destroy();
-                this._components[componentName] = null;
-                delete this._components[componentName];
-                this._updateComponentKeys();
-            };
-            Group.prototype.removeMediator = function () {
-                if (!this._mediator) {
+            AnalyticsManager.prototype.trackEvent = function (action, label, value) {
+                if (action === void 0) { action = null; }
+                if (label === void 0) { label = null; }
+                if (value === void 0) { value = null; }
+                if (!this.active || !this.enabled) {
                     return;
                 }
-                this._mediator.destroy();
-                this._mediator = null;
+                if (!action) {
+                    throw new AnalyticsException('No action defined');
+                }
+                if (value) {
+                    this.ga('send', 'event', this.category, action, label, value);
+                }
+                else if (label) {
+                    this.ga('send', 'event', this.category, action, label);
+                }
+                else {
+                    this.ga('send', 'event', this.category, action);
+                }
             };
-            Object.defineProperty(Group.prototype, "addInternal", {
+            AnalyticsManager.prototype.trackOmnitureEvent = function (gameName, activity, isGameEvent) {
+                if (!this.enabled) {
+                    return;
+                }
+                if (typeof window['trackFlashEvent'] === 'undefined')
+                    return false;
+                window['trackFlashEvent'](gameName, activity, isGameEvent);
+            };
+            Object.defineProperty(AnalyticsManager.prototype, "active", {
                 get: function () {
-                    this.game.add.defaultGroup = this;
-                    return this.game.add;
+                    return (window['ga']) ? true : false;
                 },
                 enumerable: true,
                 configurable: true
             });
-            Object.defineProperty(Group.prototype, "autoBuild", {
+            Object.defineProperty(AnalyticsManager.prototype, "ga", {
                 get: function () {
-                    return true;
+                    return window['ga'];
                 },
                 enumerable: true,
                 configurable: true
             });
-            return Group;
-        }(Phaser.Group));
-        display.Group = Group;
-    })(display = dijon.display || (dijon.display = {}));
-})(dijon || (dijon = {}));
-var dijon;
-(function (dijon) {
-    var display;
-    (function (display) {
-        var InvisibleButton = (function (_super) {
-            __extends(InvisibleButton, _super);
-            function InvisibleButton(x, y, name, w, h) {
-                _super.call(this, x, y, null, null, name);
-                this.setSize(w, h);
+            return AnalyticsManager;
+        }());
+        core.AnalyticsManager = AnalyticsManager;
+        var AnalyticsException = (function () {
+            function AnalyticsException(message) {
+                this.message = message;
+                this.name = 'AnalyticsException';
             }
-            InvisibleButton.prototype.init = function () {
-                this.inputEnabled = true;
-            };
-            ;
-            InvisibleButton.prototype.buildInterface = function () {
-                this._addHitRect();
-            };
-            ;
-            InvisibleButton.prototype._addHitRect = function () {
-                if (this._hitWidth > 0 && this._hitHeight > 0) {
-                    this.hitArea = new Phaser.Rectangle(0, 0, this._hitWidth, this._hitHeight);
-                }
-            };
-            ;
-            InvisibleButton.prototype.setSize = function (w, h) {
-                this._hitWidth = w || 0;
-                this._hitHeight = h || 0;
-                this._addHitRect();
-            };
-            return InvisibleButton;
-        }(dijon.display.Sprite));
-        display.InvisibleButton = InvisibleButton;
-    })(display = dijon.display || (dijon.display = {}));
+            return AnalyticsException;
+        }());
+        core.AnalyticsException = AnalyticsException;
+    })(core = dijon.core || (dijon.core = {}));
 })(dijon || (dijon = {}));
 var dijon;
 (function (dijon) {
@@ -2268,6 +2258,40 @@ var dijon;
         }(Phaser.State));
         core.State = State;
     })(core = dijon.core || (dijon.core = {}));
+})(dijon || (dijon = {}));
+var dijon;
+(function (dijon) {
+    var display;
+    (function (display) {
+        var InvisibleButton = (function (_super) {
+            __extends(InvisibleButton, _super);
+            function InvisibleButton(x, y, name, w, h) {
+                _super.call(this, x, y, null, null, name);
+                this.setSize(w, h);
+            }
+            InvisibleButton.prototype.init = function () {
+                this.inputEnabled = true;
+            };
+            ;
+            InvisibleButton.prototype.buildInterface = function () {
+                this._addHitRect();
+            };
+            ;
+            InvisibleButton.prototype._addHitRect = function () {
+                if (this._hitWidth > 0 && this._hitHeight > 0) {
+                    this.hitArea = new Phaser.Rectangle(0, 0, this._hitWidth, this._hitHeight);
+                }
+            };
+            ;
+            InvisibleButton.prototype.setSize = function (w, h) {
+                this._hitWidth = w || 0;
+                this._hitHeight = h || 0;
+                this._addHitRect();
+            };
+            return InvisibleButton;
+        }(dijon.display.Sprite));
+        display.InvisibleButton = InvisibleButton;
+    })(display = dijon.display || (dijon.display = {}));
 })(dijon || (dijon = {}));
 var dijon;
 (function (dijon) {

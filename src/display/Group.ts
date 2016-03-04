@@ -167,7 +167,7 @@ module dijon.display {
 		}
 
 		public get addInternal(): core.GameObjectFactory {
-			this.game.add.defaultGroup = this;
+			this.game.add.targetGroup = this;
 			return this.game.add;
 		}
         
