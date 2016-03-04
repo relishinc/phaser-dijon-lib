@@ -56,6 +56,7 @@ module dijon.core {
             this.add = null;
             this.add = new GameObjectFactory(this);
             this.addLayers();
+            this.setFactoryDefaultLayer(this.gameLayer);
         }
         
         public addPlugins(): void {
@@ -166,7 +167,7 @@ module dijon.core {
             this.add.targetGroup = this.gameLayer;
             return this.add;
         };
-		
+
 		/**
 		 * sets the target group for the gameObjectFactory to uiLayer before adding 
 		 * this way if we pass a null group to whatever method we call 

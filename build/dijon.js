@@ -1636,6 +1636,7 @@ var dijon;
                 this.add = null;
                 this.add = new core.GameObjectFactory(this);
                 this.addLayers();
+                this.setFactoryDefaultLayer(this.gameLayer);
             };
             Game.prototype.addPlugins = function () {
                 var _this = this;
