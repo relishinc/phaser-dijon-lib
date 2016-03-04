@@ -876,7 +876,7 @@ var dijon;
                 if (loop === void 0) { loop = false; }
                 if (forceRestart === void 0) { forceRestart = true; }
                 if (typeof this._sounds[key] === 'undefined') {
-                    return false;
+                    return null;
                 }
                 volume = typeof volume === 'undefined' ? this._defaultVolume : volume;
                 return this._sounds[key].play("", 0, volume, loop, forceRestart);
@@ -887,7 +887,7 @@ var dijon;
                 var key = this._getKeyFromMarkerName(marker);
                 if (!key) {
                     console.log('marker not found', marker);
-                    return false;
+                    return null;
                 }
                 return this._playSpriteMarker(key, marker, volume, loop, forceRestart);
             };
@@ -895,11 +895,13 @@ var dijon;
                 if (loop === void 0) { loop = false; }
                 if (forceRestart === void 0) { forceRestart = true; }
                 this.game.time.events.add(delay, this.playSound, this, key, volume, loop, forceRestart);
+                return null;
             };
             AudioManager.prototype.playDelayedSpriteMarker = function (delay, marker, volume, loop, forceRestart) {
                 if (loop === void 0) { loop = false; }
                 if (forceRestart === void 0) { forceRestart = true; }
                 this.game.time.events.add(delay, this.playSpriteMarker, this, marker, volume, loop, forceRestart);
+                return null;
             };
             AudioManager.prototype.stopAudio = function (marker) {
                 if (this._getKeyFromMarkerName(marker)) {
