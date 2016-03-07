@@ -215,7 +215,7 @@ var dijon;
                 }
             };
             AssetManager.prototype._getCacheBustedUrl = function (url) {
-                if (this._cacheBustVersion === '') {
+                if (this._cacheBustVersion === undefined || this._cacheBustVersion === '') {
                     return url;
                 }
                 return url + '?v=' + this._cacheBustVersion;

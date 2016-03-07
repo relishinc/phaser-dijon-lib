@@ -443,7 +443,7 @@ module dijon.core {
         }
 
         private _getCacheBustedUrl(url: string): string {
-            if (this._cacheBustVersion === '') {
+            if (this._cacheBustVersion === undefined || this._cacheBustVersion === '') {
                 return url;
             }
 
