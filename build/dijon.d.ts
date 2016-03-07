@@ -197,6 +197,7 @@ declare module dijon.core {
         private _preloadComplete();
         private _clearTransition();
         add(fromState: string, toState: string | interfaces.IPreloadHandler, outHandler?: interfaces.ITransitionHandler, preloadHandler?: interfaces.IPreloadHandler, inHandler?: interfaces.ITransitionHandler): void;
+        addAll(handler: interfaces.IPreloadHandler): void;
         addException(state: string): void;
         remove(fromState: string, toState?: string): void;
         to(state: string): void;

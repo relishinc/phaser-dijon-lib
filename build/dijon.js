@@ -640,6 +640,9 @@ var dijon;
                 }
                 return this._add(fromState + '/' + toState, outHandler, preloadHandler, inHandler);
             };
+            TransitionManager.prototype.addAll = function (handler) {
+                return this._add('all', handler, handler, handler);
+            };
             TransitionManager.prototype.addException = function (state) {
                 this._exceptions[state] = true;
             };

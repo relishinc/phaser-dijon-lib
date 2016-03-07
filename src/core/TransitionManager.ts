@@ -124,6 +124,10 @@ module dijon.core {
 
             return this._add(fromState + '/' + toState, outHandler, preloadHandler, inHandler);
         }
+
+        public addAll(handler: interfaces.IPreloadHandler): void {
+            return this._add('all', handler, handler, handler);
+        }
         
         /**
         * Adds an exception to the Dijon.TransitionManager in the case where 'all' has been used
