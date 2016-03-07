@@ -1,0 +1,31 @@
+import Game from '../core/Game';
+export default class Text extends Phaser.Text {
+    lineSpacing: number;
+    static DEFAULT_FONT_SIZE: number;
+    static DEFAULT_FONT_COLOR: string;
+    static DEFAULT_FONT: string;
+    static GLOBAL_PADDING_X: number;
+    static GLOBAL_PADDING_Y: number;
+    game: Game;
+    style: any;
+    onAnimationComplete: Phaser.Signal;
+    protected _canUpdate: boolean;
+    protected _repeatTimer: Phaser.TimerEvent;
+    protected _delayTimer: Phaser.TimerEvent;
+    protected _lowercaseText: string;
+    protected _letterTime: number;
+    protected _textLength: number;
+    protected _textToAnimate: string[];
+    constructor(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object);
+    setText(text: string): Phaser.Text;
+    protected setResolution(): void;
+    protected _startTextAnimation(): void;
+    protected _updateTextAnimation(): boolean;
+    setColor(color: string): void;
+    resetColor(): void;
+    highlightPhrase(phrase: string, color: string, caseSensitive?: boolean): void;
+    animate(letterTime?: number, delay?: number): void;
+    stopAnimating: () => void;
+    roundPixel: () => void;
+    private static _addSettings(obj, settings);
+}

@@ -1,12 +1,17 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-PIXI.DisplayObject.prototype.centerPivot = function () {
+/// <reference path="../../lib.d.ts" />
+
+/**
+ * Centers the pivot point
+ */
+PIXI.DisplayObject.prototype.centerPivot = function() {
     this.pivot.set(this.width >> 1, this.height >> 1);
 };
-PIXI.DisplayObject.prototype.setPivot = function (pivotLocation) {
+
+/**
+ * Sets the location of the pivot point
+ * @param {String} pivotLocation one of 'center', 'r', 'l', 't', 'b', 'tl', 'tr', 'bl', 'br'
+ */
+PIXI.DisplayObject.prototype.setPivot = function(pivotLocation) {
     switch (pivotLocation.toLowerCase()) {
         case PIXI.DisplayObject.PIVOT_CENTER:
             this.centerPivot();
@@ -37,6 +42,7 @@ PIXI.DisplayObject.prototype.setPivot = function (pivotLocation) {
             break;
     }
 };
+
 PIXI.DisplayObject.PIVOT_CENTER = 'center';
 PIXI.DisplayObject.PIVOT_RIGHT = 'r';
 PIXI.DisplayObject.PIVOT_LEFT = 'l';
@@ -46,28 +52,58 @@ PIXI.DisplayObject.PIVOT_TOP_LEFT = 'tl';
 PIXI.DisplayObject.PIVOT_TOP_RIGHT = 'tr';
 PIXI.DisplayObject.PIVOT_BOTTOM_LEFT = 'bl';
 PIXI.DisplayObject.PIVOT_BOTTOM_RIGHT = 'br';
-PIXI.DisplayObject.prototype.addOverSound = function (marker, volume) {
+
+
+/**
+ * addOverSound adds a hover sound to any displayObject
+ * @param {String} marker the sound marker to play
+ * @param {Number} volume the volume of the sound
+ */
+PIXI.DisplayObject.prototype.addOverSound = function(marker, volume) {
     if (!this.inputEnabled)
         this.inputEnabled = true;
+
     this.overSoundMarker = marker;
     this.overSoundVolume = volume;
+
     this.events.onInputOver.add(this.playOverSound, this);
 };
-PIXI.DisplayObject.prototype.addOutSound = function (marker, volume) {
+
+/**
+ * addOutSound adds a over sound to any displayObject
+ * @param {String} marker the sound marker to play
+ * @param {Number} volume the volume of the sound
+ */
+PIXI.DisplayObject.prototype.addOutSound = function(marker, volume) {
     if (!this.inputEnabled)
         this.inputEnabled = true;
+
     this.outSoundMarker = marker;
     this.outSoundVolume = volume;
+
     this.events.onInputOut.add(this.playOutSound, this);
 };
-PIXI.DisplayObject.prototype.addDownSound = function (marker, volume) {
+
+/**
+ * addDownSound adds a down sound to any displayObject
+ * @param {String} marker the sound marker to play
+ * @param {Number} volume the volume of the sound
+ */
+PIXI.DisplayObject.prototype.addDownSound = function(marker, volume) {
     if (!this.inputEnabled)
         this.inputEnabled = true;
+
     this.downSoundMarker = marker;
     this.downSoundVolume = volume;
+
     this.events.onInputDown.add(this.playDownSound, this);
 };
-PIXI.DisplayObject.prototype.playOverSound = function () {
+
+/**
+ * playOverSound plays the over sound
+ * @return {void}
+ */
+PIXI.DisplayObject.prototype.playOverSound = function() {
     if (this.overSound && this.overSound.isPlaying) {
         this.overSound.stop();
     }
@@ -75,31 +111,46 @@ PIXI.DisplayObject.prototype.playOverSound = function () {
         this.outSound.stop();
     }
     if (typeof this.overSoundMarker === 'undefined') {
-        console.log('no over sound defined');
+        console.log('no over sound defined')
         return null;
     }
     this.overSound = this.game.audio.playAudio(this.overSoundMarker, this.overSoundVolume);
     return this.overSound;
 };
-PIXI.DisplayObject.prototype.playOutSound = function () {
+
+/**
+ * playOutSound plays the out sound
+ * @return {void}
+ */
+PIXI.DisplayObject.prototype.playOutSound = function() {
     this.stopSounds();
     if (typeof this.outSoundMarker === 'undefined') {
-        console.log('no out sound defined');
+        console.log('no out sound defined')
         return null;
     }
     this.outSound = this.game.audio.playAudio(this.outSoundMarker, this.outSoundVolume);
     return this.outSound;
 };
-PIXI.DisplayObject.prototype.playDownSound = function () {
+
+/**
+ * playDownSound plays the down sound
+ * @return {void}
+ */
+PIXI.DisplayObject.prototype.playDownSound = function() {
     this.stopSounds();
     if (typeof this.downSoundMarker === 'undefined') {
-        console.log('no down sound defined');
+        console.log('no down sound defined')
         return null;
     }
     this.downSound = this.game.audio.playAudio(this.downSoundMarker, this.downSoundVolume);
     return this.downSound;
 };
-PIXI.DisplayObject.prototype.stopSounds = function () {
+
+/**
+ * stopSounds stops the over, out and down sounds
+ * @return {void}
+ */
+PIXI.DisplayObject.prototype.stopSounds = function() {
     if (this.overSound && this.overSound.isPlaying) {
         this.overSound.stop();
     }
@@ -110,12 +161,13 @@ PIXI.DisplayObject.prototype.stopSounds = function () {
         this.downSound.stop();
     }
 };
+
 Object.defineProperty(PIXI.DisplayObject.prototype, "scales", {
-    get: function () {
+    get: function() {
         return this.scale.x;
     },
-    set: function (value) {
+
+    set: function(value) {
         this.scale.set(value, value);
     }
 });
-//# sourceMappingURL=dijon.js.map

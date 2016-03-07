@@ -1,0 +1,32 @@
+import Game from './Game';
+export default class AudioManager {
+    game: Game;
+    private _defaultVolume;
+    private _sprites;
+    private _sounds;
+    private _markerLookup;
+    constructor();
+    private _addAudio(key, isAudioSprite?);
+    private _parseAudioSprite(key, audioSprite);
+    private _allowMultiple(sound);
+    private _getKeyFromMarkerName(marker);
+    private _playSpriteMarker(key, marker, volume?, loop?, forceRestart?);
+    private _stopSpriteMarker(key, marker);
+    private _stopSound(sound);
+    addAudio(key: string, isAudioSprite?: boolean): Phaser.AudioSprite | Phaser.Sound;
+    addSound(key: any): Phaser.Sound;
+    addAudioSprite(key: string): Phaser.AudioSprite;
+    playAudio(marker: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
+    playDelayedAudio(delay: number, marker: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
+    playSound(key: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
+    playSpriteMarker(marker: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
+    playDelayedSound(delay: number, key: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
+    playDelayedSpriteMarker(delay: number, marker: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
+    stopAudio(marker: string): void;
+    stopSound(key: string): void;
+    stopSpriteMarker(marker: string): void;
+    removeSound(key: any): boolean;
+    removeSprite(key: string): void;
+    fade(sound: Phaser.Sound, volume: number, time: number, stop?: boolean): Phaser.Tween;
+    defaultVolume: number;
+}
