@@ -3,8 +3,8 @@
 
 module dijon.core {
     export class AnalyticsManager {
-        
-        constructor(public enabled:boolean = true, public category:string = null) { }
+
+        constructor(public enabled: boolean = true, public category: string = null) { }
 
         public trackEvent(action: string = null, label: string = null, value: string = null) {
             if (!this.active || !this.enabled) {
@@ -26,7 +26,7 @@ module dijon.core {
             }
         }
 
-        trackOmnitureEvent(gameName:string, activity:string, isGameEvent:boolean) {
+        trackOmnitureEvent(gameName: string, activity: string, isGameEvent: boolean) {
             if (!this.enabled) {
                 return;
             }

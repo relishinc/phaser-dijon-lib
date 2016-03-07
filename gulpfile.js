@@ -26,6 +26,7 @@ gulp.task('uglify', function(){
       .pipe(gulp.dest('build'));
 });
 
+
 gulp.task('compile', function(done){
   return sequence('lib', 'uglify', done); 
 });
