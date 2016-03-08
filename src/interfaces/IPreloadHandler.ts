@@ -1,5 +1,5 @@
 /// <reference path="../lib.d.ts" />
-/// <reference path="./ITransitionHandler" />
+/// <reference path="./ITransitionHandler.ts" />
 
 module dijon.interfaces {
 	export interface IPreloadHandler extends ITransitionHandler {

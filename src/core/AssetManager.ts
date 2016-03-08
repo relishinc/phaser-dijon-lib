@@ -1,7 +1,7 @@
-/// <reference path="../mvc/Application" />
-/// <reference path="./Game" />
-/// <reference path="../interfaces/INotifier" />
-/// <reference path="../utils/Notifications" />
+/// <reference path="../mvc/Application.ts" />
+/// <reference path="./Game.ts" />
+/// <reference path="../interfaces/INotifier.ts" />
+/// <reference path="../utils/Notifications.ts" />
 
 module dijon.core {
     export interface IAsset {

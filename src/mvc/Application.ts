@@ -1,9 +1,9 @@
-/// <reference path="./Mediator" />
-/// <reference path="./Model" />
-/// <reference path="../utils/Device" />
-/// <reference path="../interfaces/IObserver" />
-/// <reference path="../interfaces/INotifier" />
-/// <reference path="../core/Game" />
+/// <reference path="./Mediator.ts" />
+/// <reference path="./Model.ts" />
+/// <reference path="../utils/Device.ts" />
+/// <reference path="../interfaces/IObserver.ts" />
+/// <reference path="../interfaces/INotifier.ts" />
+/// <reference path="../core/Game.ts" />
 
 module dijon.mvc {
     export class Application implements interfaces.INotifier {

@@ -1,7 +1,7 @@
-/// <reference path="../display/Sprite" />
-/// <reference path="../display/Text" />
-/// <reference path="../display/Group" />
-/// <reference path="./Component" />
+/// <reference path="../display/Sprite.ts" />
+/// <reference path="../display/Text.ts" />
+/// <reference path="../display/Group.ts" />
+/// <reference path="./Component.ts" />
 
 module dijon.core {
 	export class GameObjectFactory extends Phaser.GameObjectFactory {

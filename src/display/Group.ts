@@ -1,7 +1,7 @@
-/// <reference path="../mvc/Application" />
-/// <reference path="../core/Game" />
-/// <reference path="../core/GameObjectFactory" />
-/// <reference path="../core/Component" />
+/// <reference path="../mvc/Application.ts" />
+/// <reference path="../core/Game.ts" />
+/// <reference path="../core/GameObjectFactory.ts" />
+/// <reference path="../core/Component.ts" />
 
 module dijon.display {
 	export class Group extends Phaser.Group {

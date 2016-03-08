@@ -1,11 +1,11 @@
-/// <reference path="./AssetManager" />
-/// <reference path="./SequenceManager" />
-/// <reference path="./TransitionManager" />
-/// <reference path="./StorageManager" />
-/// <reference path="./AudioManager" />
-/// <reference path="./AnalyticsManager" />
-/// <reference path="./GameObjectFactory" />
-/// <reference path="../interfaces/IGameConfig" />
+/// <reference path="./AssetManager.ts" />
+/// <reference path="./SequenceManager.ts" />
+/// <reference path="./TransitionManager.ts" />
+/// <reference path="./StorageManager.ts" />
+/// <reference path="./AudioManager.ts" />
+/// <reference path="./AnalyticsManager.ts" />
+/// <reference path="./GameObjectFactory.ts" />
+/// <reference path="../interfaces/IGameConfig.ts" />
 /// <reference path="../utils/addons.ts" />
 
 module dijon.core {

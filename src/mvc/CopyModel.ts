@@ -1,6 +1,6 @@
-/// <reference path="../core/Game" />
-/// <reference path="./Application" />
-/// <reference path="./Model" />
+/// <reference path="../core/Game.ts" />
+/// <reference path="./Application.ts" />
+/// <reference path="./Model.ts" />
 
 module dijon.mvc {
 	export class CopyModel extends Model {

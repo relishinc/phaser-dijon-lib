@@ -1,6 +1,6 @@
-/// <reference path="./Application" />
-/// <reference path="../core/Game" />
-/// <reference path="../interfaces/INotification" />
+/// <reference path="./Application.ts" />
+/// <reference path="../core/Game.ts" />
+/// <reference path="../interfaces/INotification.ts" />
 
 module dijon.mvc {
 	export class Notification implements interfaces.INotification {

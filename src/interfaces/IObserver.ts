@@ -1,4 +1,4 @@
-/// <reference path="./INotification" />
+/// <reference path="./INotification.ts" />
 
 module dijon.interfaces {
 	export interface IObserver {

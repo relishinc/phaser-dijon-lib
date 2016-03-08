@@ -1,6 +1,6 @@
-/// <reference path="../mvc/Application" />
-/// <reference path="../core/Game" />
-/// <reference path="../core/GameObjectFactory" />
+/// <reference path="../mvc/Application.ts" />
+/// <reference path="../core/Game.ts" />
+/// <reference path="../core/GameObjectFactory.ts" />
 
 module dijon.core {
     export class State extends Phaser.State {

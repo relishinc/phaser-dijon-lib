@@ -1,8 +1,8 @@
-/// <reference path="./Application" />
-/// <reference path="./Notification" />
-/// <reference path="../core/Game" />
-/// <reference path="../interfaces/IObserver" />
-/// <reference path="../interfaces/INotification" />
+/// <reference path="./Application.ts" />
+/// <reference path="./Notification.ts" />
+/// <reference path="../core/Game.ts" />
+/// <reference path="../interfaces/IObserver.ts" />
+/// <reference path="../interfaces/INotification.ts" />
 
 module dijon.mvc {
 	export class Mediator implements interfaces.IObserver {

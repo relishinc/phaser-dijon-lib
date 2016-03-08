@@ -1,8 +1,8 @@
-/// <reference path="../mvc/Application" />
-/// <reference path="./Game" />
-/// <reference path="../interfaces/ITransition" />
-/// <reference path="../interfaces/ITransitionHandler" />
-/// <reference path="../interfaces/IPreloadHandler" />
+/// <reference path="../mvc/Application.ts" />
+/// <reference path="./Game.ts" />
+/// <reference path="../interfaces/ITransition.ts" />
+/// <reference path="../interfaces/ITransitionHandler.ts" />
+/// <reference path="../interfaces/IPreloadHandler.ts" />
 
 module dijon.core {
     export class TransitionManager {

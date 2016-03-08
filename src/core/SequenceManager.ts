@@ -1,5 +1,5 @@
-/// <reference path="../mvc/Application" />
-/// <reference path="./Game" />
+/// <reference path="../mvc/Application.ts" />
+/// <reference path="./Game.ts" />
 
 module dijon.core {
     export class SequenceManager {

@@ -1,5 +1,5 @@
-/// <reference path="../core/Game" />
-/// <reference path="../mvc/Application" />
+/// <reference path="../core/Game.ts" />
+/// <reference path="../mvc/Application.ts" />
 
 
 module dijon.core {

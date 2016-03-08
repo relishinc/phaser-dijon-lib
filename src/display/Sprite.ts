@@ -1,6 +1,6 @@
-/// <reference path="../mvc/Application" />
-/// <reference path="../core/Game" />
-/// <reference path="../core/Component" />
+/// <reference path="../mvc/Application.ts" />
+/// <reference path="../core/Game.ts" />
+/// <reference path="../core/Component.ts" />
 
 module dijon.display {
 	export class Sprite extends Phaser.Sprite {
