@@ -123,20 +123,256 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
             }
         });
     }
+    exports_1("bootstrap", bootstrap);
     return {
         setters:[],
         execute: function() {
-            exports_1("default",bootstrap);
         }
     }
 });
-System.register("dijon/utils/Notifications", [], function(exports_2, context_2) {
+System.register("dijon/interfaces", [], function(exports_2, context_2) {
     "use strict";
     var __moduleName = context_2 && context_2.id;
-    var Notifications;
     return {
         setters:[],
         execute: function() {
+        }
+    }
+});
+System.register("dijon/mvc", ["dijon/application"], function(exports_3, context_3) {
+    "use strict";
+    var __moduleName = context_3 && context_3.id;
+    var application_1;
+    var Model, CopyModel, Mediator, Notification;
+    return {
+        setters:[
+            function (application_1_1) {
+                application_1 = application_1_1;
+            }],
+        execute: function() {
+            Model = (function () {
+                function Model(dataKey, modelName) {
+                    if (dataKey === void 0) { dataKey = null; }
+                    if (modelName === void 0) { modelName = null; }
+                    this.modelName = modelName;
+                    this.app = application_1.Application.getInstance();
+                    this.game = this.app.game;
+                    if (dataKey) {
+                        this.setData(dataKey);
+                    }
+                    this.app.registerModel(this);
+                }
+                Model.prototype.getKeyExists = function (key) {
+                    return this.game.cache.getJSON(key) !== null;
+                };
+                Model.prototype.setData = function (dataKey) {
+                    if (!this.getKeyExists(dataKey)) {
+                        console.log('Model:: cannot set data from key ' + dataKey + '. Is it in the Phaser cache?');
+                        return false;
+                    }
+                    this._data = this.game.cache.getJSON(dataKey);
+                    return this._data;
+                };
+                Model.prototype.getData = function () {
+                    return this._data;
+                };
+                Model.prototype.destroy = function () {
+                    this.app.removeModel(this);
+                };
+                Object.defineProperty(Model.prototype, "name", {
+                    get: function () {
+                        return this.modelName || Model.MODEL_NAME;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Model.MODEL_NAME = 'Model';
+                return Model;
+            }());
+            exports_3("Model", Model);
+            CopyModel = (function (_super) {
+                __extends(CopyModel, _super);
+                function CopyModel(dataKey) {
+                    if (dataKey === void 0) { dataKey = null; }
+                    _super.call(this, dataKey);
+                    this._languages = {};
+                    this._languages['en'] = this._data;
+                }
+                CopyModel.prototype.getCopy = function (groupId, itemId) {
+                    return this.getCopyGroup(groupId)[itemId];
+                };
+                CopyModel.prototype.getCopyGroup = function (groupId) {
+                    return this._data[groupId];
+                };
+                CopyModel.prototype.addLanguage = function (languageId, dataKey) {
+                    if (!this.getKeyExists(dataKey)) {
+                        throw new Error('cannot add an alternate language from key ' + dataKey + '. Is it in the Phaser cache?');
+                    }
+                    this._languages[languageId] = this.game.cache.getJSON(dataKey);
+                };
+                CopyModel.prototype.changeLanguage = function (languageId) {
+                    if (typeof this._languages[languageId] === 'undefined')
+                        throw new Error('there is no language ' + languageId);
+                    this._data = this._languages[languageId];
+                };
+                Object.defineProperty(CopyModel.prototype, "name", {
+                    get: function () {
+                        return CopyModel.MODEL_NAME;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                CopyModel.MODEL_NAME = 'copyModel';
+                return CopyModel;
+            }(Model));
+            exports_3("CopyModel", CopyModel);
+            Mediator = (function () {
+                function Mediator(_viewComponent, autoReg, mediatorName) {
+                    if (_viewComponent === void 0) { _viewComponent = null; }
+                    if (autoReg === void 0) { autoReg = true; }
+                    if (mediatorName === void 0) { mediatorName = null; }
+                    this._viewComponent = _viewComponent;
+                    this.mediatorName = null;
+                    this.app = application_1.Application.getInstance();
+                    this.game = this.app.game;
+                    this.mediatorName = mediatorName;
+                    if (autoReg) {
+                        this.register();
+                    }
+                }
+                Mediator.prototype.register = function () {
+                    this.app.registerMediator(this);
+                };
+                Mediator.prototype.remove = function () {
+                    this.app.removeMediator(this);
+                };
+                Mediator.prototype.onRegister = function () {
+                };
+                Mediator.prototype.onRemoved = function () {
+                };
+                Mediator.prototype.destroy = function () {
+                    this.remove();
+                };
+                Mediator.prototype.listNotificationInterests = function () {
+                    return [];
+                };
+                Mediator.prototype.handleNotification = function (notification) {
+                };
+                Mediator.prototype.sendNotification = function (notificationName, notificationBody) {
+                    this.app.sendNotification(notificationName, notificationBody);
+                };
+                Object.defineProperty(Mediator.prototype, "viewComponent", {
+                    get: function () {
+                        return this._viewComponent;
+                    },
+                    set: function (viewComponent) {
+                        this._viewComponent = viewComponent;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Mediator.prototype, "name", {
+                    get: function () {
+                        return this.mediatorName || Mediator.MEDIATOR_NAME;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Mediator.MEDIATOR_NAME = 'Mediator';
+                return Mediator;
+            }());
+            exports_3("Mediator", Mediator);
+            Notification = (function () {
+                function Notification(_name, _body) {
+                    if (_body === void 0) { _body = null; }
+                    this._name = _name;
+                    this._body = _body;
+                }
+                Notification.prototype.getName = function () {
+                    return this._name;
+                };
+                Notification.prototype.setBody = function (body) {
+                    this._body = body;
+                };
+                Notification.prototype.getBody = function () {
+                    return this._body;
+                };
+                Notification.prototype.destroy = function () {
+                    this._body = null;
+                    this._name = null;
+                };
+                return Notification;
+            }());
+            exports_3("Notification", Notification);
+        }
+    }
+});
+System.register("dijon/utils", [], function(exports_4, context_4) {
+    "use strict";
+    var __moduleName = context_4 && context_4.id;
+    var Device, Notifications;
+    return {
+        setters:[],
+        execute: function() {
+            Device = (function () {
+                function Device() {
+                }
+                Object.defineProperty(Device, "mobile", {
+                    get: function () {
+                        return Device.mobileOS !== Device.UNKNOWN;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Device, "mobileOS", {
+                    get: function () {
+                        var userAgent = window.navigator.userAgent || window.navigator.vendor || window['opera'];
+                        if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
+                            return Device.IOS;
+                        }
+                        else if (userAgent.match(/Android/i)) {
+                            return Device.ANDROID;
+                        }
+                        else {
+                            return Device.UNKNOWN;
+                        }
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Device, "browser", {
+                    get: function () {
+                        var ua = navigator.userAgent.toLowerCase();
+                        return {
+                            firefox: ua.indexOf('firefox') > -1,
+                            ie: ua.indexOf('ie') > -1,
+                            safari: ua.indexOf('safari') > -1,
+                            chrome: ua.indexOf('chrome') > -1,
+                        };
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Device, "pixelRatio", {
+                    get: function () {
+                        return typeof window.devicePixelRatio !== undefined ? window.devicePixelRatio : 1;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Device, "customPixelRatio", {
+                    get: function () {
+                        return Device.pixelRatio >= 1.5 ? 2 : 1;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Device.IOS = 'iOS';
+                Device.ANDROID = 'android';
+                Device.UNKNOWN = 'unknown';
+                return Device;
+            }());
+            exports_4("Device", Device);
             Notifications = (function () {
                 function Notifications() {
                 }
@@ -144,33 +380,447 @@ System.register("dijon/utils/Notifications", [], function(exports_2, context_2) 
                 Notifications.ASSET_MANAGER_ASSETS_CLEARED = 'dijonAssetManagerAssetsCleared';
                 return Notifications;
             }());
-            exports_2("default", Notifications);
+            exports_4("Notifications", Notifications);
         }
     }
 });
-System.register("dijon/interfaces", [], function(exports_3, context_3) {
+System.register("dijon/display", ["dijon/application"], function(exports_5, context_5) {
     "use strict";
-    var __moduleName = context_3 && context_3.id;
-    return {
-        setters:[],
-        execute: function() {
-        }
-    }
-});
-System.register("dijon/core/AssetManager", ["dijon/Application", "dijon/utils/Notifications"], function(exports_4, context_4) {
-    "use strict";
-    var __moduleName = context_4 && context_4.id;
-    var Application_1, Notifications_1;
-    var AssetManager;
+    var __moduleName = context_5 && context_5.id;
+    var application_2;
+    var Sprite, InvisibleButton, Group, Text, Component;
     return {
         setters:[
-            function (Application_1_1) {
-                Application_1 = Application_1_1;
-            },
-            function (Notifications_1_1) {
-                Notifications_1 = Notifications_1_1;
+            function (application_2_1) {
+                application_2 = application_2_1;
             }],
         execute: function() {
+            Sprite = (function (_super) {
+                __extends(Sprite, _super);
+                function Sprite(x, y, key, frame, name, components) {
+                    if (name === void 0) { name = "dSprite"; }
+                    if (components === void 0) { components = null; }
+                    _super.call(this, application_2.Application.getInstance().game, x, y, key, frame);
+                    this.name = name;
+                    this._hasComponents = false;
+                    this._componentKeys = [];
+                    this._components = {};
+                    this.addComponents = function (components) {
+                        if (typeof components.length === 'undefined')
+                            throw new Error('Dijon.UIGroup components must be an array');
+                        while (components.length > 0)
+                            this.addComponent(components.shift());
+                    };
+                    if (this.autoBuild) {
+                        this.init();
+                        this.buildInterface();
+                        if (components)
+                            this.addComponents(components);
+                    }
+                }
+                Sprite.prototype.update = function () {
+                    if (this._hasComponents)
+                        this.updateComponents();
+                };
+                Sprite.prototype.destroy = function () {
+                    this.removeAllComponents();
+                    _super.prototype.destroy.call(this);
+                };
+                Sprite.prototype.init = function () { };
+                Sprite.prototype.buildInterface = function () { };
+                Sprite.prototype._updateComponentKeys = function () {
+                    this._componentKeys = Object.keys(this._components);
+                    this._hasComponents = this._componentKeys.length > 0;
+                };
+                Sprite.prototype.addComponent = function (component) {
+                    component.setOwner(this);
+                    component.init();
+                    component.buildInterface();
+                    this._components[component.name] = component;
+                    this._updateComponentKeys();
+                    return component;
+                };
+                ;
+                Sprite.prototype.updateComponents = function () {
+                    var _this = this;
+                    this._componentKeys.forEach(function (componentName) {
+                        _this.updateComponent(componentName);
+                    });
+                };
+                Sprite.prototype.updateComponent = function (componentName) {
+                    this._components[componentName].update();
+                };
+                Sprite.prototype.removeAllComponents = function () {
+                    while (this._componentKeys.length > 0) {
+                        this.removeComponent(this._componentKeys.pop());
+                    }
+                };
+                Sprite.prototype.removeComponent = function (componentName) {
+                    if (typeof this._components[componentName] === 'undefined')
+                        return;
+                    this._components[componentName].destroy();
+                    this._components[componentName] = null;
+                    delete this._components[componentName];
+                    this._updateComponentKeys();
+                };
+                Object.defineProperty(Sprite.prototype, "resolution", {
+                    get: function () {
+                        return this.texture.baseTexture.resolution;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Sprite.prototype, "autoBuild", {
+                    get: function () {
+                        return true;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                return Sprite;
+            }(Phaser.Sprite));
+            exports_5("Sprite", Sprite);
+            InvisibleButton = (function (_super) {
+                __extends(InvisibleButton, _super);
+                function InvisibleButton(x, y, name, w, h) {
+                    _super.call(this, x, y, null, null, name);
+                    this.setSize(w, h);
+                }
+                InvisibleButton.prototype.init = function () {
+                    this.inputEnabled = true;
+                };
+                InvisibleButton.prototype.buildInterface = function () {
+                    this._addHitRect();
+                };
+                InvisibleButton.prototype._addHitRect = function () {
+                    if (this._hitWidth > 0 && this._hitHeight > 0) {
+                        this.hitArea = new Phaser.Rectangle(0, 0, this._hitWidth, this._hitHeight);
+                    }
+                };
+                InvisibleButton.prototype.setSize = function (w, h) {
+                    this._hitWidth = w || 0;
+                    this._hitHeight = h || 0;
+                    this._addHitRect();
+                };
+                return InvisibleButton;
+            }(Sprite));
+            exports_5("InvisibleButton", InvisibleButton);
+            Group = (function (_super) {
+                __extends(Group, _super);
+                function Group(x, y, name, addToStage, components, enableBody, physicsBodyType) {
+                    if (x === void 0) { x = 0; }
+                    if (y === void 0) { y = 0; }
+                    if (name === void 0) { name = "dGroup"; }
+                    if (addToStage === void 0) { addToStage = false; }
+                    if (components === void 0) { components = null; }
+                    _super.call(this, application_2.Application.getInstance().game, null, name, addToStage, enableBody, physicsBodyType);
+                    this.name = name;
+                    this._hasComponents = false;
+                    this._componentKeys = [];
+                    this._components = {};
+                    this._mediator = null;
+                    this.addComponents = function (components) {
+                        if (typeof components.length === 'undefined')
+                            throw new Error('Dijon.UIGroup components must be an array');
+                        while (components.length > 0)
+                            this.addComponent(components.shift());
+                    };
+                    this.position.set(x, y);
+                    if (this.autoBuild) {
+                        this.init();
+                    }
+                    if (!addToStage)
+                        this.game.add.existing(this);
+                    if (this.autoBuild) {
+                        this.buildInterface();
+                        if (components)
+                            this.addComponents(components);
+                    }
+                }
+                Group.prototype.update = function () {
+                    _super.prototype.update.call(this);
+                    if (this._hasComponents)
+                        this.updateComponents();
+                };
+                Group.prototype.destroy = function () {
+                    this.removeAllComponents();
+                    this.removeMediator();
+                    _super.prototype.destroy.call(this);
+                };
+                Group.prototype.init = function () { };
+                Group.prototype.buildInterface = function () { };
+                Group.prototype._updateComponentKeys = function () {
+                    this._componentKeys = Object.keys(this._components);
+                    this._hasComponents = this._componentKeys.length > 0;
+                };
+                Group.prototype.addComponent = function (component) {
+                    component.setOwner(this);
+                    component.init();
+                    component.buildInterface();
+                    this._components[component.name] = component;
+                    this._updateComponentKeys();
+                    return component;
+                };
+                Group.prototype.updateComponents = function () {
+                    var _this = this;
+                    this._componentKeys.forEach(function (componentName) {
+                        _this.updateComponent(componentName);
+                    });
+                };
+                Group.prototype.updateComponent = function (componentName) {
+                    this._components[componentName].update();
+                };
+                Group.prototype.removeAllComponents = function () {
+                    while (this._componentKeys.length > 0) {
+                        this.removeComponent(this._componentKeys.pop());
+                    }
+                };
+                Group.prototype.removeComponent = function (componentName) {
+                    if (typeof this._components[componentName] === 'undefined')
+                        return;
+                    this._components[componentName].destroy();
+                    this._components[componentName] = null;
+                    delete this._components[componentName];
+                    this._updateComponentKeys();
+                };
+                Group.prototype.removeMediator = function () {
+                    if (!this._mediator) {
+                        return;
+                    }
+                    this._mediator.destroy();
+                    this._mediator = null;
+                };
+                Object.defineProperty(Group.prototype, "addInternal", {
+                    get: function () {
+                        this.game.add.targetGroup = this;
+                        return this.game.add;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Group.prototype, "autoBuild", {
+                    get: function () {
+                        return true;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                return Group;
+            }(Phaser.Group));
+            exports_5("Group", Group);
+            Text = (function (_super) {
+                __extends(Text, _super);
+                function Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings) {
+                    if (text === void 0) { text = ""; }
+                    if (fontSize === void 0) { fontSize = Text.DEFAULT_FONT_SIZE; }
+                    if (fontColor === void 0) { fontColor = Text.DEFAULT_FONT_COLOR; }
+                    if (fontAlign === void 0) { fontAlign = 'left'; }
+                    if (wordWrap === void 0) { wordWrap = false; }
+                    if (width === void 0) { width = 0; }
+                    if (lineSpacing === void 0) { lineSpacing = 0; }
+                    if (settings === void 0) { settings = null; }
+                    _super.call(this, application_2.Application.getInstance().game, x, y, text, Text._addSettings({
+                        font: fontSize + 'px ' + fontName,
+                        fill: fontColor,
+                        align: fontAlign,
+                        wordWrap: wordWrap,
+                        wordWrapWidth: width
+                    }, settings));
+                    this.lineSpacing = lineSpacing;
+                    this.onAnimationComplete = new Phaser.Signal();
+                    this._canUpdate = false;
+                    this._textToAnimate = [];
+                    this.stopAnimating = function () {
+                        this._canUpdate = false;
+                        this._textToAnimate = null;
+                        this.game.time.events.remove(this._delayTimer);
+                        this.game.time.events.remove(this._repeatTimer);
+                    };
+                    this.roundPixel = function () {
+                        this.position.set(Math.round(this.x), Math.round(this.y));
+                    };
+                    this.text = text.replace(/'/g, "\'");
+                    this._lowercaseText = this.text.toLowerCase();
+                    this.setResolution();
+                }
+                Text.prototype.setText = function (text) {
+                    _super.prototype.setText.call(this, text);
+                    this._lowercaseText = this.text.toLowerCase();
+                    this.setResolution();
+                    return this;
+                };
+                Text.prototype.setResolution = function () {
+                    if (!this.game || !this.game.device.cocoonJS) {
+                        return;
+                    }
+                    else if (this.game.device.cocoonJS) {
+                        this.resolution = this.game.resolution * this.game.resolution;
+                    }
+                };
+                Text.prototype._startTextAnimation = function () {
+                    this._canUpdate = true;
+                    this._repeatTimer = this.game.time.events.repeat(this._letterTime * 100, this._textLength, this._updateTextAnimation, this);
+                };
+                Text.prototype._updateTextAnimation = function () {
+                    if (!this._canUpdate || !this._textToAnimate) {
+                        return false;
+                    }
+                    var index = this._textLength - this._textToAnimate.length;
+                    this.addColor(this.style.fill, index);
+                    this.addColor('rgba(0,0,0,0)', index + 1);
+                    this._textToAnimate.shift();
+                    if (this._textToAnimate.length === 0) {
+                        this.onAnimationComplete.dispatch();
+                    }
+                };
+                Text.prototype.setColor = function (color) {
+                    return this.highlightPhrase(this.text, color, false);
+                };
+                Text.prototype.resetColor = function () {
+                    return this.highlightPhrase(this.text, this.style.fill, false);
+                };
+                Text.prototype.highlightPhrase = function (phrase, color, caseSensitive) {
+                    if (caseSensitive === void 0) { caseSensitive = false; }
+                    var text = caseSensitive ? this.text : this._lowercaseText;
+                    phrase = caseSensitive ? phrase : phrase.toLowerCase();
+                    var len = phrase.length;
+                    var startIndex = text.indexOf(phrase);
+                    var endIndex = startIndex + len;
+                    while (startIndex <= endIndex) {
+                        this.addColor(color, startIndex);
+                        startIndex++;
+                    }
+                    this.addColor(this.style.fill, endIndex);
+                };
+                Text.prototype.animate = function (letterTime, delay) {
+                    if (letterTime === void 0) { letterTime = 0.1; }
+                    if (delay === void 0) { delay = 0; }
+                    this.game.time.events.remove(this._delayTimer);
+                    this.game.time.events.remove(this._repeatTimer);
+                    this._letterTime = letterTime;
+                    this._textLength = this.text.length;
+                    this._textToAnimate = this.text.split('');
+                    var startIndex = 0;
+                    var endIndex = this._textLength;
+                    while (startIndex <= endIndex) {
+                        this.addColor('rgba(0,0,0,0)', startIndex);
+                        startIndex++;
+                    }
+                    this._delayTimer = this.game.time.events.add(delay * Phaser.Timer.SECOND, this._startTextAnimation, this);
+                };
+                Text._addSettings = function (obj, settings) {
+                    if (!settings)
+                        return obj;
+                    for (var prop in settings) {
+                        if (settings.hasOwnProperty(prop)) {
+                            obj[prop] = settings[prop];
+                        }
+                    }
+                    return obj;
+                };
+                Text.DEFAULT_FONT_SIZE = 12;
+                Text.DEFAULT_FONT_COLOR = "#000000";
+                Text.DEFAULT_FONT = "Helvetica Neue, Arial";
+                Text.GLOBAL_PADDING_X = 0;
+                Text.GLOBAL_PADDING_Y = 0;
+                return Text;
+            }(Phaser.Text));
+            exports_5("Text", Text);
+            Component = (function () {
+                function Component() {
+                    this.game = application_2.Application.getInstance().game;
+                    this.name = 'Component';
+                }
+                Component.prototype.setOwner = function (owner) {
+                    this.owner = owner;
+                };
+                Component.prototype.init = function () { };
+                Component.prototype.buildInterface = function () { };
+                Component.prototype.update = function () { };
+                Component.prototype.destroy = function () { };
+                return Component;
+            }());
+            exports_5("Component", Component);
+        }
+    }
+});
+System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/display"], function(exports_6, context_6) {
+    "use strict";
+    var __moduleName = context_6 && context_6.id;
+    var application_3, utils_1, display_1;
+    var AnalyticsManager, AnalyticsException, AssetManager, AudioManager, Game, GameObjectFactory, SequenceManager, State, StorageManager, TransitionManager;
+    return {
+        setters:[
+            function (application_3_1) {
+                application_3 = application_3_1;
+            },
+            function (utils_1_1) {
+                utils_1 = utils_1_1;
+            },
+            function (display_1_1) {
+                display_1 = display_1_1;
+            }],
+        execute: function() {
+            AnalyticsManager = (function () {
+                function AnalyticsManager(enabled, category) {
+                    if (enabled === void 0) { enabled = true; }
+                    if (category === void 0) { category = null; }
+                    this.enabled = enabled;
+                    this.category = category;
+                }
+                AnalyticsManager.prototype.trackEvent = function (action, label, value) {
+                    if (action === void 0) { action = null; }
+                    if (label === void 0) { label = null; }
+                    if (value === void 0) { value = null; }
+                    if (!this.active || !this.enabled) {
+                        return;
+                    }
+                    if (!action) {
+                        throw new AnalyticsException('No action defined');
+                    }
+                    if (value) {
+                        this.ga('send', 'event', this.category, action, label, value);
+                    }
+                    else if (label) {
+                        this.ga('send', 'event', this.category, action, label);
+                    }
+                    else {
+                        this.ga('send', 'event', this.category, action);
+                    }
+                };
+                AnalyticsManager.prototype.trackOmnitureEvent = function (gameName, activity, isGameEvent) {
+                    if (!this.enabled) {
+                        return;
+                    }
+                    if (typeof window['trackFlashEvent'] === 'undefined')
+                        return false;
+                    window['trackFlashEvent'](gameName, activity, isGameEvent);
+                };
+                Object.defineProperty(AnalyticsManager.prototype, "active", {
+                    get: function () {
+                        return (window['ga']) ? true : false;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(AnalyticsManager.prototype, "ga", {
+                    get: function () {
+                        return window['ga'];
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                return AnalyticsManager;
+            }());
+            exports_6("AnalyticsManager", AnalyticsManager);
+            AnalyticsException = (function () {
+                function AnalyticsException(message) {
+                    this.message = message;
+                    this.name = 'AnalyticsException';
+                }
+                return AnalyticsException;
+            }());
+            exports_6("AnalyticsException", AnalyticsException);
             AssetManager = (function () {
                 function AssetManager() {
                     this._data = {};
@@ -214,7 +864,7 @@ System.register("dijon/core/AssetManager", ["dijon/Application", "dijon/utils/No
                     this._init();
                 }
                 AssetManager.prototype._init = function () {
-                    this.app = Application_1.default.getInstance();
+                    this.app = application_3.Application.getInstance();
                     this.game = this.app.game;
                     this.baseURL = '';
                     this.paths = null;
@@ -520,7 +1170,7 @@ System.register("dijon/core/AssetManager", ["dijon/Application", "dijon/utils/No
                     this._data = data;
                     this._loadData = {};
                     this._parseData();
-                    this.sendNotification(Notifications_1.default.ASSET_MANAGER_DATA_SET, this._data);
+                    this.sendNotification(utils_1.Notifications.ASSET_MANAGER_DATA_SET, this._data);
                 };
                 AssetManager.prototype.clearAssets = function (id, clearAudio, clearAtlasses, clearImages, clearText, clearJSON) {
                     if (clearAudio === void 0) { clearAudio = true; }
@@ -537,7 +1187,7 @@ System.register("dijon/core/AssetManager", ["dijon/Application", "dijon/utils/No
                         this.clearAsset(assets[i], clearAudio, clearAtlasses, clearImages, clearText, clearJSON);
                     }
                     this._completedLoads[id] = false;
-                    this.sendNotification(Notifications_1.default.ASSET_MANAGER_ASSETS_CLEARED, id);
+                    this.sendNotification(utils_1.Notifications.ASSET_MANAGER_ASSETS_CLEARED, id);
                 };
                 AssetManager.prototype.clearAsset = function (asset, clearAudio, clearAtlasses, clearImages, clearText, clearJSON) {
                     if (clearAudio === void 0) { clearAudio = true; }
@@ -668,295 +1318,14 @@ System.register("dijon/core/AssetManager", ["dijon/Application", "dijon/utils/No
                 AssetManager.RESOLUTION_3X = "@3x";
                 return AssetManager;
             }());
-            exports_4("default", AssetManager);
-        }
-    }
-});
-System.register("dijon/core/SequenceManager", ["dijon/Application"], function(exports_5, context_5) {
-    "use strict";
-    var __moduleName = context_5 && context_5.id;
-    var Application_2;
-    var SequenceManager;
-    return {
-        setters:[
-            function (Application_2_1) {
-                Application_2 = Application_2_1;
-            }],
-        execute: function() {
-            SequenceManager = (function () {
-                function SequenceManager() {
-                    this._defaultInterval = 20;
-                    this.game = Application_2.default.getInstance().game;
-                }
-                SequenceManager.prototype._executeMethod = function (sequence, context, callback, callbackContext) {
-                    var func = sequence.shift();
-                    if (typeof func !== 'undefined' && typeof context !== 'undefined' && context) {
-                        func.call(context);
-                    }
-                    if (sequence.length === 0 && callback && callbackContext) {
-                        callback.call(callbackContext);
-                    }
-                };
-                SequenceManager.prototype.run = function (sequence, context, interval, completeCallback, completeCallbackContext) {
-                    if (typeof context === 'undefined') {
-                        throw new Error('context must be provided for the sequence methods');
-                    }
-                    if (typeof interval === 'undefined') {
-                        interval = this._defaultInterval;
-                    }
-                    if (sequence.length === 0 && typeof completeCallback !== 'undefined' && typeof completeCallbackContext !== 'undefined') {
-                        completeCallback.call(completeCallbackContext);
-                        return;
-                    }
-                    if (interval === 0) {
-                        while (sequence.length > 0)
-                            this._executeMethod(sequence, context, typeof completeCallback === 'undefined' ? null : completeCallback, typeof completeCallbackContext === 'undefined' ? null : completeCallbackContext);
-                        return;
-                    }
-                    this.game.time.events.repeat(interval, sequence.length, this._executeMethod, this, sequence, context, typeof completeCallback === 'undefined' ? null : completeCallback, typeof completeCallbackContext === 'undefined' ? null : completeCallbackContext);
-                };
-                return SequenceManager;
-            }());
-            exports_5("default", SequenceManager);
-        }
-    }
-});
-System.register("dijon/core/TransitionManager", ["dijon/Application"], function(exports_6, context_6) {
-    "use strict";
-    var __moduleName = context_6 && context_6.id;
-    var Application_3;
-    var TransitionManager;
-    return {
-        setters:[
-            function (Application_3_1) {
-                Application_3 = Application_3_1;
-            }],
-        execute: function() {
-            TransitionManager = (function () {
-                function TransitionManager() {
-                    this.onTransitionOutComplete = new Phaser.Signal();
-                    this.onTransitionInComplete = new Phaser.Signal();
-                    this._transition = null;
-                    this._transitions = {};
-                    this._exceptions = {};
-                    this._fromState = null;
-                    this._toState = null;
-                    this.game = Application_3.default.getInstance().game;
-                }
-                TransitionManager.prototype._add = function (id, outHandler, preloadHandler, inHandler) {
-                    this._transitions[id] = {
-                        outHandler: outHandler,
-                        preloadHandler: preloadHandler,
-                        inHandler: inHandler
-                    };
-                };
-                TransitionManager.prototype._getTransition = function (inState, outState) {
-                    var transition = this._transitions[inState + '/' + outState];
-                    if (typeof transition === 'undefined')
-                        transition = this._transitions['all'];
-                    return typeof transition === 'undefined' ? null : transition;
-                };
-                TransitionManager.prototype._transitionInComplete = function () {
-                    this._transition = this._getTransition(this._fromState, this._toState);
-                    if (!this._transition)
-                        return false;
-                    if (typeof this._transition.preloadHandler.loadStart === 'function')
-                        this.game.asset.onLoadStart.addOnce(this._transition.preloadHandler.loadStart, this._transition.preloadHandler);
-                    if (typeof this._transition.preloadHandler.loadProgress === 'function') {
-                        this.game.asset.onFileComplete.add(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
-                    }
-                    this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this._preloadComplete, this);
-                    this.onTransitionInComplete.dispatch();
-                    this.game.changeState(this._toState);
-                };
-                TransitionManager.prototype._transitionOutComplete = function () {
-                    this._transition = null;
-                    this.onTransitionOutComplete.dispatch();
-                };
-                TransitionManager.prototype._preloadComplete = function () {
-                    this._transition = this._getTransition(this._fromState, this._toState);
-                    if (!this._transition)
-                        return false;
-                    this.game.asset.onFileComplete.remove(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
-                    if (typeof this._transition.preloadHandler.loadComplete === 'function')
-                        this._transition.preloadHandler.loadComplete();
-                };
-                TransitionManager.prototype._clearTransition = function () {
-                    this._transition.outHandler.transitionInComplete.remove(this._transitionOutComplete, this);
-                    this._transition.inHandler.transitionOutComplete.remove(this._transitionInComplete, this);
-                    this.game.asset.onLoadCompleteAndAudioDecoded.remove(this._preloadComplete, this);
-                    this.game.asset.onLoadStart.remove(this._transition.preloadHandler.loadStart, this._transition.preloadHandler);
-                    this.game.asset.onFileComplete.remove(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
-                    this._transition = null;
-                };
-                TransitionManager.prototype.add = function (fromState, toState, outHandler, preloadHandler, inHandler) {
-                    var args;
-                    if (arguments.length < 5) {
-                        if (fromState === 'all') {
-                            args = [].slice.call(arguments, 1);
-                            if (arguments.length === 2)
-                                return this._add('all', args[0], args[0], args[0]);
-                            else
-                                return this._add('all', args[0], args[1], args[2]);
-                        }
-                        else {
-                            args = [].slice.call(arguments, 2);
-                            return this._add(fromState + '/' + toState, args[0], args[0], args[0]);
-                        }
-                    }
-                    return this._add(fromState + '/' + toState, outHandler, preloadHandler, inHandler);
-                };
-                TransitionManager.prototype.addAll = function (handler) {
-                    return this._add('all', handler, handler, handler);
-                };
-                TransitionManager.prototype.addException = function (state) {
-                    this._exceptions[state] = true;
-                };
-                TransitionManager.prototype.remove = function (fromState, toState) {
-                    if (arguments.length === 1) {
-                        this._transitions[fromState] = null;
-                        delete this._transitions[fromState];
-                    }
-                    else {
-                        this._transitions[fromState + '/' + toState] = null;
-                        delete this._transitions[fromState + '/' + toState];
-                    }
-                };
-                TransitionManager.prototype.to = function (state) {
-                    if (this._transition)
-                        this._clearTransition();
-                    if (this._exceptions[state])
-                        return;
-                    this._fromState = this.game.state.current;
-                    this._toState = state;
-                    this._transition = this._getTransition(this._fromState, this._toState);
-                    if (!this._transition) {
-                        console.log('no transition found for:', this.game.state.current + ' to ' + state);
-                        this.game.changeState(this._toState);
-                    }
-                    this.transitionIn();
-                };
-                TransitionManager.prototype.transitionIn = function () {
-                    if (!this._transition)
-                        return;
-                    if (typeof this._transition.outHandler.transitionIn === 'function') {
-                        this._transition.outHandler.transitionInComplete.addOnce(this._transitionInComplete, this);
-                        this._transition.outHandler.transitionIn();
-                    }
-                };
-                TransitionManager.prototype.canTransitionOut = function () {
-                    return !this._exceptions[this.game.state.current] && this._transition && this._transition.inHandler && typeof this._transition.inHandler.transitionOut === 'function';
-                };
-                TransitionManager.prototype.transitionOut = function () {
-                    this._transition.inHandler.transitionOutComplete.addOnce(this._transitionOutComplete, this);
-                    this._transition.inHandler.transitionOut();
-                };
-                return TransitionManager;
-            }());
-            exports_6("default", TransitionManager);
-        }
-    }
-});
-System.register("dijon/core/StorageManager", ["dijon/Application"], function(exports_7, context_7) {
-    "use strict";
-    var __moduleName = context_7 && context_7.id;
-    var Application_4;
-    var StorageManager;
-    return {
-        setters:[
-            function (Application_4_1) {
-                Application_4 = Application_4_1;
-            }],
-        execute: function() {
-            StorageManager = (function () {
-                function StorageManager() {
-                    this.game = Application_4.default.getInstance().game;
-                    this._init();
-                }
-                StorageManager.prototype._init = function () {
-                    this._localStorageAvailable = this._getIsLocalStorageAvailable();
-                    console.log('local storage available', this._localStorageAvailable);
-                };
-                StorageManager.prototype._getIsLocalStorageAvailable = function () {
-                    try {
-                        return 'localStorage' in window && window['localStorage'] !== null;
-                    }
-                    catch (e) {
-                        return false;
-                    }
-                };
-                StorageManager.prototype._getString = function (data) {
-                    if (typeof data === 'string') {
-                        return data;
-                    }
-                    var jsonData;
-                    try {
-                        jsonData = JSON.stringify(data);
-                    }
-                    catch (e) {
-                        console.log('Could not convert' + data + ' to json');
-                        return null;
-                    }
-                    return jsonData;
-                };
-                StorageManager.prototype.getFromLocalStorage = function (key, isJSON) {
-                    if (isJSON === void 0) { isJSON = true; }
-                    var data = localStorage.getItem(key);
-                    if (typeof data === 'undefined') {
-                        console.log('no data saved with the key', key);
-                        return null;
-                    }
-                    if (isJSON !== false) {
-                        data = JSON.parse(data);
-                    }
-                    return data;
-                };
-                StorageManager.prototype.saveToLocalStorage = function (key, value) {
-                    if (!this._localStorageAvailable) {
-                        console.log('no local storage');
-                        return false;
-                    }
-                    try {
-                        localStorage.setItem(key, this._getString(value));
-                    }
-                    catch (e) {
-                        console.log('your data could not be saved');
-                    }
-                };
-                StorageManager.prototype.clearFromLocalStorage = function (key) {
-                    if (!this._localStorageAvailable) {
-                        console.log('no local storage');
-                        return false;
-                    }
-                    try {
-                        localStorage.removeItem(key);
-                    }
-                    catch (e) { }
-                };
-                return StorageManager;
-            }());
-            exports_7("default", StorageManager);
-        }
-    }
-});
-System.register("dijon/core/AudioManager", ["dijon/Application"], function(exports_8, context_8) {
-    "use strict";
-    var __moduleName = context_8 && context_8.id;
-    var Application_5;
-    var AudioManager;
-    return {
-        setters:[
-            function (Application_5_1) {
-                Application_5 = Application_5_1;
-            }],
-        execute: function() {
+            exports_6("AssetManager", AssetManager);
             AudioManager = (function () {
                 function AudioManager() {
                     this._defaultVolume = 1;
                     this._sprites = {};
                     this._sounds = {};
                     this._markerLookup = {};
-                    this.game = Application_5.default.getInstance().game;
+                    this.game = application_3.Application.getInstance().game;
                 }
                 AudioManager.prototype._addAudio = function (key, isAudioSprite) {
                     if (isAudioSprite === void 0) { isAudioSprite = false; }
@@ -1151,544 +1520,136 @@ System.register("dijon/core/AudioManager", ["dijon/Application"], function(expor
                 });
                 return AudioManager;
             }());
-            exports_8("default", AudioManager);
-        }
-    }
-});
-System.register("dijon/core/AnalyticsManager", [], function(exports_9, context_9) {
-    "use strict";
-    var __moduleName = context_9 && context_9.id;
-    var AnalyticsManager, AnalyticsException;
-    return {
-        setters:[],
-        execute: function() {
-            AnalyticsManager = (function () {
-                function AnalyticsManager(enabled, category) {
-                    if (enabled === void 0) { enabled = true; }
-                    if (category === void 0) { category = null; }
-                    this.enabled = enabled;
-                    this.category = category;
+            exports_6("AudioManager", AudioManager);
+            Game = (function (_super) {
+                __extends(Game, _super);
+                function Game(config) {
+                    _super.call(this, config);
+                    this.onWorldInputDisabled = new Phaser.Signal();
+                    this.onWorldInputEnabled = new Phaser.Signal();
                 }
-                AnalyticsManager.prototype.trackEvent = function (action, label, value) {
-                    if (action === void 0) { action = null; }
-                    if (label === void 0) { label = null; }
-                    if (value === void 0) { value = null; }
-                    if (!this.active || !this.enabled) {
-                        return;
-                    }
-                    if (!action) {
-                        throw new AnalyticsException('No action defined');
-                    }
-                    if (value) {
-                        this.ga('send', 'event', this.category, action, label, value);
-                    }
-                    else if (label) {
-                        this.ga('send', 'event', this.category, action, label);
-                    }
-                    else {
-                        this.ga('send', 'event', this.category, action);
-                    }
+                Game.prototype.boot = function () {
+                    _super.prototype.boot.call(this);
+                    this.app = application_3.Application.getInstance();
+                    this.asset = new AssetManager();
+                    this.sequence = new SequenceManager();
+                    this.transition = new TransitionManager();
+                    this.storage = new StorageManager();
+                    this.audio = new AudioManager();
+                    this.analytics = new AnalyticsManager(this.config.analytics);
+                    this.add = null;
+                    this.add = new GameObjectFactory(this);
+                    this.addLayers();
+                    this.setFactoryDefaultLayer(this.gameLayer);
                 };
-                AnalyticsManager.prototype.trackOmnitureEvent = function (gameName, activity, isGameEvent) {
-                    if (!this.enabled) {
-                        return;
-                    }
-                    if (typeof window['trackFlashEvent'] === 'undefined')
-                        return false;
-                    window['trackFlashEvent'](gameName, activity, isGameEvent);
-                };
-                Object.defineProperty(AnalyticsManager.prototype, "active", {
-                    get: function () {
-                        return (window['ga']) ? true : false;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(AnalyticsManager.prototype, "ga", {
-                    get: function () {
-                        return window['ga'];
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                return AnalyticsManager;
-            }());
-            exports_9("default", AnalyticsManager);
-            AnalyticsException = (function () {
-                function AnalyticsException(message) {
-                    this.message = message;
-                    this.name = 'AnalyticsException';
-                }
-                return AnalyticsException;
-            }());
-            exports_9("AnalyticsException", AnalyticsException);
-        }
-    }
-});
-System.register("dijon/mvc/Mediator", ["dijon/Application"], function(exports_10, context_10) {
-    "use strict";
-    var __moduleName = context_10 && context_10.id;
-    var Application_6;
-    var Mediator;
-    return {
-        setters:[
-            function (Application_6_1) {
-                Application_6 = Application_6_1;
-            }],
-        execute: function() {
-            Mediator = (function () {
-                function Mediator(_viewComponent, autoReg, mediatorName) {
-                    if (_viewComponent === void 0) { _viewComponent = null; }
-                    if (autoReg === void 0) { autoReg = true; }
-                    if (mediatorName === void 0) { mediatorName = null; }
-                    this._viewComponent = _viewComponent;
-                    this.mediatorName = null;
-                    this.app = Application_6.default.getInstance();
-                    this.game = this.app.game;
-                    this.mediatorName = mediatorName;
-                    if (autoReg) {
-                        this.register();
-                    }
-                }
-                Mediator.prototype.register = function () {
-                    this.app.registerMediator(this);
-                };
-                Mediator.prototype.remove = function () {
-                    this.app.removeMediator(this);
-                };
-                Mediator.prototype.onRegister = function () {
-                };
-                Mediator.prototype.onRemoved = function () {
-                };
-                Mediator.prototype.destroy = function () {
-                    this.remove();
-                };
-                Mediator.prototype.listNotificationInterests = function () {
-                    return [];
-                };
-                Mediator.prototype.handleNotification = function (notification) {
-                };
-                Mediator.prototype.sendNotification = function (notificationName, notificationBody) {
-                    this.app.sendNotification(notificationName, notificationBody);
-                };
-                Object.defineProperty(Mediator.prototype, "viewComponent", {
-                    get: function () {
-                        return this._viewComponent;
-                    },
-                    set: function (viewComponent) {
-                        this._viewComponent = viewComponent;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Mediator.prototype, "name", {
-                    get: function () {
-                        return this.mediatorName || Mediator.MEDIATOR_NAME;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Mediator.MEDIATOR_NAME = 'Mediator';
-                return Mediator;
-            }());
-            exports_10("default", Mediator);
-        }
-    }
-});
-System.register("dijon/display/Sprite", ["dijon/Application"], function(exports_11, context_11) {
-    "use strict";
-    var __moduleName = context_11 && context_11.id;
-    var Application_7;
-    var Sprite;
-    return {
-        setters:[
-            function (Application_7_1) {
-                Application_7 = Application_7_1;
-            }],
-        execute: function() {
-            Sprite = (function (_super) {
-                __extends(Sprite, _super);
-                function Sprite(x, y, key, frame, name, components) {
-                    if (name === void 0) { name = "dSprite"; }
-                    if (components === void 0) { components = null; }
-                    _super.call(this, Application_7.default.getInstance().game, x, y, key, frame);
-                    this.name = name;
-                    this._hasComponents = false;
-                    this._componentKeys = [];
-                    this._components = {};
-                    this.addComponents = function (components) {
-                        if (typeof components.length === 'undefined')
-                            throw new Error('Dijon.UIGroup components must be an array');
-                        while (components.length > 0)
-                            this.addComponent(components.shift());
-                    };
-                    if (this.autoBuild) {
-                        this.init();
-                        this.buildInterface();
-                        if (components)
-                            this.addComponents(components);
-                    }
-                }
-                Sprite.prototype.update = function () {
-                    if (this._hasComponents)
-                        this.updateComponents();
-                };
-                Sprite.prototype.destroy = function () {
-                    this.removeAllComponents();
-                    _super.prototype.destroy.call(this);
-                };
-                Sprite.prototype.init = function () { };
-                Sprite.prototype.buildInterface = function () { };
-                Sprite.prototype._updateComponentKeys = function () {
-                    this._componentKeys = Object.keys(this._components);
-                    this._hasComponents = this._componentKeys.length > 0;
-                };
-                Sprite.prototype.addComponent = function (component) {
-                    component.setOwner(this);
-                    component.init();
-                    component.buildInterface();
-                    this._components[component.name] = component;
-                    this._updateComponentKeys();
-                    return component;
-                };
-                ;
-                Sprite.prototype.updateComponents = function () {
+                Game.prototype.addPlugins = function () {
                     var _this = this;
-                    this._componentKeys.forEach(function (componentName) {
-                        _this.updateComponent(componentName);
-                    });
-                };
-                Sprite.prototype.updateComponent = function (componentName) {
-                    this._components[componentName].update();
-                };
-                Sprite.prototype.removeAllComponents = function () {
-                    while (this._componentKeys.length > 0) {
-                        this.removeComponent(this._componentKeys.pop());
+                    if (this.config.plugins && this.config.plugins.length > 0) {
+                        this.config.plugins.forEach(function (pluginName) {
+                            if (typeof Phaser.Plugin[pluginName] === 'function') {
+                                _this.add.plugin(Phaser.Plugin[pluginName]);
+                            }
+                        });
                     }
                 };
-                Sprite.prototype.removeComponent = function (componentName) {
-                    if (typeof this._components[componentName] === 'undefined')
-                        return;
-                    this._components[componentName].destroy();
-                    this._components[componentName] = null;
-                    delete this._components[componentName];
-                    this._updateComponentKeys();
+                Game.prototype.setFactoryDefaultLayer = function (newLayer) {
+                    this.add.setDefaultLayer(newLayer || this.world);
                 };
-                Object.defineProperty(Sprite.prototype, "resolution", {
-                    get: function () {
-                        return this.texture.baseTexture.resolution;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Sprite.prototype, "autoBuild", {
-                    get: function () {
-                        return true;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                return Sprite;
-            }(Phaser.Sprite));
-            exports_11("default", Sprite);
-        }
-    }
-});
-System.register("dijon/display/Component", ["dijon/Application"], function(exports_12, context_12) {
-    "use strict";
-    var __moduleName = context_12 && context_12.id;
-    var Application_8;
-    var Component;
-    return {
-        setters:[
-            function (Application_8_1) {
-                Application_8 = Application_8_1;
-            }],
-        execute: function() {
-            Component = (function () {
-                function Component() {
-                    this.game = Application_8.default.getInstance().game;
-                    this.name = 'Component';
-                }
-                Component.prototype.setOwner = function (owner) {
-                    this.owner = owner;
+                Game.prototype.addLayers = function () {
+                    this.gameLayer = this.add.dGroup(0, 0, '_game_layer');
+                    this.uiLayer = this.add.dGroup(0, 0, '_ui_layer');
+                    this.uiLayer.fixedToCamera = true;
+                    this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
                 };
-                Component.prototype.init = function () { };
-                Component.prototype.buildInterface = function () { };
-                Component.prototype.update = function () { };
-                Component.prototype.destroy = function () { };
-                return Component;
-            }());
-            exports_12("default", Component);
-        }
-    }
-});
-System.register("dijon/display/Group", ["dijon/Application"], function(exports_13, context_13) {
-    "use strict";
-    var __moduleName = context_13 && context_13.id;
-    var Application_9;
-    var Group;
-    return {
-        setters:[
-            function (Application_9_1) {
-                Application_9 = Application_9_1;
-            }],
-        execute: function() {
-            Group = (function (_super) {
-                __extends(Group, _super);
-                function Group(x, y, name, addToStage, components, enableBody, physicsBodyType) {
-                    if (x === void 0) { x = 0; }
-                    if (y === void 0) { y = 0; }
-                    if (name === void 0) { name = "dGroup"; }
-                    if (addToStage === void 0) { addToStage = false; }
-                    if (components === void 0) { components = null; }
-                    _super.call(this, Application_9.default.getInstance().game, null, name, addToStage, enableBody, physicsBodyType);
-                    this.name = name;
-                    this._hasComponents = false;
-                    this._componentKeys = [];
-                    this._components = {};
-                    this._mediator = null;
-                    this.addComponents = function (components) {
-                        if (typeof components.length === 'undefined')
-                            throw new Error('Dijon.UIGroup components must be an array');
-                        while (components.length > 0)
-                            this.addComponent(components.shift());
-                    };
-                    this.position.set(x, y);
-                    if (this.autoBuild) {
-                        this.init();
+                Game.prototype.disableElementInput = function (el) {
+                    if (el.input && el.inputEnabled === true) {
+                        el.wasEnabled = true;
+                        el.inputEnabled = false;
                     }
-                    if (!addToStage)
-                        this.game.add.existing(this);
-                    if (this.autoBuild) {
-                        this.buildInterface();
-                        if (components)
-                            this.addComponents(components);
-                    }
-                }
-                Group.prototype.update = function () {
-                    _super.prototype.update.call(this);
-                    if (this._hasComponents)
-                        this.updateComponents();
-                };
-                Group.prototype.destroy = function () {
-                    this.removeAllComponents();
-                    this.removeMediator();
-                    _super.prototype.destroy.call(this);
-                };
-                Group.prototype.init = function () { };
-                Group.prototype.buildInterface = function () { };
-                Group.prototype._updateComponentKeys = function () {
-                    this._componentKeys = Object.keys(this._components);
-                    this._hasComponents = this._componentKeys.length > 0;
-                };
-                Group.prototype.addComponent = function (component) {
-                    component.setOwner(this);
-                    component.init();
-                    component.buildInterface();
-                    this._components[component.name] = component;
-                    this._updateComponentKeys();
-                    return component;
-                };
-                Group.prototype.updateComponents = function () {
-                    var _this = this;
-                    this._componentKeys.forEach(function (componentName) {
-                        _this.updateComponent(componentName);
-                    });
-                };
-                Group.prototype.updateComponent = function (componentName) {
-                    this._components[componentName].update();
-                };
-                Group.prototype.removeAllComponents = function () {
-                    while (this._componentKeys.length > 0) {
-                        this.removeComponent(this._componentKeys.pop());
-                    }
-                };
-                Group.prototype.removeComponent = function (componentName) {
-                    if (typeof this._components[componentName] === 'undefined')
-                        return;
-                    this._components[componentName].destroy();
-                    this._components[componentName] = null;
-                    delete this._components[componentName];
-                    this._updateComponentKeys();
-                };
-                Group.prototype.removeMediator = function () {
-                    if (!this._mediator) {
-                        return;
-                    }
-                    this._mediator.destroy();
-                    this._mediator = null;
-                };
-                Object.defineProperty(Group.prototype, "addInternal", {
-                    get: function () {
-                        this.game.add.targetGroup = this;
-                        return this.game.add;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Group.prototype, "autoBuild", {
-                    get: function () {
-                        return true;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                return Group;
-            }(Phaser.Group));
-            exports_13("default", Group);
-        }
-    }
-});
-System.register("dijon/display/Text", ["dijon/Application"], function(exports_14, context_14) {
-    "use strict";
-    var __moduleName = context_14 && context_14.id;
-    var Application_10;
-    var Text;
-    return {
-        setters:[
-            function (Application_10_1) {
-                Application_10 = Application_10_1;
-            }],
-        execute: function() {
-            Text = (function (_super) {
-                __extends(Text, _super);
-                function Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings) {
-                    if (text === void 0) { text = ""; }
-                    if (fontSize === void 0) { fontSize = Text.DEFAULT_FONT_SIZE; }
-                    if (fontColor === void 0) { fontColor = Text.DEFAULT_FONT_COLOR; }
-                    if (fontAlign === void 0) { fontAlign = 'left'; }
-                    if (wordWrap === void 0) { wordWrap = false; }
-                    if (width === void 0) { width = 0; }
-                    if (lineSpacing === void 0) { lineSpacing = 0; }
-                    if (settings === void 0) { settings = null; }
-                    _super.call(this, Application_10.default.getInstance().game, x, y, text, Text._addSettings({
-                        font: fontSize + 'px ' + fontName,
-                        fill: fontColor,
-                        align: fontAlign,
-                        wordWrap: wordWrap,
-                        wordWrapWidth: width
-                    }, settings));
-                    this.lineSpacing = lineSpacing;
-                    this.onAnimationComplete = new Phaser.Signal();
-                    this._canUpdate = false;
-                    this._textToAnimate = [];
-                    this.stopAnimating = function () {
-                        this._canUpdate = false;
-                        this._textToAnimate = null;
-                        this.game.time.events.remove(this._delayTimer);
-                        this.game.time.events.remove(this._repeatTimer);
-                    };
-                    this.roundPixel = function () {
-                        this.position.set(Math.round(this.x), Math.round(this.y));
-                    };
-                    this.text = text.replace(/'/g, "\'");
-                    this._lowercaseText = this.text.toLowerCase();
-                    this.setResolution();
-                }
-                Text.prototype.setText = function (text) {
-                    _super.prototype.setText.call(this, text);
-                    this._lowercaseText = this.text.toLowerCase();
-                    this.setResolution();
-                    return this;
-                };
-                Text.prototype.setResolution = function () {
-                    if (!this.game || !this.game.device.cocoonJS) {
-                        return;
-                    }
-                    else if (this.game.device.cocoonJS) {
-                        this.resolution = this.game.resolution * this.game.resolution;
-                    }
-                };
-                Text.prototype._startTextAnimation = function () {
-                    this._canUpdate = true;
-                    this._repeatTimer = this.game.time.events.repeat(this._letterTime * 100, this._textLength, this._updateTextAnimation, this);
-                };
-                Text.prototype._updateTextAnimation = function () {
-                    if (!this._canUpdate || !this._textToAnimate) {
-                        return false;
-                    }
-                    var index = this._textLength - this._textToAnimate.length;
-                    this.addColor(this.style.fill, index);
-                    this.addColor('rgba(0,0,0,0)', index + 1);
-                    this._textToAnimate.shift();
-                    if (this._textToAnimate.length === 0) {
-                        this.onAnimationComplete.dispatch();
-                    }
-                };
-                Text.prototype.setColor = function (color) {
-                    return this.highlightPhrase(this.text, color, false);
-                };
-                Text.prototype.resetColor = function () {
-                    return this.highlightPhrase(this.text, this.style.fill, false);
-                };
-                Text.prototype.highlightPhrase = function (phrase, color, caseSensitive) {
-                    if (caseSensitive === void 0) { caseSensitive = false; }
-                    var text = caseSensitive ? this.text : this._lowercaseText;
-                    phrase = caseSensitive ? phrase : phrase.toLowerCase();
-                    var len = phrase.length;
-                    var startIndex = text.indexOf(phrase);
-                    var endIndex = startIndex + len;
-                    while (startIndex <= endIndex) {
-                        this.addColor(color, startIndex);
-                        startIndex++;
-                    }
-                    this.addColor(this.style.fill, endIndex);
-                };
-                Text.prototype.animate = function (letterTime, delay) {
-                    if (letterTime === void 0) { letterTime = 0.1; }
-                    if (delay === void 0) { delay = 0; }
-                    this.game.time.events.remove(this._delayTimer);
-                    this.game.time.events.remove(this._repeatTimer);
-                    this._letterTime = letterTime;
-                    this._textLength = this.text.length;
-                    this._textToAnimate = this.text.split('');
-                    var startIndex = 0;
-                    var endIndex = this._textLength;
-                    while (startIndex <= endIndex) {
-                        this.addColor('rgba(0,0,0,0)', startIndex);
-                        startIndex++;
-                    }
-                    this._delayTimer = this.game.time.events.add(delay * Phaser.Timer.SECOND, this._startTextAnimation, this);
-                };
-                Text._addSettings = function (obj, settings) {
-                    if (!settings)
-                        return obj;
-                    for (var prop in settings) {
-                        if (settings.hasOwnProperty(prop)) {
-                            obj[prop] = settings[prop];
+                    if (el.children.length > 0) {
+                        for (var i = 0; i < el.children.length; i++) {
+                            this.disableElementInput(el.children[i]);
                         }
                     }
-                    return obj;
                 };
-                Text.DEFAULT_FONT_SIZE = 12;
-                Text.DEFAULT_FONT_COLOR = "#000000";
-                Text.DEFAULT_FONT = "Helvetica Neue, Arial";
-                Text.GLOBAL_PADDING_X = 0;
-                Text.GLOBAL_PADDING_Y = 0;
-                return Text;
-            }(Phaser.Text));
-            exports_14("default", Text);
-        }
-    }
-});
-System.register("dijon/core/GameObjectFactory", ["dijon/display/Group", "dijon/display/Sprite", "dijon/display/Text"], function(exports_15, context_15) {
-    "use strict";
-    var __moduleName = context_15 && context_15.id;
-    var Group_1, Sprite_1, Text_1;
-    var GameObjectFactory;
-    return {
-        setters:[
-            function (Group_1_1) {
-                Group_1 = Group_1_1;
-            },
-            function (Sprite_1_1) {
-                Sprite_1 = Sprite_1_1;
-            },
-            function (Text_1_1) {
-                Text_1 = Text_1_1;
-            }],
-        execute: function() {
+                Game.prototype.enableElementInput = function (el) {
+                    if (el.input && el.inputEnabled === false && el.wasEnabled) {
+                        el.wasEnabled = false;
+                        el.inputEnabled = true;
+                    }
+                    if (el.children.length > 0) {
+                        for (var i = 0; i < el.children.length; i++) {
+                            this.enableElementInput(el.children[i]);
+                        }
+                    }
+                };
+                Game.prototype.disableInput = function (group) {
+                    return group.forEach(function (el) {
+                        if (el instanceof Phaser.Group) {
+                            return this.disableInput(el);
+                        }
+                        else {
+                            return this.disableElementInput(el);
+                        }
+                    }, this);
+                };
+                Game.prototype.enableInput = function (group) {
+                    return group.forEach(function (el) {
+                        if (el instanceof Phaser.Group) {
+                            return this.enableInput(el);
+                        }
+                        else {
+                            return this.enableElementInput(el);
+                        }
+                    }, this);
+                };
+                Game.prototype.disableGameInput = function () {
+                    this.disableInput(this.gameLayer);
+                    this.onWorldInputDisabled.dispatch();
+                };
+                Game.prototype.enableGameInput = function () {
+                    this.enableInput(this.gameLayer);
+                    this.onWorldInputEnabled.dispatch();
+                };
+                Game.prototype.changeState = function (toState) {
+                    this.gameLayer.removeAll(true, true);
+                    return this.state.start(toState, false, false);
+                };
+                Object.defineProperty(Game.prototype, "addToGame", {
+                    get: function () {
+                        this.add.targetGroup = this.gameLayer;
+                        return this.add;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Game.prototype, "addToUI", {
+                    get: function () {
+                        this.add.targetGroup = this.uiLayer;
+                        return this.add;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Game.prototype, "addToStage", {
+                    get: function () {
+                        this.add.targetGroup = this.stageLayer;
+                        return this.add;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Game.prototype, "addToWorld", {
+                    get: function () {
+                        this.add.targetGroup = this.world;
+                        return this.add;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                return Game;
+            }(Phaser.Game));
+            exports_6("Game", Game);
             GameObjectFactory = (function (_super) {
                 __extends(GameObjectFactory, _super);
                 function GameObjectFactory() {
@@ -1821,22 +1782,22 @@ System.register("dijon/core/GameObjectFactory", ["dijon/display/Group", "dijon/d
                         group = this.targetGroup;
                     }
                     this._targetGroup = null;
-                    return group.add(new Sprite_1.default(x, y, key, frame, name, components));
+                    return group.add(new display_1.Sprite(x, y, key, frame, name, components));
                 };
                 GameObjectFactory.prototype.dGroup = function (x, y, name, addToStage, components, enableBody, physicsBodyType, group) {
                     if (group === undefined && addToStage !== true) {
                         group = this.targetGroup;
                         this._targetGroup = null;
-                        return group.add(new Group_1.default(x, y, name, addToStage, components, enableBody, physicsBodyType));
+                        return group.add(new display_1.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
                     }
-                    return new Group_1.default(x, y, name, addToStage, components, enableBody, physicsBodyType);
+                    return new display_1.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
                 };
                 GameObjectFactory.prototype.dText = function (x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings, group) {
                     if (group === undefined) {
                         group = this.targetGroup;
                     }
                     this._targetGroup = null;
-                    return group.add(new Text_1.default(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
+                    return group.add(new display_1.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
                 };
                 GameObjectFactory.prototype.setDefaultLayer = function (value) {
                     console.log("CAUTION: Changing the default layer will change the target group for .add");
@@ -1861,410 +1822,42 @@ System.register("dijon/core/GameObjectFactory", ["dijon/display/Group", "dijon/d
                 });
                 return GameObjectFactory;
             }(Phaser.GameObjectFactory));
-            exports_15("default", GameObjectFactory);
-        }
-    }
-});
-System.register("dijon/core/Game", ["dijon/Application", "dijon/core/AssetManager", "dijon/core/SequenceManager", "dijon/core/TransitionManager", "dijon/core/StorageManager", "dijon/core/AudioManager", "dijon/core/AnalyticsManager", "dijon/core/GameObjectFactory"], function(exports_16, context_16) {
-    "use strict";
-    var __moduleName = context_16 && context_16.id;
-    var Application_11, AssetManager_1, SequenceManager_1, TransitionManager_1, StorageManager_1, AudioManager_1, AnalyticsManager_1, GameObjectFactory_1;
-    var Game;
-    return {
-        setters:[
-            function (Application_11_1) {
-                Application_11 = Application_11_1;
-            },
-            function (AssetManager_1_1) {
-                AssetManager_1 = AssetManager_1_1;
-            },
-            function (SequenceManager_1_1) {
-                SequenceManager_1 = SequenceManager_1_1;
-            },
-            function (TransitionManager_1_1) {
-                TransitionManager_1 = TransitionManager_1_1;
-            },
-            function (StorageManager_1_1) {
-                StorageManager_1 = StorageManager_1_1;
-            },
-            function (AudioManager_1_1) {
-                AudioManager_1 = AudioManager_1_1;
-            },
-            function (AnalyticsManager_1_1) {
-                AnalyticsManager_1 = AnalyticsManager_1_1;
-            },
-            function (GameObjectFactory_1_1) {
-                GameObjectFactory_1 = GameObjectFactory_1_1;
-            }],
-        execute: function() {
-            Game = (function (_super) {
-                __extends(Game, _super);
-                function Game(config) {
-                    _super.call(this, config);
-                    this.onWorldInputDisabled = new Phaser.Signal();
-                    this.onWorldInputEnabled = new Phaser.Signal();
+            exports_6("GameObjectFactory", GameObjectFactory);
+            SequenceManager = (function () {
+                function SequenceManager() {
+                    this._defaultInterval = 20;
+                    this.game = application_3.Application.getInstance().game;
                 }
-                Game.prototype.boot = function () {
-                    _super.prototype.boot.call(this);
-                    this.app = Application_11.default.getInstance();
-                    this.asset = new AssetManager_1.default();
-                    this.sequence = new SequenceManager_1.default();
-                    this.transition = new TransitionManager_1.default();
-                    this.storage = new StorageManager_1.default();
-                    this.audio = new AudioManager_1.default();
-                    this.analytics = new AnalyticsManager_1.default(this.config.analytics);
-                    this.add = null;
-                    this.add = new GameObjectFactory_1.default(this);
-                    this.addLayers();
-                    this.setFactoryDefaultLayer(this.gameLayer);
-                };
-                Game.prototype.addPlugins = function () {
-                    var _this = this;
-                    if (this.config.plugins && this.config.plugins.length > 0) {
-                        this.config.plugins.forEach(function (pluginName) {
-                            if (typeof Phaser.Plugin[pluginName] === 'function') {
-                                _this.add.plugin(Phaser.Plugin[pluginName]);
-                            }
-                        });
+                SequenceManager.prototype._executeMethod = function (sequence, context, callback, callbackContext) {
+                    var func = sequence.shift();
+                    if (typeof func !== 'undefined' && typeof context !== 'undefined' && context) {
+                        func.call(context);
+                    }
+                    if (sequence.length === 0 && callback && callbackContext) {
+                        callback.call(callbackContext);
                     }
                 };
-                Game.prototype.setFactoryDefaultLayer = function (newLayer) {
-                    this.add.setDefaultLayer(newLayer || this.world);
-                };
-                Game.prototype.addLayers = function () {
-                    this.gameLayer = this.add.dGroup(0, 0, '_game_layer');
-                    this.uiLayer = this.add.dGroup(0, 0, '_ui_layer');
-                    this.uiLayer.fixedToCamera = true;
-                    this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
-                };
-                Game.prototype.disableElementInput = function (el) {
-                    if (el.input && el.inputEnabled === true) {
-                        el.wasEnabled = true;
-                        el.inputEnabled = false;
+                SequenceManager.prototype.run = function (sequence, context, interval, completeCallback, completeCallbackContext) {
+                    if (typeof context === 'undefined') {
+                        throw new Error('context must be provided for the sequence methods');
                     }
-                    if (el.children.length > 0) {
-                        for (var i = 0; i < el.children.length; i++) {
-                            this.disableElementInput(el.children[i]);
-                        }
+                    if (typeof interval === 'undefined') {
+                        interval = this._defaultInterval;
                     }
-                };
-                Game.prototype.enableElementInput = function (el) {
-                    if (el.input && el.inputEnabled === false && el.wasEnabled) {
-                        el.wasEnabled = false;
-                        el.inputEnabled = true;
-                    }
-                    if (el.children.length > 0) {
-                        for (var i = 0; i < el.children.length; i++) {
-                            this.enableElementInput(el.children[i]);
-                        }
-                    }
-                };
-                Game.prototype.disableInput = function (group) {
-                    return group.forEach(function (el) {
-                        if (el instanceof Phaser.Group) {
-                            return this.disableInput(el);
-                        }
-                        else {
-                            return this.disableElementInput(el);
-                        }
-                    }, this);
-                };
-                Game.prototype.enableInput = function (group) {
-                    return group.forEach(function (el) {
-                        if (el instanceof Phaser.Group) {
-                            return this.enableInput(el);
-                        }
-                        else {
-                            return this.enableElementInput(el);
-                        }
-                    }, this);
-                };
-                Game.prototype.disableGameInput = function () {
-                    this.disableInput(this.gameLayer);
-                    this.onWorldInputDisabled.dispatch();
-                };
-                Game.prototype.enableGameInput = function () {
-                    this.enableInput(this.gameLayer);
-                    this.onWorldInputEnabled.dispatch();
-                };
-                Game.prototype.changeState = function (toState) {
-                    this.gameLayer.removeAll(true, true);
-                    return this.state.start(toState, false, false);
-                };
-                ;
-                Object.defineProperty(Game.prototype, "addToGame", {
-                    get: function () {
-                        this.add.targetGroup = this.gameLayer;
-                        return this.add;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                ;
-                Object.defineProperty(Game.prototype, "addToUI", {
-                    get: function () {
-                        this.add.targetGroup = this.uiLayer;
-                        return this.add;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                ;
-                Object.defineProperty(Game.prototype, "addToStage", {
-                    get: function () {
-                        this.add.targetGroup = this.stageLayer;
-                        return this.add;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                ;
-                Object.defineProperty(Game.prototype, "addToWorld", {
-                    get: function () {
-                        this.add.targetGroup = this.world;
-                        return this.add;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                ;
-                return Game;
-            }(Phaser.Game));
-            exports_16("default", Game);
-        }
-    }
-});
-System.register("dijon/mvc/Model", ["dijon/Application"], function(exports_17, context_17) {
-    "use strict";
-    var __moduleName = context_17 && context_17.id;
-    var Application_12;
-    var Model;
-    return {
-        setters:[
-            function (Application_12_1) {
-                Application_12 = Application_12_1;
-            }],
-        execute: function() {
-            Model = (function () {
-                function Model(dataKey, modelName) {
-                    if (dataKey === void 0) { dataKey = null; }
-                    if (modelName === void 0) { modelName = null; }
-                    this.modelName = modelName;
-                    this.app = Application_12.default.getInstance();
-                    this.game = this.app.game;
-                    if (dataKey) {
-                        this.setData(dataKey);
-                    }
-                    this.app.registerModel(this);
-                }
-                Model.prototype.getKeyExists = function (key) {
-                    return this.game.cache.getJSON(key) !== null;
-                };
-                Model.prototype.setData = function (dataKey) {
-                    if (!this.getKeyExists(dataKey)) {
-                        console.log('Model:: cannot set data from key ' + dataKey + '. Is it in the Phaser cache?');
-                        return false;
-                    }
-                    this._data = this.game.cache.getJSON(dataKey);
-                    return this._data;
-                };
-                Model.prototype.getData = function () {
-                    return this._data;
-                };
-                Model.prototype.destroy = function () {
-                    this.app.removeModel(this);
-                };
-                Object.defineProperty(Model.prototype, "name", {
-                    get: function () {
-                        return this.modelName || Model.MODEL_NAME;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Model.MODEL_NAME = 'Model';
-                return Model;
-            }());
-            exports_17("default", Model);
-        }
-    }
-});
-System.register("dijon/mvc/Notification", [], function(exports_18, context_18) {
-    "use strict";
-    var __moduleName = context_18 && context_18.id;
-    var Notification;
-    return {
-        setters:[],
-        execute: function() {
-            Notification = (function () {
-                function Notification(_name, _body) {
-                    if (_body === void 0) { _body = null; }
-                    this._name = _name;
-                    this._body = _body;
-                }
-                Notification.prototype.getName = function () {
-                    return this._name;
-                };
-                Notification.prototype.setBody = function (body) {
-                    this._body = body;
-                };
-                Notification.prototype.getBody = function () {
-                    return this._body;
-                };
-                Notification.prototype.destroy = function () {
-                    this._body = null;
-                    this._name = null;
-                };
-                return Notification;
-            }());
-            exports_18("default", Notification);
-        }
-    }
-});
-System.register("dijon/Application", ["dijon.bootstrap", "dijon/core/Game", "dijon/mvc/Notification"], function(exports_19, context_19) {
-    "use strict";
-    var __moduleName = context_19 && context_19.id;
-    var dijon_bootstrap_1, Game_1, Notification_1;
-    var Application;
-    return {
-        setters:[
-            function (dijon_bootstrap_1_1) {
-                dijon_bootstrap_1 = dijon_bootstrap_1_1;
-            },
-            function (Game_1_1) {
-                Game_1 = Game_1_1;
-            },
-            function (Notification_1_1) {
-                Notification_1 = Notification_1_1;
-            }],
-        execute: function() {
-            dijon_bootstrap_1.default();
-            Application = (function () {
-                function Application() {
-                    this._mediator = null;
-                    this._models = {};
-                    this._mediators = {};
-                    this._observerMap = {};
-                    if (Application.instance)
-                        throw Error(Application.SINGLETON_MSG);
-                    Application.instance = this;
-                    this.createGame();
-                    this.startGame();
-                }
-                Application.prototype.createGame = function () {
-                    this.game = new Game_1.default({
-                        width: 800,
-                        height: 600,
-                        parent: 'game-container',
-                        renderer: Phaser.AUTO,
-                        transparent: false
-                    });
-                };
-                Application.prototype.startGame = function () {
-                };
-                Application.prototype.addPlugins = function () {
-                    this.game.addPlugins();
-                };
-                Application.prototype.registerModel = function (model) {
-                    if (this._models[model.name]) {
-                        throw (new Error('Application:: a model with the name "' + model.name + '" already exists.'));
-                    }
-                    this._models[model.name] = model;
-                    return model;
-                };
-                Application.prototype.retrieveModel = function (modelName) {
-                    return this._models[modelName] || null;
-                };
-                Application.prototype.removeModel = function (modelToRemove) {
-                    delete this._models[modelToRemove.name];
-                };
-                Application.prototype.registerMediator = function (mediator) {
-                    if (this._mediators[mediator.name]) {
-                        throw (new Error('Application:: a mediator with the name "' + mediator.name + '" already exists.'));
-                    }
-                    this._mediators[mediator.name] = mediator;
-                    this.registerObserver(mediator);
-                    mediator.onRegister();
-                };
-                Application.prototype.retrieveMediator = function (mediatorName) {
-                    return this._mediators[mediatorName] || null;
-                };
-                Application.prototype.removeMediator = function (mediatorToRemove) {
-                    var _this = this;
-                    var name = mediatorToRemove.name;
-                    var mediator = this._mediators[name];
-                    if (!mediator)
+                    if (sequence.length === 0 && typeof completeCallback !== 'undefined' && typeof completeCallbackContext !== 'undefined') {
+                        completeCallback.call(completeCallbackContext);
                         return;
-                    mediator.listNotificationInterests().forEach(function (interest) {
-                        _this.removeObserver(interest, mediator);
-                    });
-                    mediator.onRemoved();
-                    delete this._mediators[name];
-                };
-                Application.prototype.registerObserver = function (observer) {
-                    var _this = this;
-                    observer.listNotificationInterests().forEach(function (notificationName) {
-                        if (_this._observerMap[notificationName] === undefined) {
-                            _this._observerMap[notificationName] = [];
-                        }
-                        _this._observerMap[notificationName].push(observer);
-                    });
-                };
-                Application.prototype.removeObserver = function (notificationName, observerToRemove) {
-                    var observers = null, observer = null, i = 0;
-                    observers = this._observerMap[notificationName];
-                    i = observers.length;
-                    while (i--) {
-                        observer = observers[i];
-                        if (observer === observerToRemove) {
-                            observers.splice(i, 1);
-                            break;
-                        }
                     }
-                    if (observers.length == 0) {
-                        delete this._observerMap[notificationName];
+                    if (interval === 0) {
+                        while (sequence.length > 0)
+                            this._executeMethod(sequence, context, typeof completeCallback === 'undefined' ? null : completeCallback, typeof completeCallbackContext === 'undefined' ? null : completeCallbackContext);
+                        return;
                     }
+                    this.game.time.events.repeat(interval, sequence.length, this._executeMethod, this, sequence, context, typeof completeCallback === 'undefined' ? null : completeCallback, typeof completeCallbackContext === 'undefined' ? null : completeCallbackContext);
                 };
-                Application.prototype.sendNotification = function (notificationName, notficationBody) {
-                    var notification = new Notification_1.default(notificationName, notficationBody);
-                    this._notifyObservers(notification);
-                    notification.destroy();
-                    notification = null;
-                };
-                Application.prototype._notifyObservers = function (notification) {
-                    var observer = null, observers = null;
-                    var notificationName = notification.getName();
-                    var observersRef = this._observerMap[notificationName];
-                    if (observersRef) {
-                        observers = observersRef.slice(0);
-                        observers.forEach(function (observer) {
-                            observer.handleNotification(notification);
-                        });
-                    }
-                };
-                Application.getInstance = function () {
-                    if (!Application.instance)
-                        Application.instance = new Application();
-                    return Application.instance;
-                };
-                Application.instance = null;
-                Application.SINGLETON_MSG = 'Application singleton already constructed!';
-                return Application;
+                return SequenceManager;
             }());
-            exports_19("default", Application);
-        }
-    }
-});
-System.register("dijon/core/State", ["dijon/Application"], function(exports_20, context_20) {
-    "use strict";
-    var __moduleName = context_20 && context_20.id;
-    var Application_13;
-    var State;
-    return {
-        setters:[
-            function (Application_13_1) {
-                Application_13 = Application_13_1;
-            }],
-        execute: function() {
+            exports_6("SequenceManager", SequenceManager);
             State = (function (_super) {
                 __extends(State, _super);
                 function State() {
@@ -2362,7 +1955,7 @@ System.register("dijon/core/State", ["dijon/Application"], function(exports_20, 
                 });
                 Object.defineProperty(State.prototype, "app", {
                     get: function () {
-                        return Application_13.default.getInstance();
+                        return application_3.Application.getInstance();
                     },
                     enumerable: true,
                     configurable: true
@@ -2376,165 +1969,331 @@ System.register("dijon/core/State", ["dijon/Application"], function(exports_20, 
                 });
                 return State;
             }(Phaser.State));
-            exports_20("default", State);
-        }
-    }
-});
-System.register("dijon/display/InvisibleButton", ["dijon/display/Sprite"], function(exports_21, context_21) {
-    "use strict";
-    var __moduleName = context_21 && context_21.id;
-    var Sprite_2;
-    var InvisibleButton;
-    return {
-        setters:[
-            function (Sprite_2_1) {
-                Sprite_2 = Sprite_2_1;
-            }],
-        execute: function() {
-            InvisibleButton = (function (_super) {
-                __extends(InvisibleButton, _super);
-                function InvisibleButton(x, y, name, w, h) {
-                    _super.call(this, x, y, null, null, name);
-                    this.setSize(w, h);
+            exports_6("State", State);
+            StorageManager = (function () {
+                function StorageManager() {
+                    this.game = application_3.Application.getInstance().game;
+                    this._init();
                 }
-                InvisibleButton.prototype.init = function () {
-                    this.inputEnabled = true;
+                StorageManager.prototype._init = function () {
+                    this._localStorageAvailable = this._getIsLocalStorageAvailable();
+                    console.log('local storage available', this._localStorageAvailable);
                 };
-                InvisibleButton.prototype.buildInterface = function () {
-                    this._addHitRect();
-                };
-                InvisibleButton.prototype._addHitRect = function () {
-                    if (this._hitWidth > 0 && this._hitHeight > 0) {
-                        this.hitArea = new Phaser.Rectangle(0, 0, this._hitWidth, this._hitHeight);
+                StorageManager.prototype._getIsLocalStorageAvailable = function () {
+                    try {
+                        return 'localStorage' in window && window['localStorage'] !== null;
+                    }
+                    catch (e) {
+                        return false;
                     }
                 };
-                InvisibleButton.prototype.setSize = function (w, h) {
-                    this._hitWidth = w || 0;
-                    this._hitHeight = h || 0;
-                    this._addHitRect();
-                };
-                return InvisibleButton;
-            }(Sprite_2.default));
-            exports_21("InvisibleButton", InvisibleButton);
-        }
-    }
-});
-System.register("dijon/mvc/CopyModel", ["dijon/mvc/Model"], function(exports_22, context_22) {
-    "use strict";
-    var __moduleName = context_22 && context_22.id;
-    var Model_1;
-    var CopyModel;
-    return {
-        setters:[
-            function (Model_1_1) {
-                Model_1 = Model_1_1;
-            }],
-        execute: function() {
-            CopyModel = (function (_super) {
-                __extends(CopyModel, _super);
-                function CopyModel(dataKey) {
-                    if (dataKey === void 0) { dataKey = null; }
-                    _super.call(this, dataKey);
-                    this._languages = {};
-                    this._languages['en'] = this._data;
-                }
-                CopyModel.prototype.getCopy = function (groupId, itemId) {
-                    return this.getCopyGroup(groupId)[itemId];
-                };
-                CopyModel.prototype.getCopyGroup = function (groupId) {
-                    return this._data[groupId];
-                };
-                CopyModel.prototype.addLanguage = function (languageId, dataKey) {
-                    if (!this.getKeyExists(dataKey)) {
-                        throw new Error('cannot add an alternate language from key ' + dataKey + '. Is it in the Phaser cache?');
+                StorageManager.prototype._getString = function (data) {
+                    if (typeof data === 'string') {
+                        return data;
                     }
-                    this._languages[languageId] = this.game.cache.getJSON(dataKey);
+                    var jsonData;
+                    try {
+                        jsonData = JSON.stringify(data);
+                    }
+                    catch (e) {
+                        console.log('Could not convert' + data + ' to json');
+                        return null;
+                    }
+                    return jsonData;
                 };
-                CopyModel.prototype.changeLanguage = function (languageId) {
-                    if (typeof this._languages[languageId] === 'undefined')
-                        throw new Error('there is no language ' + languageId);
-                    this._data = this._languages[languageId];
+                StorageManager.prototype.getFromLocalStorage = function (key, isJSON) {
+                    if (isJSON === void 0) { isJSON = true; }
+                    var data = localStorage.getItem(key);
+                    if (typeof data === 'undefined') {
+                        console.log('no data saved with the key', key);
+                        return null;
+                    }
+                    if (isJSON !== false) {
+                        data = JSON.parse(data);
+                    }
+                    return data;
                 };
-                Object.defineProperty(CopyModel.prototype, "name", {
-                    get: function () {
-                        return CopyModel.MODEL_NAME;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                CopyModel.MODEL_NAME = 'copyModel';
-                return CopyModel;
-            }(Model_1.default));
-            exports_22("default", CopyModel);
-        }
-    }
-});
-System.register("dijon/utils/Device", [], function(exports_23, context_23) {
-    "use strict";
-    var __moduleName = context_23 && context_23.id;
-    var Device;
-    return {
-        setters:[],
-        execute: function() {
-            Device = (function () {
-                function Device() {
+                StorageManager.prototype.saveToLocalStorage = function (key, value) {
+                    if (!this._localStorageAvailable) {
+                        console.log('no local storage');
+                        return false;
+                    }
+                    try {
+                        localStorage.setItem(key, this._getString(value));
+                    }
+                    catch (e) {
+                        console.log('your data could not be saved');
+                    }
+                };
+                StorageManager.prototype.clearFromLocalStorage = function (key) {
+                    if (!this._localStorageAvailable) {
+                        console.log('no local storage');
+                        return false;
+                    }
+                    try {
+                        localStorage.removeItem(key);
+                    }
+                    catch (e) { }
+                };
+                return StorageManager;
+            }());
+            exports_6("StorageManager", StorageManager);
+            TransitionManager = (function () {
+                function TransitionManager() {
+                    this.onTransitionOutComplete = new Phaser.Signal();
+                    this.onTransitionInComplete = new Phaser.Signal();
+                    this._transition = null;
+                    this._transitions = {};
+                    this._exceptions = {};
+                    this._fromState = null;
+                    this._toState = null;
+                    this.game = application_3.Application.getInstance().game;
                 }
-                Object.defineProperty(Device, "mobile", {
-                    get: function () {
-                        return Device.mobileOS !== Device.UNKNOWN;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Device, "mobileOS", {
-                    get: function () {
-                        var userAgent = window.navigator.userAgent || window.navigator.vendor || window['opera'];
-                        if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
-                            return Device.IOS;
-                        }
-                        else if (userAgent.match(/Android/i)) {
-                            return Device.ANDROID;
+                TransitionManager.prototype._add = function (id, outHandler, preloadHandler, inHandler) {
+                    this._transitions[id] = {
+                        outHandler: outHandler,
+                        preloadHandler: preloadHandler,
+                        inHandler: inHandler
+                    };
+                };
+                TransitionManager.prototype._getTransition = function (inState, outState) {
+                    var transition = this._transitions[inState + '/' + outState];
+                    if (typeof transition === 'undefined')
+                        transition = this._transitions['all'];
+                    return typeof transition === 'undefined' ? null : transition;
+                };
+                TransitionManager.prototype._transitionInComplete = function () {
+                    this._transition = this._getTransition(this._fromState, this._toState);
+                    if (!this._transition)
+                        return false;
+                    if (typeof this._transition.preloadHandler.loadStart === 'function')
+                        this.game.asset.onLoadStart.addOnce(this._transition.preloadHandler.loadStart, this._transition.preloadHandler);
+                    if (typeof this._transition.preloadHandler.loadProgress === 'function') {
+                        this.game.asset.onFileComplete.add(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
+                    }
+                    this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this._preloadComplete, this);
+                    this.onTransitionInComplete.dispatch();
+                    this.game.changeState(this._toState);
+                };
+                TransitionManager.prototype._transitionOutComplete = function () {
+                    this._transition = null;
+                    this.onTransitionOutComplete.dispatch();
+                };
+                TransitionManager.prototype._preloadComplete = function () {
+                    this._transition = this._getTransition(this._fromState, this._toState);
+                    if (!this._transition)
+                        return false;
+                    this.game.asset.onFileComplete.remove(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
+                    if (typeof this._transition.preloadHandler.loadComplete === 'function')
+                        this._transition.preloadHandler.loadComplete();
+                };
+                TransitionManager.prototype._clearTransition = function () {
+                    this._transition.outHandler.transitionInComplete.remove(this._transitionOutComplete, this);
+                    this._transition.inHandler.transitionOutComplete.remove(this._transitionInComplete, this);
+                    this.game.asset.onLoadCompleteAndAudioDecoded.remove(this._preloadComplete, this);
+                    this.game.asset.onLoadStart.remove(this._transition.preloadHandler.loadStart, this._transition.preloadHandler);
+                    this.game.asset.onFileComplete.remove(this._transition.preloadHandler.loadProgress, this._transition.preloadHandler);
+                    this._transition = null;
+                };
+                TransitionManager.prototype.add = function (fromState, toState, outHandler, preloadHandler, inHandler) {
+                    var args;
+                    if (arguments.length < 5) {
+                        if (fromState === 'all') {
+                            args = [].slice.call(arguments, 1);
+                            if (arguments.length === 2)
+                                return this._add('all', args[0], args[0], args[0]);
+                            else
+                                return this._add('all', args[0], args[1], args[2]);
                         }
                         else {
-                            return Device.UNKNOWN;
+                            args = [].slice.call(arguments, 2);
+                            return this._add(fromState + '/' + toState, args[0], args[0], args[0]);
                         }
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Device, "browser", {
-                    get: function () {
-                        var ua = navigator.userAgent.toLowerCase();
-                        return {
-                            firefox: ua.indexOf('firefox') > -1,
-                            ie: ua.indexOf('ie') > -1,
-                            safari: ua.indexOf('safari') > -1,
-                            chrome: ua.indexOf('chrome') > -1,
-                        };
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Device, "pixelRatio", {
-                    get: function () {
-                        return typeof window.devicePixelRatio !== undefined ? window.devicePixelRatio : 1;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Device, "customPixelRatio", {
-                    get: function () {
-                        return Device.pixelRatio >= 1.5 ? 2 : 1;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Device.IOS = 'iOS';
-                Device.ANDROID = 'android';
-                Device.UNKNOWN = 'unknown';
-                return Device;
+                    }
+                    return this._add(fromState + '/' + toState, outHandler, preloadHandler, inHandler);
+                };
+                TransitionManager.prototype.addAll = function (handler) {
+                    return this._add('all', handler, handler, handler);
+                };
+                TransitionManager.prototype.addException = function (state) {
+                    this._exceptions[state] = true;
+                };
+                TransitionManager.prototype.remove = function (fromState, toState) {
+                    if (arguments.length === 1) {
+                        this._transitions[fromState] = null;
+                        delete this._transitions[fromState];
+                    }
+                    else {
+                        this._transitions[fromState + '/' + toState] = null;
+                        delete this._transitions[fromState + '/' + toState];
+                    }
+                };
+                TransitionManager.prototype.to = function (state) {
+                    if (this._transition)
+                        this._clearTransition();
+                    if (this._exceptions[state])
+                        return;
+                    this._fromState = this.game.state.current;
+                    this._toState = state;
+                    this._transition = this._getTransition(this._fromState, this._toState);
+                    if (!this._transition) {
+                        console.log('no transition found for:', this.game.state.current + ' to ' + state);
+                        this.game.changeState(this._toState);
+                    }
+                    this.transitionIn();
+                };
+                TransitionManager.prototype.transitionIn = function () {
+                    if (!this._transition)
+                        return;
+                    if (typeof this._transition.outHandler.transitionIn === 'function') {
+                        this._transition.outHandler.transitionInComplete.addOnce(this._transitionInComplete, this);
+                        this._transition.outHandler.transitionIn();
+                    }
+                };
+                TransitionManager.prototype.canTransitionOut = function () {
+                    return !this._exceptions[this.game.state.current] && this._transition && this._transition.inHandler && typeof this._transition.inHandler.transitionOut === 'function';
+                };
+                TransitionManager.prototype.transitionOut = function () {
+                    this._transition.inHandler.transitionOutComplete.addOnce(this._transitionOutComplete, this);
+                    this._transition.inHandler.transitionOut();
+                };
+                return TransitionManager;
             }());
-            exports_23("default", Device);
+            exports_6("TransitionManager", TransitionManager);
+        }
+    }
+});
+System.register("dijon/application", ["dijon.bootstrap", "dijon/core", "dijon/mvc"], function(exports_7, context_7) {
+    "use strict";
+    var __moduleName = context_7 && context_7.id;
+    var dijon_bootstrap_1, core_1, mvc_1;
+    var Application;
+    return {
+        setters:[
+            function (dijon_bootstrap_1_1) {
+                dijon_bootstrap_1 = dijon_bootstrap_1_1;
+            },
+            function (core_1_1) {
+                core_1 = core_1_1;
+            },
+            function (mvc_1_1) {
+                mvc_1 = mvc_1_1;
+            }],
+        execute: function() {
+            dijon_bootstrap_1.bootstrap();
+            Application = (function () {
+                function Application() {
+                    this._mediator = null;
+                    this._models = {};
+                    this._mediators = {};
+                    this._observerMap = {};
+                    if (Application.instance)
+                        throw Error(Application.SINGLETON_MSG);
+                    Application.instance = this;
+                    this.createGame();
+                    this.startGame();
+                }
+                Application.prototype.createGame = function () {
+                    this.game = new core_1.Game({
+                        width: 800,
+                        height: 600,
+                        parent: 'game-container',
+                        renderer: Phaser.AUTO,
+                        transparent: false
+                    });
+                };
+                Application.prototype.startGame = function () {
+                };
+                Application.prototype.addPlugins = function () {
+                    this.game.addPlugins();
+                };
+                Application.prototype.registerModel = function (model) {
+                    if (this._models[model.name]) {
+                        throw (new Error('Application:: a model with the name "' + model.name + '" already exists.'));
+                    }
+                    this._models[model.name] = model;
+                    return model;
+                };
+                Application.prototype.retrieveModel = function (modelName) {
+                    return this._models[modelName] || null;
+                };
+                Application.prototype.removeModel = function (modelToRemove) {
+                    delete this._models[modelToRemove.name];
+                };
+                Application.prototype.registerMediator = function (mediator) {
+                    if (this._mediators[mediator.name]) {
+                        throw (new Error('Application:: a mediator with the name "' + mediator.name + '" already exists.'));
+                    }
+                    this._mediators[mediator.name] = mediator;
+                    this.registerObserver(mediator);
+                    mediator.onRegister();
+                };
+                Application.prototype.retrieveMediator = function (mediatorName) {
+                    return this._mediators[mediatorName] || null;
+                };
+                Application.prototype.removeMediator = function (mediatorToRemove) {
+                    var _this = this;
+                    var name = mediatorToRemove.name;
+                    var mediator = this._mediators[name];
+                    if (!mediator)
+                        return;
+                    mediator.listNotificationInterests().forEach(function (interest) {
+                        _this.removeObserver(interest, mediator);
+                    });
+                    mediator.onRemoved();
+                    delete this._mediators[name];
+                };
+                Application.prototype.registerObserver = function (observer) {
+                    var _this = this;
+                    observer.listNotificationInterests().forEach(function (notificationName) {
+                        if (_this._observerMap[notificationName] === undefined) {
+                            _this._observerMap[notificationName] = [];
+                        }
+                        _this._observerMap[notificationName].push(observer);
+                    });
+                };
+                Application.prototype.removeObserver = function (notificationName, observerToRemove) {
+                    var observers = null, observer = null, i = 0;
+                    observers = this._observerMap[notificationName];
+                    i = observers.length;
+                    while (i--) {
+                        observer = observers[i];
+                        if (observer === observerToRemove) {
+                            observers.splice(i, 1);
+                            break;
+                        }
+                    }
+                    if (observers.length == 0) {
+                        delete this._observerMap[notificationName];
+                    }
+                };
+                Application.prototype.sendNotification = function (notificationName, notficationBody) {
+                    var notification = new mvc_1.Notification(notificationName, notficationBody);
+                    this._notifyObservers(notification);
+                    notification.destroy();
+                    notification = null;
+                };
+                Application.prototype._notifyObservers = function (notification) {
+                    var observer = null, observers = null;
+                    var notificationName = notification.getName();
+                    var observersRef = this._observerMap[notificationName];
+                    if (observersRef) {
+                        observers = observersRef.slice(0);
+                        observers.forEach(function (observer) {
+                            observer.handleNotification(notification);
+                        });
+                    }
+                };
+                Application.getInstance = function () {
+                    if (!Application.instance)
+                        Application.instance = new Application();
+                    return Application.instance;
+                };
+                Application.instance = null;
+                Application.SINGLETON_MSG = 'Application singleton already constructed!';
+                return Application;
+            }());
+            exports_7("Application", Application);
         }
     }
 });
