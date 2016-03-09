@@ -1,9 +1,3 @@
-export interface IGameConfig extends Phaser.IGameConfig {
-    resolution?: number;
-    analytics?: boolean;
-    plugins?: string[];
-}
-
 export interface INotification {
     getName(): string;
     getBody(): any;
@@ -22,23 +16,10 @@ export interface IObserver {
     handleNotification(notification: INotification): any;
 }
 
-export interface IPreloadHandler extends ITransitionHandler {
-    loadStart();
-    loadProgress(progress?: number);
-    loadComplete();
-}
-
-export interface ITransition {
-    inHandler?: ITransitionHandler;
-    preloadHandler?: IPreloadHandler;
-    outHandler: ITransitionHandler;
-}
-
-export interface ITransitionHandler {
-    transitionInComplete: Phaser.Signal;
-    transitionOutComplete: Phaser.Signal;
-    transitionOut?: Function;
-    transitionIn?: Function;
+export interface IGameConfig extends Phaser.IGameConfig {
+    resolution?: number;
+    analytics?: boolean;
+    plugins?: string[];
 }
 
 export interface IAsset {
@@ -76,6 +57,25 @@ export interface IPathConfig {
     audioSpritePath: string;
     physicsPath: string;
     soundPath: string;
+}
+
+export interface ITransition {
+    inHandler?: ITransitionHandler;
+    preloadHandler?: IPreloadHandler;
+    outHandler: ITransitionHandler;
+}
+
+export interface ITransitionHandler {
+    transitionInComplete: Phaser.Signal;
+    transitionOutComplete: Phaser.Signal;
+    transitionOut?: Function;
+    transitionIn?: Function;
+}
+
+export interface IPreloadHandler extends ITransitionHandler {
+    loadStart();
+    loadProgress(progress?: number);
+    loadComplete();
 }
 
 export interface IBrowser {

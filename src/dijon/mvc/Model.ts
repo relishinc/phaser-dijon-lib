@@ -1,4 +1,4 @@
-import Application from "./Application";
+import Application from "../Application";
 import Game from "../core/Game";
 
 export default class Model {

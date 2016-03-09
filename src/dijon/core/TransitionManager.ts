@@ -1,14 +1,14 @@
-import Application from '../mvc/Application';
+import Application from '../Application';
 import Game from './Game';
 import Notifications from '../utils/Notifications';
-import * as interfaces from '../interfaces';
+import {ITransition, ITransitionHandler, IPreloadHandler} from '../interfaces';
 
 export default class TransitionManager {
     public game: Game;
     public onTransitionOutComplete: Phaser.Signal = new Phaser.Signal();
     public onTransitionInComplete: Phaser.Signal = new Phaser.Signal();
 
-    private _transition: interfaces.ITransition = null;
+    private _transition: ITransition = null;
     private _transitions: Object = {};
     private _exceptions: Object = {};
 
@@ -19,7 +19,7 @@ export default class TransitionManager {
         this.game = Application.getInstance().game;
     }
 
-    private _add(id: string, outHandler: interfaces.ITransitionHandler, preloadHandler: interfaces.IPreloadHandler, inHandler: interfaces.ITransitionHandler): void {
+    private _add(id: string, outHandler: ITransitionHandler, preloadHandler: IPreloadHandler, inHandler: ITransitionHandler): void {
         this._transitions[id] = {
             outHandler: outHandler,
             preloadHandler: preloadHandler,
@@ -105,7 +105,7 @@ export default class TransitionManager {
     * @param {inHandler} inHandler - the instance that will handle the in transition when the toState is completely loaded
     * @return {Object} transition reference that was added to _transitions
     */
-    public add(fromState: string, toState: string | interfaces.IPreloadHandler, outHandler?: interfaces.ITransitionHandler, preloadHandler?: interfaces.IPreloadHandler, inHandler?: interfaces.ITransitionHandler): void {
+    public add(fromState: string, toState: string | IPreloadHandler, outHandler?: ITransitionHandler, preloadHandler?: IPreloadHandler, inHandler?: ITransitionHandler): void {
         var args;
         if (arguments.length < 5) {
             if (fromState === 'all') {
@@ -123,7 +123,7 @@ export default class TransitionManager {
         return this._add(fromState + '/' + toState, outHandler, preloadHandler, inHandler);
     }
 
-    public addAll(handler: interfaces.IPreloadHandler): void {
+    public addAll(handler: IPreloadHandler): void {
         return this._add('all', handler, handler, handler);
     }
         

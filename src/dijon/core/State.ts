@@ -1,4 +1,4 @@
-import Application from '../mvc/Application';
+import Application from '../Application';
 import Game from './Game';
 import GameObjectFactory from './GameObjectFactory';
 import Mediator from '../mvc/Mediator';

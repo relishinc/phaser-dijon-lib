@@ -1,6 +1,6 @@
-import * as interfaces from '../interfaces';
+import {INotification} from '../interfaces';
 
-export default class Notification implements interfaces.INotification {
+export default class Notification implements INotification {
     constructor(private _name: string, private _body: any = null) { }
 
     public getName(): string {
@@ -18,7 +18,5 @@ export default class Notification implements interfaces.INotification {
     public destroy() {
         this._body = null;
         this._name = null;
-        delete this._body;
-        delete this._name;
     }
 }

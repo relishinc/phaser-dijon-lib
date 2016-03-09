@@ -10,10 +10,12 @@
   "author": "anthonysapp <anthony@reli.sh>",
   "license": "MIT",
   "devDependencies": {
+    "del": "^2.2.0",
     "gulp": "~3.9.0",
     "gulp-concat": "~2.6.0",
     "gulp-tsc": "~1.1.1",
     "gulp-uglify": "~1.4.0",
-    "run-sequence": "~1.1.2"
+    "run-sequence": "~1.1.2",
+    "systemjs-builder": "^0.15.10"
   }
 }

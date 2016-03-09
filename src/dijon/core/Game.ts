@@ -1,4 +1,4 @@
-import Application from '../mvc/Application';
+import Application from '../Application';
 import AssetManager from "./AssetManager";
 import SequenceManager from "./SequenceManager";
 import TransitionManager from "./TransitionManager";
@@ -6,16 +6,16 @@ import StorageManager from "./StorageManager";
 import AudioManager from "./AudioManager";
 import AnalyticsManager from "./AnalyticsManager";
 import GameObjectFactory from "./GameObjectFactory";
+import Sprite from "../display/Sprite";
 import Group from "../display/Group";
-
-import * as interfaces from '../interfaces';
+import {IGameConfig} from '../interfaces';
 
 export default class Game extends Phaser.Game {
     // public variables
 		
     // application
     public app: Application;
-    public config: interfaces.IGameConfig;
+    public config: IGameConfig;
 		
     // managers
     public asset: AssetManager;
@@ -36,7 +36,7 @@ export default class Game extends Phaser.Game {
     public stageLayer: Group;
 		
     // Phaser.Game overrides
-    constructor(config: interfaces.IGameConfig) {
+    constructor(config: IGameConfig) {
         super(config);
     }
 

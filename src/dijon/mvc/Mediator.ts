@@ -1,8 +1,8 @@
-import * as interfaces from '../interfaces';
-import Application from './Application';
+import {IObserver, INotification} from '../interfaces';
+import Application from '../Application';
 import Game from '../core/Game';
 
-export default class Mediator implements interfaces.IObserver {
+export default class Mediator implements IObserver {
     public static MEDIATOR_NAME: string = 'Mediator';
 
     protected mediatorName: string = null;
@@ -18,7 +18,7 @@ export default class Mediator implements interfaces.IObserver {
             this.register();
         }
     }
-		
+
     // private methods
     protected register(): void {
         this.app.registerMediator(this);
@@ -44,7 +44,7 @@ export default class Mediator implements interfaces.IObserver {
         return [];
     }
 
-    public handleNotification(notification: interfaces.INotification) {
+    public handleNotification(notification: INotification) {
         /**
          * default immplementation would look something like:
          * switch( notification: dijon.INotification ){
@@ -61,7 +61,7 @@ export default class Mediator implements interfaces.IObserver {
     public sendNotification(notificationName: string, notificationBody?: any) {
         this.app.sendNotification(notificationName, notificationBody);
     }
-		
+
     // getter / setter
     public set viewComponent(viewComponent: any) {
         this._viewComponent = viewComponent;

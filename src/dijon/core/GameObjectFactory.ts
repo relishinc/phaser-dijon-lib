@@ -1,7 +1,7 @@
 import Group from '../display/Group';
 import Sprite from '../display/Sprite';
 import Text from '../display/Text';
-import Component from '../core/Component';
+import Component from '../display/Component';
 
 export default class GameObjectFactory extends Phaser.GameObjectFactory {
     // The layer the current object will be added to. This is used by helper functions in Game.ts.

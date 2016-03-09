@@ -1,4 +1,4 @@
-import * as interfaces from '../interfaces';
+import {IBrowser} from '../interfaces';
 
 export default class Device {
     public static IOS: string = 'iOS';
@@ -20,7 +20,7 @@ export default class Device {
         }
     }
 
-    public static get browser(): interfaces.IBrowser {
+    public static get browser(): IBrowser {
         const ua: string = navigator.userAgent.toLowerCase();
         return {
             firefox: ua.indexOf('firefox') > -1,

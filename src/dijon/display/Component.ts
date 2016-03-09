@@ -1,7 +1,7 @@
-import Application from '../mvc/Application';
-import Game from './Game';
-import Sprite from '../display/Sprite';
-import Group from '../display/Group';
+import Application from '../Application';
+import Game from '../core/Game';
+import Sprite from './Sprite';
+import Group from './Group';
 
 export default class Component {
     public game: Game;

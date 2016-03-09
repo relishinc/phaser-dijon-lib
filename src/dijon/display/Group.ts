@@ -1,8 +1,8 @@
-import Application from '../mvc/Application';
+import Application from '../Application';
 import Game from '../core/Game';
-import Mediator from '../mvc/Mediator';
-import Component from '../core/Component';
 import GameObjectFactory from '../core/GameObjectFactory';
+import Mediator from '../mvc/Mediator';
+import Component from './Component';
 
 export default class Group extends Phaser.Group {
     public game: Game;

@@ -1,4 +1,4 @@
-import Application from '../mvc/Application';
+import Application from '../Application';
 import Game from '../core/Game';
 
 export default class Text extends Phaser.Text {

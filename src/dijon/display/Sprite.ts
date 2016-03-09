@@ -1,6 +1,6 @@
-import Application from '../mvc/Application';
+import Application from '../Application';
 import Game from '../core/Game';
-import Component from '../core/Component';
+import Component from './Component';
 
 export default class Sprite extends Phaser.Sprite {
     public game: Game;

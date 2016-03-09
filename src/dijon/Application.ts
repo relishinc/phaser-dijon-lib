@@ -1,11 +1,14 @@
-import Game from '../core/Game';
-import Mediator from './Mediator';
-import Model from './Model';
-import * as interfaces from '../interfaces';
-import Notifications from '../utils/Notifications';
-import Notification from './Notification';
+import bootstrap from '../dijon.bootstrap';
+bootstrap();
 
-export default class Application implements interfaces.INotifier {
+import Game from './core/Game';
+import Mediator from './mvc/Mediator';
+import Model from './mvc/Model';
+import Notification from './mvc/Notification';
+import {INotifier, IObserver, INotification} from './interfaces';
+import Notifications from './utils/Notifications';
+
+export default class Application implements INotifier {
     // static constants
     protected static instance = null;
     protected static SINGLETON_MSG = 'Application singleton already constructed!';
@@ -17,7 +20,7 @@ export default class Application implements interfaces.INotifier {
     protected _mediator: Mediator = null;
     protected _models: { [name: string]: Model } = {};
     protected _mediators: { [name: string]: Mediator } = {};
-    protected _observerMap: { [name: string]: interfaces.IObserver[] } = {};
+    protected _observerMap: { [name: string]: IObserver[] } = {};
 
     constructor() {
         if (Application.instance)
@@ -94,7 +97,7 @@ export default class Application implements interfaces.INotifier {
         delete this._mediators[name];
     }
 
-    public registerObserver(observer: interfaces.IObserver): void {
+    public registerObserver(observer: IObserver): void {
         observer.listNotificationInterests().forEach(notificationName => {
             if (this._observerMap[notificationName] === undefined) {
                 this._observerMap[notificationName] = [];
@@ -109,10 +112,10 @@ export default class Application implements interfaces.INotifier {
      * @param {IObserver} observerToRemove
      * @return {void}
      */
-    public removeObserver(notificationName: string, observerToRemove: interfaces.IObserver): void {
+    public removeObserver(notificationName: string, observerToRemove: IObserver): void {
         //The observer list for the notification under inspection
-        let observers: interfaces.IObserver[] = null,
-            observer: interfaces.IObserver = null,
+        let observers: IObserver[] = null,
+            observer: IObserver = null,
             i: number = 0;
 
         observers = this._observerMap[notificationName];
@@ -145,12 +148,12 @@ export default class Application implements interfaces.INotifier {
     }
 		
     // private methods
-    private _notifyObservers(notification: interfaces.INotification) {
-        let observer: interfaces.IObserver = null,
-            observers: interfaces.IObserver[] = null;
+    private _notifyObservers(notification: INotification) {
+        let observer: IObserver = null,
+            observers: IObserver[] = null;
 
         const notificationName: string = notification.getName();
-        const observersRef: interfaces.IObserver[] = this._observerMap[notificationName];
+        const observersRef: IObserver[] = this._observerMap[notificationName];
 
         if (observersRef) {
             // clone the array in case an observer gets removed while the notification is being sent

@@ -1,18 +1,18 @@
-import Application from '../mvc/Application';
+import Application from '../Application';
 import Game from './Game';
 import Notifications from '../utils/Notifications';
-import * as interfaces from '../interfaces';
+import {INotifier, IAssetList, IPathConfig, ISound, IAsset} from '../interfaces';
     
 /**
 * Manager for loading and clearing assets
 */
-export default class AssetManager implements interfaces.INotifier {
+export default class AssetManager implements INotifier {
     protected app: Application;
         
     // private variables
     private _data = {};
     private _baseURL: string = '';
-    private _pathObj: interfaces.IPathConfig | any = {};
+    private _pathObj: IPathConfig | any = {};
     private _assetPath: string = null;
     private _dataPath: string = null;
     private _spriteSheetPath: string = null;
@@ -33,7 +33,7 @@ export default class AssetManager implements interfaces.INotifier {
 
     private _currentAssetList: string = null;
     private _hasFiles: boolean = false;
-    private _soundsToDecode: Array<interfaces.ISound> = [];
+    private _soundsToDecode: Array<ISound> = [];
     private _isLoadingQueue: boolean = false;
     private _fileCompleteProgress: number = 0;
     private _maxPercent: number = 100;
@@ -139,7 +139,7 @@ export default class AssetManager implements interfaces.INotifier {
     * @return {void}
     * @private
     */
-    private _parseAssetList(key: string, list: interfaces.IAssetList) {
+    private _parseAssetList(key: string, list: IAssetList) {
         this._autoLoadData[key] = list.autoload;
         this._requiredData[key] = list.required;
 
@@ -284,7 +284,7 @@ export default class AssetManager implements interfaces.INotifier {
     * @return {void}
     * @private
     */
-    private _onSoundDecoded(sound: interfaces.ISound) {
+    private _onSoundDecoded(sound: ISound) {
         var soundIndex = this._soundsToDecode.indexOf(sound.key);
         this._soundsToDecode.splice(soundIndex, 1);
 
@@ -359,7 +359,7 @@ export default class AssetManager implements interfaces.INotifier {
     * @return {void}
     * @private
     */
-    private _loadAsset(asset: interfaces.IAsset) {
+    private _loadAsset(asset: IAsset) {
         var type = asset.type,
             url = asset.url || asset.key;
 
@@ -647,7 +647,7 @@ export default class AssetManager implements interfaces.INotifier {
     * @param  {Boolean} [clearText = true]     whether to clear text files
     * @return {void}
     */
-    public clearAsset(asset: interfaces.IAsset, clearAudio: boolean = true, clearAtlasses: boolean = true, clearImages: boolean = true, clearText: boolean = true, clearJSON: boolean = true) {
+    public clearAsset(asset: IAsset, clearAudio: boolean = true, clearAtlasses: boolean = true, clearImages: boolean = true, clearText: boolean = true, clearJSON: boolean = true) {
         var type = asset.type,
             url = asset.url,
             required = asset.required;
@@ -716,7 +716,7 @@ export default class AssetManager implements interfaces.INotifier {
         this._baseURL = baseURL;
     }
 
-    public set paths(pathObj: interfaces.IPathConfig) {
+    public set paths(pathObj: IPathConfig) {
         this._pathObj = pathObj || {};
 
         this._assetPath = this._baseURL + (this._pathObj.assetPath || 'assets');
