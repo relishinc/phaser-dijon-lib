@@ -54,8 +54,7 @@ export class AnalyticsException {
 
 
 /**
- * AssetManager
- * Manager for loading and clearing assets
+ * Wraps Phaser.Loader
 */
 export class AssetManager implements INotifier {
     protected app: Application;

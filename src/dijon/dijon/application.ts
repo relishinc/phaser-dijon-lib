@@ -1,10 +1,10 @@
 import {bootstrap} from '../dijon.bootstrap';
+bootstrap();
+
 import {Game} from './core';
 import {Mediator, Model, Notification} from './mvc';
 import {INotifier, IObserver, INotification} from './interfaces';
 import {Notifications} from './utils';
-
-bootstrap();
 
 export class Application implements INotifier {
     // static constants
