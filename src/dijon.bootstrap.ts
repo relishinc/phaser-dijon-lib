@@ -1,5 +1,5 @@
 /// <reference path="../typings/tsd.d.ts" />
-function bootstrap() {
+export function bootstrap() {
     PIXI.DisplayObject.PIVOT_CENTER = 'center';
     PIXI.DisplayObject.PIVOT_RIGHT = 'r';
     PIXI.DisplayObject.PIVOT_LEFT = 'l';
@@ -171,5 +171,3 @@ function bootstrap() {
         }
     });
 }
-
-export default bootstrap;

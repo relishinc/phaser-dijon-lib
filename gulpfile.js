@@ -10,7 +10,7 @@ var gulp = require('gulp'),
     typedoc = require("gulp-typedoc");
 
 gulp.task('lib', function() {
-    return gulp.src('./src/dijon/**/*.ts')
+    return gulp.src('./src/**/*.ts')
         .pipe(typescript({
             out: 'dijon.js',
             outDir: './build',
@@ -59,7 +59,7 @@ var typedoc = require("gulp-typedoc");
 
 gulp.task("docs", function() {
     return gulp
-        .src(["src/dijon/**/*.ts"])
+        .src(["src/**/*.ts"])
         .pipe(typedoc({
             // TypeScript options (see typescript docs) 
             mode: "file",
