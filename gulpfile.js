@@ -57,7 +57,7 @@ gulp.task('default', ['compile'], function() {
 
 var typedoc = require("gulp-typedoc");
 
-gulp.task("typedoc", function() {
+gulp.task("docs", function() {
     return gulp
         .src(["src/dijon/**/*.ts"])
         .pipe(typedoc({
