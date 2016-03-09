@@ -287,7 +287,6 @@ declare module dijon.display {
         removeAllComponents(): void;
         removeComponent(componentName: string): void;
         resolution: number;
-        protected autoBuild: boolean;
     }
 }
 declare module dijon.display {
@@ -346,7 +345,6 @@ declare module dijon.display {
         removeComponent(componentName: string): void;
         removeMediator(): void;
         addInternal: core.GameObjectFactory;
-        protected autoBuild: boolean;
     }
 }
 declare module dijon.core {

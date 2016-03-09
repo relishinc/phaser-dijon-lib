@@ -1013,12 +1013,8 @@ var dijon;
                     while (components.length > 0)
                         this.addComponent(components.shift());
                 };
-                if (this.autoBuild) {
-                    this.init();
-                    this.buildInterface();
-                    if (components)
-                        this.addComponents(components);
-                }
+                if (components)
+                    this.addComponents(components);
             }
             Sprite.prototype.update = function () {
                 if (this._hasComponents)
@@ -1068,13 +1064,6 @@ var dijon;
             Object.defineProperty(Sprite.prototype, "resolution", {
                 get: function () {
                     return this.texture.baseTexture.resolution;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(Sprite.prototype, "autoBuild", {
-                get: function () {
-                    return true;
                 },
                 enumerable: true,
                 configurable: true
@@ -1239,16 +1228,10 @@ var dijon;
                         this.addComponent(components.shift());
                 };
                 this.position.set(x, y);
-                if (this.autoBuild) {
-                    this.init();
-                }
                 if (!addToStage)
                     this.game.add.existing(this);
-                if (this.autoBuild) {
-                    this.buildInterface();
-                    if (components)
-                        this.addComponents(components);
-                }
+                if (components)
+                    this.addComponents(components);
             }
             Group.prototype.update = function () {
                 Phaser.Group.prototype.update.apply(this);
@@ -1308,13 +1291,6 @@ var dijon;
                 get: function () {
                     this.game.add.targetGroup = this;
                     return this.game.add;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(Group.prototype, "autoBuild", {
-                get: function () {
-                    return true;
                 },
                 enumerable: true,
                 configurable: true
