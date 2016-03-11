@@ -596,12 +596,8 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                         while (components.length > 0)
                             this.addComponent(components.shift());
                     };
-                    if (this.autoBuild) {
-                        this.init();
-                        this.buildInterface();
-                        if (components)
-                            this.addComponents(components);
-                    }
+                    if (components)
+                        this.addComponents(components);
                 }
                 Sprite.prototype.update = function () {
                     if (this._hasComponents)
@@ -655,13 +651,6 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(Sprite.prototype, "autoBuild", {
-                    get: function () {
-                        return true;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
                 return Sprite;
             }(Phaser.Sprite));
             exports_5("Sprite", Sprite);
@@ -711,16 +700,10 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                             this.addComponent(components.shift());
                     };
                     this.position.set(x, y);
-                    if (this.autoBuild) {
-                        this.init();
-                    }
                     if (!addToStage)
                         this.game.add.existing(this);
-                    if (this.autoBuild) {
-                        this.buildInterface();
-                        if (components)
-                            this.addComponents(components);
-                    }
+                    if (components)
+                        this.addComponents(components);
                 }
                 Group.prototype.update = function () {
                     _super.prototype.update.call(this);
@@ -779,13 +762,6 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                     get: function () {
                         this.game.add.targetGroup = this;
                         return this.game.add;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Group.prototype, "autoBuild", {
-                    get: function () {
-                        return true;
                     },
                     enumerable: true,
                     configurable: true

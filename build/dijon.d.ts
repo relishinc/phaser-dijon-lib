@@ -175,7 +175,6 @@ declare module "dijon/display" {
         removeAllComponents(): void;
         removeComponent(componentName: string): void;
         resolution: number;
-        protected autoBuild: boolean;
     }
     export class InvisibleButton extends Sprite {
         private _hitWidth;
@@ -209,7 +208,6 @@ declare module "dijon/display" {
         removeComponent(componentName: string): void;
         removeMediator(): void;
         addInternal: GameObjectFactory;
-        protected autoBuild: boolean;
     }
     export class Text extends Phaser.Text {
         lineSpacing: number;

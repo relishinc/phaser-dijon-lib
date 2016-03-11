@@ -15,13 +15,8 @@ export class Sprite extends Phaser.Sprite {
     constructor(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, public name: string = "dSprite", components: Component[] = null) {
         super(Application.getInstance().game, x, y, key, frame);
 
-        if (this.autoBuild) {
-            this.init();
-            this.buildInterface();
-
-            if (components)
-                this.addComponents(components);
-        }
+        if (components)
+            this.addComponents(components);
     }
     // Phaser.Sprite overrides
     /**
@@ -34,7 +29,7 @@ export class Sprite extends Phaser.Sprite {
         if (this._hasComponents)
             this.updateComponents();
     }
-		
+
     /**
     * removes all components
     * @return {Phaser.Group.destroy}
@@ -44,20 +39,20 @@ export class Sprite extends Phaser.Sprite {
         this.removeAllComponents();
         super.destroy();
     }
-	
+
     // private methods
     /**
     * initialize variables
     * @return {void}
     */
     protected init(): void { }
-		
+
     /**
     * add visual elements
     * @return {void}
     */
     protected buildInterface(): void { }
-		
+
     /**
     * updates the internal list of component keys (so we don't have to call Object.keys() all the time)
     * @return {void}
@@ -66,7 +61,7 @@ export class Sprite extends Phaser.Sprite {
         this._componentKeys = Object.keys(this._components);
         this._hasComponents = this._componentKeys.length > 0;
     }
-		
+
     // public methods
     /**
     * attaches a list of components to the Dijon.UIGroup
@@ -79,7 +74,7 @@ export class Sprite extends Phaser.Sprite {
         while (components.length > 0)
             this.addComponent(components.shift());
     };
-		
+
     /**
     * attaches a component to the Dijon.UIGroup
     * @param {dijon.Component} component to be attached
@@ -94,7 +89,7 @@ export class Sprite extends Phaser.Sprite {
 
         return component;
     };
-		
+
     /**
     * iterates through the list of components and updates each one
     * @return {void}
@@ -106,7 +101,7 @@ export class Sprite extends Phaser.Sprite {
             }
         );
     }
-		
+
     /**
     * updates an attached component (calls component.update())
     * @param  {String} componentName the name of the component to update
@@ -115,7 +110,7 @@ export class Sprite extends Phaser.Sprite {
     public updateComponent(componentName: string): void {
         this._components[componentName].update();
     }
-		
+
     /**
     * removes all the components currently attached
     * @return {void}
@@ -125,7 +120,7 @@ export class Sprite extends Phaser.Sprite {
             this.removeComponent(this._componentKeys.pop());
         }
     }
-		
+
     /**
     * removes a specific component
     * @param  {String} componentName the name of the component to remove
@@ -144,10 +139,6 @@ export class Sprite extends Phaser.Sprite {
 
     public get resolution(): number {
         return this.texture.baseTexture.resolution;
-    }
-
-    protected get autoBuild(): boolean {
-        return true;
     }
 }
 
@@ -204,21 +195,15 @@ export class Group extends Phaser.Group {
         super(Application.getInstance().game, null, name, addToStage, enableBody, physicsBodyType);
 
         this.position.set(x, y);
-        if (this.autoBuild) {
-            this.init();
-        }
 
         if (!addToStage)
             this.game.add.existing(this);
 
-        if (this.autoBuild) {
-            this.buildInterface();
 
-            if (components)
-                this.addComponents(components);
-        }
+        if (components)
+            this.addComponents(components);
     }
-		
+
     // Phaser.Group overrides
     /**
     * called every frame
@@ -231,7 +216,7 @@ export class Group extends Phaser.Group {
         if (this._hasComponents)
             this.updateComponents();
     }
-		
+
     /**
     * removes all components
     * @return {Phaser.Group.destroy}
@@ -242,7 +227,7 @@ export class Group extends Phaser.Group {
         this.removeMediator();
         super.destroy();
     }
-	
+
     // private methods
     /**
     * initialize variables
@@ -250,13 +235,13 @@ export class Group extends Phaser.Group {
     * @return {void}
     */
     protected init(): void { }
-		
+
     /**
     * add visual elements
     * @return {void}
     */
     protected buildInterface(): void { }
-		
+
     /**
     * updates the internal list of component keys (so we don't have to call Object.keys() all the time)
     * @return {void}
@@ -265,7 +250,7 @@ export class Group extends Phaser.Group {
         this._componentKeys = Object.keys(this._components);
         this._hasComponents = this._componentKeys.length > 0;
     }
-		
+
     // public methods
     /**
     * attaches a list of components to the Dijon.UIGroup
@@ -278,7 +263,7 @@ export class Group extends Phaser.Group {
         while (components.length > 0)
             this.addComponent(components.shift());
     }
-		
+
     /**
     * attaches a component to the Dijon.UIGroup
     * @param {dijon.Component} component to be attached
@@ -293,7 +278,7 @@ export class Group extends Phaser.Group {
 
         return component;
     }
-		
+
     /**
     * iterates through the list of components and updates each one
     * @return {void}
@@ -305,7 +290,7 @@ export class Group extends Phaser.Group {
             }
         );
     }
-		
+
     /**
     * updates an attached component (calls component.update())
     * @param  {String} componentName the name of the component to update
@@ -314,7 +299,7 @@ export class Group extends Phaser.Group {
     public updateComponent(componentName: string): void {
         this._components[componentName].update();
     }
-		
+
     /**
     * removes all the components currently attached
     * @return {void}
@@ -324,7 +309,7 @@ export class Group extends Phaser.Group {
             this.removeComponent(this._componentKeys.pop());
         }
     }
-		
+
     /**
     * removes a specific component
     * @param  {String} componentName the name of the component to remove
@@ -340,7 +325,7 @@ export class Group extends Phaser.Group {
 
         this._updateComponentKeys();
     }
-		
+
     /**
     * removes the mediator, if it exists
     * @return {void}
@@ -356,10 +341,6 @@ export class Group extends Phaser.Group {
     public get addInternal(): GameObjectFactory {
         this.game.add.targetGroup = this;
         return this.game.add;
-    }
-
-    protected get autoBuild(): boolean {
-        return true;
     }
 }
 
@@ -405,7 +386,7 @@ export class Text extends Phaser.Text {
         this._lowercaseText = this.text.toLowerCase();
         this.setResolution();
     }
-		
+
     // Phaser.Text overrides
     public setText(text: string): Phaser.Text {
         super.setText(text);
@@ -425,7 +406,7 @@ export class Text extends Phaser.Text {
             this.resolution = this.game.resolution * this.game.resolution;
         }
     }
-		
+
     // private methods		
     /**
     * starts the text animation
@@ -450,7 +431,7 @@ export class Text extends Phaser.Text {
             this.onAnimationComplete.dispatch();
         }
     }
-		
+
     // public methods
     /**
     * sets the color of the entire text
@@ -460,7 +441,7 @@ export class Text extends Phaser.Text {
     public setColor(color: string) {
         return this.highlightPhrase(this.text, color, false);
     }
-		
+
     /**
     * resets the color to the original fill color
     * @return {Dijon.UIText.highlightPhrase} calls the highlightPhrase method and "highlights" the entire text string
@@ -468,7 +449,7 @@ export class Text extends Phaser.Text {
     public resetColor() {
         return this.highlightPhrase(this.text, this.style.fill, false);
     }
-		
+
     /**
     * changes the colour of a portion of the text
     * @param  {String} phrase        the phrase within the text to change
@@ -493,8 +474,8 @@ export class Text extends Phaser.Text {
 
         this.addColor(this.style.fill, endIndex);
     }
-		
-		
+
+
     /**
     * animates the text in by revealing each character in sequence
     * @param  {Number} [letterTime = 0.1]  the time (in seconds) between each character
@@ -518,7 +499,7 @@ export class Text extends Phaser.Text {
 
         this._delayTimer = this.game.time.events.add(delay * Phaser.Timer.SECOND, this._startTextAnimation, this);
     }
-		
+
     /**
     * stops the text animation and clears the timers
     * @return {void}
@@ -529,7 +510,7 @@ export class Text extends Phaser.Text {
         this.game.time.events.remove(this._delayTimer);
         this.game.time.events.remove(this._repeatTimer);
     }
-		
+
     /**
     * rounds the position
     * @return {void}
@@ -537,7 +518,7 @@ export class Text extends Phaser.Text {
     public roundPixel = function() {
         this.position.set(Math.round(this.x), Math.round(this.y));
     }
-	
+
     // static methods
     private static _addSettings(obj: Object, settings: Object): Object {
         if (!settings)
@@ -566,27 +547,27 @@ export class Component {
     public setOwner(owner: Sprite | Group): void {
         this.owner = owner;
     }
-		
+
     /**
     * initialize the component, set up variables
     * called by the owner first after the component is attached
     * @return {void}
     */
     public init() { }
-	
+
     /**
     * add visual elements
     * called by the owner after it calls this init method
     * @return {void}
     */
     public buildInterface() { }
-	
+
     /**
     * called by the owner in its update cycle, every frame
     * @return {void}
     */
     public update() { }
-	
+
     /**
     * remove any visual elements / signals added
     * owner calls this method in its own destroy method
