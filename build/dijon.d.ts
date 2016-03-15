@@ -318,6 +318,7 @@ declare module "dijon/core" {
         static ATLAS: string;
         static TEXT: string;
         static JSON: string;
+        static TILEMAP: string;
         static PHYSICS: string;
         static ASSET_LIST: string;
         static RESOLUTION_2X: string;
@@ -344,6 +345,7 @@ declare module "dijon/core" {
         private _getCacheBustedUrl(url);
         loadText(url: string): Phaser.Loader;
         loadJSON(key: string): Phaser.Loader;
+        loadTilemap(key: string): Phaser.Loader;
         loadPhysics(key: string): Phaser.Loader;
         loadAtlas(url: string, resolution?: any): Phaser.Loader | string;
         loadImage(url: string, resolution?: any): Phaser.Loader | string;

@@ -1164,6 +1164,9 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                         case AssetManager.JSON:
                             this.loadJSON(url);
                             break;
+                        case AssetManager.TILEMAP:
+                            this.loadTilemap(url);
+                            break;
                         case AssetManager.PHYSICS:
                             this.loadPhysics(url);
                             break;
@@ -1188,6 +1191,10 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                 AssetManager.prototype.loadJSON = function (key) {
                     key = this._getAssetKey(key);
                     return this.game.load.json(key, this._getCacheBustedUrl(this._dataPath + '/' + key + '.json'));
+                };
+                AssetManager.prototype.loadTilemap = function (key) {
+                    key = this._getAssetKey(key);
+                    return this.game.load.tilemap(key, this._getCacheBustedUrl(this._dataPath + '/tilemap/' + key + '.json'), null, Phaser.Tilemap.TILED_JSON);
                 };
                 AssetManager.prototype.loadPhysics = function (key) {
                     key = this._getAssetKey(key);
@@ -1473,6 +1480,7 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                 AssetManager.ATLAS = 'atlas';
                 AssetManager.TEXT = 'text';
                 AssetManager.JSON = 'json';
+                AssetManager.TILEMAP = 'tilemap';
                 AssetManager.PHYSICS = 'physics';
                 AssetManager.ASSET_LIST = 'assetList';
                 AssetManager.RESOLUTION_2X = "@2x";

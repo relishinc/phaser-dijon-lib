@@ -36,7 +36,7 @@ export class AnalyticsManager {
             return false;
         window['trackFlashEvent'](gameName, activity, isGameEvent);
     }
-		
+
     // getter / setter
     get active(): boolean {
         return (window['ga']) ? true : false;
@@ -58,7 +58,7 @@ export class AnalyticsException {
 */
 export class AssetManager implements INotifier {
     protected app: Application;
-        
+
     // private variables
     private _data = {};
     private _baseURL: string = '';
@@ -92,7 +92,7 @@ export class AssetManager implements INotifier {
     private _soundsDecoded: number = 0;
 
     private _cacheBustVersion: string = '';
-        
+
     // public variables
     public game: Game;
 
@@ -107,38 +107,38 @@ export class AssetManager implements INotifier {
     public onBackgroundFileComplete = new Phaser.Signal();
     public onBackgroundLoadComplete = new Phaser.Signal();
     public onBackgroundLoadCompleteAndAudioDecoded = new Phaser.Signal();
-        
+
     // static constants
     /**
     * @type {String}
     * @static
     */
     public static AUDIO: string = 'audio';
-        
+
     /**
     * @type {String}
     * @static
     */
     public static SOUND: string = 'sound';
-        
+
     /**
     * @type {String}
     * @static
     */
     public static AUDIO_SPRITE: string = 'audioSprite';
-        
+
     /**
     * @type {String}
     * @static
     */
     public static IMAGE: string = 'image';
-        
+
     /**
     * @type {String}
     * @static
     */
     public static ATLAS: string = 'atlas';
-        
+
     /**
     * @type {String}
     * @static
@@ -149,13 +149,19 @@ export class AssetManager implements INotifier {
     * @static
     */
     public static JSON: string = 'json';
-        
+
+    /**
+    * @type {String}
+    * @static
+    */
+    public static TILEMAP: string = 'tilemap';
+
     /**
     * @type {String}
     * @static
     */
     public static PHYSICS: string = 'physics';
-        
+
     /**
     * @type {String}
     * @static
@@ -181,7 +187,7 @@ export class AssetManager implements INotifier {
         this.paths = null;
         this.resolution = this.game.resolution;
     }
-    
+
     /**
     * parses an asset list by key (usually from data/assets.json) and stores them internally
     * @param  {String} key the id of the list
@@ -199,7 +205,7 @@ export class AssetManager implements INotifier {
             this._loadData[key].push(asset);
         });
     }
-    
+
     /**
     * adds assets from a list to the load list
     * @param  {String} id id of the list to add
@@ -214,7 +220,7 @@ export class AssetManager implements INotifier {
             this._loadAsset(assets[i]);
         }
     }
-    
+
     /**
     * start the background loading
     * @return {void}
@@ -223,7 +229,7 @@ export class AssetManager implements INotifier {
     private _backgroundLoadStart() {
         this.onBackgroundLoadStart.dispatch();
     }
-    
+
     /**
     * when a file completes in an background load queue - dispatches the onBackgroundFileComplete signal
     * @param  {Number} progress   the percent progress
@@ -240,7 +246,7 @@ export class AssetManager implements INotifier {
         this._fileCompleteProgress = progress;
         this.onBackgroundFileComplete.dispatch(progress, id, fileIndex, totalFiles);
     }
-    
+
     /**
     * when the background load completes - dispatches the onBackgroundLoadComplete signal, starts checking for decoded sounds
     * @return {void}
@@ -252,7 +258,7 @@ export class AssetManager implements INotifier {
         this.onBackgroundLoadComplete.dispatch();
         this._checkSoundDecoding(this.onBackgroundLoadCompleteAndAudioDecoded);
     }
-    
+
     /**
     * when the asset list starts loading, dispatches the onLoadStart signal
     * @return {void}
@@ -260,7 +266,7 @@ export class AssetManager implements INotifier {
     private _gameLoadStart() {
         this.onLoadStart.dispatch();
     }
-    
+
     /**
     * when a file starts loading - dispatches the onFileStart signal
     * @return {void}
@@ -268,7 +274,7 @@ export class AssetManager implements INotifier {
     private _gameFileStart() {
         this.onFileStart.dispatch();
     }
-    
+
     /**
     * when a file completes in the game load - dispatches the onFileComplete signal
     * @param  {Number} progress   the percent progress
@@ -291,7 +297,7 @@ export class AssetManager implements INotifier {
             texture.resolution = this.resolution;
         }
     };
-    
+
     /**
     * when the background load completes - dispatches the onLoadComplete signal, starts checking for decoded sounds
     * @return {void}
@@ -305,7 +311,7 @@ export class AssetManager implements INotifier {
 
         this._checkSoundDecoding(this.onLoadCompleteAndAudioDecoded);
     }
-    
+
     /**
     * checks if all the sounds in the queue are decoded
     * @param  {Phaser.Signal} eventToDispatch the signal to be dispatched when all sounds are decoded
@@ -327,7 +333,7 @@ export class AssetManager implements INotifier {
             eventToDispatch.dispatch();
         }
     }
-    
+
     /**
     * when a sound is decoded, this method removes it from the _soundsToDecode array, and increases the overall percentage loaded
     * @param  {Phaser.Sound} sound the sound being decoded
@@ -353,7 +359,7 @@ export class AssetManager implements INotifier {
             sound.eventToDispatch.dispatch();
         }
     }
-    
+
     /**
     * shortcut to get an asset key using a file name (strips its extension)
     * @param  {String} fileName the url of the file
@@ -368,7 +374,7 @@ export class AssetManager implements INotifier {
 
         return ext.join('');
     }
-    
+
     /**
     * gets the extension of a given file
     * @param  {String} fileName
@@ -378,7 +384,7 @@ export class AssetManager implements INotifier {
     private _getExtension(fileName: string): string {
         return fileName.split('.').pop();
     }
-        
+
     /**
     * gets the extension of a given file
     * @param  {String} fileName
@@ -402,7 +408,7 @@ export class AssetManager implements INotifier {
 
         return result;
     }
-    
+
     /**
     * determines what kind of asset we're dealing with and adds it to the load queue
     * @param  {Object} asset the asset object we're going to load
@@ -435,12 +441,15 @@ export class AssetManager implements INotifier {
             case AssetManager.JSON:
                 this.loadJSON(url);
                 break;
+            case AssetManager.TILEMAP:
+                this.loadTilemap(url);
+                break;
             case AssetManager.PHYSICS:
                 this.loadPhysics(url);
                 break;
         }
     }
-    
+
     /**
     * parses the data from the external assets file (normally data/assets.json)
     * @return {void}
@@ -470,6 +479,11 @@ export class AssetManager implements INotifier {
     public loadJSON(key: string) {
         key = this._getAssetKey(key);
         return this.game.load.json(key, this._getCacheBustedUrl(this._dataPath + '/' + key + '.json'));
+    }
+
+    public loadTilemap(key: string) {
+        key = this._getAssetKey(key);
+        return this.game.load.tilemap(key, this._getCacheBustedUrl(this._dataPath + '/tilemap/' + key + '.json'), null, Phaser.Tilemap.TILED_JSON);
     }
 
     public loadPhysics(key: string) {
@@ -517,7 +531,7 @@ export class AssetManager implements INotifier {
         }
         // type should be 'sound' or 'sprite' ('fx' and 'music' to be deprecated)
         // default to sound
-    
+
         if (typeof type === 'undefined') {
             type = 'sound';
         }
@@ -646,8 +660,8 @@ export class AssetManager implements INotifier {
         //console.log('sounds to decode', this._soundsToDecode.length);
         return this._soundsToDecode.length === 0;
     }
-    
-    
+
+
     /**
     * sets the data for the AssetManager to use as a reference (usually from data/assets.json)
     * triggers the _parseData internal method, which stores the asset list for later use
@@ -660,7 +674,7 @@ export class AssetManager implements INotifier {
 
         this.sendNotification(Notifications.ASSET_MANAGER_DATA_SET, this._data);
     }
-    
+
     /**
     * clears the assets from a particular id in the storage
     * @param  {String} id            the id of the asset list to clear
@@ -687,7 +701,7 @@ export class AssetManager implements INotifier {
 
         this.sendNotification(Notifications.ASSET_MANAGER_ASSETS_CLEARED, id);
     }
-    
+
     /**
     * clears an asset from the game's memory
     * @param  {Object} asset         the asset to clear
@@ -743,7 +757,7 @@ export class AssetManager implements INotifier {
                 break;
         }
     }
-    
+
     /**
     * checks if the assets from this list id are already loaded
     * @param  {String}  id the asset list id to check
@@ -756,7 +770,7 @@ export class AssetManager implements INotifier {
     public sendNotification(notificationName: string, notificationBody?: any): void {
         return this.app.sendNotification(notificationName, notificationBody);
     }
-        
+
     // getter / setter
     public set baseURL(baseURL: string) {
         // ensure trailing slash
@@ -822,7 +836,7 @@ export class AssetManager implements INotifier {
  * Wrapper for Phaser.SoundManager
  */
 export class AudioManager {
-    public game:Game;
+    public game: Game;
 
     private _defaultVolume: number = 1;
     private _sprites: { [sprite: string]: Phaser.AudioSprite } = {};
@@ -832,7 +846,7 @@ export class AudioManager {
     constructor() {
         this.game = Application.getInstance().game;
     }
-		
+
     // private methods 
     private _addAudio(key: string, isAudioSprite: boolean = false): Phaser.Sound | Phaser.AudioSprite {
         if (isAudioSprite === true) {
@@ -897,7 +911,7 @@ export class AudioManager {
     private _stopSound(sound: Phaser.Sound): void {
         return sound.stop();
     }
-		
+
     // public methods
     /**
     * adds audio to the lookup (called by AssetManager when any sound is loaded, usually not necessary to call from a game)
@@ -910,7 +924,7 @@ export class AudioManager {
         }
         return this.addSound(key);
     }
-		
+
     /**
     * adds a single sound to the lookup (usually not necessary to call from a game)
     * @param {String} key the Phaser.Cache key of the asset
@@ -924,7 +938,7 @@ export class AudioManager {
         this._sounds[key].allowMultiple = true;
         return this._sounds[key];
     }
-	
+
     /**
     * adds an audio sprite to the lookup (usually not necessary to call from a game)
     * @param {String} key the Phaser.Cache key of the asset
@@ -937,7 +951,7 @@ export class AudioManager {
         this._sprites[key] = <Phaser.AudioSprite>this._addAudio(key, true);
         return this._sprites[key];
     }
-		
+
     /**
     * a global method to play a sound - will check audio sprite markers for the provided key first, then single sounds
     * @param  {String} marker       the sound marker (or key) to check for
@@ -953,7 +967,7 @@ export class AudioManager {
 
         return this.playSound(marker, volume, loop, forceRestart);
     }
-	
+
     /**
     * calls Dijon.AudioManager.playAudio on a delay
     * @param  {int} delay        number of milliseconds to delay the sound
@@ -968,7 +982,7 @@ export class AudioManager {
         }
         return this.playDelayedSound(delay, marker, volume, loop, forceRestart);
     }
-		
+
     /**
     * plays a single sound
     * @param  {String} key          the Phaser.Cache key for the sound
@@ -985,7 +999,7 @@ export class AudioManager {
 
         return this._sounds[key].play("", 0, volume, loop, forceRestart);
     }
-	
+
     /**
     * plays a marker from an audio sprite
     * @param  {String} marker       the marker to check for (will check all audio sprites)
@@ -1014,7 +1028,7 @@ export class AudioManager {
         this.game.time.events.add(delay, this.playSpriteMarker, this, marker, volume, loop, forceRestart);
         return null;
     }
-		
+
     /**
     * stops any playing audio file with the given marker
     * checks audio sprites first, then single sounds
@@ -1026,7 +1040,7 @@ export class AudioManager {
         }
         return this.stopSound(marker);
     }
-		
+
     /**
     * stops a single sound from playing
     * @return {Phaser.Sound} the sound that was stopped
@@ -1037,7 +1051,7 @@ export class AudioManager {
         }
         return this._sounds[key].stop();
     }
-	
+
     /**
     * stops a single sound from playing
     * @return {Phaser.Sound} the sound that was stopped
@@ -1050,7 +1064,7 @@ export class AudioManager {
         }
         this._stopSpriteMarker(<string>key, marker);
     }
-		
+
     /**
     * stops removes a sound from Dijon.AudioManager's lookup
     * @param  {String} key the key of the sound to be removed
@@ -1066,7 +1080,7 @@ export class AudioManager {
             delete this._sounds[key];
         }
     }
-	
+
     /**
     * stops removes an audio sprite from Dijon.AudioManager's lookup
     * @param  {String} key the key of the sound to be removed
@@ -1097,7 +1111,7 @@ export class AudioManager {
 
         return sound.fadeTween.start();
     }
-		
+
     // getter / setter
     /**
     * Sets the default volume for all sounds (used in the case where a volume is not supplied to the playAudio, playSound, or playSpriteMarker methods)
@@ -1119,7 +1133,7 @@ export class Game extends Phaser.Game {
     // application
     public app: Application;
     public config: IGameConfig;
-		
+
     // managers
     public asset: AssetManager;
     public sequence: SequenceManager;
@@ -1128,16 +1142,16 @@ export class Game extends Phaser.Game {
     public audio: AudioManager;
     public analytics: AnalyticsManager;
     public add: GameObjectFactory;
-		
+
     // signals
     public onWorldInputDisabled: Phaser.Signal = new Phaser.Signal();
     public onWorldInputEnabled: Phaser.Signal = new Phaser.Signal();
-		
+
     // display layers
     public gameLayer: Group;
     public uiLayer: Group;
     public stageLayer: Group;
-		
+
     // Phaser.Game overrides
     constructor(config: IGameConfig) {
         super(config);
@@ -1147,7 +1161,7 @@ export class Game extends Phaser.Game {
         super.boot();
 
         this.app = Application.getInstance();
-			
+
         // add managers
         this.asset = new AssetManager();
         this.sequence = new SequenceManager();
@@ -1155,7 +1169,7 @@ export class Game extends Phaser.Game {
         this.storage = new StorageManager();
         this.audio = new AudioManager();
         this.analytics = new AnalyticsManager(this.config.analytics);
-			
+
         // replace Phaser.GameObjectFactory
         this.add = null;
         this.add = new GameObjectFactory(this);
@@ -1172,7 +1186,7 @@ export class Game extends Phaser.Game {
             });
         }
     }
-		
+
     // Override this.world as the default layer that 
     // .add calls will be created on.
     public setFactoryDefaultLayer(newLayer: Phaser.Group) {
@@ -1186,7 +1200,7 @@ export class Game extends Phaser.Game {
         // if the game's camera moves, anything in this group will stay in place
         this.uiLayer = this.add.dGroup(0, 0, '_ui_layer');
         this.uiLayer.fixedToCamera = true;
-			
+
         // add a group to the Phaser.Stage (just in case)
         this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
     }
@@ -1245,7 +1259,7 @@ export class Game extends Phaser.Game {
         this.enableInput(this.gameLayer);
         this.onWorldInputEnabled.dispatch();
     }
-		
+
     /**
      * removes all items from the game layer
      * but allows the ui layer to persist
@@ -1257,7 +1271,7 @@ export class Game extends Phaser.Game {
         this.gameLayer.removeAll(true, true);
         return this.state.start(toState, false, false);
     }
-				
+
     // getter / setter
     /**
      * sets the target group for the gameObjectFactory to gameLayer before adding 
@@ -1302,10 +1316,10 @@ export class Game extends Phaser.Game {
 export class GameObjectFactory extends Phaser.GameObjectFactory {
     // The layer the current object will be added to. This is used by helper functions in Game.ts.
     protected _targetGroup: Phaser.Group = null;
-        
+
     // This is the layer that standard .add calls will be applied to.
     protected _defaultLayer: Phaser.Group = this.world;
-        
+
     // overrides
     /**
     * Adds an existing display object to the game world.
@@ -1341,7 +1355,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
 
         return group.add(new Phaser.Image(this.game, x, y, key, frame));
     }
-		
+
     /**
     * Create a new Sprite with specific position and sprite sheet key.
     *
@@ -1363,7 +1377,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
 
         return group.create(x, y, key, frame);
     }
-		
+
     /**
     * Create a new Creature Animation object.
     *
@@ -1395,7 +1409,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
 
         return obj;
     }
-		
+
     /**
     * A Group is a container for display objects that allows for fast pooling, recycling and collision checks.
     *
@@ -1412,7 +1426,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
         this._targetGroup = null;
         return new Phaser.Group(this.game, parent, name, addToStage, enableBody, physicsBodyType);
     }
-		
+
     /**
     * A Group is a container for display objects that allows for fast pooling, recycling and collision checks.
     * 
@@ -1431,7 +1445,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
         this._targetGroup = null;
         return new Phaser.Group(this.game, parent, name, addToStage, true, physicsBodyType);
     }
-		
+
     /**
     * A SpriteBatch is a really fast version of a Phaser Group built solely for speed.
     * Use when you need a lot of sprites or particles all sharing the same texture.
@@ -1448,7 +1462,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
         this._targetGroup = null;
         return new Phaser.SpriteBatch(this.game, parent, name, addToStage);
     }
-		
+
     /**
    * Creates a new TileSprite object.
    *
@@ -1467,7 +1481,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
         this._targetGroup = null;
         return group.add(new Phaser.TileSprite(this.game, x, y, width, height, key, frame));
     }
-		
+
     /**
    * Creates a new Rope object.
    *
@@ -1487,7 +1501,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
         this._targetGroup = null;
         return group.add(new Phaser.Rope(this.game, x, y, key, frame, points));
     }
-	
+
     /**
     * Creates a new Text object.
     *
@@ -1504,7 +1518,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
         this._targetGroup = null;
         return group.add(new Phaser.Text(this.game, x, y, text, style));
     }
-	
+
     /**
     * Creates a new Button object.
     *
@@ -1526,7 +1540,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
         this._targetGroup = null;
         return group.add(new Phaser.Button(this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame));
     }
-	
+
     /**
     * Creates a new Graphics object.
     *
@@ -1540,7 +1554,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
         if (group === undefined) { group = this.world; }
         return group.add(new Phaser.Graphics(this.game, x, y));
     }
-		
+
     /**
     * Create a new BitmapText object.
     *
@@ -1574,7 +1588,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
         this._targetGroup = null;
         return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size, align));
     }
-		
+
     // dijon specific display objects
     public dSprite(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: Component[], group?: Phaser.Group): Sprite {
         if (group === undefined) { group = this.targetGroup; }
@@ -1627,7 +1641,7 @@ export class SequenceManager {
     constructor() {
         this.game = Application.getInstance().game;
     }
-        
+
     // private methods
     private _executeMethod(sequence: Array<Function>, context: Object, callback: Function, callbackContext: Object) {
         var func = sequence.shift();
@@ -1639,7 +1653,7 @@ export class SequenceManager {
             callback.call(callbackContext);
         }
     }
-        
+
     // public methods
     public run(sequence: Array<Function>, context: Object, interval: number, completeCallback: Function, completeCallbackContext: Object) {
         if (typeof context === 'undefined') {
@@ -1701,7 +1715,7 @@ export class State extends Phaser.State {
         this.removeAudio();
         this.removeMediator();
     }
-        
+
     // public methods
     public listBuildSequence(): Function[] {
         return [];
@@ -1759,7 +1773,7 @@ export class State extends Phaser.State {
         this._mediator.destroy();
         this._mediator = null;
     }
-                
+
     // getter / setter
     public get preloadID(): string {
         return null;
@@ -1794,7 +1808,7 @@ export class StorageManager {
         this.game = Application.getInstance().game;
         this._init();
     }
-		
+
     // private methods
     private _init(): void {
         this._localStorageAvailable = this._getIsLocalStorageAvailable();
@@ -1825,7 +1839,7 @@ export class StorageManager {
 
         return jsonData;
     }
-		
+
     // public methods
     /**
     * gets stored data with the specified key
@@ -1845,7 +1859,7 @@ export class StorageManager {
         }
         return data;
     }
-	
+
     /**
     * saves data to localstorage
     * @param  {String} key   the LocalStorage key the data will be saved to
@@ -1863,7 +1877,7 @@ export class StorageManager {
             console.log('your data could not be saved');
         }
     }
-	
+
     /**
     * clear stored data
     * @param  {String} key the LocalStorage key to clear
@@ -1885,7 +1899,7 @@ export class StorageManager {
  * TransitionManager
  */
 
-export  class TransitionManager {
+export class TransitionManager {
     public game: Game;
     public onTransitionOutComplete: Phaser.Signal = new Phaser.Signal();
     public onTransitionInComplete: Phaser.Signal = new Phaser.Signal();
@@ -1960,9 +1974,9 @@ export  class TransitionManager {
 
         this._transition = null;
     }
-        
+
     // public methods
-        
+
     /**
     * Adds a transition handler for a specific from / to state combination
     * pass the from / to states as the first 2 arguments, and additional arguments for which instance will handle the transition
@@ -2008,7 +2022,7 @@ export  class TransitionManager {
     public addAll(handler: IPreloadHandler): void {
         return this._add('all', handler, handler, handler);
     }
-        
+
     /**
     * Adds an exception to the Dijon.TransitionManager in the case where 'all' has been used
     * @param {string} state - the state to add the exception for
@@ -2016,7 +2030,7 @@ export  class TransitionManager {
     public addException(state: string) {
         this._exceptions[state] = true;
     }
-        
+
     /**
     * Removes a transition handler for a specific from / to state combination
     */
@@ -2029,7 +2043,7 @@ export  class TransitionManager {
             delete this._transitions[fromState + '/' + toState];
         }
     }
-        
+
     /**
     * Start the transition to a new state
     * @param {string} state - the state to transition to
@@ -2067,7 +2081,7 @@ export  class TransitionManager {
     public canTransitionOut(): boolean {
         return !this._exceptions[this.game.state.current] && this._transition && this._transition.inHandler && typeof this._transition.inHandler.transitionOut === 'function';
     }
-        
+
     /**
     * After the state is fully loaded and 'built' a call to this is made
     * this is currently made from BaseState in the 'afterBuild' method
