@@ -1222,10 +1222,11 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                     var newKey = this._getAssetKey(asset.url);
                     var cKey = cacheKey(key, 'tileset', newKey);
                     if (typeof asset.resolution !== 'string') {
-                        resolution = this._getResolution(resolution);
+                        resolution = this._getResolution(asset.resolution);
                     }
-                    var url = asset.key + resolution + '.' + this._getExtension(asset.url);
-                    this.game.load.image(cKey, this._getCacheBustedUrl(this._imgPath + '/' + url));
+                    var url = this._getAssetKey(newKey + resolution + '.' + this._getExtension(asset.url));
+                    console.log(asset.url, cKey);
+                    this.game.load.image(cKey, this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + '.png'));
                 };
                 AssetManager.prototype.loadPhysics = function (key) {
                     key = this._getAssetKey(key);

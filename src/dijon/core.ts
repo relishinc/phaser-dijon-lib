@@ -474,10 +474,11 @@ export class AssetManager implements INotifier {
         const cKey: string = cacheKey(key, 'tileset', newKey);
 
         if (typeof asset.resolution !== 'string') {
-            resolution = this._getResolution(resolution);
+            resolution = this._getResolution(asset.resolution);
         }
-        const url = asset.key + resolution + '.' + this._getExtension(asset.url);
-        this.game.load.image(cKey, this._getCacheBustedUrl(this._imgPath + '/' + url));
+        const url = this._getAssetKey(newKey + resolution + '.' + this._getExtension(asset.url));
+        console.log(asset.url, cKey);
+        this.game.load.image(cKey, this._getCacheBustedUrl(this._spriteSheetPath + '/' + url + '.png'));
     }
 
     public loadPhysics(key: string) {
