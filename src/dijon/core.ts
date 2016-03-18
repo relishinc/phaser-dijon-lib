@@ -1,5 +1,5 @@
 import {Application} from './application';
-import {INotifier, IAssetList, IPathConfig, ISound, IAsset, IGameConfig, ITransition, ITransitionHandler, IPreloadHandler} from './interfaces';
+import {INotifier, IAssetList, IPathConfig, ISound, IAsset, ITiledmapAssets, IGameConfig, ITransition, ITransitionHandler, IPreloadHandler} from './interfaces';
 import {Mediator} from './mvc';
 import {Notifications} from './utils';
 import {Sprite, Group, Text, Component} from './display';
@@ -109,65 +109,22 @@ export class AssetManager implements INotifier {
     public onBackgroundLoadCompleteAndAudioDecoded = new Phaser.Signal();
 
     // static constants
-    /**
-    * @type {String}
-    * @static
-    */
+    // asset types
     public static AUDIO: string = 'audio';
-
-    /**
-    * @type {String}
-    * @static
-    */
     public static SOUND: string = 'sound';
-
-    /**
-    * @type {String}
-    * @static
-    */
     public static AUDIO_SPRITE: string = 'audioSprite';
-
-    /**
-    * @type {String}
-    * @static
-    */
     public static IMAGE: string = 'image';
-
-    /**
-    * @type {String}
-    * @static
-    */
     public static ATLAS: string = 'atlas';
-
-    /**
-    * @type {String}
-    * @static
-    */
     public static TEXT: string = 'text';
-    /**
-    * @type {String}
-    * @static
-    */
     public static JSON: string = 'json';
-
-    /**
-    * @type {String}
-    * @static
-    */
     public static TILEMAP: string = 'tilemap';
-
-    /**
-    * @type {String}
-    * @static
-    */
+    public static TILEDMAP: string = 'tiledmap';
+    public static TILEDMAP_TILESET: string = 'tileset';
+    public static TILEDMAP_LAYER: string = 'layer';
     public static PHYSICS: string = 'physics';
-
-    /**
-    * @type {String}
-    * @static
-    */
     public static ASSET_LIST: string = 'assetList';
 
+    // resolutions
     public static RESOLUTION_2X: string = "@2x";
     public static RESOLUTION_3X: string = "@3x";
 
@@ -444,6 +401,9 @@ export class AssetManager implements INotifier {
             case AssetManager.TILEMAP:
                 this.loadTilemap(url);
                 break;
+            case AssetManager.TILEDMAP:
+                this.loadTiledmap(url, (<ITiledmapAssets>asset).assets);
+                break;
             case AssetManager.PHYSICS:
                 this.loadPhysics(url);
                 break;
@@ -486,6 +446,40 @@ export class AssetManager implements INotifier {
         return this.game.load.tilemap(key, this._getCacheBustedUrl(this._dataPath + '/tilemap/' + key + '.json'), null, Phaser.Tilemap.TILED_JSON);
     }
 
+    public loadTiledmap(key: string, assets: IAsset[]) {
+        if (Phaser.Plugin['Tiled'] === undefined) {
+            console.log('tiledmap requires the phaser-tiled plugin from https://github.com/englercj/phaser-tiled');
+            return null;
+        }
+        const cacheKey: any = Phaser.Plugin['Tiled'].utils.cacheKey;
+
+        this.game.load['tiledmap'](cacheKey(key, 'tiledmap'), this._getCacheBustedUrl(this._dataPath + '/tilemap/' + key + '.json'), null, Phaser.Tilemap.TILED_JSON);
+
+        assets.forEach(asset => {
+            switch (asset.type) {
+                case AssetManager.TILEDMAP_TILESET:
+                case AssetManager.TILEDMAP_LAYER:
+                    this.loadTiledmapImage(key, asset.type, asset);
+                    break;
+            }
+
+        });
+    }
+
+    public loadTiledmapImage(key: string, tilesetImageType: string, asset: IAsset) {
+        const cacheKey: any = Phaser.Plugin['Tiled'].utils.cacheKey;
+
+        let resolution: string = '';
+        const newKey: string = this._getAssetKey(asset.url);
+        const cKey: string = cacheKey(key, 'tileset', newKey);
+
+        if (typeof asset.resolution !== 'string') {
+            resolution = this._getResolution(resolution);
+        }
+        const url = asset.key + resolution + '.' + this._getExtension(asset.url);
+        this.game.load.image(cKey, this._getCacheBustedUrl(this._imgPath + '/' + url));
+    }
+
     public loadPhysics(key: string) {
         key = this._getAssetKey(key);
         return this.game.load.physics(key, this._getCacheBustedUrl(this._physicsPath + '/' + key + '.json'));
@@ -512,7 +506,6 @@ export class AssetManager implements INotifier {
             return key;
         }
         url = key + resolution + '.' + this._getExtension(url);
-
         return this.game.load.image(key, this._getCacheBustedUrl(this._imgPath + '/' + url));
     }
 

@@ -32,6 +32,9 @@ declare module "dijon/interfaces" {
         key?: string;
         resolution: number;
     }
+    export interface ITiledmapAssets extends IAsset {
+        assets: Array<IAsset>;
+    }
     export interface IAssetList {
         autoload: boolean;
         required: boolean;
@@ -319,6 +322,9 @@ declare module "dijon/core" {
         static TEXT: string;
         static JSON: string;
         static TILEMAP: string;
+        static TILEDMAP: string;
+        static TILEDMAP_TILESET: string;
+        static TILEDMAP_LAYER: string;
         static PHYSICS: string;
         static ASSET_LIST: string;
         static RESOLUTION_2X: string;
@@ -346,6 +352,8 @@ declare module "dijon/core" {
         loadText(url: string): Phaser.Loader;
         loadJSON(key: string): Phaser.Loader;
         loadTilemap(key: string): Phaser.Loader;
+        loadTiledmap(key: string, assets: IAsset[]): any;
+        loadTiledmapImage(key: string, tilesetImageType: string, asset: IAsset): void;
         loadPhysics(key: string): Phaser.Loader;
         loadAtlas(url: string, resolution?: any): Phaser.Loader | string;
         loadImage(url: string, resolution?: any): Phaser.Loader | string;

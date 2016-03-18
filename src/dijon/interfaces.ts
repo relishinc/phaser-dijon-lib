@@ -32,6 +32,10 @@ export interface IAsset {
     resolution: number;
 }
 
+export interface ITiledmapAssets extends IAsset{
+    assets: Array<IAsset>;
+}
+
 export interface IAssetList {
     autoload: boolean;
     required: boolean;

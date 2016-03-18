@@ -1167,6 +1167,9 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                         case AssetManager.TILEMAP:
                             this.loadTilemap(url);
                             break;
+                        case AssetManager.TILEDMAP:
+                            this.loadTiledmap(url, asset.assets);
+                            break;
                         case AssetManager.PHYSICS:
                             this.loadPhysics(url);
                             break;
@@ -1195,6 +1198,34 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                 AssetManager.prototype.loadTilemap = function (key) {
                     key = this._getAssetKey(key);
                     return this.game.load.tilemap(key, this._getCacheBustedUrl(this._dataPath + '/tilemap/' + key + '.json'), null, Phaser.Tilemap.TILED_JSON);
+                };
+                AssetManager.prototype.loadTiledmap = function (key, assets) {
+                    var _this = this;
+                    if (Phaser.Plugin['Tiled'] === undefined) {
+                        console.log('tiledmap requires the phaser-tiled plugin from https://github.com/englercj/phaser-tiled');
+                        return null;
+                    }
+                    var cacheKey = Phaser.Plugin['Tiled'].utils.cacheKey;
+                    this.game.load['tiledmap'](cacheKey(key, 'tiledmap'), this._getCacheBustedUrl(this._dataPath + '/tilemap/' + key + '.json'), null, Phaser.Tilemap.TILED_JSON);
+                    assets.forEach(function (asset) {
+                        switch (asset.type) {
+                            case AssetManager.TILEDMAP_TILESET:
+                            case AssetManager.TILEDMAP_LAYER:
+                                _this.loadTiledmapImage(key, asset.type, asset);
+                                break;
+                        }
+                    });
+                };
+                AssetManager.prototype.loadTiledmapImage = function (key, tilesetImageType, asset) {
+                    var cacheKey = Phaser.Plugin['Tiled'].utils.cacheKey;
+                    var resolution = '';
+                    var newKey = this._getAssetKey(asset.url);
+                    var cKey = cacheKey(key, 'tileset', newKey);
+                    if (typeof asset.resolution !== 'string') {
+                        resolution = this._getResolution(resolution);
+                    }
+                    var url = asset.key + resolution + '.' + this._getExtension(asset.url);
+                    this.game.load.image(cKey, this._getCacheBustedUrl(this._imgPath + '/' + url));
                 };
                 AssetManager.prototype.loadPhysics = function (key) {
                     key = this._getAssetKey(key);
@@ -1481,6 +1512,9 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                 AssetManager.TEXT = 'text';
                 AssetManager.JSON = 'json';
                 AssetManager.TILEMAP = 'tilemap';
+                AssetManager.TILEDMAP = 'tiledmap';
+                AssetManager.TILEDMAP_TILESET = 'tileset';
+                AssetManager.TILEDMAP_LAYER = 'layer';
                 AssetManager.PHYSICS = 'physics';
                 AssetManager.ASSET_LIST = 'assetList';
                 AssetManager.RESOLUTION_2X = "@2x";
