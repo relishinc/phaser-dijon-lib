@@ -307,6 +307,65 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
             this.dirty = true;
             return this;
         };
+        Phaser.Sprite.prototype.update = function () {
+            if (this._hasComponents)
+                this.updateComponents();
+        };
+        Phaser.Sprite.prototype.destroy = function () {
+            this.removeAllComponents();
+            Phaser.Sprite.prototype.destroy.call(this);
+        };
+        Phaser.Sprite.prototype['_updateComponentKeys'] = function () {
+            this._componentKeys = Object.keys(this._components);
+            this._hasComponents = this._componentKeys.length > 0;
+        };
+        Phaser.Sprite.prototype['addComponents'] = function (components) {
+            if (this._components === undefined)
+                this._components = {};
+            if (typeof components.length === 'undefined')
+                throw new Error('Dijon.UIGroup components must be an array');
+            while (components.length > 0)
+                this.addComponent(components.shift());
+        };
+        Phaser.Sprite.prototype['addComponent'] = function (component) {
+            if (this._components === undefined)
+                this._components = {};
+            component.setOwner(this);
+            component.init();
+            component.buildInterface();
+            this._components[component.name] = component;
+            this._updateComponentKeys();
+            return component;
+        };
+        Phaser.Sprite.prototype['updateComponents'] = function () {
+            var _this = this;
+            this._componentKeys.forEach(function (componentName) {
+                _this.updateComponent(componentName);
+            });
+        };
+        Phaser.Sprite.prototype['updateComponent'] = function (componentName) {
+            this._components[componentName].update();
+        };
+        Phaser.Sprite.prototype['removeAllComponents'] = function () {
+            while (this._componentKeys.length > 0) {
+                this.removeComponent(this._componentKeys.pop());
+            }
+        };
+        Phaser.Sprite.prototype['removeComponent'] = function (componentName) {
+            if (this._components === undefined)
+                return;
+            if (typeof this._components[componentName] === 'undefined')
+                return;
+            this._components[componentName].destroy();
+            this._components[componentName] = null;
+            delete this._components[componentName];
+            this._updateComponentKeys();
+        };
+        Object.defineProperty(Phaser.Sprite.prototype, 'addedComponents', {
+            get: function () {
+                return this._components;
+            }
+        });
     }
     exports_1("bootstrap", bootstrap);
     return {

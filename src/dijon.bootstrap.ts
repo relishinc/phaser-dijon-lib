@@ -301,7 +301,7 @@ export function bootstrap() {
         this.dirty = false;
     };
 
-    Phaser.Text.prototype.getBounds = function():PIXI.Rectangle {
+    Phaser.Text.prototype.getBounds = function(): PIXI.Rectangle {
         if (this.dirty) {
             this.updateText();
         }
@@ -426,4 +426,126 @@ export function bootstrap() {
 
         return this;
     };
+
+    // SPRITE ADDONS
+    // Phaser.Sprite overrides
+    /**
+    * called every frame
+    * iterates the components list and calls component.update() on each component
+    * @return {void}
+    * @override
+    */
+    Phaser.Sprite.prototype.update = function() {
+        if (this._hasComponents)
+            this.updateComponents();
+    }
+
+    /**
+    * removes all components
+    * @return {Phaser.Group.destroy}
+    * @override
+    */
+    Phaser.Sprite.prototype.destroy = function() {
+        this.removeAllComponents();
+        Phaser.Sprite.prototype.destroy.call(this);
+    }
+
+
+    /**
+    * updates the internal list of component keys (so we don't have to call Object.keys() all the time)
+    * @return {void}
+    */
+    Phaser.Sprite.prototype['_updateComponentKeys'] = function() {
+        this._componentKeys = Object.keys(this._components);
+        this._hasComponents = this._componentKeys.length > 0;
+    }
+
+    // public methods
+    /**
+    * attaches a list of components to the Dijon.UIGroup
+    * @param {Array} components the list of components to add
+    */
+    Phaser.Sprite.prototype['addComponents'] = function(components) {
+        if (this._components === undefined) this._components = {};
+        if (typeof components.length === 'undefined')
+            throw new Error('Dijon.UIGroup components must be an array');
+
+        while (components.length > 0)
+            this.addComponent(components.shift());
+    }
+
+    /**
+    * attaches a component to the Dijon.UIGroup
+    * @param {dijon.Component} component to be attached
+    */
+    Phaser.Sprite.prototype['addComponent'] = function(component) {
+        if (this._components === undefined) this._components = {};
+        component.setOwner(this);
+        component.init();
+        component.buildInterface();
+
+        this._components[component.name] = component;
+        this._updateComponentKeys();
+
+        return component;
+    };
+
+    /**
+    * iterates through the list of components and updates each one
+    * @return {void}
+    */
+    Phaser.Sprite.prototype['updateComponents'] = function(): void {
+        this._componentKeys.forEach(
+            componentName => {
+                this.updateComponent(componentName);
+            }
+        )
+    }
+
+    /**
+    * updates an attached component (calls component.update())
+    * @param  {String} componentName the name of the component to update
+    * @return {void}
+    */
+    Phaser.Sprite.prototype['updateComponent'] = function(componentName) {
+        this._components[componentName].update();
+    }
+
+    /**
+    * removes all the components currently attached
+    * @return {void}
+    */
+    Phaser.Sprite.prototype['removeAllComponents'] = function() {
+        while (this._componentKeys.length > 0) {
+            this.removeComponent(this._componentKeys.pop());
+        }
+    }
+
+    /**
+    * removes a specific component
+    * @param  {String} componentName the name of the component to remove
+    * @return {void}
+    */
+    Phaser.Sprite.prototype['removeComponent'] = function(componentName) {
+        if (this._components === undefined) return;
+        if (typeof this._components[componentName] === 'undefined')
+            return;
+
+        this._components[componentName].destroy();
+        this._components[componentName] = null;
+        delete this._components[componentName];
+
+        this._updateComponentKeys();
+    }
+
+
+    /**
+    * @name Phaser.TilemapLayer#collisionHeight
+    * @property {number} collisionHeight - The height of the collision tiles.
+    */
+    Object.defineProperty(Phaser.Sprite.prototype, 'addedComponents', {
+        get: function() {
+            return this._components;
+        }
+    });
 }
