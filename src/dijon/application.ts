@@ -10,7 +10,7 @@ export class Application implements INotifier {
     // static constants
     protected static instance = null;
     protected static SINGLETON_MSG = 'Application singleton already constructed!';
-		
+
     // public 
     public game: Game;
 
@@ -20,16 +20,27 @@ export class Application implements INotifier {
     protected _mediators: { [name: string]: Mediator } = {};
     protected _observerMap: { [name: string]: IObserver[] } = {};
 
+    //for debugging
+    private static _hashQuery: {};
+
     constructor() {
         if (Application.instance)
             throw Error(Application.SINGLETON_MSG);
 
         Application.instance = this;
-
+        
+        window.addEventListener("hashchange", () => { 
+            Application._getHashQuery(); 
+            this.windowHashChange();
+        }, false);
+        
         this.createGame();
         this.startGame();
     }
-		
+
+    protected windowHashChange(): void {
+    }
+
     // public methods
     protected createGame(): void {
         this.game = new Game({
@@ -144,7 +155,7 @@ export class Application implements INotifier {
         notification.destroy();
         notification = null;
     }
-		
+
     // private methods
     private _notifyObservers(notification: INotification) {
         let observer: IObserver = null,
@@ -162,10 +173,40 @@ export class Application implements INotifier {
         }
     }
 
+    private static _getHashQuery(): void {
+        Application._hashQuery = {};
+        const hash = window.location.hash.substr(1, window.location.hash.length);
+        const aHash: string[] = hash.split('&');
+        aHash.forEach(hashPair => {
+            const aHash = hashPair.split('=');
+            Application._hashQuery[aHash[0]] = /^\d+$/.test(aHash[1]) ? parseFloat(aHash[1]) : aHash[1];
+        });
+    }
+
+    // static methods
+
+    /**
+     * returns the Application singleton
+     * @return {Application}
+     */
     public static getInstance(): Application {
         if (!Application.instance)
             Application.instance = new Application();
 
         return Application.instance;
     }
+
+    /**
+     * gets a query variable from the window.location hash
+     * assumes something like http://url/#foo=bar&baz=foo
+     * @param {String} variableId
+     * @return {any}
+     */
+    public static queryVar(variableId: string): any {
+        if (Application._hashQuery === undefined) {
+            Application._getHashQuery();
+        }
+        return Application._hashQuery[variableId] || null;
+    }
+
 }

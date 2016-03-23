@@ -20,33 +20,35 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
             this.pivot.set(this.width >> 1, this.height >> 1);
         };
         PIXI.DisplayObject.prototype.setPivot = function (pivotLocation) {
+            var w = this instanceof Phaser.Group ? this.width : this.realWidth;
+            var h = this instanceof Phaser.Group ? this.height : this.realHeight;
             switch (pivotLocation.toLowerCase()) {
                 case PIXI.DisplayObject.PIVOT_CENTER:
                     this.centerPivot();
                     break;
                 case PIXI.DisplayObject.PIVOT_RIGHT:
-                    this.pivot.set(this.width, this.height >> 1);
+                    this.pivot.set(w, h >> 1);
                     break;
                 case PIXI.DisplayObject.PIVOT_LEFT:
-                    this.pivot.set(0, this.height >> 1);
+                    this.pivot.set(0, h >> 1);
                     break;
                 case PIXI.DisplayObject.PIVOT_TOP:
-                    this.pivot.set(this.width >> 1, 0);
+                    this.pivot.set(w >> 1, 0);
                     break;
                 case PIXI.DisplayObject.PIVOT_BOTTOM:
-                    this.pivot.set(this.width >> 1, this.height);
+                    this.pivot.set(w >> 1, h);
                     break;
                 case PIXI.DisplayObject.PIVOT_TOP_LEFT:
                     this.pivot.set(0, 0);
                     break;
                 case PIXI.DisplayObject.PIVOT_TOP_RIGHT:
-                    this.pivot.set(this.width, 0);
+                    this.pivot.set(w, 0);
                     break;
                 case PIXI.DisplayObject.PIVOT_BOTTOM_LEFT:
-                    this.pivot.set(0, this.height);
+                    this.pivot.set(0, h);
                     break;
                 case PIXI.DisplayObject.PIVOT_BOTTOM_RIGHT:
-                    this.pivot.set(this.width, this.height);
+                    this.pivot.set(w, h);
                     break;
             }
         };
@@ -307,6 +309,78 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
             this.dirty = true;
             return this;
         };
+        PIXI.Sprite.prototype.getBounds = function (matrix) {
+            var width = this.texture.frame.width / this.game.resolution;
+            var height = this.texture.frame.height / this.game.resolution;
+            var w0 = width * (1 - this.anchor.x);
+            var w1 = width * -this.anchor.x;
+            var h0 = height * (1 - this.anchor.y);
+            var h1 = height * -this.anchor.y;
+            var worldTransform = this.worldTransform;
+            var a = worldTransform.a;
+            var b = worldTransform.b;
+            var c = worldTransform.c;
+            var d = worldTransform.d;
+            var tx = worldTransform.tx;
+            var ty = worldTransform.ty;
+            var maxX = -Infinity;
+            var maxY = -Infinity;
+            var minX = Infinity;
+            var minY = Infinity;
+            if (b === 0 && c === 0) {
+                if (a < 0)
+                    a *= -1;
+                if (d < 0)
+                    d *= -1;
+                minX = a * w1 + tx;
+                maxX = a * w0 + tx;
+                minY = d * h1 + ty;
+                maxY = d * h0 + ty;
+            }
+            else {
+                var x1 = a * w1 + c * h1 + tx;
+                var y1 = d * h1 + b * w1 + ty;
+                var x2 = a * w0 + c * h1 + tx;
+                var y2 = d * h1 + b * w0 + ty;
+                var x3 = a * w0 + c * h0 + tx;
+                var y3 = d * h0 + b * w0 + ty;
+                var x4 = a * w1 + c * h0 + tx;
+                var y4 = d * h0 + b * w1 + ty;
+                minX = x1 < minX ? x1 : minX;
+                minX = x2 < minX ? x2 : minX;
+                minX = x3 < minX ? x3 : minX;
+                minX = x4 < minX ? x4 : minX;
+                minY = y1 < minY ? y1 : minY;
+                minY = y2 < minY ? y2 : minY;
+                minY = y3 < minY ? y3 : minY;
+                minY = y4 < minY ? y4 : minY;
+                maxX = x1 > maxX ? x1 : maxX;
+                maxX = x2 > maxX ? x2 : maxX;
+                maxX = x3 > maxX ? x3 : maxX;
+                maxX = x4 > maxX ? x4 : maxX;
+                maxY = y1 > maxY ? y1 : maxY;
+                maxY = y2 > maxY ? y2 : maxY;
+                maxY = y3 > maxY ? y3 : maxY;
+                maxY = y4 > maxY ? y4 : maxY;
+            }
+            var bounds = this._bounds;
+            bounds.x = minX;
+            bounds.width = maxX - minX;
+            bounds.y = minY;
+            bounds.height = maxY - minY;
+            this._currentBounds = bounds;
+            return bounds;
+        };
+        Object.defineProperty(PIXI.Sprite.prototype, 'realWidth', {
+            get: function () {
+                return this.scale.x * this.texture.frame.width / this.game.resolution;
+            }
+        });
+        Object.defineProperty(PIXI.DisplayObject.prototype, 'realHeight', {
+            get: function () {
+                return this.scale.y * this.texture.frame.height / this.game.resolution;
+            }
+        });
     }
     exports_1("bootstrap", bootstrap);
     return {
@@ -879,6 +953,20 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                     }
                     return obj;
                 };
+                Object.defineProperty(Text.prototype, "realHeight", {
+                    get: function () {
+                        return this.scale.y * this.texture.frame.height / this.game.resolution;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Text.prototype, "realWidth", {
+                    get: function () {
+                        return this.scale.x * this.texture.frame.width / this.game.resolution;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Text.DEFAULT_FONT_SIZE = 12;
                 Text.DEFAULT_FONT_COLOR = "#000000";
                 Text.DEFAULT_FONT = "Helvetica Neue, Arial";
@@ -2387,6 +2475,7 @@ System.register("dijon/application", ["dijon.bootstrap", "dijon/core", "dijon/mv
             dijon_bootstrap_1.bootstrap();
             Application = (function () {
                 function Application() {
+                    var _this = this;
                     this._mediator = null;
                     this._models = {};
                     this._mediators = {};
@@ -2394,9 +2483,15 @@ System.register("dijon/application", ["dijon.bootstrap", "dijon/core", "dijon/mv
                     if (Application.instance)
                         throw Error(Application.SINGLETON_MSG);
                     Application.instance = this;
+                    window.addEventListener("hashchange", function () {
+                        Application._getHashQuery();
+                        _this.windowHashChange();
+                    }, false);
                     this.createGame();
                     this.startGame();
                 }
+                Application.prototype.windowHashChange = function () {
+                };
                 Application.prototype.createGame = function () {
                     this.game = new core_1.Game({
                         width: 800,
@@ -2488,10 +2583,25 @@ System.register("dijon/application", ["dijon.bootstrap", "dijon/core", "dijon/mv
                         });
                     }
                 };
+                Application._getHashQuery = function () {
+                    Application._hashQuery = {};
+                    var hash = window.location.hash.substr(1, window.location.hash.length);
+                    var aHash = hash.split('&');
+                    aHash.forEach(function (hashPair) {
+                        var aHash = hashPair.split('=');
+                        Application._hashQuery[aHash[0]] = /^\d+$/.test(aHash[1]) ? parseFloat(aHash[1]) : aHash[1];
+                    });
+                };
                 Application.getInstance = function () {
                     if (!Application.instance)
                         Application.instance = new Application();
                     return Application.instance;
+                };
+                Application.queryVar = function (variableId) {
+                    if (Application._hashQuery === undefined) {
+                        Application._getHashQuery();
+                    }
+                    return Application._hashQuery[variableId] || null;
                 };
                 Application.instance = null;
                 Application.SINGLETON_MSG = 'Application singleton already constructed!';

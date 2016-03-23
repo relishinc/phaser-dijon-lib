@@ -532,6 +532,14 @@ export class Text extends Phaser.Text {
 
         return obj;
     }
+    
+    get realHeight():number{
+        return this.scale.y * this.texture.frame.height / this.game.resolution;
+    }
+    
+    get realWidth():number{
+        return this.scale.x * this.texture.frame.width / this.game.resolution;
+    }
 }
 
 export class Component {

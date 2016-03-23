@@ -22,33 +22,35 @@ export function bootstrap() {
      * @param {String} pivotLocation one of 'center', 'r', 'l', 't', 'b', 'tl', 'tr', 'bl', 'br'
      */
     PIXI.DisplayObject.prototype.setPivot = function(pivotLocation) {
+        var w: number = this instanceof Phaser.Group ? this.width : this.realWidth;
+        var h: number = this instanceof Phaser.Group ? this.height : this.realHeight;
         switch (pivotLocation.toLowerCase()) {
             case PIXI.DisplayObject.PIVOT_CENTER:
                 this.centerPivot();
                 break;
             case PIXI.DisplayObject.PIVOT_RIGHT:
-                this.pivot.set(this.width, this.height >> 1);
+                this.pivot.set(w, h >> 1);
                 break;
             case PIXI.DisplayObject.PIVOT_LEFT:
-                this.pivot.set(0, this.height >> 1);
+                this.pivot.set(0, h >> 1);
                 break;
             case PIXI.DisplayObject.PIVOT_TOP:
-                this.pivot.set(this.width >> 1, 0);
+                this.pivot.set(w >> 1, 0);
                 break;
             case PIXI.DisplayObject.PIVOT_BOTTOM:
-                this.pivot.set(this.width >> 1, this.height);
+                this.pivot.set(w >> 1, h);
                 break;
             case PIXI.DisplayObject.PIVOT_TOP_LEFT:
                 this.pivot.set(0, 0);
                 break;
             case PIXI.DisplayObject.PIVOT_TOP_RIGHT:
-                this.pivot.set(this.width, 0);
+                this.pivot.set(w, 0);
                 break;
             case PIXI.DisplayObject.PIVOT_BOTTOM_LEFT:
-                this.pivot.set(0, this.height);
+                this.pivot.set(0, h);
                 break;
             case PIXI.DisplayObject.PIVOT_BOTTOM_RIGHT:
-                this.pivot.set(this.width, this.height);
+                this.pivot.set(w, h);
                 break;
         }
     };
@@ -426,4 +428,116 @@ export function bootstrap() {
 
         return this;
     };
+    /**
+    * Returns the bounds of the Sprite as a rectangle. The bounds calculation takes the worldTransform into account.
+    *
+    * @method getBounds
+    * @param matrix {Matrix} the transformation matrix of the sprite
+    * @return {Rectangle} the framing rectangle
+    */
+    PIXI.Sprite.prototype.getBounds = function(matrix) {
+        var width = this.texture.frame.width / this.game.resolution;
+        var height = this.texture.frame.height / this.game.resolution;
+
+        var w0 = width * (1 - this.anchor.x);
+        var w1 = width * -this.anchor.x;
+
+        var h0 = height * (1 - this.anchor.y);
+        var h1 = height * -this.anchor.y;
+
+        var worldTransform = this.worldTransform;
+
+        var a = worldTransform.a;
+        var b = worldTransform.b;
+        var c = worldTransform.c;
+        var d = worldTransform.d;
+        var tx = worldTransform.tx;
+        var ty = worldTransform.ty;
+
+        var maxX = -Infinity;
+        var maxY = -Infinity;
+
+        var minX = Infinity;
+        var minY = Infinity;
+
+        if (b === 0 && c === 0) {
+            // scale may be negative!
+            if (a < 0) a *= -1;
+            if (d < 0) d *= -1;
+
+            // this means there is no rotation going on right? RIGHT?
+            // if thats the case then we can avoid checking the bound values! yay
+            minX = a * w1 + tx;
+            maxX = a * w0 + tx;
+            minY = d * h1 + ty;
+            maxY = d * h0 + ty;
+        } else {
+            var x1 = a * w1 + c * h1 + tx;
+            var y1 = d * h1 + b * w1 + ty;
+
+            var x2 = a * w0 + c * h1 + tx;
+            var y2 = d * h1 + b * w0 + ty;
+
+            var x3 = a * w0 + c * h0 + tx;
+            var y3 = d * h0 + b * w0 + ty;
+
+            var x4 = a * w1 + c * h0 + tx;
+            var y4 = d * h0 + b * w1 + ty;
+
+            minX = x1 < minX ? x1 : minX;
+            minX = x2 < minX ? x2 : minX;
+            minX = x3 < minX ? x3 : minX;
+            minX = x4 < minX ? x4 : minX;
+
+            minY = y1 < minY ? y1 : minY;
+            minY = y2 < minY ? y2 : minY;
+            minY = y3 < minY ? y3 : minY;
+            minY = y4 < minY ? y4 : minY;
+
+            maxX = x1 > maxX ? x1 : maxX;
+            maxX = x2 > maxX ? x2 : maxX;
+            maxX = x3 > maxX ? x3 : maxX;
+            maxX = x4 > maxX ? x4 : maxX;
+
+            maxY = y1 > maxY ? y1 : maxY;
+            maxY = y2 > maxY ? y2 : maxY;
+            maxY = y3 > maxY ? y3 : maxY;
+            maxY = y4 > maxY ? y4 : maxY;
+        }
+
+        var bounds = this._bounds;
+
+        bounds.x = minX;
+        bounds.width = maxX - minX;
+
+        bounds.y = minY;
+        bounds.height = maxY - minY;
+
+        // store a reference so that if this function gets called again in the render cycle we do not have to recalculate
+        this._currentBounds = bounds;
+
+        return <PIXI.Rectangle>bounds;
+    };
+
+    Object.defineProperty(PIXI.Sprite.prototype, 'realWidth', {
+
+        get: function() {
+            return this.scale.x * this.texture.frame.width / this.game.resolution;
+        }
+
+    });
+
+    /**
+     * The height of the sprite, setting this will actually modify the scale to achieve the value set
+     *
+     * @property height
+     * @type Number
+     */
+    Object.defineProperty(PIXI.DisplayObject.prototype, 'realHeight', {
+
+        get: function() {
+            return this.scale.y * this.texture.frame.height / this.game.resolution;
+        }
+
+    });
 }

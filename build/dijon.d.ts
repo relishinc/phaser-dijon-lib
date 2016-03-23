@@ -241,6 +241,8 @@ declare module "dijon/display" {
         stopAnimating: () => void;
         roundPixel: () => void;
         private static _addSettings(obj, settings);
+        realHeight: number;
+        realWidth: number;
     }
     export class Component {
         game: Game;
@@ -547,7 +549,9 @@ declare module "dijon/application" {
         protected _observerMap: {
             [name: string]: IObserver[];
         };
+        private static _hashQuery;
         constructor();
+        protected windowHashChange(): void;
         protected createGame(): void;
         protected startGame(): void;
         addPlugins(): void;
@@ -561,6 +565,8 @@ declare module "dijon/application" {
         removeObserver(notificationName: string, observerToRemove: IObserver): void;
         sendNotification(notificationName: string, notficationBody?: any): void;
         private _notifyObservers(notification);
+        private static _getHashQuery();
         static getInstance(): Application;
+        static queryVar(variableId: string): any;
     }
 }
