@@ -545,8 +545,6 @@ export function bootstrap() {
             frame.height /= resolution;
         }
 
-        console.log('generateTilingTexture', texture, frame);
-
         var targetWidth = this._frame.sourceSizeW;
         var targetHeight = this._frame.sourceSizeH;
 

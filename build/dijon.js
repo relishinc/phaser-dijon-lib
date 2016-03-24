@@ -382,7 +382,6 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
                 frame.width /= resolution;
                 frame.height /= resolution;
             }
-            console.log('generateTilingTexture', texture, frame);
             var targetWidth = this._frame.sourceSizeW;
             var targetHeight = this._frame.sourceSizeH;
             var dx = 0;
