@@ -17,11 +17,11 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
         PIXI.DisplayObject.PIVOT_BOTTOM_LEFT = 'bl';
         PIXI.DisplayObject.PIVOT_BOTTOM_RIGHT = 'br';
         PIXI.DisplayObject.prototype.centerPivot = function () {
-            this.pivot.set(this.width >> 1, this.height >> 1);
+            this.pivot.set(this.getBounds().width >> 1, this.getBounds().height >> 1);
         };
         PIXI.DisplayObject.prototype.setPivot = function (pivotLocation) {
-            var w = this instanceof Phaser.Group ? this.width : this.realWidth;
-            var h = this instanceof Phaser.Group ? this.height : this.realHeight;
+            var w = this.getBounds().width;
+            var h = this.getBounds().height;
             switch (pivotLocation.toLowerCase()) {
                 case PIXI.DisplayObject.PIVOT_CENTER:
                     this.centerPivot();
@@ -124,7 +124,7 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
                 this.scale.set(value, value);
             }
         });
-        Phaser.Text.prototype['updateText'] = function () {
+        Phaser.Text.prototype.updateText = function () {
             this.texture.baseTexture.resolution = this.resolution;
             this.context.font = this.style.font;
             var outputText = this.text;
@@ -371,16 +371,6 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
             this._currentBounds = bounds;
             return bounds;
         };
-        Object.defineProperty(PIXI.DisplayObject.prototype, 'realWidth', {
-            get: function () {
-                return this.scale.x * this.texture.frame.width / this.texture.baseTexture.resolution;
-            }
-        });
-        Object.defineProperty(PIXI.DisplayObject.prototype, 'realHeight', {
-            get: function () {
-                return this.scale.y * this.texture.frame.height / this.texture.baseTexture.resolution;
-            }
-        });
         PIXI.TilingSprite.prototype.generateTilingTexture = function (forcePowerOfTwo, renderSession) {
             if (!this.texture.baseTexture.hasLoaded) {
                 return;
@@ -433,6 +423,66 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
             this.refreshTexture = false;
             this.tilingTexture.baseTexture._powerOf2 = true;
         };
+        Phaser.Input.prototype.hitTest = function (displayObject, pointer, localPoint) {
+            if (!displayObject.worldVisible) {
+                return false;
+            }
+            this.getLocalPosition(displayObject, pointer, this._localPoint);
+            localPoint.copyFrom(this._localPoint);
+            if (displayObject.hitArea && displayObject.hitArea.contains) {
+                return (displayObject.hitArea.contains(this._localPoint.x, this._localPoint.y));
+            }
+            else if (displayObject instanceof Phaser.TileSprite) {
+                var width = displayObject.width;
+                var height = displayObject.height;
+                var x1 = -width * displayObject.anchor.x;
+                if (this._localPoint.x >= x1 && this._localPoint.x < x1 + width) {
+                    var y1 = -height * displayObject.anchor.y;
+                    if (this._localPoint.y >= y1 && this._localPoint.y < y1 + height) {
+                        return true;
+                    }
+                }
+            }
+            else if (displayObject instanceof PIXI.Sprite) {
+                var width = displayObject.texture.frame.width / displayObject.texture.baseTexture.resolution;
+                var height = displayObject.texture.frame.height / displayObject.texture.baseTexture.resolution;
+                ;
+                var x1 = -width * displayObject.anchor.x;
+                if (this._localPoint.x >= x1 && this._localPoint.x < x1 + width) {
+                    var y1 = -height * displayObject.anchor.y;
+                    if (this._localPoint.y >= y1 && this._localPoint.y < y1 + height) {
+                        return true;
+                    }
+                }
+            }
+            else if (displayObject instanceof Phaser.Graphics) {
+                for (var i = 0; i < displayObject.graphicsData.length; i++) {
+                    var data = displayObject.graphicsData[i];
+                    if (!data.fill) {
+                        continue;
+                    }
+                    if (data.shape && data.shape.contains(this._localPoint.x, this._localPoint.y)) {
+                        return true;
+                    }
+                }
+            }
+            for (var i = 0, len = displayObject.children.length; i < len; i++) {
+                if (this.hitTest(displayObject.children[i], pointer, localPoint)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        Object.defineProperty(PIXI.DisplayObject.prototype, 'realWidth', {
+            get: function () {
+                return this.scale.x * this.texture.frame.width / this.texture.baseTexture.resolution;
+            }
+        });
+        Object.defineProperty(PIXI.DisplayObject.prototype, 'realHeight', {
+            get: function () {
+                return this.scale.y * this.texture.frame.height / this.texture.baseTexture.resolution;
+            }
+        });
     }
     exports_1("bootstrap", bootstrap);
     return {

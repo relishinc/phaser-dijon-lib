@@ -14,7 +14,7 @@ export function bootstrap() {
      * Centers the pivot point
      */
     PIXI.DisplayObject.prototype.centerPivot = function() {
-        this.pivot.set(this.width >> 1, this.height >> 1);
+        this.pivot.set(this.getBounds().width >> 1, this.getBounds().height >> 1);
     };
 
     /**
@@ -22,8 +22,8 @@ export function bootstrap() {
      * @param {String} pivotLocation one of 'center', 'r', 'l', 't', 'b', 'tl', 'tr', 'bl', 'br'
      */
     PIXI.DisplayObject.prototype.setPivot = function(pivotLocation) {
-        var w: number = this instanceof Phaser.Group ? this.width : this.realWidth;
-        var h: number = this instanceof Phaser.Group ? this.height : this.realHeight;
+        var w: number = this.getBounds().width;//this instanceof Phaser.Group ? this.width : this.realWidth;
+        var h: number = this.getBounds().height;//this instanceof Phaser.Group ? this.height : this.realHeight;
         switch (pivotLocation.toLowerCase()) {
             case PIXI.DisplayObject.PIVOT_CENTER:
                 this.centerPivot();
@@ -173,8 +173,12 @@ export function bootstrap() {
         }
     });
 
-    // PHASER TEXT FIXES FOR @2x
-    Phaser.Text.prototype['updateText'] = function() {
+
+
+    /**
+     * PHASER FRAMEWORK FIXES FOR @2X RESOLLUTION
+     */
+    Phaser.Text.prototype.updateText = function() {
         this.texture.baseTexture.resolution = this.resolution;
 
         this.context.font = this.style.font;
@@ -428,6 +432,7 @@ export function bootstrap() {
 
         return this;
     };
+    
     /**
     * Returns the bounds of the Sprite as a rectangle. The bounds calculation takes the worldTransform into account.
     *
@@ -519,36 +524,13 @@ export function bootstrap() {
         return <PIXI.Rectangle>bounds;
     };
 
-    Object.defineProperty(PIXI.DisplayObject.prototype, 'realWidth', {
-
-        get: function() {
-            return this.scale.x * this.texture.frame.width / this.texture.baseTexture.resolution;
-        }
-
-    });
-
     /**
-     * The height of the sprite, setting this will actually modify the scale to achieve the value set
-     *
-     * @property height
-     * @type Number
-     */
-    Object.defineProperty(PIXI.DisplayObject.prototype, 'realHeight', {
-
-        get: function() {
-            return this.scale.y * this.texture.frame.height / this.texture.baseTexture.resolution;
-        }
-
-    });
-
-
-    /**
-* 
-* @method generateTilingTexture
-* 
-* @param forcePowerOfTwo {Boolean} Whether we want to force the texture to be a power of two
-* @param renderSession {RenderSession} 
-*/
+    * 
+    * @method generateTilingTexture
+    * 
+    * @param forcePowerOfTwo {Boolean} Whether we want to force the texture to be a power of two
+    * @param renderSession {RenderSession} 
+    */
     PIXI.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo, renderSession) {
         if (!this.texture.baseTexture.hasLoaded) {
             return;
@@ -557,7 +539,7 @@ export function bootstrap() {
         var texture = this.texture;
         var resolution = this.texture.baseTexture.resolution;
         var frame = texture.frame;
-        
+
         if (resolution !== 1) {
             frame.width /= resolution;
             frame.height /= resolution;
@@ -626,4 +608,98 @@ export function bootstrap() {
         this.tilingTexture.baseTexture._powerOf2 = true;
 
     };
+    /**
+    * Tests if the pointer hits the given object.
+    *
+    * @method Phaser.Input#hitTest
+    * @param {DisplayObject} displayObject - The displayObject to test for a hit.
+    * @param {Phaser.Pointer} pointer - The pointer to use for the test.
+    * @param {Phaser.Point} localPoint - The local translated point.
+    */
+    Phaser.Input.prototype.hitTest = function(displayObject, pointer, localPoint) {
+
+        if (!displayObject.worldVisible) {
+            return false;
+        }
+
+        this.getLocalPosition(displayObject, pointer, this._localPoint);
+
+        localPoint.copyFrom(this._localPoint);
+
+        if (displayObject.hitArea && displayObject.hitArea.contains) {
+            return (displayObject.hitArea.contains(this._localPoint.x, this._localPoint.y));
+        }
+        else if (displayObject instanceof Phaser.TileSprite) {
+            var width = displayObject.width;
+            var height = displayObject.height;
+            var x1 = -width * displayObject.anchor.x;
+
+            if (this._localPoint.x >= x1 && this._localPoint.x < x1 + width) {
+                var y1 = -height * displayObject.anchor.y;
+
+                if (this._localPoint.y >= y1 && this._localPoint.y < y1 + height) {
+                    return true;
+                }
+            }
+        }
+        else if (displayObject instanceof PIXI.Sprite) {
+            var width = displayObject.texture.frame.width / displayObject.texture.baseTexture.resolution;
+            var height = displayObject.texture.frame.height / displayObject.texture.baseTexture.resolution;;
+            var x1 = -width * displayObject.anchor.x;
+
+            if (this._localPoint.x >= x1 && this._localPoint.x < x1 + width) {
+                var y1 = -height * displayObject.anchor.y;
+
+                if (this._localPoint.y >= y1 && this._localPoint.y < y1 + height) {
+                    return true;
+                }
+            }
+        }
+        else if (displayObject instanceof Phaser.Graphics) {
+            for (var i = 0; i < displayObject.graphicsData.length; i++) {
+                var data = displayObject.graphicsData[i];
+
+                if (!data.fill) {
+                    continue;
+                }
+
+                //  Only deal with fills..
+                if (data.shape && data.shape.contains(this._localPoint.x, this._localPoint.y)) {
+                    return true;
+                }
+            }
+        }
+
+        //  Didn't hit the parent, does it have any children?
+
+        for (var i = 0, len = displayObject.children.length; i < len; i++) {
+            if (this.hitTest(displayObject.children[i], pointer, localPoint)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    Object.defineProperty(PIXI.DisplayObject.prototype, 'realWidth', {
+
+        get: function() {
+            return this.scale.x * this.texture.frame.width / this.texture.baseTexture.resolution;
+        }
+
+    });
+
+    /**
+     * The height of the sprite, setting this will actually modify the scale to achieve the value set
+     *
+     * @property height
+     * @type Number
+     */
+    Object.defineProperty(PIXI.DisplayObject.prototype, 'realHeight', {
+
+        get: function() {
+            return this.scale.y * this.texture.frame.height / this.texture.baseTexture.resolution;
+        }
+
+    });
 }
