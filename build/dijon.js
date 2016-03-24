@@ -310,8 +310,8 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
             return this;
         };
         PIXI.Sprite.prototype.getBounds = function (matrix) {
-            var width = this.texture.frame.width / this.game.resolution;
-            var height = this.texture.frame.height / this.game.resolution;
+            var width = this.texture.frame.width / this.texture.baseTexture.resolution;
+            var height = this.texture.frame.height / this.texture.baseTexture.resolution;
             var w0 = width * (1 - this.anchor.x);
             var w1 = width * -this.anchor.x;
             var h0 = height * (1 - this.anchor.y);
@@ -371,16 +371,68 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
             this._currentBounds = bounds;
             return bounds;
         };
-        Object.defineProperty(PIXI.Sprite.prototype, 'realWidth', {
+        Object.defineProperty(PIXI.DisplayObject.prototype, 'realWidth', {
             get: function () {
-                return this.scale.x * this.texture.frame.width / this.game.resolution;
+                return this.scale.x * this.texture.frame.width / this.texture.baseTexture.resolution;
             }
         });
         Object.defineProperty(PIXI.DisplayObject.prototype, 'realHeight', {
             get: function () {
-                return this.scale.y * this.texture.frame.height / this.game.resolution;
+                return this.scale.y * this.texture.frame.height / this.texture.baseTexture.resolution;
             }
         });
+        PIXI.TilingSprite.prototype.generateTilingTexture = function (forcePowerOfTwo, renderSession) {
+            if (!this.texture.baseTexture.hasLoaded) {
+                return;
+            }
+            var texture = this.texture;
+            var resolution = this.texture.baseTexture.resolution;
+            var frame = texture.frame;
+            if (resolution !== 1) {
+                frame.width /= resolution;
+                frame.height /= resolution;
+            }
+            console.log('generateTilingTexture', texture, frame);
+            var targetWidth = this._frame.sourceSizeW;
+            var targetHeight = this._frame.sourceSizeH;
+            var dx = 0;
+            var dy = 0;
+            if (this._frame.trimmed) {
+                dx = this._frame.spriteSourceSizeX;
+                dy = this._frame.spriteSourceSizeY;
+            }
+            if (forcePowerOfTwo) {
+                targetWidth = PIXI.getNextPowerOfTwo(targetWidth);
+                targetHeight = PIXI.getNextPowerOfTwo(targetHeight);
+            }
+            if (this.canvasBuffer) {
+                this.canvasBuffer.resize(targetWidth, targetHeight);
+                this.tilingTexture.baseTexture.width = targetWidth;
+                this.tilingTexture.baseTexture.height = targetHeight;
+                this.tilingTexture.needsUpdate = true;
+            }
+            else {
+                this.canvasBuffer = new PIXI.CanvasBuffer(targetWidth, targetHeight);
+                this.tilingTexture = PIXI.Texture.fromCanvas(this.canvasBuffer.canvas);
+                this.tilingTexture.isTiling = true;
+                this.tilingTexture.needsUpdate = true;
+            }
+            if (this.textureDebug) {
+                this.canvasBuffer.context.strokeStyle = '#00ff00';
+                this.canvasBuffer.context.strokeRect(0, 0, targetWidth, targetHeight);
+            }
+            var w = texture.crop.width;
+            var h = texture.crop.height;
+            if (w !== targetWidth || h !== targetHeight) {
+                w = targetWidth;
+                h = targetHeight;
+            }
+            this.canvasBuffer.context.drawImage(texture.baseTexture.source, texture.crop.x, texture.crop.y, texture.crop.width, texture.crop.height, dx, dy, w, h);
+            this.tileScaleOffset.x = frame.width / targetWidth;
+            this.tileScaleOffset.y = frame.height / targetHeight;
+            this.refreshTexture = false;
+            this.tilingTexture.baseTexture._powerOf2 = true;
+        };
     }
     exports_1("bootstrap", bootstrap);
     return {
@@ -2589,7 +2641,7 @@ System.register("dijon/application", ["dijon.bootstrap", "dijon/core", "dijon/mv
                     var aHash = hash.split('&');
                     aHash.forEach(function (hashPair) {
                         var aHash = hashPair.split('=');
-                        Application._hashQuery[aHash[0]] = /^\d+$/.test(aHash[1]) ? parseFloat(aHash[1]) : aHash[1];
+                        Application._hashQuery[aHash[0]] = /^\d+$/.test(aHash[1]) ? parseInt(aHash[1]) : aHash[1];
                     });
                 };
                 Application.getInstance = function () {

@@ -179,7 +179,7 @@ export class Application implements INotifier {
         const aHash: string[] = hash.split('&');
         aHash.forEach(hashPair => {
             const aHash = hashPair.split('=');
-            Application._hashQuery[aHash[0]] = /^\d+$/.test(aHash[1]) ? parseFloat(aHash[1]) : aHash[1];
+            Application._hashQuery[aHash[0]] = /^\d+$/.test(aHash[1]) ? parseInt(aHash[1]) : aHash[1];
         });
     }
 
