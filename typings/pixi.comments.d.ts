@@ -934,7 +934,7 @@ declare module PIXI {
         addOutSound(marker:string, volume?:number):void;
         
         setPivot(pivotLocation:string):void;
-        centerPivot():void;
+        centerPivot(updateNeeded?:boolean):void;
         
         static PIVOT_CENTER:string;
         static PIVOT_RIGHT:string;

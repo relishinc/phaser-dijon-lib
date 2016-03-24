@@ -16,15 +16,19 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
         PIXI.DisplayObject.PIVOT_TOP_RIGHT = 'tr';
         PIXI.DisplayObject.PIVOT_BOTTOM_LEFT = 'bl';
         PIXI.DisplayObject.PIVOT_BOTTOM_RIGHT = 'br';
-        PIXI.DisplayObject.prototype.centerPivot = function () {
-            this.pivot.set(this.getBounds().width >> 1, this.getBounds().height >> 1);
+        PIXI.DisplayObject.prototype.centerPivot = function (updateNeeded) {
+            if (updateNeeded !== false) {
+                this.updateTransform();
+            }
+            this.pivot.set(this.getBounds().width * 0.5, this.getBounds().height * 0.5);
         };
         PIXI.DisplayObject.prototype.setPivot = function (pivotLocation) {
+            this.updateTransform();
             var w = this.getBounds().width;
             var h = this.getBounds().height;
             switch (pivotLocation.toLowerCase()) {
                 case PIXI.DisplayObject.PIVOT_CENTER:
-                    this.centerPivot();
+                    this.centerPivot(false);
                     break;
                 case PIXI.DisplayObject.PIVOT_RIGHT:
                     this.pivot.set(w, h >> 1);
@@ -522,6 +526,10 @@ System.register("dijon/mvc", ["dijon/application"], function(exports_3, context_
                     }
                     this.app.registerModel(this);
                 }
+                Model.prototype.onRegister = function () {
+                };
+                Model.prototype.onRemoved = function () {
+                };
                 Model.prototype.getKeyExists = function (key) {
                     return this.game.cache.getJSON(key) !== null;
                 };
@@ -2612,13 +2620,19 @@ System.register("dijon/application", ["dijon.bootstrap", "dijon/core", "dijon/mv
                         throw (new Error('Application:: a model with the name "' + model.name + '" already exists.'));
                     }
                     this._models[model.name] = model;
+                    model.onRegister();
                     return model;
                 };
                 Application.prototype.retrieveModel = function (modelName) {
                     return this._models[modelName] || null;
                 };
                 Application.prototype.removeModel = function (modelToRemove) {
-                    delete this._models[modelToRemove.name];
+                    var name = modelToRemove.name;
+                    var model = this._models[name];
+                    if (!model)
+                        return;
+                    model.onRemoved();
+                    delete this._models[name];
                 };
                 Application.prototype.registerMediator = function (mediator) {
                     if (this._mediators[mediator.name]) {

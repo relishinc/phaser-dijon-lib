@@ -93,6 +93,8 @@ declare module "dijon/mvc" {
         protected _data: any;
         static MODEL_NAME: string;
         constructor(dataKey?: string, modelName?: string);
+        onRegister(): void;
+        onRemoved(): void;
         protected getKeyExists(key: string): boolean;
         setData(dataKey: string): any;
         getData(): any;

@@ -22,6 +22,14 @@ export class Model {
 
         this.app.registerModel(this);
     }
+    
+    public onRegister():void{
+        
+    }
+    
+    public onRemoved():void{
+        
+    }
 
     protected getKeyExists(key: string): boolean {
         return this.game.cache.getJSON(key) !== null;

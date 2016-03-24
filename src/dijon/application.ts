@@ -65,6 +65,9 @@ export class Application implements INotifier {
             throw (new Error('Application:: a model with the name "' + model.name + '" already exists.'));
         }
         this._models[model.name] = model;
+        
+        model.onRegister();
+        
         return model;
     }
 
@@ -73,7 +76,15 @@ export class Application implements INotifier {
     }
 
     public removeModel(modelToRemove: Model): void {
-        delete this._models[modelToRemove.name];
+        let name = modelToRemove.name;
+        let model = this._models[name];
+
+        if (!model)
+            return;
+
+        model.onRemoved();
+        
+        delete this._models[name];
     }
 
     public registerMediator(mediator: Mediator): void {

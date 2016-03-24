@@ -13,8 +13,11 @@ export function bootstrap() {
     /**
      * Centers the pivot point
      */
-    PIXI.DisplayObject.prototype.centerPivot = function() {
-        this.pivot.set(this.getBounds().width >> 1, this.getBounds().height >> 1);
+    PIXI.DisplayObject.prototype.centerPivot = function(updateNeeded) {
+        if (updateNeeded !== false){
+            this.updateTransform();
+        }
+        this.pivot.set(this.getBounds().width * 0.5, this.getBounds().height *0.5);
     };
 
     /**
@@ -22,11 +25,12 @@ export function bootstrap() {
      * @param {String} pivotLocation one of 'center', 'r', 'l', 't', 'b', 'tl', 'tr', 'bl', 'br'
      */
     PIXI.DisplayObject.prototype.setPivot = function(pivotLocation) {
+        this.updateTransform();
         var w: number = this.getBounds().width;//this instanceof Phaser.Group ? this.width : this.realWidth;
         var h: number = this.getBounds().height;//this instanceof Phaser.Group ? this.height : this.realHeight;
         switch (pivotLocation.toLowerCase()) {
             case PIXI.DisplayObject.PIVOT_CENTER:
-                this.centerPivot();
+                this.centerPivot(false);
                 break;
             case PIXI.DisplayObject.PIVOT_RIGHT:
                 this.pivot.set(w, h >> 1);
