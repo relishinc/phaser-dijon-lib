@@ -311,7 +311,7 @@ export function bootstrap() {
         this.dirty = false;
     };
 
-    Phaser.Text.prototype.getBounds = function(): PIXI.Rectangle {
+    Phaser.Text.prototype.getBounds = function(): PIXI.Rectangle { 
         if (this.dirty) {
             this.updateText();
         }
@@ -444,7 +444,7 @@ export function bootstrap() {
     * @param matrix {Matrix} the transformation matrix of the sprite
     * @return {Rectangle} the framing rectangle
     */
-    PIXI.Sprite.prototype.getBounds = function(matrix) {
+    PIXI.Sprite.prototype.getBounds = function(matrix?:any) {
         var width = this.texture.frame.width / this.texture.baseTexture.resolution;
         var height = this.texture.frame.height / this.texture.baseTexture.resolution;
 
@@ -535,7 +535,7 @@ export function bootstrap() {
     * @param forcePowerOfTwo {Boolean} Whether we want to force the texture to be a power of two
     * @param renderSession {RenderSession} 
     */
-    PIXI.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo, renderSession) {
+    PIXI.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo, renderSession?:any) {
         if (!this.texture.baseTexture.hasLoaded) {
             return;
         }
@@ -683,18 +683,24 @@ export function bootstrap() {
         return false;
     }
     
+    /**
+     * The width of the display object, taking resolution into account
+     *
+     * @property realHeight
+     * @type Number
+     */
     Object.defineProperty(PIXI.DisplayObject.prototype, 'realWidth', {
 
         get: function() {
             return this.scale.x * this.texture.frame.width / this.texture.baseTexture.resolution;
         }
-
+ 
     });
 
     /**
-     * The height of the sprite, setting this will actually modify the scale to achieve the value set
+     * The height of the display object, taking resolution into account
      *
-     * @property height
+     * @property realHeight
      * @type Number
      */
     Object.defineProperty(PIXI.DisplayObject.prototype, 'realHeight', {

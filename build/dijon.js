@@ -2169,14 +2169,14 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                     }
                     return group.add(new Phaser.Graphics(this.game, x, y));
                 };
-                GameObjectFactory.prototype.bitmapText = function (x, y, font, text, size, align, group) {
+                GameObjectFactory.prototype.bitmapText = function (x, y, font, text, size, group) {
                     if (text === void 0) { text = ""; }
                     if (size === void 0) { size = 32; }
                     if (group === undefined) {
                         group = this.targetGroup;
                     }
                     this._targetGroup = null;
-                    return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size, align));
+                    return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size));
                 };
                 GameObjectFactory.prototype.dSprite = function (x, y, key, frame, name, components, group) {
                     if (group === undefined) {

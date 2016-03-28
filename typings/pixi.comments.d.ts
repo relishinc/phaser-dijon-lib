@@ -742,6 +742,7 @@ declare module PIXI {
         * To remove simply set this property to 'null'
         */
         cacheAsBitmap: boolean;
+        children:any[];
         defaultCursor: string;
 
         /**
@@ -1067,6 +1068,9 @@ declare module PIXI {
         * @param child2 -
         */
         swapChildren(child: DisplayObject, child2: DisplayObject): void;
+        
+        realHeight:number;
+        realWidth:number;
 
     }
 
@@ -1410,7 +1414,8 @@ declare module PIXI {
         * @return a texture of the graphics object
         */
         generateTexture(resolution?: number, scaleMode?: number): Texture;
-
+        
+        graphicsData:GraphicsData[];
         /**
         * Specifies the line style used for subsequent calls to Graphics methods such as the lineTo() method or the drawCircle() method.
         * 

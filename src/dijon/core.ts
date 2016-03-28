@@ -1577,10 +1577,10 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     * @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
     * @return {Phaser.BitmapText} The newly created bitmapText object.
     */
-    public bitmapText(x?: number, y?: number, font?: string, text: string = "", size: number = 32, align?: string, group?: Phaser.Group): Phaser.BitmapText {
+    public bitmapText(x?: number, y?: number, font?: string, text: string = "", size: number = 32, group?: Phaser.Group): Phaser.BitmapText {
         if (group === undefined) { group = this.targetGroup; }
         this._targetGroup = null;
-        return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size, align));
+        return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size));
     }
 
     // dijon specific display objects
