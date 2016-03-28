@@ -2167,6 +2167,7 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                     if (group === undefined) {
                         group = this.world;
                     }
+                    this._targetGroup = null;
                     return group.add(new Phaser.Graphics(this.game, x, y));
                 };
                 GameObjectFactory.prototype.bitmapText = function (x, y, font, text, size, group) {

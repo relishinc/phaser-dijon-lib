@@ -1546,6 +1546,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     */
     public graphics(x: number = 0, y: number = 0, group?: Phaser.Group): Phaser.Graphics {
         if (group === undefined) { group = this.world; }
+        this._targetGroup = null;
         return group.add(new Phaser.Graphics(this.game, x, y));
     }
 
