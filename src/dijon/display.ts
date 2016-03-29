@@ -638,7 +638,6 @@ export class NineSliceImage extends Group {
         this.br = <Phaser.Image>this._displayLayer.add(this.game.add.image(this.__width, this.__height, this.key, this.texturePath + '/br'));
 
         this.b.width = this.__width - this.bl.getBounds().width - this.br.getBounds().width;
-
         this.r = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(this.__width, this.tr.getBounds().height, this.rightWidth || this.tr.getBounds().width, this.__height - this.tl.getBounds().height - this.br.getBounds().height, this.key, this.texturePath + '/r'));
 
         this.tr.setPivot('tr');
@@ -704,7 +703,7 @@ export class NineSliceImage extends Group {
     }
 
     private _flatten(): void {
-        this._displayLayer.cacheAsBitmap = true;
+        this._displayLayer.cacheAsBitmap = true;//this.game.renderType === Phaser.WEBGL;
     }
 
     public set inputEnabled(value: boolean) {

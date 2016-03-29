@@ -386,8 +386,8 @@ System.register("dijon.bootstrap", [], function(exports_1, context_1) {
                 frame.width /= resolution;
                 frame.height /= resolution;
             }
-            var targetWidth = this._frame.sourceSizeW;
-            var targetHeight = this._frame.sourceSizeH;
+            var targetWidth = this._frame.sourceSizeW / resolution;
+            var targetHeight = this._frame.sourceSizeH / resolution;
             var dx = 0;
             var dy = 0;
             if (this._frame.trimmed) {

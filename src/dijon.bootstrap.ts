@@ -549,8 +549,8 @@ export function bootstrap() {
             frame.height /= resolution;
         }
 
-        var targetWidth = this._frame.sourceSizeW;
-        var targetHeight = this._frame.sourceSizeH;
+        var targetWidth = this._frame.sourceSizeW / resolution;
+        var targetHeight = this._frame.sourceSizeH / resolution;
 
         var dx = 0;
         var dy = 0;
