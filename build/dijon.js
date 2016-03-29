@@ -1121,39 +1121,36 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                     this._build();
                     this.game.time.events.add(10, this._flatten, this);
                 }
-                NineSliceImage.prototype.destroy = function () {
-                    if (this._interactiveBacking) {
-                        this.remove(this._interactiveBacking, true);
-                    }
-                    _super.prototype.destroy.call(this);
-                };
                 NineSliceImage.prototype._build = function () {
-                    this.tl = this.add(this.game.add.image(0, 0, this.key, this.texturePath + '/tl'));
-                    this.tr = this.add(this.game.add.image(this.__width, 0, this.key, this.texturePath + '/tr'));
-                    this.t = this.add(this.game.add.tileSprite(this.tl.getBounds().width, 0, this.__width - this.tl.getBounds().width - this.tr.getBounds().width, this.topHeight || this.tl.getBounds().height, this.key, this.texturePath + '/t'));
-                    this.l = this.add(this.game.add.tileSprite(0, this.tl.getBounds().height, this.leftWidth || this.tl.getBounds().width, 100, this.key, this.texturePath + '/l'));
-                    this.bl = this.add(this.game.add.image(0, this.__height, this.key, this.texturePath + '/bl'));
+                    this._inputLayer = this.add(this.game.add.group());
+                    this._displayLayer = this.add(this.game.add.group());
+                    this.tl = this._displayLayer.add(this.game.add.image(0, 0, this.key, this.texturePath + '/tl'));
+                    this.tr = this._displayLayer.add(this.game.add.image(this.__width, 0, this.key, this.texturePath + '/tr'));
+                    this.t = this._displayLayer.add(this.game.add.tileSprite(this.tl.getBounds().width, 0, this.__width - this.tl.getBounds().width - this.tr.getBounds().width, this.topHeight || this.tl.getBounds().height, this.key, this.texturePath + '/t'));
+                    this.l = this._displayLayer.add(this.game.add.tileSprite(0, this.tl.getBounds().height, this.leftWidth || this.tl.getBounds().width, 100, this.key, this.texturePath + '/l'));
+                    this.bl = this._displayLayer.add(this.game.add.image(0, this.__height, this.key, this.texturePath + '/bl'));
                     this.l.height = this.__height - this.tl.getBounds().height - this.bl.getBounds().height;
-                    this.b = this.add(this.game.add.tileSprite(this.bl.getBounds().width, this.__height, 100, this.bottomHeight || this.bl.getBounds().height, this.key, this.texturePath + '/b'));
-                    this.br = this.add(this.game.add.image(this.__width, this.__height, this.key, this.texturePath + '/br'));
+                    this.b = this._displayLayer.add(this.game.add.tileSprite(this.bl.getBounds().width, this.__height, 100, this.bottomHeight || this.bl.getBounds().height, this.key, this.texturePath + '/b'));
+                    this.br = this._displayLayer.add(this.game.add.image(this.__width, this.__height, this.key, this.texturePath + '/br'));
                     this.b.width = this.__width - this.bl.getBounds().width - this.br.getBounds().width;
-                    this.r = this.add(this.game.add.tileSprite(this.__width, this.tr.getBounds().height, this.rightWidth || this.tr.getBounds().width, this.__height - this.tl.getBounds().height - this.br.getBounds().height, this.key, this.texturePath + '/r'));
+                    this.r = this._displayLayer.add(this.game.add.tileSprite(this.__width, this.tr.getBounds().height, this.rightWidth || this.tr.getBounds().width, this.__height - this.tl.getBounds().height - this.br.getBounds().height, this.key, this.texturePath + '/r'));
                     this.tr.setPivot('tr');
                     this.r.setPivot('tr');
                     this.br.setPivot('br');
                     this.b.setPivot('bl');
                     this.bl.setPivot('bl');
                     if (this.fillMiddle) {
-                        this.tile = this.add(this.game.add.tileSprite(this.tl.getBounds().width - 1, this.tl.getBounds().height - 1, this.__width - this.tl.getBounds().width - this.tr.getBounds().width + 2, this.__height - this.tl.getBounds().height - this.br.getBounds().height + 4, this.key, this.texturePath + '/tile'));
+                        this.tile = this._displayLayer.add(this.game.add.tileSprite(this.tl.getBounds().width - 1, this.tl.getBounds().height - 1, this.__width - this.tl.getBounds().width - this.tr.getBounds().width + 2, this.__height - this.tl.getBounds().height - this.br.getBounds().height + 4, this.key, this.texturePath + '/tile'));
                         this.sendToBack(this.tile);
                     }
                 };
                 NineSliceImage.prototype._addInteractiveBacking = function () {
                     var gfx = this.game.add.graphics();
                     gfx.beginFill(0xFF0000, 0);
-                    gfx.drawRect(0, 0, this.__width, this.__height);
+                    gfx.drawRect(this.x, this.y, this.__width, this.__height);
                     gfx.endFill();
-                    this._interactiveBacking = this.add(this.game.add.image(0, 0, gfx.generateTexture()));
+                    this._interactiveBacking = this._inputLayer.add(this.game.add.image(0, 0, gfx.generateTexture()));
+                    this._interactiveBacking.inputEnabled = true;
                     this.game.world.remove(gfx);
                 };
                 NineSliceImage.prototype._setSize = function () {
@@ -1172,11 +1169,8 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                 };
                 NineSliceImage.prototype._addInput = function () {
                     if (!this._interactiveBacking) {
-                        this._unflatten();
                         this._addInteractiveBacking();
                     }
-                    this._interactiveBacking.inputEnabled = true;
-                    this.game.time.events.add(10, this._flatten, this);
                 };
                 NineSliceImage.prototype._removeInput = function () {
                     if (!this._interactiveBacking) {
@@ -1185,10 +1179,10 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                     this._interactiveBacking.inputEnabled = false;
                 };
                 NineSliceImage.prototype._unflatten = function () {
-                    this.cacheAsBitmap = null;
+                    this._displayLayer.cacheAsBitmap = null;
                 };
                 NineSliceImage.prototype._flatten = function () {
-                    this.cacheAsBitmap = true;
+                    this._displayLayer.cacheAsBitmap = true;
                 };
                 Object.defineProperty(NineSliceImage.prototype, "inputEnabled", {
                     set: function (value) {
@@ -1209,6 +1203,13 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                             return null;
                         }
                         return this._interactiveBacking.events;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(NineSliceImage.prototype, "input", {
+                    get: function () {
+                        return this._interactiveBacking.input;
                     },
                     enumerable: true,
                     configurable: true

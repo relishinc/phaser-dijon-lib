@@ -589,6 +589,9 @@ export class NineSliceImage extends Group {
     private __height: number;
     private _size: number;
 
+    private _displayLayer: Phaser.Group;
+    private _inputLayer: Phaser.Group;
+
     public tl: Phaser.Image;
     public t: Phaser.TileSprite;
     public tr: Phaser.Image;
@@ -614,33 +617,29 @@ export class NineSliceImage extends Group {
         this.game.time.events.add(10, this._flatten, this);
     }
 
-    public destroy(): void {
-        if (this._interactiveBacking) {
-            this.remove(this._interactiveBacking, true);
-        }
-        super.destroy();
-    }
-
     private _build(): void {
-        this.tl = <Phaser.Image>this.add(this.game.add.image(0, 0, this.key, this.texturePath + '/tl'));
+        this._inputLayer = this.add(this.game.add.group());
+        this._displayLayer = this.add(this.game.add.group());
 
-        this.tr = <Phaser.Image>this.add(this.game.add.image(this.__width, 0, this.key, this.texturePath + '/tr'));
+        this.tl = <Phaser.Image>this._displayLayer.add(this.game.add.image(0, 0, this.key, this.texturePath + '/tl'));
 
-        this.t = <Phaser.TileSprite>this.add(this.game.add.tileSprite(this.tl.getBounds().width, 0, this.__width - this.tl.getBounds().width - this.tr.getBounds().width, this.topHeight || this.tl.getBounds().height, this.key, this.texturePath + '/t'));
+        this.tr = <Phaser.Image>this._displayLayer.add(this.game.add.image(this.__width, 0, this.key, this.texturePath + '/tr'));
 
-        this.l = <Phaser.TileSprite>this.add(this.game.add.tileSprite(0, this.tl.getBounds().height, this.leftWidth || this.tl.getBounds().width, 100, this.key, this.texturePath + '/l'));
+        this.t = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(this.tl.getBounds().width, 0, this.__width - this.tl.getBounds().width - this.tr.getBounds().width, this.topHeight || this.tl.getBounds().height, this.key, this.texturePath + '/t'));
 
-        this.bl = <Phaser.Image>this.add(this.game.add.image(0, this.__height, this.key, this.texturePath + '/bl'));
+        this.l = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(0, this.tl.getBounds().height, this.leftWidth || this.tl.getBounds().width, 100, this.key, this.texturePath + '/l'));
+
+        this.bl = <Phaser.Image>this._displayLayer.add(this.game.add.image(0, this.__height, this.key, this.texturePath + '/bl'));
 
         this.l.height = this.__height - this.tl.getBounds().height - this.bl.getBounds().height;
 
-        this.b = <Phaser.TileSprite>this.add(this.game.add.tileSprite(this.bl.getBounds().width, this.__height, 100, this.bottomHeight || this.bl.getBounds().height, this.key, this.texturePath + '/b'));
+        this.b = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(this.bl.getBounds().width, this.__height, 100, this.bottomHeight || this.bl.getBounds().height, this.key, this.texturePath + '/b'));
 
-        this.br = <Phaser.Image>this.add(this.game.add.image(this.__width, this.__height, this.key, this.texturePath + '/br'));
+        this.br = <Phaser.Image>this._displayLayer.add(this.game.add.image(this.__width, this.__height, this.key, this.texturePath + '/br'));
 
         this.b.width = this.__width - this.bl.getBounds().width - this.br.getBounds().width;
 
-        this.r = <Phaser.TileSprite>this.add(this.game.add.tileSprite(this.__width, this.tr.getBounds().height, this.rightWidth || this.tr.getBounds().width, this.__height - this.tl.getBounds().height - this.br.getBounds().height, this.key, this.texturePath + '/r'));
+        this.r = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(this.__width, this.tr.getBounds().height, this.rightWidth || this.tr.getBounds().width, this.__height - this.tl.getBounds().height - this.br.getBounds().height, this.key, this.texturePath + '/r'));
 
         this.tr.setPivot('tr');
         this.r.setPivot('tr');
@@ -650,7 +649,7 @@ export class NineSliceImage extends Group {
         this.bl.setPivot('bl');
 
         if (this.fillMiddle) {
-            this.tile = <Phaser.TileSprite>this.add(this.game.add.tileSprite(this.tl.getBounds().width - 1, this.tl.getBounds().height - 1, this.__width - this.tl.getBounds().width - this.tr.getBounds().width + 2, this.__height - this.tl.getBounds().height - this.br.getBounds().height + 4, this.key, this.texturePath + '/tile'));
+            this.tile = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(this.tl.getBounds().width - 1, this.tl.getBounds().height - 1, this.__width - this.tl.getBounds().width - this.tr.getBounds().width + 2, this.__height - this.tl.getBounds().height - this.br.getBounds().height + 4, this.key, this.texturePath + '/tile'));
             this.sendToBack(this.tile);
         }
     }
@@ -658,10 +657,12 @@ export class NineSliceImage extends Group {
     private _addInteractiveBacking(): void {
         const gfx = this.game.add.graphics();
         gfx.beginFill(0xFF0000, 0);
-        gfx.drawRect(0, 0, this.__width, this.__height);
+        gfx.drawRect(this.x, this.y, this.__width, this.__height);
         gfx.endFill();
 
-        this._interactiveBacking = this.add(this.game.add.image(0, 0, gfx.generateTexture()));
+        this._interactiveBacking = this._inputLayer.add(this.game.add.image(0, 0, gfx.generateTexture()));
+
+        this._interactiveBacking.inputEnabled = true;
 
         this.game.world.remove(gfx);
     }
@@ -687,11 +688,8 @@ export class NineSliceImage extends Group {
 
     private _addInput(): void {
         if (!this._interactiveBacking) {
-            this._unflatten();
             this._addInteractiveBacking();
         }
-        this._interactiveBacking.inputEnabled = true;
-        this.game.time.events.add(10, this._flatten, this);
     }
 
     private _removeInput(): void {
@@ -702,11 +700,11 @@ export class NineSliceImage extends Group {
     }
 
     private _unflatten(): void {
-        this.cacheAsBitmap = null;
+        this._displayLayer.cacheAsBitmap = null;
     }
 
     private _flatten(): void {
-        this.cacheAsBitmap = true;
+        this._displayLayer.cacheAsBitmap = true;
     }
 
     public set inputEnabled(value: boolean) {
@@ -723,6 +721,10 @@ export class NineSliceImage extends Group {
             return null;
         }
         return this._interactiveBacking.events;
+    }
+
+    public get input(): Phaser.InputHandler {
+        return this._interactiveBacking.input;
     }
 
     public set hSize(value: number) {

@@ -270,6 +270,8 @@ declare module "dijon/display" {
         private __width;
         private __height;
         private _size;
+        private _displayLayer;
+        private _inputLayer;
         tl: Phaser.Image;
         t: Phaser.TileSprite;
         tr: Phaser.Image;
@@ -283,7 +285,6 @@ declare module "dijon/display" {
         private _inputEnabled;
         private _currentBounds;
         constructor(x: number, y: number, width: number, height: number, key: string, texturePath: string, fillMiddle?: boolean, topHeight?: number, rightWidth?: number, bottomHeight?: number, leftWidth?: number);
-        destroy(): void;
         private _build();
         private _addInteractiveBacking();
         private _setSize();
@@ -293,6 +294,7 @@ declare module "dijon/display" {
         private _flatten();
         inputEnabled: boolean;
         events: Phaser.Events;
+        input: Phaser.InputHandler;
         hSize: number;
         vSize: number;
         setSize(width: number, height: number): void;
