@@ -746,6 +746,8 @@ System.register("dijon/utils", [], function(exports_4, context_4) {
                 }
                 Notifications.ASSET_MANAGER_DATA_SET = 'dijonAssetManagerDataSet';
                 Notifications.ASSET_MANAGER_ASSETS_CLEARED = 'dijonAssetManagerAssetsCleared';
+                Notifications.MOUSE_LEAVE_GLOBAL = 'mouseOutGlobal';
+                Notifications.MOUSE_ENTER_GLOBAL = 'mouseEnterGlobal';
                 return Notifications;
             }());
             exports_4("Notifications", Notifications);
@@ -756,7 +758,7 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
     "use strict";
     var __moduleName = context_5 && context_5.id;
     var application_2;
-    var Sprite, InvisibleButton, Group, Text, Component;
+    var Sprite, InvisibleButton, Group, Text, Component, NineSliceImage;
     return {
         setters:[
             function (application_2_1) {
@@ -1099,6 +1101,148 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                 return Component;
             }());
             exports_5("Component", Component);
+            NineSliceImage = (function (_super) {
+                __extends(NineSliceImage, _super);
+                function NineSliceImage(x, y, width, height, key, texturePath, fillMiddle, topHeight, rightWidth, bottomHeight, leftWidth) {
+                    if (fillMiddle === void 0) { fillMiddle = true; }
+                    _super.call(this, x, y);
+                    this.key = key;
+                    this.texturePath = texturePath;
+                    this.fillMiddle = fillMiddle;
+                    this.topHeight = topHeight;
+                    this.rightWidth = rightWidth;
+                    this.bottomHeight = bottomHeight;
+                    this.leftWidth = leftWidth;
+                    this._interactiveBacking = null;
+                    this._inputEnabled = false;
+                    this._currentBounds = null;
+                    this.__width = Math.round(width);
+                    this.__height = Math.round(height);
+                    this._build();
+                    this.game.time.events.add(10, this._flatten, this);
+                }
+                NineSliceImage.prototype.destroy = function () {
+                    if (this._interactiveBacking) {
+                        this.remove(this._interactiveBacking, true);
+                    }
+                    _super.prototype.destroy.call(this);
+                };
+                NineSliceImage.prototype._build = function () {
+                    this.tl = this.add(this.game.add.image(0, 0, this.key, this.texturePath + '/tl'));
+                    this.tr = this.add(this.game.add.image(this.__width, 0, this.key, this.texturePath + '/tr'));
+                    this.t = this.add(this.game.add.tileSprite(this.tl.getBounds().width, 0, this.__width - this.tl.getBounds().width - this.tr.getBounds().width, this.topHeight || this.tl.getBounds().height, this.key, this.texturePath + '/t'));
+                    this.l = this.add(this.game.add.tileSprite(0, this.tl.getBounds().height, this.leftWidth || this.tl.getBounds().width, 100, this.key, this.texturePath + '/l'));
+                    this.bl = this.add(this.game.add.image(0, this.__height, this.key, this.texturePath + '/bl'));
+                    this.l.height = this.__height - this.tl.getBounds().height - this.bl.getBounds().height;
+                    this.b = this.add(this.game.add.tileSprite(this.bl.getBounds().width, this.__height, 100, this.bottomHeight || this.bl.getBounds().height, this.key, this.texturePath + '/b'));
+                    this.br = this.add(this.game.add.image(this.__width, this.__height, this.key, this.texturePath + '/br'));
+                    this.b.width = this.__width - this.bl.getBounds().width - this.br.getBounds().width;
+                    this.r = this.add(this.game.add.tileSprite(this.__width, this.tr.getBounds().height, this.rightWidth || this.tr.getBounds().width, this.__height - this.tl.getBounds().height - this.br.getBounds().height, this.key, this.texturePath + '/r'));
+                    this.tr.setPivot('tr');
+                    this.r.setPivot('tr');
+                    this.br.setPivot('br');
+                    this.b.setPivot('bl');
+                    this.bl.setPivot('bl');
+                    if (this.fillMiddle) {
+                        this.tile = this.add(this.game.add.tileSprite(this.tl.getBounds().width - 1, this.tl.getBounds().height - 1, this.__width - this.tl.getBounds().width - this.tr.getBounds().width + 2, this.__height - this.tl.getBounds().height - this.br.getBounds().height + 4, this.key, this.texturePath + '/tile'));
+                        this.sendToBack(this.tile);
+                    }
+                };
+                NineSliceImage.prototype._addInteractiveBacking = function () {
+                    var gfx = this.game.add.graphics();
+                    gfx.beginFill(0xFF0000, 0);
+                    gfx.drawRect(0, 0, this.__width, this.__height);
+                    gfx.endFill();
+                    this._interactiveBacking = this.add(this.game.add.image(0, 0, gfx.generateTexture()));
+                    this.game.world.remove(gfx);
+                };
+                NineSliceImage.prototype._setSize = function () {
+                    this._unflatten();
+                    this.t.width = this.b.width = this.__width - this.tl.getBounds().width - this.tr.getBounds().width;
+                    this.r.x = this.tr.x = this.br.x = this.__width;
+                    this.l.height = this.r.height = this.__height - this.tr.getBounds().height - this.bl.getBounds().height;
+                    this.bl.y = this.b.y = this.br.y = this.__height;
+                    if (this.fillMiddle) {
+                        this.tile.width = this.__width - this.tr.getBounds().width - this.tl.getBounds().width + 4;
+                        this.tile.height = this.__height - this.tl.getBounds().height - this.bl.getBounds().height + 4;
+                    }
+                    this._interactiveBacking.width = this.__width;
+                    this._interactiveBacking.height = this.__height;
+                    this.game.time.events.add(10, this._flatten, this);
+                };
+                NineSliceImage.prototype._addInput = function () {
+                    if (!this._interactiveBacking) {
+                        this._unflatten();
+                        this._addInteractiveBacking();
+                    }
+                    this._interactiveBacking.inputEnabled = true;
+                    this.game.time.events.add(10, this._flatten, this);
+                };
+                NineSliceImage.prototype._removeInput = function () {
+                    if (!this._interactiveBacking) {
+                        return;
+                    }
+                    this._interactiveBacking.inputEnabled = false;
+                };
+                NineSliceImage.prototype._unflatten = function () {
+                    this.cacheAsBitmap = null;
+                };
+                NineSliceImage.prototype._flatten = function () {
+                    this.cacheAsBitmap = true;
+                };
+                Object.defineProperty(NineSliceImage.prototype, "inputEnabled", {
+                    set: function (value) {
+                        this._inputEnabled = value;
+                        if (this._inputEnabled) {
+                            this._addInput();
+                        }
+                        else {
+                            this._removeInput();
+                        }
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(NineSliceImage.prototype, "events", {
+                    get: function () {
+                        if (!this._interactiveBacking || !this._interactiveBacking.inputEnabled) {
+                            return null;
+                        }
+                        return this._interactiveBacking.events;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(NineSliceImage.prototype, "hSize", {
+                    get: function () {
+                        return this.__width;
+                    },
+                    set: function (value) {
+                        this.__width = value;
+                        this._setSize();
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(NineSliceImage.prototype, "vSize", {
+                    get: function () {
+                        return this.__height;
+                    },
+                    set: function (value) {
+                        this.__height = value;
+                        this._setSize();
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                NineSliceImage.prototype.setSize = function (width, height) {
+                    this.__width = width;
+                    this.__height = height;
+                    this._setSize();
+                };
+                return NineSliceImage;
+            }(Group));
+            exports_5("NineSliceImage", NineSliceImage);
         }
     }
 });
@@ -1941,6 +2085,7 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                     this.add = null;
                     this.add = new GameObjectFactory(this);
                     this.addLayers();
+                    this.addMouseCallbacks();
                     this.setFactoryDefaultLayer(this.gameLayer);
                 };
                 Game.prototype.addPlugins = function () {
@@ -1961,6 +2106,18 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                     this.uiLayer = this.add.dGroup(0, 0, '_ui_layer');
                     this.uiLayer.fixedToCamera = true;
                     this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
+                };
+                Game.prototype.addMouseCallbacks = function () {
+                    if (this.device.desktop) {
+                        this.input.mouse.mouseOverCallback = this.mouseOver;
+                        this.input.mouse.mouseOutCallback = this.mouseOut;
+                    }
+                };
+                Game.prototype.mouseOut = function () {
+                    application_3.Application.getInstance().sendNotification(utils_1.Notifications.MOUSE_LEAVE_GLOBAL);
+                };
+                Game.prototype.mouseOver = function () {
+                    application_3.Application.getInstance().sendNotification(utils_1.Notifications.MOUSE_ENTER_GLOBAL);
                 };
                 Game.prototype.disableElementInput = function (el) {
                     if (el.input && el.inputEnabled === true) {

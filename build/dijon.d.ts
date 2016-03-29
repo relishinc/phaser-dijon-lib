@@ -154,6 +154,8 @@ declare module "dijon/utils" {
     export class Notifications {
         static ASSET_MANAGER_DATA_SET: string;
         static ASSET_MANAGER_ASSETS_CLEARED: string;
+        static MOUSE_LEAVE_GLOBAL: string;
+        static MOUSE_ENTER_GLOBAL: string;
     }
 }
 declare module "dijon/display" {
@@ -256,6 +258,44 @@ declare module "dijon/display" {
         buildInterface(): void;
         update(): void;
         destroy(): void;
+    }
+    export class NineSliceImage extends Group {
+        key: string;
+        texturePath: string;
+        fillMiddle: boolean;
+        topHeight: number;
+        rightWidth: number;
+        bottomHeight: number;
+        leftWidth: number;
+        private __width;
+        private __height;
+        private _size;
+        tl: Phaser.Image;
+        t: Phaser.TileSprite;
+        tr: Phaser.Image;
+        r: Phaser.TileSprite;
+        br: Phaser.Image;
+        b: Phaser.TileSprite;
+        bl: Phaser.Image;
+        l: Phaser.TileSprite;
+        tile: Phaser.TileSprite;
+        private _interactiveBacking;
+        private _inputEnabled;
+        private _currentBounds;
+        constructor(x: number, y: number, width: number, height: number, key: string, texturePath: string, fillMiddle?: boolean, topHeight?: number, rightWidth?: number, bottomHeight?: number, leftWidth?: number);
+        destroy(): void;
+        private _build();
+        private _addInteractiveBacking();
+        private _setSize();
+        private _addInput();
+        private _removeInput();
+        private _unflatten();
+        private _flatten();
+        inputEnabled: boolean;
+        events: Phaser.Events;
+        hSize: number;
+        vSize: number;
+        setSize(width: number, height: number): void;
     }
 }
 declare module "dijon/core" {
@@ -431,6 +471,9 @@ declare module "dijon/core" {
         addPlugins(): void;
         setFactoryDefaultLayer(newLayer: Phaser.Group): void;
         protected addLayers(): void;
+        protected addMouseCallbacks(): void;
+        protected mouseOut(): void;
+        protected mouseOver(): void;
         disableElementInput(el: any): any;
         enableElementInput(el: any): any;
         disableInput(group: Phaser.Group): any;
