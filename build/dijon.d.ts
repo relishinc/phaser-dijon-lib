@@ -139,25 +139,6 @@ declare module "dijon/mvc" {
         destroy(): void;
     }
 }
-declare module "dijon/utils" {
-    import { IBrowser } from "dijon/interfaces";
-    export class Device {
-        static IOS: string;
-        static ANDROID: string;
-        static UNKNOWN: string;
-        static mobile: boolean;
-        static mobileOS: string;
-        static browser: IBrowser;
-        static pixelRatio: number;
-        static customPixelRatio: number;
-    }
-    export class Notifications {
-        static ASSET_MANAGER_DATA_SET: string;
-        static ASSET_MANAGER_ASSETS_CLEARED: string;
-        static MOUSE_LEAVE_GLOBAL: string;
-        static MOUSE_ENTER_GLOBAL: string;
-    }
-}
 declare module "dijon/display" {
     import { Game, GameObjectFactory } from "dijon/core";
     import { Mediator } from "dijon/mvc";
@@ -298,6 +279,38 @@ declare module "dijon/display" {
         hSize: number;
         vSize: number;
         setSize(width: number, height: number): void;
+    }
+}
+declare module "dijon/utils" {
+    import { IBrowser } from "dijon/interfaces";
+    export class Device {
+        static IOS: string;
+        static ANDROID: string;
+        static UNKNOWN: string;
+        static mobile: boolean;
+        static mobileOS: string;
+        static browser: IBrowser;
+        static pixelRatio: number;
+        static customPixelRatio: number;
+    }
+    export class Textures {
+        private static game;
+        static rect(width?: number, height?: number, color?: number, alpha?: number): PIXI.Texture;
+        static roundedRect(width?: number, height?: number, radius?: number, color?: number, alpha?: number): PIXI.Texture;
+        static square(size?: number, color?: number, alpha?: number): PIXI.Texture;
+        static circle(diameter?: number, color?: number, alpha?: number): PIXI.Texture;
+        static ellipse(width?: number, height?: number, color?: number, alpha?: number): PIXI.Texture;
+    }
+    export class Placeholders {
+        private static game;
+        static image(x: number, y: number, texture: any): Phaser.Image;
+        static button(x?: number, y?: number, width?: number, height?: number, text?: string, callback?: Function, callbackContext?: any, defaultColor?: number, overColor?: number, downColor?: number): Phaser.Sprite;
+    }
+    export class Notifications {
+        static ASSET_MANAGER_DATA_SET: string;
+        static ASSET_MANAGER_ASSETS_CLEARED: string;
+        static MOUSE_LEAVE_GLOBAL: string;
+        static MOUSE_ENTER_GLOBAL: string;
     }
 }
 declare module "dijon/core" {

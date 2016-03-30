@@ -1,6 +1,7 @@
 import {IBrowser} from './interfaces';
 import {Application} from "./application";
 import {Game} from "./core";
+import {Text} from "./display";
 
 export class Device {
     public static IOS: string = 'iOS';
@@ -41,10 +42,125 @@ export class Device {
     }
 }
 
+export class Textures {
+    private static get game(): Phaser.Game {
+        return Application.getInstance().game;
+    }
+
+    static rect(width: number = 100, height: number = 100, color: number = 0xffffff, alpha: number = 1): PIXI.Texture {
+        const gfx = Textures.game.add.graphics(0, 0);
+        gfx.beginFill(color, alpha);
+        gfx.drawRect(0, 0, width, height);
+
+        const texture = gfx.generateTexture();
+        Textures.game.world.remove(gfx);
+
+        return texture;
+    }
+
+    static roundedRect(width: number = 100, height: number = 100, radius: number = 10, color: number = 0xffffff, alpha: number = 1): PIXI.Texture {
+        const gfx = Textures.game.add.graphics(0, 0);
+        gfx.beginFill(color, alpha);
+        gfx.drawRoundedRect(0, 0, width, height, radius);
+
+        const texture = gfx.generateTexture();
+        Textures.game.world.remove(gfx);
+
+        return texture;
+    }
+
+    static square(size: number = 100, color: number = 0xffffff, alpha: number = 1): PIXI.Texture {
+        return Textures.rect(size, size, color, alpha);
+    }
+
+    static circle(diameter: number = 100, color: number = 0xffffff, alpha: number = 1): PIXI.Texture {
+        const gfx = Textures.game.add.graphics(0, 0);
+        gfx.beginFill(color, alpha);
+        gfx.drawCircle(0, 0, diameter);
+
+        const texture = gfx.generateTexture();
+        Textures.game.world.remove(gfx);
+
+        return texture;
+    }
+
+    static ellipse(width: number = 50, height: number = 100, color: number = 0xffffff, alpha: number = 1): PIXI.Texture {
+        const gfx = Textures.game.add.graphics(0, 0);
+        gfx.beginFill(color, alpha);
+        gfx.drawEllipse(0, 0, width * 0.5, height * 0.5);
+
+        const texture = gfx.generateTexture();
+        Textures.game.world.remove(gfx);
+
+        return texture;
+    }
+}
+
+export class Placeholders {
+    private static get game(): Phaser.Game {
+        return Application.getInstance().game;
+    }
+
+    static image(x: number = 0, y: number = 0, texture: any): Phaser.Image {
+        return new Phaser.Image(Placeholders.game, x, y, texture);
+    }
+
+    static button(x: number = 0, y: number = 0, width: number = 100, height: number = 50, text: string = 'button', callback: Function = null, callbackContext: any = null, defaultColor: number = 0xffffff, overColor: number = 0xff0000, downColor: number = 0x00ff00): Phaser.Sprite {
+        const sprite: Phaser.Sprite = new Phaser.Sprite(Placeholders.game, x, y);
+
+        const upImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, defaultColor));
+        const overImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, overColor));
+        const downImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, downColor));
+        const textInstance: Text = new Text(width * 0.5, height * 0.55, text, 'Arial', height * 0.6, '#000000');
+        textInstance.centerPivot();
+
+        overImage.visible = false;
+        downImage.visible = false;
+
+        sprite.addChild(upImage);
+        sprite.addChild(overImage);
+        sprite.addChild(downImage);
+        sprite.addChild(textInstance);
+
+        sprite.inputEnabled = true;
+        sprite.input.useHandCursor = true;
+
+        sprite.events.onInputUp.add(() => {
+            downImage.visible = false;
+            overImage.visible = false;
+            upImage.visible = true;
+
+            if (callback) {
+                callback.call(callbackContext);
+            }
+        });
+
+        sprite.events.onInputDown.add(() => {
+            downImage.visible = true;
+            overImage.visible = false;
+            upImage.visible = false;
+        });
+
+        sprite.events.onInputOver.add(() => {
+            downImage.visible = false;
+            overImage.visible = true;
+            upImage.visible = false;
+        });
+
+        sprite.events.onInputOut.add(() => {
+            downImage.visible = false;
+            overImage.visible = false;
+            upImage.visible = true;
+        });
+
+        return sprite;
+    }
+}
+
 export class Notifications {
     public static ASSET_MANAGER_DATA_SET: string = 'dijonAssetManagerDataSet';
     public static ASSET_MANAGER_ASSETS_CLEARED: string = 'dijonAssetManagerAssetsCleared';
-    
-    public static MOUSE_LEAVE_GLOBAL:string = 'mouseOutGlobal';
-    public static MOUSE_ENTER_GLOBAL:string = 'mouseEnterGlobal';
+
+    public static MOUSE_LEAVE_GLOBAL: string = 'mouseOutGlobal';
+    public static MOUSE_ENTER_GLOBAL: string = 'mouseEnterGlobal';
 }

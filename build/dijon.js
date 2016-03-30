@@ -675,88 +675,9 @@ System.register("dijon/mvc", ["dijon/application"], function(exports_3, context_
         }
     }
 });
-System.register("dijon/utils", [], function(exports_4, context_4) {
+System.register("dijon/display", ["dijon/application"], function(exports_4, context_4) {
     "use strict";
     var __moduleName = context_4 && context_4.id;
-    var Device, Notifications;
-    return {
-        setters:[],
-        execute: function() {
-            Device = (function () {
-                function Device() {
-                }
-                Object.defineProperty(Device, "mobile", {
-                    get: function () {
-                        return Device.mobileOS !== Device.UNKNOWN;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Device, "mobileOS", {
-                    get: function () {
-                        var userAgent = window.navigator.userAgent || window.navigator.vendor || window['opera'];
-                        if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
-                            return Device.IOS;
-                        }
-                        else if (userAgent.match(/Android/i)) {
-                            return Device.ANDROID;
-                        }
-                        else {
-                            return Device.UNKNOWN;
-                        }
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Device, "browser", {
-                    get: function () {
-                        var ua = navigator.userAgent.toLowerCase();
-                        return {
-                            firefox: ua.indexOf('firefox') > -1,
-                            ie: ua.indexOf('ie') > -1,
-                            safari: ua.indexOf('safari') > -1,
-                            chrome: ua.indexOf('chrome') > -1,
-                        };
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Device, "pixelRatio", {
-                    get: function () {
-                        return typeof window.devicePixelRatio !== undefined ? window.devicePixelRatio : 1;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Device, "customPixelRatio", {
-                    get: function () {
-                        return Device.pixelRatio >= 1.5 ? 2 : 1;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Device.IOS = 'iOS';
-                Device.ANDROID = 'android';
-                Device.UNKNOWN = 'unknown';
-                return Device;
-            }());
-            exports_4("Device", Device);
-            Notifications = (function () {
-                function Notifications() {
-                }
-                Notifications.ASSET_MANAGER_DATA_SET = 'dijonAssetManagerDataSet';
-                Notifications.ASSET_MANAGER_ASSETS_CLEARED = 'dijonAssetManagerAssetsCleared';
-                Notifications.MOUSE_LEAVE_GLOBAL = 'mouseOutGlobal';
-                Notifications.MOUSE_ENTER_GLOBAL = 'mouseEnterGlobal';
-                return Notifications;
-            }());
-            exports_4("Notifications", Notifications);
-        }
-    }
-});
-System.register("dijon/display", ["dijon/application"], function(exports_5, context_5) {
-    "use strict";
-    var __moduleName = context_5 && context_5.id;
     var application_2;
     var Sprite, InvisibleButton, Group, Text, Component, NineSliceImage;
     return {
@@ -838,7 +759,7 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                 });
                 return Sprite;
             }(Phaser.Sprite));
-            exports_5("Sprite", Sprite);
+            exports_4("Sprite", Sprite);
             InvisibleButton = (function (_super) {
                 __extends(InvisibleButton, _super);
                 function InvisibleButton(x, y, name, w, h) {
@@ -863,7 +784,7 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                 };
                 return InvisibleButton;
             }(Sprite));
-            exports_5("InvisibleButton", InvisibleButton);
+            exports_4("InvisibleButton", InvisibleButton);
             Group = (function (_super) {
                 __extends(Group, _super);
                 function Group(x, y, name, addToStage, components, enableBody, physicsBodyType) {
@@ -953,7 +874,7 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                 });
                 return Group;
             }(Phaser.Group));
-            exports_5("Group", Group);
+            exports_4("Group", Group);
             Text = (function (_super) {
                 __extends(Text, _super);
                 function Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings) {
@@ -1085,7 +1006,7 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                 Text.GLOBAL_PADDING_Y = 0;
                 return Text;
             }(Phaser.Text));
-            exports_5("Text", Text);
+            exports_4("Text", Text);
             Component = (function () {
                 function Component() {
                     this.game = application_2.Application.getInstance().game;
@@ -1100,7 +1021,7 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                 Component.prototype.destroy = function () { };
                 return Component;
             }());
-            exports_5("Component", Component);
+            exports_4("Component", Component);
             NineSliceImage = (function (_super) {
                 __extends(NineSliceImage, _super);
                 function NineSliceImage(x, y, width, height, key, texturePath, fillMiddle, topHeight, rightWidth, bottomHeight, leftWidth) {
@@ -1243,25 +1164,246 @@ System.register("dijon/display", ["dijon/application"], function(exports_5, cont
                 };
                 return NineSliceImage;
             }(Group));
-            exports_5("NineSliceImage", NineSliceImage);
+            exports_4("NineSliceImage", NineSliceImage);
+        }
+    }
+});
+System.register("dijon/utils", ["dijon/application", "dijon/display"], function(exports_5, context_5) {
+    "use strict";
+    var __moduleName = context_5 && context_5.id;
+    var application_3, display_1;
+    var Device, Textures, Placeholders, Notifications;
+    return {
+        setters:[
+            function (application_3_1) {
+                application_3 = application_3_1;
+            },
+            function (display_1_1) {
+                display_1 = display_1_1;
+            }],
+        execute: function() {
+            Device = (function () {
+                function Device() {
+                }
+                Object.defineProperty(Device, "mobile", {
+                    get: function () {
+                        return Device.mobileOS !== Device.UNKNOWN;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Device, "mobileOS", {
+                    get: function () {
+                        var userAgent = window.navigator.userAgent || window.navigator.vendor || window['opera'];
+                        if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
+                            return Device.IOS;
+                        }
+                        else if (userAgent.match(/Android/i)) {
+                            return Device.ANDROID;
+                        }
+                        else {
+                            return Device.UNKNOWN;
+                        }
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Device, "browser", {
+                    get: function () {
+                        var ua = navigator.userAgent.toLowerCase();
+                        return {
+                            firefox: ua.indexOf('firefox') > -1,
+                            ie: ua.indexOf('ie') > -1,
+                            safari: ua.indexOf('safari') > -1,
+                            chrome: ua.indexOf('chrome') > -1,
+                        };
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Device, "pixelRatio", {
+                    get: function () {
+                        return typeof window.devicePixelRatio !== undefined ? window.devicePixelRatio : 1;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Device, "customPixelRatio", {
+                    get: function () {
+                        return Device.pixelRatio >= 1.5 ? 2 : 1;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Device.IOS = 'iOS';
+                Device.ANDROID = 'android';
+                Device.UNKNOWN = 'unknown';
+                return Device;
+            }());
+            exports_5("Device", Device);
+            Textures = (function () {
+                function Textures() {
+                }
+                Object.defineProperty(Textures, "game", {
+                    get: function () {
+                        return application_3.Application.getInstance().game;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Textures.rect = function (width, height, color, alpha) {
+                    if (width === void 0) { width = 100; }
+                    if (height === void 0) { height = 100; }
+                    if (color === void 0) { color = 0xffffff; }
+                    if (alpha === void 0) { alpha = 1; }
+                    var gfx = Textures.game.add.graphics(0, 0);
+                    gfx.beginFill(color, alpha);
+                    gfx.drawRect(0, 0, width, height);
+                    var texture = gfx.generateTexture();
+                    Textures.game.world.remove(gfx);
+                    return texture;
+                };
+                Textures.roundedRect = function (width, height, radius, color, alpha) {
+                    if (width === void 0) { width = 100; }
+                    if (height === void 0) { height = 100; }
+                    if (radius === void 0) { radius = 10; }
+                    if (color === void 0) { color = 0xffffff; }
+                    if (alpha === void 0) { alpha = 1; }
+                    var gfx = Textures.game.add.graphics(0, 0);
+                    gfx.beginFill(color, alpha);
+                    gfx.drawRoundedRect(0, 0, width, height, radius);
+                    var texture = gfx.generateTexture();
+                    Textures.game.world.remove(gfx);
+                    return texture;
+                };
+                Textures.square = function (size, color, alpha) {
+                    if (size === void 0) { size = 100; }
+                    if (color === void 0) { color = 0xffffff; }
+                    if (alpha === void 0) { alpha = 1; }
+                    return Textures.rect(size, size, color, alpha);
+                };
+                Textures.circle = function (diameter, color, alpha) {
+                    if (diameter === void 0) { diameter = 100; }
+                    if (color === void 0) { color = 0xffffff; }
+                    if (alpha === void 0) { alpha = 1; }
+                    var gfx = Textures.game.add.graphics(0, 0);
+                    gfx.beginFill(color, alpha);
+                    gfx.drawCircle(0, 0, diameter);
+                    var texture = gfx.generateTexture();
+                    Textures.game.world.remove(gfx);
+                    return texture;
+                };
+                Textures.ellipse = function (width, height, color, alpha) {
+                    if (width === void 0) { width = 50; }
+                    if (height === void 0) { height = 100; }
+                    if (color === void 0) { color = 0xffffff; }
+                    if (alpha === void 0) { alpha = 1; }
+                    var gfx = Textures.game.add.graphics(0, 0);
+                    gfx.beginFill(color, alpha);
+                    gfx.drawEllipse(0, 0, width * 0.5, height * 0.5);
+                    var texture = gfx.generateTexture();
+                    Textures.game.world.remove(gfx);
+                    return texture;
+                };
+                return Textures;
+            }());
+            exports_5("Textures", Textures);
+            Placeholders = (function () {
+                function Placeholders() {
+                }
+                Object.defineProperty(Placeholders, "game", {
+                    get: function () {
+                        return application_3.Application.getInstance().game;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Placeholders.image = function (x, y, texture) {
+                    if (x === void 0) { x = 0; }
+                    if (y === void 0) { y = 0; }
+                    return new Phaser.Image(Placeholders.game, x, y, texture);
+                };
+                Placeholders.button = function (x, y, width, height, text, callback, callbackContext, defaultColor, overColor, downColor) {
+                    if (x === void 0) { x = 0; }
+                    if (y === void 0) { y = 0; }
+                    if (width === void 0) { width = 100; }
+                    if (height === void 0) { height = 50; }
+                    if (text === void 0) { text = 'button'; }
+                    if (callback === void 0) { callback = null; }
+                    if (callbackContext === void 0) { callbackContext = null; }
+                    if (defaultColor === void 0) { defaultColor = 0xffffff; }
+                    if (overColor === void 0) { overColor = 0xff0000; }
+                    if (downColor === void 0) { downColor = 0x00ff00; }
+                    var sprite = new Phaser.Sprite(Placeholders.game, x, y);
+                    var upImage = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, defaultColor));
+                    var overImage = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, overColor));
+                    var downImage = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, downColor));
+                    var textInstance = new display_1.Text(width * 0.5, height * 0.55, text, 'Arial', height * 0.6, '#000000');
+                    textInstance.centerPivot();
+                    overImage.visible = false;
+                    downImage.visible = false;
+                    sprite.addChild(upImage);
+                    sprite.addChild(overImage);
+                    sprite.addChild(downImage);
+                    sprite.addChild(textInstance);
+                    sprite.inputEnabled = true;
+                    sprite.input.useHandCursor = true;
+                    sprite.events.onInputUp.add(function () {
+                        downImage.visible = false;
+                        overImage.visible = false;
+                        upImage.visible = true;
+                        if (callback) {
+                            callback.call(callbackContext);
+                        }
+                    });
+                    sprite.events.onInputDown.add(function () {
+                        downImage.visible = true;
+                        overImage.visible = false;
+                        upImage.visible = false;
+                    });
+                    sprite.events.onInputOver.add(function () {
+                        downImage.visible = false;
+                        overImage.visible = true;
+                        upImage.visible = false;
+                    });
+                    sprite.events.onInputOut.add(function () {
+                        downImage.visible = false;
+                        overImage.visible = false;
+                        upImage.visible = true;
+                    });
+                    return sprite;
+                };
+                return Placeholders;
+            }());
+            exports_5("Placeholders", Placeholders);
+            Notifications = (function () {
+                function Notifications() {
+                }
+                Notifications.ASSET_MANAGER_DATA_SET = 'dijonAssetManagerDataSet';
+                Notifications.ASSET_MANAGER_ASSETS_CLEARED = 'dijonAssetManagerAssetsCleared';
+                Notifications.MOUSE_LEAVE_GLOBAL = 'mouseOutGlobal';
+                Notifications.MOUSE_ENTER_GLOBAL = 'mouseEnterGlobal';
+                return Notifications;
+            }());
+            exports_5("Notifications", Notifications);
         }
     }
 });
 System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/display"], function(exports_6, context_6) {
     "use strict";
     var __moduleName = context_6 && context_6.id;
-    var application_3, utils_1, display_1;
+    var application_4, utils_1, display_2;
     var AnalyticsManager, AnalyticsException, AssetManager, AudioManager, Game, GameObjectFactory, SequenceManager, State, StorageManager, TransitionManager;
     return {
         setters:[
-            function (application_3_1) {
-                application_3 = application_3_1;
+            function (application_4_1) {
+                application_4 = application_4_1;
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
             },
-            function (display_1_1) {
-                display_1 = display_1_1;
+            function (display_2_1) {
+                display_2 = display_2_1;
             }],
         execute: function() {
             AnalyticsManager = (function () {
@@ -1367,7 +1509,7 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                     this._init();
                 }
                 AssetManager.prototype._init = function () {
-                    this.app = application_3.Application.getInstance();
+                    this.app = application_4.Application.getInstance();
                     this.game = this.app.game;
                     this.baseURL = '';
                     this.paths = null;
@@ -1871,7 +2013,7 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                     this._sprites = {};
                     this._sounds = {};
                     this._markerLookup = {};
-                    this.game = application_3.Application.getInstance().game;
+                    this.game = application_4.Application.getInstance().game;
                 }
                 AudioManager.prototype._addAudio = function (key, isAudioSprite) {
                     if (isAudioSprite === void 0) { isAudioSprite = false; }
@@ -2076,7 +2218,7 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                 }
                 Game.prototype.boot = function () {
                     _super.prototype.boot.call(this);
-                    this.app = application_3.Application.getInstance();
+                    this.app = application_4.Application.getInstance();
                     this.asset = new AssetManager();
                     this.sequence = new SequenceManager();
                     this.transition = new TransitionManager();
@@ -2115,10 +2257,10 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                     }
                 };
                 Game.prototype.mouseOut = function () {
-                    application_3.Application.getInstance().sendNotification(utils_1.Notifications.MOUSE_LEAVE_GLOBAL);
+                    application_4.Application.getInstance().sendNotification(utils_1.Notifications.MOUSE_LEAVE_GLOBAL);
                 };
                 Game.prototype.mouseOver = function () {
-                    application_3.Application.getInstance().sendNotification(utils_1.Notifications.MOUSE_ENTER_GLOBAL);
+                    application_4.Application.getInstance().sendNotification(utils_1.Notifications.MOUSE_ENTER_GLOBAL);
                 };
                 Game.prototype.disableElementInput = function (el) {
                     if (el.input && el.inputEnabled === true) {
@@ -2342,22 +2484,22 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                         group = this.targetGroup;
                     }
                     this._targetGroup = null;
-                    return group.add(new display_1.Sprite(x, y, key, frame, name, components));
+                    return group.add(new display_2.Sprite(x, y, key, frame, name, components));
                 };
                 GameObjectFactory.prototype.dGroup = function (x, y, name, addToStage, components, enableBody, physicsBodyType, group) {
                     if (group === undefined && addToStage !== true) {
                         group = this.targetGroup;
                         this._targetGroup = null;
-                        return group.add(new display_1.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
+                        return group.add(new display_2.Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
                     }
-                    return new display_1.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
+                    return new display_2.Group(x, y, name, addToStage, components, enableBody, physicsBodyType);
                 };
                 GameObjectFactory.prototype.dText = function (x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings, group) {
                     if (group === undefined) {
                         group = this.targetGroup;
                     }
                     this._targetGroup = null;
-                    return group.add(new display_1.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
+                    return group.add(new display_2.Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
                 };
                 GameObjectFactory.prototype.setDefaultLayer = function (value) {
                     console.log("CAUTION: Changing the default layer will change the target group for .add");
@@ -2386,7 +2528,7 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
             SequenceManager = (function () {
                 function SequenceManager() {
                     this._defaultInterval = 20;
-                    this.game = application_3.Application.getInstance().game;
+                    this.game = application_4.Application.getInstance().game;
                 }
                 SequenceManager.prototype._executeMethod = function (sequence, context, callback, callbackContext) {
                     var func = sequence.shift();
@@ -2515,7 +2657,7 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                 });
                 Object.defineProperty(State.prototype, "app", {
                     get: function () {
-                        return application_3.Application.getInstance();
+                        return application_4.Application.getInstance();
                     },
                     enumerable: true,
                     configurable: true
@@ -2532,7 +2674,7 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
             exports_6("State", State);
             StorageManager = (function () {
                 function StorageManager() {
-                    this.game = application_3.Application.getInstance().game;
+                    this.game = application_4.Application.getInstance().game;
                     this._init();
                 }
                 StorageManager.prototype._init = function () {
@@ -2607,7 +2749,7 @@ System.register("dijon/core", ["dijon/application", "dijon/utils", "dijon/displa
                     this._exceptions = {};
                     this._fromState = null;
                     this._toState = null;
-                    this.game = application_3.Application.getInstance().game;
+                    this.game = application_4.Application.getInstance().game;
                 }
                 TransitionManager.prototype._add = function (id, outHandler, preloadHandler, inHandler) {
                     this._transitions[id] = {
