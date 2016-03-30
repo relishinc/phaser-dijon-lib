@@ -1371,6 +1371,9 @@ System.register("dijon/utils", ["dijon/application", "dijon/display"], function(
                         overImage.visible = false;
                         upImage.visible = true;
                     });
+                    sprite.getBounds = function () {
+                        return new PIXI.Rectangle(0, 0, upImage.width, upImage.height);
+                    };
                     return sprite;
                 };
                 return Placeholders;

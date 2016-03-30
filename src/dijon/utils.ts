@@ -152,7 +152,10 @@ export class Placeholders {
             overImage.visible = false;
             upImage.visible = true;
         });
-
+        
+        sprite.getBounds = function():PIXI.Rectangle{
+            return new PIXI.Rectangle(0, 0, upImage.width, upImage.height);
+        }
         return sprite;
     }
 }
