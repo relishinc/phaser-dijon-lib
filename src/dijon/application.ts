@@ -1,6 +1,3 @@
-import {bootstrap} from '../dijon.bootstrap';
-bootstrap();
-
 import {Game} from './core';
 import {Mediator, Model, Notification} from './mvc';
 import {INotifier, IObserver, INotification} from './interfaces';
@@ -28,12 +25,12 @@ export class Application implements INotifier {
             throw Error(Application.SINGLETON_MSG);
 
         Application.instance = this;
-        
-        window.addEventListener("hashchange", () => { 
-            Application._getHashQuery(); 
+
+        window.addEventListener("hashchange", () => {
+            Application._getHashQuery();
             this.windowHashChange();
         }, false);
-        
+
         this.createGame();
         this.startGame();
     }
@@ -65,9 +62,9 @@ export class Application implements INotifier {
             throw (new Error('Application:: a model with the name "' + model.name + '" already exists.'));
         }
         this._models[model.name] = model;
-        
+
         model.onRegister();
-        
+
         return model;
     }
 
@@ -83,7 +80,7 @@ export class Application implements INotifier {
             return;
 
         model.onRemoved();
-        
+
         delete this._models[name];
     }
 
@@ -186,6 +183,9 @@ export class Application implements INotifier {
 
     private static _getHashQuery(): void {
         Application._hashQuery = {};
+        if (!window.location.hash || window.location.hash === undefined){
+            window.location.hash = '';
+        }
         const hash = window.location.hash.substr(1, window.location.hash.length);
         const aHash: string[] = hash.split('&');
         aHash.forEach(hashPair => {

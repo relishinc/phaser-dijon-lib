@@ -11,6 +11,10 @@ export class Device {
     public static get mobile(): boolean {
         return Device.mobileOS !== Device.UNKNOWN;
     }
+    
+    public static get cocoon():boolean{
+        return (typeof navigator['isCocoonJS'] !== "undefined");
+    }
 
     public static get mobileOS() {
         const userAgent = window.navigator.userAgent || window.navigator.vendor || window['opera'];

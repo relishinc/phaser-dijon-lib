@@ -1,7 +1,4 @@
-/// <reference path="../typings/tsd.d.ts" />
-declare module "dijon.bootstrap" {
-    export function bootstrap(): void;
-}
+/// <reference path="typings/tsd.d.ts" />
 declare module "dijon/interfaces" {
     export interface INotification {
         getName(): string;
@@ -288,6 +285,7 @@ declare module "dijon/utils" {
         static ANDROID: string;
         static UNKNOWN: string;
         static mobile: boolean;
+        static cocoon: boolean;
         static mobileOS: string;
         static browser: IBrowser;
         static pixelRatio: number;
