@@ -159,6 +159,8 @@ declare module "dijon/display" {
         updateComponent(componentName: string): void;
         removeAllComponents(): void;
         removeComponent(componentName: string): void;
+        flatten(delay?: number): void;
+        unFlatten(): void;
         resolution: number;
     }
     export class InvisibleButton extends Sprite {
@@ -191,6 +193,8 @@ declare module "dijon/display" {
         updateComponent(componentName: string): void;
         removeAllComponents(): void;
         removeComponent(componentName: string): void;
+        flatten(delay?: number): void;
+        unFlatten(): void;
         removeMediator(): void;
         addInternal: GameObjectFactory;
     }
@@ -536,7 +540,7 @@ declare module "dijon/core" {
         init(): void;
         preload(): void;
         create(): void;
-        shutdown(): void;
+        shutdown(removeMediator?: boolean, removeAudio?: boolean): void;
         listBuildSequence(): Function[];
         buildInterface(): void;
         afterBuildInterface(): void;

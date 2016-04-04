@@ -1199,19 +1199,19 @@ export class Game extends Phaser.Game {
         // add a group to the Phaser.Stage (just in case)
         this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
     }
-    
-    protected addMouseCallbacks():void{
-        if (this.device.desktop){
+
+    protected addMouseCallbacks(): void {
+        if (this.device.desktop) {
             this.input.mouse.mouseOverCallback = this.mouseOver;
             this.input.mouse.mouseOutCallback = this.mouseOut;
         }
     }
-    
-    protected mouseOut():void{
+
+    protected mouseOut(): void {
         Application.getInstance().sendNotification(Notifications.MOUSE_LEAVE_GLOBAL);
     }
-    
-    protected mouseOver():void{
+
+    protected mouseOver(): void {
         Application.getInstance().sendNotification(Notifications.MOUSE_ENTER_GLOBAL);
     }
 
@@ -1722,9 +1722,15 @@ export class State extends Phaser.State {
         this.startBuild();
     }
 
-    public shutdown(): void {
-        this.removeAudio();
-        this.removeMediator();
+    public shutdown(removeMediator: boolean = true, removeAudio: boolean = true): void{
+        if (removeMediator){
+            this.removeMediator();
+        }
+        if (removeAudio){
+            this.removeAudio();
+        }
+        
+        super.shutdown();
     }
 
     // public methods

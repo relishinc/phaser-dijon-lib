@@ -136,6 +136,18 @@ export class Sprite extends Phaser.Sprite {
 
         this._updateComponentKeys();
     }
+    
+    public flatten(delay:number = 0):void{
+        if (delay === 0){
+            this.cacheAsBitmap = true;
+        }else{
+            this.game.time.events.add(delay, ()=>{this.cacheAsBitmap = true}, this);            
+        }
+    }
+    
+    public unFlatten():void{
+        this.cacheAsBitmap = null;
+    }
 
     public get resolution(): number {
         return this.texture.baseTexture.resolution;
@@ -324,6 +336,18 @@ export class Group extends Phaser.Group {
         delete this._components[componentName];
 
         this._updateComponentKeys();
+    }
+    
+    public flatten(delay:number = 0):void{
+        if (delay === 0){
+            this.cacheAsBitmap = true;
+        }else{
+            this.game.time.events.add(delay, ()=>{this.cacheAsBitmap = true}, this);            
+        }
+    }
+    
+    public unFlatten():void{
+        this.cacheAsBitmap = null;
     }
 
     /**
