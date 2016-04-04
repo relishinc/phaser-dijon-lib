@@ -152,6 +152,10 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="assetmanager.html#resolution_3x" class="tsd-kind-icon">RESOLUTION_<wbr>3X</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="assetmanager.html#sound" class="tsd-kind-icon">SOUND</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="assetmanager.html#text" class="tsd-kind-icon">TEXT</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="assetmanager.html#tiledmap" class="tsd-kind-icon">TILEDMAP</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="assetmanager.html#tiledmap_layer" class="tsd-kind-icon">TILEDMAP_<wbr>LAYER</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="assetmanager.html#tiledmap_tileset" class="tsd-kind-icon">TILEDMAP_<wbr>TILESET</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="assetmanager.html#tilemap" class="tsd-kind-icon">TILEMAP</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -202,6 +206,9 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="assetmanager.html#loadqueue" class="tsd-kind-icon">load<wbr>Queue</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="assetmanager.html#loadsound" class="tsd-kind-icon">load<wbr>Sound</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="assetmanager.html#loadtext" class="tsd-kind-icon">load<wbr>Text</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="assetmanager.html#loadtiledmap" class="tsd-kind-icon">load<wbr>Tiledmap</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="assetmanager.html#loadtiledmapimage" class="tsd-kind-icon">load<wbr>Tiledmap<wbr>Image</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="assetmanager.html#loadtilemap" class="tsd-kind-icon">load<wbr>Tilemap</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="assetmanager.html#sendnotification" class="tsd-kind-icon">send<wbr>Notification</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="assetmanager.html#setdata" class="tsd-kind-icon">set<wbr>Data</a></li>
 							</ul>
@@ -221,7 +228,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:166</li>
+									<li>Defined in dijon/core.ts:129</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="assetmanager.html" class="tsd-signature-type">AssetManager</a></h4>
@@ -662,18 +669,9 @@
 					<div class="tsd-signature tsd-kind-icon">ASSET_<wbr>LIST<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in dijon/core.ts:163</li>
+							<li>Defined in dijon/core.ts:125</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>type</dt>
-							<dd><p>{String}</p>
-							</dd>
-							<dt>static</dt>
-							<dd></dd>
-						</dl>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="atlas" class="tsd-anchor"></a>
@@ -681,18 +679,9 @@
 					<div class="tsd-signature tsd-kind-icon">ATLAS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in dijon/core.ts:140</li>
+							<li>Defined in dijon/core.ts:117</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>type</dt>
-							<dd><p>{String}</p>
-							</dd>
-							<dt>static</dt>
-							<dd></dd>
-						</dl>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="audio" class="tsd-anchor"></a>
@@ -700,18 +689,9 @@
 					<div class="tsd-signature tsd-kind-icon">AUDIO<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in dijon/core.ts:116</li>
+							<li>Defined in dijon/core.ts:113</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>type</dt>
-							<dd><p>{String}</p>
-							</dd>
-							<dt>static</dt>
-							<dd></dd>
-						</dl>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="audio_sprite" class="tsd-anchor"></a>
@@ -719,18 +699,9 @@
 					<div class="tsd-signature tsd-kind-icon">AUDIO_<wbr>SPRITE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in dijon/core.ts:128</li>
+							<li>Defined in dijon/core.ts:115</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>type</dt>
-							<dd><p>{String}</p>
-							</dd>
-							<dt>static</dt>
-							<dd></dd>
-						</dl>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="image" class="tsd-anchor"></a>
@@ -738,18 +709,9 @@
 					<div class="tsd-signature tsd-kind-icon">IMAGE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in dijon/core.ts:134</li>
+							<li>Defined in dijon/core.ts:116</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>type</dt>
-							<dd><p>{String}</p>
-							</dd>
-							<dt>static</dt>
-							<dd></dd>
-						</dl>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="json" class="tsd-anchor"></a>
@@ -757,18 +719,9 @@
 					<div class="tsd-signature tsd-kind-icon">JSON<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in dijon/core.ts:151</li>
+							<li>Defined in dijon/core.ts:119</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>type</dt>
-							<dd><p>{String}</p>
-							</dd>
-							<dt>static</dt>
-							<dd></dd>
-						</dl>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="physics" class="tsd-anchor"></a>
@@ -776,18 +729,9 @@
 					<div class="tsd-signature tsd-kind-icon">PHYSICS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in dijon/core.ts:157</li>
+							<li>Defined in dijon/core.ts:124</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>type</dt>
-							<dd><p>{String}</p>
-							</dd>
-							<dt>static</dt>
-							<dd></dd>
-						</dl>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="resolution_2x" class="tsd-anchor"></a>
@@ -795,7 +739,7 @@
 					<div class="tsd-signature tsd-kind-icon">RESOLUTION_<wbr>2X<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in dijon/core.ts:165</li>
+							<li>Defined in dijon/core.ts:128</li>
 						</ul>
 					</aside>
 				</section>
@@ -805,7 +749,7 @@
 					<div class="tsd-signature tsd-kind-icon">RESOLUTION_<wbr>3X<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in dijon/core.ts:166</li>
+							<li>Defined in dijon/core.ts:129</li>
 						</ul>
 					</aside>
 				</section>
@@ -815,18 +759,9 @@
 					<div class="tsd-signature tsd-kind-icon">SOUND<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in dijon/core.ts:122</li>
+							<li>Defined in dijon/core.ts:114</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>type</dt>
-							<dd><p>{String}</p>
-							</dd>
-							<dt>static</dt>
-							<dd></dd>
-						</dl>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="text" class="tsd-anchor"></a>
@@ -834,18 +769,49 @@
 					<div class="tsd-signature tsd-kind-icon">TEXT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in dijon/core.ts:146</li>
+							<li>Defined in dijon/core.ts:118</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>type</dt>
-							<dd><p>{String}</p>
-							</dd>
-							<dt>static</dt>
-							<dd></dd>
-						</dl>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="tiledmap" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> TILEDMAP</h3>
+					<div class="tsd-signature tsd-kind-icon">TILEDMAP<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dijon/core.ts:121</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="tiledmap_layer" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> TILEDMAP_<wbr>LAYER</h3>
+					<div class="tsd-signature tsd-kind-icon">TILEDMAP_<wbr>LAYER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dijon/core.ts:123</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="tiledmap_tileset" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> TILEDMAP_<wbr>TILESET</h3>
+					<div class="tsd-signature tsd-kind-icon">TILEDMAP_<wbr>TILESET<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dijon/core.ts:122</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="tilemap" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> TILEMAP</h3>
+					<div class="tsd-signature tsd-kind-icon">TILEMAP<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dijon/core.ts:120</li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -860,7 +826,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:761</li>
+									<li>Defined in dijon/core.ts:769</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -883,7 +849,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:814</li>
+									<li>Defined in dijon/core.ts:822</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -906,7 +872,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:769</li>
+									<li>Defined in dijon/core.ts:777</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -930,7 +896,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:796</li>
+									<li>Defined in dijon/core.ts:804</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -938,7 +904,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:783</li>
+									<li>Defined in dijon/core.ts:791</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -962,7 +928,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:810</li>
+									<li>Defined in dijon/core.ts:818</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -975,7 +941,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:803</li>
+									<li>Defined in dijon/core.ts:811</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1006,7 +972,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:236</li>
+									<li>Defined in dijon/core.ts:199</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1055,7 +1021,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:249</li>
+									<li>Defined in dijon/core.ts:212</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1077,7 +1043,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:223</li>
+									<li>Defined in dijon/core.ts:186</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1099,7 +1065,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:315</li>
+									<li>Defined in dijon/core.ts:278</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1130,7 +1096,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:281</li>
+									<li>Defined in dijon/core.ts:244</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1179,7 +1145,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:268</li>
+									<li>Defined in dijon/core.ts:231</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1201,7 +1167,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:300</li>
+									<li>Defined in dijon/core.ts:263</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1223,7 +1189,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:260</li>
+									<li>Defined in dijon/core.ts:223</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1245,7 +1211,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:363</li>
+									<li>Defined in dijon/core.ts:326</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1277,7 +1243,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:457</li>
+									<li>Defined in dijon/core.ts:426</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1300,7 +1266,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:378</li>
+									<li>Defined in dijon/core.ts:341</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1329,7 +1295,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:388</li>
+									<li>Defined in dijon/core.ts:351</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1358,7 +1324,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:177</li>
+									<li>Defined in dijon/core.ts:140</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1380,7 +1346,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:412</li>
+									<li>Defined in dijon/core.ts:375</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1411,7 +1377,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:209</li>
+									<li>Defined in dijon/core.ts:172</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1442,7 +1408,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:337</li>
+									<li>Defined in dijon/core.ts:300</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1473,7 +1439,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:192</li>
+									<li>Defined in dijon/core.ts:155</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1510,7 +1476,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:449</li>
+									<li>Defined in dijon/core.ts:418</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1532,7 +1498,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:289</li>
+									<li>Defined in dijon/core.ts:252</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1555,7 +1521,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:645</li>
+									<li>Defined in dijon/core.ts:653</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -1572,7 +1538,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:700</li>
+									<li>Defined in dijon/core.ts:708</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1618,7 +1584,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:673</li>
+									<li>Defined in dijon/core.ts:681</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1664,7 +1630,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:639</li>
+									<li>Defined in dijon/core.ts:647</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -1681,7 +1647,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:752</li>
+									<li>Defined in dijon/core.ts:760</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1713,7 +1679,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:562</li>
+									<li>Defined in dijon/core.ts:570</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1739,7 +1705,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:480</li>
+									<li>Defined in dijon/core.ts:489</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1768,7 +1734,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:513</li>
+									<li>Defined in dijon/core.ts:521</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1797,7 +1763,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:558</li>
+									<li>Defined in dijon/core.ts:566</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1823,7 +1789,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:505</li>
+									<li>Defined in dijon/core.ts:513</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1849,7 +1815,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:490</li>
+									<li>Defined in dijon/core.ts:499</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1878,7 +1844,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:470</li>
+									<li>Defined in dijon/core.ts:439</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1901,7 +1867,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:475</li>
+									<li>Defined in dijon/core.ts:484</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1924,7 +1890,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:608</li>
+									<li>Defined in dijon/core.ts:616</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1941,7 +1907,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:554</li>
+									<li>Defined in dijon/core.ts:562</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1967,13 +1933,91 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:465</li>
+									<li>Defined in dijon/core.ts:434</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>url: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Loader</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="loadtiledmap" class="tsd-anchor"></a>
+					<h3>load<wbr>Tiledmap</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">load<wbr>Tiledmap<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, assets<span class="tsd-signature-symbol">: </span><a href="../interfaces/iasset.html" class="tsd-signature-type">IAsset</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dijon/core.ts:449</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>assets: <a href="../interfaces/iasset.html" class="tsd-signature-type">IAsset</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="loadtiledmapimage" class="tsd-anchor"></a>
+					<h3>load<wbr>Tiledmap<wbr>Image</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">load<wbr>Tiledmap<wbr>Image<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, tilesetImageType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, asset<span class="tsd-signature-symbol">: </span><a href="../interfaces/iasset.html" class="tsd-signature-type">IAsset</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dijon/core.ts:469</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>tilesetImageType: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>asset: <a href="../interfaces/iasset.html" class="tsd-signature-type">IAsset</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="loadtilemap" class="tsd-anchor"></a>
+					<h3>load<wbr>Tilemap</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">load<wbr>Tilemap<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Loader</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dijon/core.ts:444</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Loader</span></h4>
@@ -1991,7 +2035,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/inotifier.html">INotifier</a>.<a href="../interfaces/inotifier.html#sendnotification">sendNotification</a></p>
 								<ul>
-									<li>Defined in dijon/core.ts:756</li>
+									<li>Defined in dijon/core.ts:764</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2017,7 +2061,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in dijon/core.ts:656</li>
+									<li>Defined in dijon/core.ts:664</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2218,6 +2262,18 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
 								<a href="assetmanager.html#text" class="tsd-kind-icon">TEXT</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="assetmanager.html#tiledmap" class="tsd-kind-icon">TILEDMAP</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="assetmanager.html#tiledmap_layer" class="tsd-kind-icon">TILEDMAP_<wbr>LAYER</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="assetmanager.html#tiledmap_tileset" class="tsd-kind-icon">TILEDMAP_<wbr>TILESET</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="assetmanager.html#tilemap" class="tsd-kind-icon">TILEMAP</a>
+							</li>
 							<li class=" tsd-kind-set-signature tsd-parent-kind-class">
 								<a href="assetmanager.html#baseurl" class="tsd-kind-icon">baseURL</a>
 							</li>
@@ -2339,6 +2395,15 @@
 								<a href="assetmanager.html#loadtext" class="tsd-kind-icon">load<wbr>Text</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="assetmanager.html#loadtiledmap" class="tsd-kind-icon">load<wbr>Tiledmap</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="assetmanager.html#loadtiledmapimage" class="tsd-kind-icon">load<wbr>Tiledmap<wbr>Image</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="assetmanager.html#loadtilemap" class="tsd-kind-icon">load<wbr>Tilemap</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="assetmanager.html#sendnotification" class="tsd-kind-icon">send<wbr>Notification</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -2379,10 +2444,16 @@
 						<a href="model.html" class="tsd-kind-icon">Model</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="ninesliceimage.html" class="tsd-kind-icon">Nine<wbr>Slice<wbr>Image</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="notification.html" class="tsd-kind-icon">Notification</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="notifications.html" class="tsd-kind-icon">Notifications</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="placeholders.html" class="tsd-kind-icon">Placeholders</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="sequencemanager.html" class="tsd-kind-icon">Sequence<wbr>Manager</a>
@@ -2398,6 +2469,9 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="text.html" class="tsd-kind-icon">Text</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="textures.html" class="tsd-kind-icon">Textures</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="transitionmanager.html" class="tsd-kind-icon">Transition<wbr>Manager</a>
@@ -2433,13 +2507,13 @@
 						<a href="../interfaces/isound.html" class="tsd-kind-icon">ISound</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="../interfaces/itiledmapassets.html" class="tsd-kind-icon">ITiledmap<wbr>Assets</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="../interfaces/itransition.html" class="tsd-kind-icon">ITransition</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/itransitionhandler.html" class="tsd-kind-icon">ITransition<wbr>Handler</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../globals.html#bootstrap" class="tsd-kind-icon">bootstrap</a>
 					</li>
 				</ul>
 			</nav>

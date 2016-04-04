@@ -11,8 +11,8 @@ export class Device {
     public static get mobile(): boolean {
         return Device.mobileOS !== Device.UNKNOWN;
     }
-    
-    public static get cocoon():boolean{
+
+    public static get cocoon(): boolean {
         return (typeof navigator['isCocoonJS'] !== "undefined");
     }
 
@@ -109,14 +109,29 @@ export class Placeholders {
         return new Phaser.Image(Placeholders.game, x, y, texture);
     }
 
-    static button(x: number = 0, y: number = 0, width: number = 100, height: number = 50, text: string = 'button', callback: Function = null, callbackContext: any = null, defaultColor: number = 0xffffff, overColor: number = 0xff0000, downColor: number = 0x00ff00): Phaser.Sprite {
+    static button(x: number = 0, y: number = 0, width: number = 100, height: number = 50, autoSize: boolean = false, text: string = 'button', callback: Function = null, callbackContext: any = null, defaultColor: number = 0xffffff, overColor: number = 0xff0000, downColor: number = 0x00ff00): Phaser.Sprite {
         const sprite: Phaser.Sprite = new Phaser.Sprite(Placeholders.game, x, y);
 
-        const upImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, defaultColor));
-        const overImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, overColor));
-        const downImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, downColor));
-        const textInstance: Text = new Text(width * 0.5, height * 0.55, text, 'Arial', height * 0.6, '#000000');
+        // Create the text instance with an auto size of 25 or 60% of the height passed in.
+        const textInstance: Text = new Text(width * 0.5, height * 0.55, text, 'Arial', autoSize ? 25 : height * 0.6, '#000000');
         textInstance.centerPivot();
+        textInstance.name = "Label";
+
+        if (autoSize) {
+            // Use a padding of 10
+            width = textInstance.width + 10;
+            height = textInstance.height + 10;
+            // Update the text position
+            textInstance.position.set(width * 0.5, height * 0.55);
+        }           
+
+        const upImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, defaultColor));
+        upImage.name = "Up";
+        const overImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, overColor));
+        overImage.name = "Over";
+        const downImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, downColor));
+        downImage.name = "Down";
+
 
         overImage.visible = false;
         downImage.visible = false;
@@ -156,8 +171,8 @@ export class Placeholders {
             overImage.visible = false;
             upImage.visible = true;
         });
-        
-        sprite.getBounds = function():PIXI.Rectangle{
+
+        sprite.getBounds = function(): PIXI.Rectangle {
             return new PIXI.Rectangle(0, 0, upImage.width, upImage.height);
         }
         return sprite;
