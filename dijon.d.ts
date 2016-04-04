@@ -305,7 +305,7 @@ declare module "dijon/utils" {
     }
     export class Placeholders {
         private static game;
-        static image(x: number, y: number, texture: any): Phaser.Image;
+        static image(x: number, y: number, texture: any, name?: string): Phaser.Image;
         static button(x?: number, y?: number, width?: number, height?: number, autoSize?: boolean, text?: string, callback?: Function, callbackContext?: any, defaultColor?: number, overColor?: number, downColor?: number): Phaser.Sprite;
     }
     export class Notifications {

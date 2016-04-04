@@ -105,8 +105,10 @@ export class Placeholders {
         return Application.getInstance().game;
     }
 
-    static image(x: number = 0, y: number = 0, texture: any): Phaser.Image {
-        return new Phaser.Image(Placeholders.game, x, y, texture);
+    static image(x: number = 0, y: number = 0, texture: any, name: string = ""): Phaser.Image {
+        const imageInstance = new Phaser.Image(Placeholders.game, x, y, texture);
+        imageInstance.name = name;
+        return imageInstance;
     }
 
     static button(x: number = 0, y: number = 0, width: number = 100, height: number = 50, autoSize: boolean = false, text: string = 'button', callback: Function = null, callbackContext: any = null, defaultColor: number = 0xffffff, overColor: number = 0xff0000, downColor: number = 0x00ff00): Phaser.Sprite {
@@ -125,12 +127,9 @@ export class Placeholders {
             textInstance.position.set(width * 0.5, height * 0.55);
         }           
 
-        const upImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, defaultColor));
-        upImage.name = "Up";
-        const overImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, overColor));
-        overImage.name = "Over";
-        const downImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, downColor));
-        downImage.name = "Down";
+        const upImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, defaultColor), "Up");
+        const overImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, overColor), "Over");
+        const downImage: Phaser.Image = Placeholders.image(0, 0, Textures.roundedRect(width, height, 10, downColor), "Down");
 
 
         overImage.visible = false;
