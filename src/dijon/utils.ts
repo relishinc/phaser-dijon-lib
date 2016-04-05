@@ -115,7 +115,7 @@ export class Placeholders {
         const sprite: Phaser.Sprite = new Phaser.Sprite(Placeholders.game, x, y);
 
         // Create the text instance with an auto size of 25 or 60% of the height passed in.
-        const textInstance: Text = new Text(width * 0.5, height * 0.55, text, 'Arial', autoSize ? 25 : height * 0.6, '#000000');
+        const textInstance: Text = new Text(width * 0.5, height * 0.55, " " + text + " ", 'Arial', autoSize ? 25 : height * 0.6, '#000000');
         textInstance.centerPivot();
         textInstance.name = "Label";
 
