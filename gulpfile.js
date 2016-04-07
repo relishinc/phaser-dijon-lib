@@ -61,9 +61,14 @@ gulp.task('compile', function(done) {
     return sequence('clean', 'lib', 'uglify', 'addons', done);
 });
 
-gulp.task('default', ['compile'], function() {
-    return gulp.watch(['src/**/*.ts'], ['compile']);
+gulp.task('default', function(done) {
+    return sequence('compile', 'watch', done);
 });
+
+gulp.task('watch', function(){
+    gulp.watch(['src/**/*.ts'], ['compile']);
+    gulp.watch(['src/dijon.addons.js'], ['compile']);
+})
 
 var typedoc = require("gulp-typedoc");
 
