@@ -297,11 +297,11 @@ declare module "dijon/utils" {
     }
     export class Textures {
         private static game;
-        static rect(width?: number, height?: number, color?: number, alpha?: number): PIXI.Texture;
-        static roundedRect(width?: number, height?: number, radius?: number, color?: number, alpha?: number): PIXI.Texture;
-        static square(size?: number, color?: number, alpha?: number): PIXI.Texture;
-        static circle(diameter?: number, color?: number, alpha?: number): PIXI.Texture;
-        static ellipse(width?: number, height?: number, color?: number, alpha?: number): PIXI.Texture;
+        static rect(width?: number, height?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
+        static roundedRect(width?: number, height?: number, radius?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
+        static square(size?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
+        static circle(diameter?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
+        static ellipse(width?: number, height?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
     }
     export class Placeholders {
         private static game;
