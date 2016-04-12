@@ -284,6 +284,9 @@ declare module "dijon/display" {
 }
 declare module "dijon/utils" {
     import { IBrowser } from "dijon/interfaces";
+    export class Util {
+        static isNumber(value: string): boolean;
+    }
     export class Device {
         static IOS: string;
         static ANDROID: string;

@@ -3,6 +3,13 @@ import {Application} from "./application";
 import {Game} from "./core";
 import {Text} from "./display";
 
+export class Util {
+    public static isNumber(value: string): boolean {
+        return (+value === +value);
+    }
+}
+
+
 export class Device {
     public static IOS: string = 'iOS';
     public static ANDROID: string = 'android';
@@ -106,9 +113,9 @@ export class Textures {
         return texture;
     }
 
-    static ellipse(width: number = 50, height: number = 100, color: number = 0xffffff, alpha: number = 1,fill: boolean = true, lineColor: number = 0xffffff, lineThickness: number = 1, lineAlpha: number = 1, outline: boolean = false): PIXI.Texture {
+    static ellipse(width: number = 50, height: number = 100, color: number = 0xffffff, alpha: number = 1, fill: boolean = true, lineColor: number = 0xffffff, lineThickness: number = 1, lineAlpha: number = 1, outline: boolean = false): PIXI.Texture {
         const gfx = Textures.game.add.graphics(0, 0);
-        if (fill){
+        if (fill) {
             gfx.beginFill(color, alpha);
         }
         if (outline) {
