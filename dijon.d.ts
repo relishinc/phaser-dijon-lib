@@ -287,6 +287,10 @@ declare module "dijon/utils" {
     export class Util {
         static isNumber(value: string): boolean;
     }
+    export class Logger {
+        static enabled: boolean;
+        static log(instance: any, ...args: any[]): any;
+    }
     export class Device {
         static IOS: string;
         static ANDROID: string;
@@ -483,6 +487,7 @@ declare module "dijon/core" {
         add: GameObjectFactory;
         onWorldInputDisabled: Phaser.Signal;
         onWorldInputEnabled: Phaser.Signal;
+        backgroundLayer: Group;
         gameLayer: Group;
         uiLayer: Group;
         stageLayer: Group;
@@ -502,6 +507,7 @@ declare module "dijon/core" {
         enableGameInput(): void;
         changeState(toState: string): void;
         addToGame: GameObjectFactory;
+        addToBackground: GameObjectFactory;
         addToUI: GameObjectFactory;
         addToStage: GameObjectFactory;
         addToWorld: GameObjectFactory;

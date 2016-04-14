@@ -1142,6 +1142,7 @@ export class Game extends Phaser.Game {
     public onWorldInputEnabled: Phaser.Signal = new Phaser.Signal();
 
     // display layers
+    public backgroundLayer: Group;
     public gameLayer: Group;
     public uiLayer: Group;
     public stageLayer: Group;
@@ -1189,6 +1190,10 @@ export class Game extends Phaser.Game {
     }
     // private methods
     protected addLayers(): void {
+        // adds persistent background layer
+        this.backgroundLayer = this.add.dGroup(0, 0, '_background_layer', true);
+        this.stage.setChildIndex(this.backgroundLayer, 0);
+
         // adds game and ui layers
         this.gameLayer = this.add.dGroup(0, 0, '_game_layer');
         // add ui layer and set the "fixedToCamera" property to true
@@ -1300,6 +1305,12 @@ export class Game extends Phaser.Game {
      * ie (this.game.addToUI.image(0, 0, key, frame));
      * it will be added to the appropriate layer
      */
+    public get addToBackground(): GameObjectFactory {
+        this.add.targetGroup = this.backgroundLayer;
+        return this.add;
+    }
+
+
     public get addToUI(): GameObjectFactory {
         // set the target group for the gameObjectFactory before adding
         this.add.targetGroup = this.uiLayer;
@@ -1725,14 +1736,14 @@ export class State extends Phaser.State {
         this.startBuild();
     }
 
-    public shutdown(removeMediator: boolean = true, removeAudio: boolean = true): void{
-        if (removeMediator){
+    public shutdown(removeMediator: boolean = true, removeAudio: boolean = true): void {
+        if (removeMediator) {
             this.removeMediator();
         }
-        if (removeAudio){
+        if (removeAudio) {
             this.removeAudio();
         }
-        
+
         super.shutdown();
     }
 
