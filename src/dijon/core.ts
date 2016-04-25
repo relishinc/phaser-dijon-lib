@@ -1142,6 +1142,7 @@ export class Game extends Phaser.Game {
     public onWorldInputEnabled: Phaser.Signal = new Phaser.Signal();
 
     // display layers
+    public backgroundLayer: Group;
     public gameLayer: Group;
     public uiLayer: Group;
     public stageLayer: Group;
@@ -1189,6 +1190,10 @@ export class Game extends Phaser.Game {
     }
     // private methods
     protected addLayers(): void {
+        // adds persistent background layer
+        this.backgroundLayer = this.add.dGroup(0, 0, '_background_layer', true);
+        this.stage.setChildIndex(this.backgroundLayer, 0);
+
         // adds game and ui layers
         this.gameLayer = this.add.dGroup(0, 0, '_game_layer');
         // add ui layer and set the "fixedToCamera" property to true
@@ -1199,19 +1204,19 @@ export class Game extends Phaser.Game {
         // add a group to the Phaser.Stage (just in case)
         this.stageLayer = this.add.dGroup(0, 0, '_stage_layer', true);
     }
-    
-    protected addMouseCallbacks():void{
-        if (this.device.desktop){
+
+    protected addMouseCallbacks(): void {
+        if (this.device.desktop) {
             this.input.mouse.mouseOverCallback = this.mouseOver;
             this.input.mouse.mouseOutCallback = this.mouseOut;
         }
     }
-    
-    protected mouseOut():void{
+
+    protected mouseOut(): void {
         Application.getInstance().sendNotification(Notifications.MOUSE_LEAVE_GLOBAL);
     }
-    
-    protected mouseOver():void{
+
+    protected mouseOver(): void {
         Application.getInstance().sendNotification(Notifications.MOUSE_ENTER_GLOBAL);
     }
 
@@ -1300,6 +1305,12 @@ export class Game extends Phaser.Game {
      * ie (this.game.addToUI.image(0, 0, key, frame));
      * it will be added to the appropriate layer
      */
+    public get addToBackground(): GameObjectFactory {
+        this.add.targetGroup = this.backgroundLayer;
+        return this.add;
+    }
+
+
     public get addToUI(): GameObjectFactory {
         // set the target group for the gameObjectFactory before adding
         this.add.targetGroup = this.uiLayer;
@@ -1340,7 +1351,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     */
     public existing(object): any {
         let group = this.targetGroup;
-        this._targetGroup = null;
+        this.targetGroup = null;
         return group.add(object);
     }
     /**
@@ -1361,8 +1372,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     */
     public image(x: number = 0, y: number = 0, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, group?: Phaser.Group): Phaser.Image {
         if (group === undefined) { group = this.targetGroup; }
-        this._targetGroup = null;
-
+        this.targetGroup = null;
         return group.add(new Phaser.Image(this.game, x, y, key, frame));
     }
 
@@ -1383,7 +1393,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     */
     public sprite(x: number = 0, y: number = 0, key?: string | PIXI.Texture, frame?: string | number, group?: Phaser.Group): Phaser.Sprite {
         if (group === undefined) { group = this.targetGroup; }
-        this._targetGroup = null;
+        this.targetGroup = null;
 
         return group.create(x, y, key, frame);
     }
@@ -1411,7 +1421,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     */
     public creature(x: number = 0, y: number = 0, key?: string, mesh?: any, group?: Phaser.Group): any {
         if (group === undefined) { group = this.targetGroup; }
-        this._targetGroup = null;
+        this.targetGroup = null;
 
         var obj = new Phaser['Creature'](this.game, x, y, key, mesh);
 
@@ -1433,7 +1443,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     */
     public group(parent?: any, name: string = 'group', addToStage: boolean = false, enableBody: boolean = false, physicsBodyType: number = 0) {
         if (parent === undefined && addToStage !== true) { parent = this.targetGroup; }
-        this._targetGroup = null;
+        this.targetGroup = null;
         return new Phaser.Group(this.game, parent, name, addToStage, enableBody, physicsBodyType);
     }
 
@@ -1452,7 +1462,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     */
     public physicsGroup(physicsBodyType: number = 0, parent?: any, name: string = 'group', addToStage: boolean = false): Phaser.Group {
         if (parent === undefined) { parent = this.targetGroup; }
-        this._targetGroup = null;
+        this.targetGroup = null;
         return new Phaser.Group(this.game, parent, name, addToStage, true, physicsBodyType);
     }
 
@@ -1469,7 +1479,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     */
     public spriteBatch(parent?: any, name: string = "spriteBatch", addToStage: boolean = false): Phaser.SpriteBatch {
         if (parent === undefined) { parent = this.targetGroup }
-        this._targetGroup = null;
+        this.targetGroup = null;
         return new Phaser.SpriteBatch(this.game, parent, name, addToStage);
     }
 
@@ -1488,7 +1498,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
    */
     public tileSprite(x: number = 0, y: number = 0, width: number = 0, height: number = 0, key?: string, frame?: string | number, group?: Phaser.Group): Phaser.TileSprite {
         if (group === undefined) { group = this.targetGroup; }
-        this._targetGroup = null;
+        this.targetGroup = null;
         return group.add(new Phaser.TileSprite(this.game, x, y, width, height, key, frame));
     }
 
@@ -1508,7 +1518,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
    */
     public rope(x: number = 0, y: number = 0, key?: string, frame?: string | number, points?: Phaser.Point[], group?: Phaser.Group): Phaser.Rope {
         if (group === undefined) { group = this.targetGroup; }
-        this._targetGroup = null;
+        this.targetGroup = null;
         return group.add(new Phaser.Rope(this.game, x, y, key, frame, points));
     }
 
@@ -1525,7 +1535,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     */
     public text(x: number = 0, y: number = 0, text: string = '', style?: Phaser.PhaserTextStyle, group?: Phaser.Group): Phaser.Text {
         if (group === undefined) { group = this.targetGroup; }
-        this._targetGroup = null;
+        this.targetGroup = null;
         return group.add(new Phaser.Text(this.game, x, y, text, style));
     }
 
@@ -1547,7 +1557,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     */
     public button(x: number = 0, y: number = 0, key?: string, callback?: Function, callbackContext?: Object, overFrame?: string | number, outFrame?: string | number, downFrame?: string | number, upFrame?: string | number, group?: Phaser.Group): Phaser.Button {
         if (group === undefined) { group = this.targetGroup; }
-        this._targetGroup = null;
+        this.targetGroup = null;
         return group.add(new Phaser.Button(this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame));
     }
 
@@ -1562,7 +1572,11 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     */
     public graphics(x: number = 0, y: number = 0, group?: Phaser.Group): Phaser.Graphics {
         if (group === undefined) { group = this.world; }
-        this._targetGroup = null;
+        /***
+         * Commented this out - since graphics are by default added directly on the game.world, we shouldn't reset this.targetGroup
+         * It could cause major problems if using dijon/utils Textures instances as an image texture, for instance
+         */
+        //this.targetGroup = null;
         return group.add(new Phaser.Graphics(this.game, x, y));
     }
 
@@ -1596,21 +1610,21 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     */
     public bitmapText(x?: number, y?: number, font?: string, text: string = "", size: number = 32, group?: Phaser.Group): Phaser.BitmapText {
         if (group === undefined) { group = this.targetGroup; }
-        this._targetGroup = null;
+        this.targetGroup = null;
         return group.add(new Phaser.BitmapText(this.game, x, y, font, text, size));
     }
 
     // dijon specific display objects
     public dSprite(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: Component[], group?: Phaser.Group): Sprite {
         if (group === undefined) { group = this.targetGroup; }
-        this._targetGroup = null;
+        this.targetGroup = null;
         return group.add(new Sprite(x, y, key, frame, name, components));
     }
 
     public dGroup(x?: number, y?: number, name?: string, addToStage?: boolean, components?: Component[], enableBody?: boolean, physicsBodyType?: number, group?: Phaser.Group): Group {
         if (group === undefined && addToStage !== true) {
             group = this.targetGroup;
-            this._targetGroup = null;
+            this.targetGroup = null;
             return group.add(new Group(x, y, name, addToStage, components, enableBody, physicsBodyType));
         }
 
@@ -1619,7 +1633,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
 
     public dText(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object, group?: Phaser.Group): Text {
         if (group === undefined) { group = this.targetGroup; }
-        this._targetGroup = null;
+        this.targetGroup = null;
         return group.add(new Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
     }
 
@@ -1722,9 +1736,15 @@ export class State extends Phaser.State {
         this.startBuild();
     }
 
-    public shutdown(): void {
-        this.removeAudio();
-        this.removeMediator();
+    public shutdown(removeMediator: boolean = true, removeAudio: boolean = true): void {
+        if (removeMediator) {
+            this.removeMediator();
+        }
+        if (removeAudio) {
+            this.removeAudio();
+        }
+
+        super.shutdown();
     }
 
     // public methods

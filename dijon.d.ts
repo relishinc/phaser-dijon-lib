@@ -1,7 +1,4 @@
-/// <reference path="../typings/tsd.d.ts" />
-declare module "dijon.bootstrap" {
-    export function bootstrap(): void;
-}
+/// <reference path="typings/tsd.d.ts" />
 declare module "dijon/interfaces" {
     export interface INotification {
         getName(): string;
@@ -139,25 +136,6 @@ declare module "dijon/mvc" {
         destroy(): void;
     }
 }
-declare module "dijon/utils" {
-    import { IBrowser } from "dijon/interfaces";
-    export class Device {
-        static IOS: string;
-        static ANDROID: string;
-        static UNKNOWN: string;
-        static mobile: boolean;
-        static mobileOS: string;
-        static browser: IBrowser;
-        static pixelRatio: number;
-        static customPixelRatio: number;
-    }
-    export class Notifications {
-        static ASSET_MANAGER_DATA_SET: string;
-        static ASSET_MANAGER_ASSETS_CLEARED: string;
-        static MOUSE_LEAVE_GLOBAL: string;
-        static MOUSE_ENTER_GLOBAL: string;
-    }
-}
 declare module "dijon/display" {
     import { Game, GameObjectFactory } from "dijon/core";
     import { Mediator } from "dijon/mvc";
@@ -181,6 +159,8 @@ declare module "dijon/display" {
         updateComponent(componentName: string): void;
         removeAllComponents(): void;
         removeComponent(componentName: string): void;
+        flatten(delay?: number): void;
+        unFlatten(): void;
         resolution: number;
     }
     export class InvisibleButton extends Sprite {
@@ -213,6 +193,8 @@ declare module "dijon/display" {
         updateComponent(componentName: string): void;
         removeAllComponents(): void;
         removeComponent(componentName: string): void;
+        flatten(delay?: number): void;
+        unFlatten(): void;
         removeMediator(): void;
         addInternal: GameObjectFactory;
     }
@@ -298,6 +280,46 @@ declare module "dijon/display" {
         hSize: number;
         vSize: number;
         setSize(width: number, height: number): void;
+    }
+}
+declare module "dijon/utils" {
+    import { IBrowser } from "dijon/interfaces";
+    export class Util {
+        static isNumber(value: string): boolean;
+    }
+    export class Logger {
+        static enabled: boolean;
+        static log(instance: any, ...args: any[]): any;
+    }
+    export class Device {
+        static IOS: string;
+        static ANDROID: string;
+        static UNKNOWN: string;
+        static mobile: boolean;
+        static cocoon: boolean;
+        static mobileOS: string;
+        static browser: IBrowser;
+        static pixelRatio: number;
+        static customPixelRatio: number;
+    }
+    export class Textures {
+        private static game;
+        static rect(width?: number, height?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
+        static roundedRect(width?: number, height?: number, radius?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
+        static square(size?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
+        static circle(diameter?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
+        static ellipse(width?: number, height?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
+    }
+    export class Placeholders {
+        private static game;
+        static image(x: number, y: number, texture: any, name?: string): Phaser.Image;
+        static button(x?: number, y?: number, width?: number, height?: number, autoSize?: boolean, text?: string, callback?: Function, callbackContext?: any, defaultColor?: number, overColor?: number, downColor?: number): Phaser.Sprite;
+    }
+    export class Notifications {
+        static ASSET_MANAGER_DATA_SET: string;
+        static ASSET_MANAGER_ASSETS_CLEARED: string;
+        static MOUSE_LEAVE_GLOBAL: string;
+        static MOUSE_ENTER_GLOBAL: string;
     }
 }
 declare module "dijon/core" {
@@ -465,6 +487,7 @@ declare module "dijon/core" {
         add: GameObjectFactory;
         onWorldInputDisabled: Phaser.Signal;
         onWorldInputEnabled: Phaser.Signal;
+        backgroundLayer: Group;
         gameLayer: Group;
         uiLayer: Group;
         stageLayer: Group;
@@ -484,6 +507,7 @@ declare module "dijon/core" {
         enableGameInput(): void;
         changeState(toState: string): void;
         addToGame: GameObjectFactory;
+        addToBackground: GameObjectFactory;
         addToUI: GameObjectFactory;
         addToStage: GameObjectFactory;
         addToWorld: GameObjectFactory;
@@ -525,7 +549,7 @@ declare module "dijon/core" {
         init(): void;
         preload(): void;
         create(): void;
-        shutdown(): void;
+        shutdown(removeMediator?: boolean, removeAudio?: boolean): void;
         listBuildSequence(): Function[];
         buildInterface(): void;
         afterBuildInterface(): void;

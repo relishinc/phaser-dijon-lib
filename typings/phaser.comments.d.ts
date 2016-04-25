@@ -26595,7 +26595,7 @@ declare module Phaser {
         * @param gid If adding multiple tilesets to a blank/dynamic map, specify the starting GID the set will use here.
         * @return Returns the Tileset object that was created or updated, or null if it failed.
         */
-        addTilesetImage(tileset: string, key?: string | Phaser.BitmapData, tileWidth?: number, tileHeight?: number, tileMargin?: number, tileSpacing?: number, gid?: number): Phaser.Tileset;
+        addTilesetImage(tileset: string, key?: string | Phaser.BitmapData, resolution?:number, tileWidth?: number, tileHeight?: number, tileMargin?: number, tileSpacing?: number, gid?: number): Phaser.Tileset;
 
         /**
         * Internal function.
@@ -27061,7 +27061,12 @@ declare module Phaser {
         * @param layer The layer to operate on.
         */
         swap(tileA: number, tileB: number, x: number, y: number, width: number, height: number, layer?: any): void;
-
+        
+        /**
+        * Gets custom properties associated with the Tiled Object Layer
+        * @param name The layer name
+        */
+        getObjectLayerProps(name:string):any;
     }
 
 
@@ -27397,7 +27402,7 @@ declare module Phaser {
         * @param spacing The spacing between each tile in the sheet (in pixels).
         * @param properties Custom Tileset properties. - Default: {}
         */
-        constructor(name: string, firstgid: number, width?: number, height?: number, margin?: number, spacing?: number, properties?: any);
+        constructor(name: string, firstgid: number, width?: number, height?: number, margin?: number, spacing?: number, properties?: any, resolution?:number);
 
 
         /**
@@ -27480,7 +27485,7 @@ declare module Phaser {
         * 
         * @param image The image that contains the tiles.
         */
-        setImage(image: any): void;
+        setImage(image: any, resolution?:number): void;
 
         /**
         * Sets tile spacing and margins.

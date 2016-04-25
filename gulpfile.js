@@ -1,29 +1,34 @@
 var gulp = require('gulp'),
-    typescript = require('gulp-tsc'),
+    ts = require('gulp-typescript'),
+    sourcemaps = require('gulp-sourcemaps'),
+    merge = require('merge2'),
     uglify = require('gulp-uglify'),
     sequence = require('run-sequence'),
     del = require('del'),
     concat = require('gulp-concat'),
     path = require("path"),
-    Builder = require('systemjs-builder'),
-    builder = new Builder('.'),
     typedoc = require("gulp-typedoc");
 
 gulp.task('lib', function() {
-    return gulp.src('./src/**/*.ts')
-        .pipe(typescript({
+    var tsResult = gulp.src('./src/**/*.ts')
+        .pipe(sourcemaps.init())
+        .pipe(ts({
             out: 'dijon.js',
-            outDir: './build',
             target: "ES5",
             module: "system",
             emitError: false,
             declaration: true,
-            removeComments: true,
-            sourceMap: true,
-            rootDir: './src'
-
+            sortOutput:true,
+            removeComments: true
         }))
-        .pipe(gulp.dest('./build'))
+        
+	return merge([
+		tsResult.dts.pipe(gulp.dest('.')),
+		tsResult.js
+            .pipe(concat('dijon.js'))
+            .pipe(sourcemaps.write())
+            .pipe(gulp.dest('build'))
+	]);
 })
 
 gulp.task('uglify', function() {
@@ -32,6 +37,11 @@ gulp.task('uglify', function() {
         .pipe(uglify())
         .pipe(gulp.dest('build'));
 });
+
+gulp.task('addons', function() {
+    return gulp.src('src/dijon.addons.js')
+        .pipe(gulp.dest('build'));
+})
 
 gulp.task('clean', function() {
     return del([
@@ -48,12 +58,17 @@ gulp.task('combine', function() {
 });
 
 gulp.task('compile', function(done) {
-    return sequence('clean', 'lib', 'uglify', done);
+    return sequence('clean', 'lib', 'uglify', 'addons', done);
 });
 
-gulp.task('default', ['compile'], function() {
-    return gulp.watch(['src/**/*.ts'], ['compile']);
+gulp.task('default', function(done) {
+    return sequence('compile', 'watch', done);
 });
+
+gulp.task('watch', function(){
+    gulp.watch(['src/**/*.ts'], ['compile']);
+    gulp.watch(['src/dijon.addons.js'], ['compile']);
+})
 
 var typedoc = require("gulp-typedoc");
 
