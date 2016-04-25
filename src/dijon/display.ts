@@ -152,6 +152,8 @@ export class InvisibleButton extends Sprite {
 
     constructor(x: number, y: number, name: string, w: number, h: number) {
         super(x, y, null, null, name);
+        this.init();
+        this.buildInterface();
         this.setSize(w, h);
     }
 
