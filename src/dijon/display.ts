@@ -1,4 +1,5 @@
 import {Application} from './application';
+import {Device} from './utils';
 import {Game, GameObjectFactory} from './core';
 import {Mediator} from './mvc';
 
@@ -67,7 +68,7 @@ export class Sprite extends Phaser.Sprite {
     * attaches a list of components to the Dijon.UIGroup
     * @param {Array} components the list of components to add
     */
-    public addComponents = function(components: Component[]) {
+    public addComponents = function (components: Component[]) {
         if (typeof components.length === 'undefined')
             throw new Error('Dijon.UIGroup components must be an array');
 
@@ -136,16 +137,16 @@ export class Sprite extends Phaser.Sprite {
 
         this._updateComponentKeys();
     }
-    
-    public flatten(delay:number = 0):void{
-        if (delay === 0){
+
+    public flatten(delay: number = 0): void {
+        if (delay === 0) {
             this.cacheAsBitmap = true;
-        }else{
-            this.game.time.events.add(delay, ()=>{this.cacheAsBitmap = true}, this);            
+        } else {
+            this.game.time.events.add(delay, () => { this.cacheAsBitmap = true }, this);
         }
     }
-    
-    public unFlatten():void{
+
+    public unFlatten(): void {
         this.cacheAsBitmap = null;
     }
 
@@ -270,7 +271,7 @@ export class Group extends Phaser.Group {
     * attaches a list of components to the Dijon.UIGroup
     * @param {Array} components the list of components to add
     */
-    public addComponents = function(components: Component[]) {
+    public addComponents = function (components: Component[]) {
         if (typeof components.length === 'undefined')
             throw new Error('Dijon.UIGroup components must be an array');
 
@@ -339,16 +340,16 @@ export class Group extends Phaser.Group {
 
         this._updateComponentKeys();
     }
-    
-    public flatten(delay:number = 0):void{
-        if (delay === 0){
+
+    public flatten(delay: number = 0): void {
+        if (delay === 0) {
             this.cacheAsBitmap = true;
-        }else{
-            this.game.time.events.add(delay, ()=>{this.cacheAsBitmap = true}, this);            
+        } else {
+            this.game.time.events.add(delay, () => { this.cacheAsBitmap = true }, this);
         }
     }
-    
-    public unFlatten():void{
+
+    public unFlatten(): void {
         this.cacheAsBitmap = null;
     }
 
@@ -530,7 +531,7 @@ export class Text extends Phaser.Text {
     * stops the text animation and clears the timers
     * @return {void}
     */
-    public stopAnimating = function() {
+    public stopAnimating = function () {
         this._canUpdate = false;
         this._textToAnimate = null;
         this.game.time.events.remove(this._delayTimer);
@@ -541,7 +542,7 @@ export class Text extends Phaser.Text {
     * rounds the position
     * @return {void}
     */
-    public roundPixel = function() {
+    public roundPixel = function () {
         this.position.set(Math.round(this.x), Math.round(this.y));
     }
 
@@ -774,5 +775,283 @@ export class NineSliceImage extends Group {
         this.__width = width;
         this.__height = height;
         this._setSize();
+    }
+}
+
+
+// ADDING SPINE //
+import * as spine from "./spine/spine";
+import * as atlas from "./spine/atlas";
+import {RenderWebGL} from "./spine/render-webgl";
+import {RenderCtx2D} from "./spine/render-ctx2d";
+import { mat4x4Ortho, mat4x4Translate, mat4x4RotateZ, mat4x4Scale } from './spine/render-webgl';
+
+export class Spine extends Sprite {
+    public debug: boolean = false;
+    public sWidth: number;
+    public sHeight: number;
+    public spineAnimations: string[];
+
+    public onAnimationComplete: Phaser.Signal = new Phaser.Signal();
+
+    protected spine_data: spine.Data;
+    protected atlas_data: atlas.Data;
+    protected images: { [image_key: string]: HTMLImageElement };
+    protected spine_pose: spine.Pose;
+    protected render_webgl: RenderWebGL
+    protected render_ctx2d: RenderCtx2D;
+    protected bmd: Phaser.BitmapData;
+    protected img: Phaser.Image = null;
+    protected frameAnimations: { [key: string]: { sprite: Phaser.Sprite, boneName: string, props?: { x?: number, y?: number, angle?: number } } } = {};
+    protected frameAnimationKeys: string[] = [];
+
+    private _bounds: PIXI.Rectangle = new PIXI.Rectangle();
+    private _canUpdate: boolean = false;
+    private _paused: boolean = false;
+    private _speed: number = 1;
+    private _fps: number = 0;
+
+    constructor(public assetName: string = '', x: number = 0, y: number = 0, width: number = 0, height: number = 0, public skin: string = 'default', public anim: string = '', public hOffset: number = 0, public vOffset: number = 0) {
+        super(x, y, null, null, 'spine_' + assetName);
+
+        const json_key = assetName + '.json';
+        const atlas_key = assetName + '.atlas';
+        const image_key = assetName + '.png';
+
+        if (width === 0) {
+            width = this.game.width;
+        }
+        if (height === 0) {
+            height = this.game.height;
+        }
+
+        this.sWidth = width;
+        this.sHeight = height;
+
+        this.spine_data = new spine.Data().load(this.game.cache.getJSON(json_key));
+        this.spineAnimations = this.spine_data.anim_keys;
+        this.atlas_data = new atlas.Data().importAtlasText(this.game.cache.getText(atlas_key));
+        this.images = {};
+        this.images[image_key] = this.game.cache.getImage(image_key);
+
+        this.spine_pose = new spine.Pose(this.spine_data);
+        this.spine_pose.setSkin(skin);
+
+        //if (this.spineAnimations.indexOf(anim) < 0) { 
+        // anim = this.spineAnimations[0];
+        //}
+
+        this.animation = anim;
+        this.spine_pose.onComplete.add(this._onAnimationComplete, this);
+
+        //this.spine_pose.setAnim(anim);
+        /*
+        if (this.game.renderType === Phaser.WEBGL) {
+            const gl = (<PIXI.WebGLRenderer>this.game.renderer).gl;
+            this.render_webgl = new RenderWebGL(gl);
+            this.render_webgl.loadData(this.spine_data, this.atlas_data, this.images);
+        } else if (this.game.renderType === Phaser.CANVAS) {
+            this.bmd = this.game.add.bitmapData(width, height);
+            this.render_ctx2d = new RenderCtx2D(this.bmd.ctx);
+            this.render_ctx2d.loadData(this.spine_data, this.atlas_data, this.images);
+            this.loadTexture(this.bmd);
+        } else {
+            console.log("TODO");
+        }
+        */
+
+        this.bmd = this.game.add.bitmapData(width, height);
+        this.render_ctx2d = new RenderCtx2D(this.bmd.ctx);
+        this.render_ctx2d.loadData(this.spine_data, this.atlas_data, this.images);
+        this.loadTexture(this.bmd);
+
+        this.speed = 1;
+
+        this._canUpdate = true;
+    }
+
+    public destroy(): void {
+        if (this.game.renderType === Phaser.WEBGL) {
+            this.render_webgl.dropData(this.spine_data, this.atlas_data);
+            delete this.render_webgl;
+        } else if (this.game.renderType === Phaser.CANVAS) {
+            this.render_ctx2d.dropData(this.spine_data, this.atlas_data);
+            delete this.render_ctx2d;
+        } else {
+            console.log("TODO");
+        }
+
+        delete this.spine_data;
+        delete this.spine_pose;
+        delete this.images;
+
+        super.destroy();
+    }
+
+
+    public update(): void {
+        if (!this._canUpdate) {
+            return;
+        }
+        if (this._paused) {
+            return;
+        }
+        this.render();
+        this.spine_pose.update(this._fps);
+    }
+
+    public render(): void {
+        this.spine_pose.strike();
+        this.frameAnimationKeys.forEach(this._updateFrameAnimationByName, this);
+        this.bmd.ctx.save();
+        this.bmd.ctx.clearRect(0, 0, this.bmd.width, this.bmd.height);
+        this.bmd.ctx.translate(this.hOffset, this.vOffset + this.bmd.height);
+        this.bmd.ctx.scale(1.0, -1.0); // x: right, y: up
+        this.bmd.ctx.globalAlpha = this.worldAlpha;
+        this.render_ctx2d.drawPose(this.spine_pose, this.atlas_data);
+        this.bmd.ctx.restore();
+        this.bmd.dirty = true;
+    }
+    // public _renderWebGL(renderSession: any): void {
+    //     const gl /*: WebGLRenderingContext*/ = renderSession.gl;
+    //     this.spine_pose.strike();
+    //     const gl_projection = this.render_webgl.gl_projection;
+    //     const px = renderSession.renderer.projection.x;
+    //     const py = renderSession.renderer.projection.y;
+    //     mat4x4Ortho(gl_projection, -px, px, -py, py, -1, 1);
+    //     const hoff = this.scale.x === -1 ? this.sWidth - this.hOffset : this.hOffset;
+    //     mat4x4Translate(gl_projection, this.x - hoff -this.sWidth * 0.5, this.worldPosition.y + this.sHeight * 0.5, 0.0);
+    //     mat4x4RotateZ(gl_projection, this.rotation);
+    //     mat4x4Scale(gl_projection, this.scale.x, this.scale.y, 1.0);
+    //     mat4x4Scale(gl_projection, 1.0, -1.0, 1.0); // x: right, y: up
+    //     const gl_color = this.render_webgl.gl_color;
+    //     gl_color[3] = this.worldAlpha;
+    //     this.render_webgl.drawPose(this.spine_pose, this.atlas_data);
+    // }
+
+    // public _renderCanvas(renderSession: any): void {
+    //     this.spine_pose.strike();
+    //     this.bmd.ctx.save();
+    //     this.bmd.ctx.clearRect(0, 0, this.bmd.width, this.bmd.height);
+    //     this.bmd.ctx.translate(this.hOffset, this.vOffset + this.bmd.height);
+    //     this.bmd.ctx.scale(1.0, -1.0); // x: right, y: up
+    //     this.bmd.ctx.globalAlpha = this.worldAlpha;
+    //     this.render_ctx2d.drawPose(this.spine_pose, this.atlas_data);
+    //     this.bmd.ctx.restore();
+    //     PIXI.Sprite.prototype['_renderCanvas'].call(this, renderSession);
+    // }
+
+    public debugDraw(): void {
+        if (this.debug) {
+            if (this.game.renderType === Phaser.CANVAS) {
+                this.render_ctx2d.drawDebugPose(this.spine_pose, this.atlas_data);
+            }
+        }
+    }
+
+    public nextAnimation(): void {
+        const currentAnimationName = this.animation;
+        let animationIndex = this.spineAnimations.indexOf(currentAnimationName);
+        animationIndex++;
+        if (animationIndex === this.spineAnimations.length) {
+            animationIndex = 0;
+        }
+        this.animation = this.spineAnimations[animationIndex];
+    }
+
+    // private methods
+    private _onAnimationComplete(): void {
+        this.onAnimationComplete.dispatch(this.spine_pose.curAnim().name);
+    }
+
+    private _updateFrameAnimationByName(animName: string) {
+        this._updateFrameAnimation(this.frameAnimations[animName]);
+    }
+
+    private _updateFrameAnimation(anim: { sprite: Phaser.Sprite, boneName: string, props?: { x?: number, y?: number, angle?: number } }): void {
+        const sprite = anim.sprite;
+        let bone = this.spine_pose.bones[anim.boneName];
+        let x: number = bone.local_space.position.x + anim.props.x, y: number = bone.local_space.position.y + anim.props.y, angle: number = bone.local_space.rotation.deg + anim.props.angle,
+            scale: { x: number, y: number } = bone.local_space.scale;
+        if (bone.parent_key !== undefined) {
+            while (bone && bone !== undefined && bone.parent_key !== undefined) {
+                bone = this.spine_pose.bones[bone.parent_key];
+                if (bone === undefined) {
+                    break;
+                }
+                x += bone.local_space.position.x;
+                y += bone.local_space.position.y;
+                angle += bone.local_space.rotation.deg;
+                scale.x *= bone.local_space.scale.x;
+                scale.y *= bone.local_space.scale.y;
+            }
+        }
+
+        sprite.x = x;
+        sprite.y = y;
+        sprite.angle = angle;
+        sprite.scale.x = scale.x;
+        sprite.scale.y = scale.y;
+    }
+
+    // getter / setter
+    public get skeleton(): spine.Skeleton {
+        return this.spine_data.skeleton;
+    }
+
+    public addFrameAnimation(name: string, sprite: Phaser.Sprite, boneName: string, props?: { x?: number, y?: number, angle?: number }): void {
+        this.addChild(sprite);
+        if (props === undefined) {
+            props = {};
+        }
+        if (props.x === undefined) {
+            props.x = 0;
+        }
+        if (props.y === undefined) {
+            props.y = 0;
+        }
+        if (props.angle === undefined) {
+            props.angle = 0;
+        }
+        this.frameAnimations[name] = { sprite: sprite, boneName: boneName, props: props };
+        this.frameAnimationKeys = Object.keys(this.frameAnimations);
+    }
+
+    public getFrameAnimation(name: string): Phaser.Sprite {
+        if (this.frameAnimations[name] === undefined) {
+            return null;
+        }
+        return this.frameAnimations[name].sprite;
+    }
+
+    public set animation(value: string) {
+        if (this.animation) { 
+            this.spine_pose.setTime(0);
+        }
+        if (this.spine_data.anims[value] === undefined) {
+            console.log('there is no animation:', value);
+            return;
+        }
+        this.spine_pose.setAnim(value);
+    }
+    
+    public get animation(): string {
+        if (this.spine_pose.curAnim() === undefined){
+            return null;
+        }
+        return this.spine_pose.curAnim().name;
+    }
+
+    public set paused(value: boolean) {
+        this._paused = value;
+    }
+
+    public set speed(value: number) {
+        this._speed = value;
+        this._fps = 1000 / 60 * this._speed;
+    }
+
+    public get speed(): number {
+        return this._speed;
     }
 }

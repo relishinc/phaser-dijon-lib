@@ -2,7 +2,7 @@ import {Application} from './application';
 import {INotifier, IAssetList, IPathConfig, ISound, IAsset, ITiledmapAssets, IGameConfig, ITransition, ITransitionHandler, IPreloadHandler} from './interfaces';
 import {Mediator} from './mvc';
 import {Notifications} from './utils';
-import {Sprite, Group, Text, Component} from './display';
+import {Sprite, Group, Text, Component, Spine} from './display';
 
 export class AnalyticsManager {
     constructor(public enabled: boolean = true, public category: string = null) { }
@@ -67,6 +67,7 @@ export class AssetManager implements INotifier {
     private _dataPath: string = null;
     private _spriteSheetPath: string = null;
     private _imgPath: string = null;
+    private _spinePath: string = null;
     private _fontPath: string = null;
     private _bitmapFontPath: string = null;
     private _physicsPath: string = null;
@@ -122,6 +123,7 @@ export class AssetManager implements INotifier {
     public static TILEDMAP_TILESET: string = 'tileset';
     public static TILEDMAP_LAYER: string = 'layer';
     public static PHYSICS: string = 'physics';
+    public static SPINE: string = 'spine';
     public static ASSET_LIST: string = 'assetList';
 
     // resolutions
@@ -407,6 +409,9 @@ export class AssetManager implements INotifier {
             case AssetManager.PHYSICS:
                 this.loadPhysics(url);
                 break;
+            case AssetManager.SPINE:
+                this.loadSpine(url, this._getResolution(asset.resolution))
+                break;
         }
     }
 
@@ -508,6 +513,24 @@ export class AssetManager implements INotifier {
         }
         url = key + resolution + '.' + this._getExtension(url);
         return this.game.load.image(key, this._getCacheBustedUrl(this._imgPath + '/' + url));
+    }
+
+    public loadSpine(url: string, resolution?: any): string | void {
+        if (typeof resolution !== 'string') {
+            resolution = this._getResolution(resolution);
+        }
+        const key: string = this._getAssetKey(url);
+
+        if (this.game.cache.checkImageKey(key)) {
+            // if the image key already exists, don't reload the image and return the key
+            return key;
+        }
+        url = key + resolution + '.png';
+        const jsonUrl = key + '.json';
+        const atlasUrl = key + '.atlas';
+        this.game.load.json(key + '.json', this._getCacheBustedUrl(this._spinePath + '/' + jsonUrl));
+        this.game.load.text(key + '.atlas', this._getCacheBustedUrl(this._spinePath + '/' + atlasUrl));
+        this.game.load.image(key + '.png', this._getCacheBustedUrl(this._spinePath + '/' + url));
     }
 
     public loadBitmapFont(url: string, resolution?: any) {
@@ -781,6 +804,7 @@ export class AssetManager implements INotifier {
         this._dataPath = this._baseURL + (this._pathObj.dataPath || 'assets/data');
         this._spriteSheetPath = this._baseURL + (this._pathObj.spritesheetPath || 'assets/img/spritesheets');
         this._imgPath = this._baseURL + (this._pathObj.imgPath || 'assets/img');
+        this._spinePath = this._baseURL + (this._pathObj.spinePath || 'assets/spine');
         this._fontPath = this._baseURL + (this._pathObj.fontPath || 'assets/fonts');
         this._bitmapFontPath = this._baseURL + (this._pathObj.bitmapFontPath || 'assets/fonts/bitmap');
         this._audioSpritePath = this._baseURL + (this._pathObj.audioSpritePath || 'assets/audio/sprite');
@@ -1101,7 +1125,7 @@ export class AudioManager {
         }, time || 300, Phaser.Easing.Linear.None);
 
         if (stop === true)
-            sound.fadeTween.onComplete.addOnce(function() { this._stopSound(sound) }, this);
+            sound.fadeTween.onComplete.addOnce(function () { this._stopSound(sound) }, this);
 
         return sound.fadeTween.start();
     }
@@ -1246,7 +1270,7 @@ export class Game extends Phaser.Game {
     }
 
     public disableInput(group: Phaser.Group): any {
-        return group.forEach(function(el) {
+        return group.forEach(function (el) {
             if (el instanceof Phaser.Group) {
                 return this.disableInput(el);
             } else {
@@ -1256,7 +1280,7 @@ export class Game extends Phaser.Game {
     }
 
     public enableInput(group: Phaser.Group): any {
-        return group.forEach(function(el) {
+        return group.forEach(function (el) {
             if (el instanceof Phaser.Group) {
                 return this.enableInput(el);
             } else {
@@ -1635,6 +1659,12 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
         if (group === undefined) { group = this.targetGroup; }
         this.targetGroup = null;
         return group.add(new Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
+    }
+
+    public spine(assetName: string = '', x: number = 0, y: number = 0, width: number = 0, height: number = 0, skin: string = 'default', anim: string = '', hOffset: number = 0, vOffset: number = 0, group?: Phaser.Group) {
+        if (group === undefined) { group = this.targetGroup; }
+        this.targetGroup = null;
+        return group.add(new Spine(assetName, x, y, width, height, skin, anim, hOffset, vOffset));
     }
 
     public setDefaultLayer(value: Phaser.Group) {
