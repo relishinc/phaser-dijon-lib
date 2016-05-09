@@ -1661,10 +1661,10 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
         return group.add(new Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
     }
 
-    public spine(assetName: string = '', x: number = 0, y: number = 0, width: number = 0, height: number = 0, skin: string = 'default', anim: string = '', hOffset: number = 0, vOffset: number = 0, group?: Phaser.Group) {
+    public spine(assetName: string = '', x: number = 0, y: number = 0, group?: Phaser.Group) {
         if (group === undefined) { group = this.targetGroup; }
         this.targetGroup = null;
-        return group.add(new Spine(assetName, x, y, width, height, skin, anim, hOffset, vOffset));
+        return group.add(new Spine(assetName, x, y));
     }
 
     public setDefaultLayer(value: Phaser.Group) {

@@ -32,7 +32,7 @@ gulp.task('lib', function() {
 })
 
 gulp.task('uglify', function() {
-    return gulp.src('build/dijon.js')
+    return gulp.src(['build/dijon.js', 'src/spine/spine.js'])
         .pipe(concat('dijon.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('build'));
