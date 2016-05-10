@@ -781,13 +781,32 @@ export class NineSliceImage extends Group {
 
 // ADDING SPINE //
 export class Spine extends PIXI.spine.Spine {
+    public static DEFAULT_SPEED: number = 0.0167;// 60 fps;
     public debug: boolean = false;
     public onAnimationComplete: Phaser.Signal = new Phaser.Signal();
 
+    private _paused: boolean = false;
+    private _speed: number = 1;
+
+    private _boundsOffset: Phaser.Point = new Phaser.Point(0, 0);
+    private _currentBounds: PIXI.Rectangle = new PIXI.Rectangle();
+
     constructor(public assetName: string = '', x: number = 0, y: number = 0) {
         super(Application.getInstance().game, x, y, Spine.createSpineData(assetName));
-        this.skeleton.x = 0;
-        this.skeleton.y = 0;
+        this.skeleton.setToSetupPose();
+        this._createBounds();
+        this.update(0);
+        this.autoUpdate = false;
+        this.onAnimationComplete = this.state.onAnimationComplete;
+        this.hitArea = new Phaser.Rectangle(0, - this.skeleton.data.height, this.skeleton.data.width, this.skeleton.data.height);
+        this.events.onInputDown.add(() => { console.log(this) });
+    }
+
+    public update(dt: number = Spine.DEFAULT_SPEED): void {
+        if (this._paused) {
+            return;
+        }
+        super.update(this._speed * dt);
     }
 
     public static createSpineData(assetName: string): any {
@@ -802,27 +821,41 @@ export class Spine extends PIXI.spine.Spine {
         callback(PIXI.BaseTexture.fromImage('assets/spine/' + line));
     }
 
-    public set scaleX(value: number) {
-        this.skeleton.findBone('root').scaleX = value;
+    public get paused(): boolean {
+        return this._paused;
     }
 
-    public set scaleY(value: number) {
-        this.skeleton.findBone('root').scaleY = value;
+    public set paused(value: boolean) {
+        this._paused = value;
     }
-    
-    public get posX(): number{
-        return this.skeleton.x;
+
+    public get speed(): number {
+        return this._speed;
     }
-    
-    public get posY():number{
-        return this.skeleton.y;
+
+    public set speed(value: number) {
+        this._speed = value;
     }
-    
-    public set posX(value: number) {
-        this.skeleton.x = value;
+
+    public set boundsOffset(offset: Phaser.Point) {
+        this._boundsOffset = offset;
+        this._currentBounds = null;
     }
-    
-    public set posY(value: number) {
-        this.skeleton.y = value;
+
+    public getBounds(): PIXI.Rectangle {
+        return this._currentBounds || this._createBounds();
+    }
+
+    protected _createBounds(): PIXI.Rectangle {
+        this._currentBounds = new PIXI.Rectangle(this.x + (this._boundsOffset.x * this.scale.x), this.y - (this.skeleton.data.height * this.scale.y) + (this._boundsOffset.y * this.scale.y), this.skeleton.data.width * this.scale.x, this.skeleton.data.height * this.scale.y);
+        return this._currentBounds;
+    }
+
+    public get width(): number {
+        return this.getBounds().width;
+    }
+
+    public get height(): number {
+        return this.getBounds().height;
     }
 }

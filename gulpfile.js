@@ -72,7 +72,7 @@ gulp.task('default', function(done) {
 });
 
 gulp.task('watch', function(){
-    gulp.watch(['src/**/*.ts'], ['compile']);
+    gulp.watch(['src/**/*.{ts,js}'], ['compile']);
     gulp.watch(['src/dijon.addons.js'], ['compile']);
 })
 

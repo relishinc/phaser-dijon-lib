@@ -284,15 +284,24 @@ declare module "dijon/display" {
     }
     export class Spine extends PIXI.spine.Spine {
         assetName: string;
+        static DEFAULT_SPEED: number;
         debug: boolean;
         onAnimationComplete: Phaser.Signal;
+        private _paused;
+        private _speed;
+        private _boundsOffset;
+        private _currentBounds;
         constructor(assetName?: string, x?: number, y?: number);
+        update(dt?: number): void;
         static createSpineData(assetName: string): any;
         private static _atlasCallbackFunction(line, callback);
-        scaleX: number;
-        scaleY: number;
-        posX: number;
-        posY: number;
+        paused: boolean;
+        speed: number;
+        boundsOffset: Phaser.Point;
+        getBounds(): PIXI.Rectangle;
+        protected _createBounds(): PIXI.Rectangle;
+        width: number;
+        height: number;
     }
 }
 declare module "dijon/utils" {

@@ -442,43 +442,145 @@ Phaser.Text.prototype.setShadow = function(x, y, color, blur, shadowStroke, shad
 * @param matrix {Matrix} the transformation matrix of the sprite
 * @return {Rectangle} the framing rectangle
 */
-PIXI.Sprite.prototype.getBounds = function(matrix) {
-    var width = this.texture.frame.width / this.texture.baseTexture.resolution;
-    var height = this.texture.frame.height / this.texture.baseTexture.resolution;
+PIXI.DisplayObjectContainer.prototype.getBounds = function () { 
+    if(!this._currentBounds)
+    {
 
-    var w0 = width * (1 - this.anchor.x);
-    var w1 = width * -this.anchor.x;
+        if (this.children.length === 0)
+        {
+            return new PIXI.Rectangle();
+        }
 
-    var h0 = height * (1 - this.anchor.y);
-    var h1 = height * -this.anchor.y;
+        // TODO the bounds have already been calculated this render session so return what we have
 
-    var worldTransform = this.worldTransform;
+        var minX = Infinity;
+        var minY = Infinity;
 
-    var a = worldTransform.a;
-    var b = worldTransform.b;
-    var c = worldTransform.c;
-    var d = worldTransform.d;
-    var tx = worldTransform.tx;
-    var ty = worldTransform.ty;
+        var maxX = -Infinity;
+        var maxY = -Infinity;
 
-    var maxX = -Infinity;
-    var maxY = -Infinity;
+        var childBounds;
+        var childMaxX;
+        var childMaxY;
 
-    var minX = Infinity;
-    var minY = Infinity;
+        var childVisible = false;
 
-    if (b === 0 && c === 0) {
-        // scale may be negative!
-        if (a < 0) a *= -1;
-        if (d < 0) d *= -1;
+        for (var i = 0, j = this.children.length; i < j; ++i)
+        {
+            var child = this.children[i];
 
-        // this means there is no rotation going on right? RIGHT?
-        // if thats the case then we can avoid checking the bound values! yay
-        minX = a * w1 + tx;
-        maxX = a * w0 + tx;
-        minY = d * h1 + ty;
-        maxY = d * h0 + ty;
-    } else {
+            if (!child.visible)
+            {
+                continue;
+            }
+
+            childVisible = true;
+
+            childBounds = this.children[i].getBounds();
+
+            minX = minX < childBounds.x ? minX : childBounds.x;
+            minY = minY < childBounds.y ? minY : childBounds.y;
+
+            childMaxX = childBounds.width + childBounds.x;
+            childMaxY = childBounds.height + childBounds.y;
+
+            maxX = maxX > childMaxX ? maxX : childMaxX;
+            maxY = maxY > childMaxY ? maxY : childMaxY;
+        }
+
+        if (!childVisible)
+        {
+            return math.Rectangle.EMPTY;
+        }
+
+        var bounds = this._bounds;
+
+        bounds.x = minX;
+        bounds.y = minY;
+        bounds.width = maxX - minX;
+        bounds.height = maxY - minY;
+
+        this._currentBounds = bounds;
+    }
+
+    return this._currentBounds;
+}
+
+PIXI.DisplayObjectContainer.prototype.containerGetBounds = PIXI.DisplayObjectContainer.prototype.getBounds;
+PIXI.DisplayObjectContainer.prototype.getLocalBounds = function ()
+{
+    var matrixCache = this.worldTransform;
+
+    this.worldTransform = PIXI.Matrix.IDENTITY;
+
+    for (var i = 0, j = this.children.length; i < j; ++i)
+    {
+        this.children[i].updateTransform();
+    }
+
+    this.worldTransform = matrixCache;
+
+    this._currentBounds = null;
+
+    return this.getBounds( PIXI.Matrix.IDENTITY );
+};
+
+
+
+
+PIXI.DisplayObjectContainer.prototype.getBounds = function(matrix) {
+    if(!this._currentBounds)
+    {
+
+        var width = this.texture.frame.width;
+        var height = this.texture.frame.height;
+
+        var w0 = width * (1-this.anchor.x);
+        var w1 = width * -this.anchor.x;
+
+        var h0 = height * (1-this.anchor.y);
+        var h1 = height * -this.anchor.y;
+
+        var worldTransform = matrix || this.worldTransform ;
+
+        var a = worldTransform.a;
+        var b = worldTransform.b;
+        var c = worldTransform.c;
+        var d = worldTransform.d;
+        var tx = worldTransform.tx;
+        var ty = worldTransform.ty;
+
+        var minX,
+            maxX,
+            minY,
+            maxY;
+
+        //TODO - I am SURE this can be optimised, but the below is not accurate enough..
+        /*
+        if (b === 0 && c === 0)
+        {
+            // scale may be negative!
+            if (a < 0)
+            {
+                a *= -1;
+            }
+
+            if (d < 0)
+            {
+                d *= -1;
+            }
+
+            // this means there is no rotation going on right? RIGHT?
+            // if thats the case then we can avoid checking the bound values! yay
+            minX = a * w1 + tx;
+            maxX = a * w0 + tx;
+            minY = d * h1 + ty;
+            maxY = d * h0 + ty;
+        }
+        else
+        {
+        */
+
         var x1 = a * w1 + c * h1 + tx;
         var y1 = d * h1 + b * w1 + ty;
 
@@ -488,42 +590,61 @@ PIXI.Sprite.prototype.getBounds = function(matrix) {
         var x3 = a * w0 + c * h0 + tx;
         var y3 = d * h0 + b * w0 + ty;
 
-        var x4 = a * w1 + c * h0 + tx;
-        var y4 = d * h0 + b * w1 + ty;
+        var x4 =  a * w1 + c * h0 + tx;
+        var y4 =  d * h0 + b * w1 + ty;
 
-        minX = x1 < minX ? x1 : minX;
+        minX = x1;
         minX = x2 < minX ? x2 : minX;
         minX = x3 < minX ? x3 : minX;
         minX = x4 < minX ? x4 : minX;
 
-        minY = y1 < minY ? y1 : minY;
+        minY = y1;
         minY = y2 < minY ? y2 : minY;
         minY = y3 < minY ? y3 : minY;
         minY = y4 < minY ? y4 : minY;
 
-        maxX = x1 > maxX ? x1 : maxX;
+        maxX = x1;
         maxX = x2 > maxX ? x2 : maxX;
         maxX = x3 > maxX ? x3 : maxX;
         maxX = x4 > maxX ? x4 : maxX;
 
-        maxY = y1 > maxY ? y1 : maxY;
+        maxY = y1;
         maxY = y2 > maxY ? y2 : maxY;
         maxY = y3 > maxY ? y3 : maxY;
         maxY = y4 > maxY ? y4 : maxY;
+
+        //}
+
+        // check for children
+        if(this.children.length)
+        {
+            var childBounds = this.containerGetBounds();
+
+            w0 = childBounds.x;
+            w1 = childBounds.x + childBounds.width;
+            h0 = childBounds.y;
+            h1 = childBounds.y + childBounds.height;
+
+            minX = (minX < w0) ? minX : w0;
+            minY = (minY < h0) ? minY : h0;
+
+            maxX = (maxX > w1) ? maxX : w1;
+            maxY = (maxY > h1) ? maxY : h1;
+        }
+
+        var bounds = this._bounds;
+
+        bounds.x = minX;
+        bounds.width = maxX - minX;
+
+        bounds.y = minY;
+        bounds.height = maxY - minY;
+
+        // store a reference so that if this function gets called again in the render cycle we do not have to recalculate
+        this._currentBounds = bounds;
     }
 
-    var bounds = this._bounds;
-
-    bounds.x = minX;
-    bounds.width = maxX - minX;
-
-    bounds.y = minY;
-    bounds.height = maxY - minY;
-
-    // store a reference so that if this function gets called again in the render cycle we do not have to recalculate
-    this._currentBounds = bounds;
-
-    return bounds;
+    return this._currentBounds;
 };
 
 /**

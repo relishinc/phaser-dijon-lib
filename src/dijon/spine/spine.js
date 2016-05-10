@@ -1,5 +1,208 @@
 // addons
 
+/**
+ * @property {number} PI_2 - Two Pi
+ * @constant
+ * @static
+ */
+PIXI.PI_2 = Math.PI * 2;
+
+/**
+ * @property {number} RAD_TO_DEG - Constant conversion factor for converting radians to degrees
+ * @constant
+ * @static
+ */
+PIXI.RAD_TO_DEG = 180 / Math.PI;
+
+/**
+ * @property {Number} DEG_TO_RAD - Constant conversion factor for converting degrees to radians
+ * @constant
+ * @static
+ */
+PIXI.DEG_TO_RAD = Math.PI / 180;
+
+/**
+ * Target frames per millisecond.
+ *
+ * @static
+ * @constant
+ * @property {number} TARGET_FPMS=0.06
+ */
+PIXI.TARGET_FPMS = 0.06;
+
+/**
+ * Constant to identify the Renderer Type.
+ *
+ * @static
+ * @constant
+ * @property {object} RENDERER_TYPE
+ * @property {number} RENDERER_TYPE.UNKNOWN
+ * @property {number} RENDERER_TYPE.WEBGL
+ * @property {number} RENDERER_TYPE.CANVAS
+ */
+PIXI.RENDERER_TYPE = {
+    UNKNOWN: 0,
+    WEBGL: 1,
+    CANVAS: 2
+};
+
+/**
+ * Various blend modes supported by PIXI. IMPORTANT - The WebGL renderer only supports
+ * the NORMAL, ADD, MULTIPLY and SCREEN blend modes. Anything else will silently act like
+ * NORMAL.
+ *
+ * @static
+ * @constant
+ * @property {object} BLEND_MODES
+ * @property {number} BLEND_MODES.NORMAL
+ * @property {number} BLEND_MODES.ADD
+ * @property {number} BLEND_MODES.MULTIPLY
+ * @property {number} BLEND_MODES.SCREEN
+ * @property {number} BLEND_MODES.OVERLAY
+ * @property {number} BLEND_MODES.DARKEN
+ * @property {number} BLEND_MODES.LIGHTEN
+ * @property {number} BLEND_MODES.COLOR_DODGE
+ * @property {number} BLEND_MODES.COLOR_BURN
+ * @property {number} BLEND_MODES.HARD_LIGHT
+ * @property {number} BLEND_MODES.SOFT_LIGHT
+ * @property {number} BLEND_MODES.DIFFERENCE
+ * @property {number} BLEND_MODES.EXCLUSION
+ * @property {number} BLEND_MODES.HUE
+ * @property {number} BLEND_MODES.SATURATION
+ * @property {number} BLEND_MODES.COLOR
+ * @property {number} BLEND_MODES.LUMINOSITY
+ */
+PIXI.BLEND_MODES = {
+    NORMAL: 0,
+    ADD: 1,
+    MULTIPLY: 2,
+    SCREEN: 3,
+    OVERLAY: 4,
+    DARKEN: 5,
+    LIGHTEN: 6,
+    COLOR_DODGE: 7,
+    COLOR_BURN: 8,
+    HARD_LIGHT: 9,
+    SOFT_LIGHT: 10,
+    DIFFERENCE: 11,
+    EXCLUSION: 12,
+    HUE: 13,
+    SATURATION: 14,
+    COLOR: 15,
+    LUMINOSITY: 16
+};
+
+/**
+ * Various webgl draw modes. These can be used to specify which GL drawMode to use
+ * under certain situations and renderers.
+ *
+ * @static
+ * @constant
+ * @property {object} DRAW_MODES
+ * @property {number} DRAW_MODES.POINTS
+ * @property {number} DRAW_MODES.LINES
+ * @property {number} DRAW_MODES.LINE_LOOP
+ * @property {number} DRAW_MODES.LINE_STRIP
+ * @property {number} DRAW_MODES.TRIANGLES
+ * @property {number} DRAW_MODES.TRIANGLE_STRIP
+ * @property {number} DRAW_MODES.TRIANGLE_FAN
+ */
+PIXI.DRAW_MODES = {
+    POINTS: 0,
+    LINES: 1,
+    LINE_LOOP: 2,
+    LINE_STRIP: 3,
+    TRIANGLES: 4,
+    TRIANGLE_STRIP: 5,
+    TRIANGLE_FAN: 6
+};
+
+/**
+ * The scale modes that are supported by pixi.
+ *
+ * The DEFAULT scale mode affects the default scaling mode of future operations.
+ * It can be re-assigned to either LINEAR or NEAREST, depending upon suitability.
+ *
+ * @static
+ * @constant
+ * @property {object} SCALE_MODES
+ * @property {number} SCALE_MODES.DEFAULT=LINEAR
+ * @property {number} SCALE_MODES.LINEAR Smooth scaling
+ * @property {number} SCALE_MODES.NEAREST Pixelating scaling
+ */
+PIXI.SCALE_MODES = {
+    DEFAULT: 0,
+    LINEAR: 0,
+    NEAREST: 1
+};
+
+/**
+ * The prefix that denotes a URL is for a retina asset
+ *
+ * @static
+ * @constant
+ * @property {string} RETINA_PREFIX
+ */
+//example: '@2x',
+PIXI.RETINA_PREFIX = /@(.+)x/;
+
+PIXI.RESOLUTION = 1;
+
+PIXI.FILTER_RESOLUTION = 1;
+
+/**
+ * The default render options if none are supplied to {@link PIXI.WebGLRenderer}
+ * or {@link PIXI.CanvasRenderer}.
+ *
+ * @static
+ * @constant
+ * @property {object} DEFAULT_RENDER_OPTIONS
+ * @property {HTMLCanvasElement} DEFAULT_RENDER_OPTIONS.view=null
+ * @property {boolean} DEFAULT_RENDER_OPTIONS.transparent=false
+ * @property {boolean} DEFAULT_RENDER_OPTIONS.antialias=false
+ * @property {boolean} DEFAULT_RENDER_OPTIONS.forceFXAA=false
+ * @property {boolean} DEFAULT_RENDER_OPTIONS.preserveDrawingBuffer=false
+ * @property {number} DEFAULT_RENDER_OPTIONS.resolution=1
+ * @property {number} DEFAULT_RENDER_OPTIONS.backgroundColor=0x000000
+ * @property {boolean} DEFAULT_RENDER_OPTIONS.clearBeforeRender=true
+ * @property {boolean} DEFAULT_RENDER_OPTIONS.autoResize=false
+ */
+PIXI.DEFAULT_RENDER_OPTIONS = {
+    view: null,
+    resolution: 1,
+    antialias: false,
+    forceFXAA: false,
+    autoResize: false,
+    transparent: false,
+    backgroundColor: 0x000000,
+    clearBeforeRender: true,
+    preserveDrawingBuffer: false,
+    roundPixels: false
+};
+
+/**
+ * Constants that identify shapes, mainly to prevent `instanceof` calls.
+ *
+ * @static
+ * @constant
+ * @property {object} SHAPES
+ * @property {object} SHAPES.POLY=0
+ * @property {object} SHAPES.RECT=1
+ * @property {object} SHAPES.CIRC=2
+ * @property {object} SHAPES.ELIP=3
+ * @property {object} SHAPES.RREC=4
+ */
+PIXI.SHAPES = {
+    POLY: 0,
+    RECT: 1,
+    CIRC: 2,
+    ELIP: 3,
+    RREC: 4
+};
+
+// TODO: maybe change to SPRITE.BATCH_SIZE: 2000
+// TODO: maybe add PARTICLE.BATCH_SIZE: 15000
+PIXI.SPRITE_BATCH_SIZE = 2000; //nice balance between mobile and desktop machines
 PIXI.utils = {
     _uid: 0,
     _saidHello: false,
@@ -615,7 +818,7 @@ PIXI.Matrix.prototype.identity = function () {
  * @return {PIXI.Matrix} A copy of this matrix. Good for chaining method calls.
  */
 PIXI.Matrix.prototype.clone = function () {
-    var matrix = new Matrix();
+    var matrix = new PIXI.Matrix();
     matrix.a = this.a;
     matrix.b = this.b;
     matrix.c = this.c;
@@ -657,7 +860,99 @@ PIXI.Matrix.IDENTITY = new PIXI.Matrix();
  * @const
  */
 PIXI.Matrix.TEMP_MATRIX = new PIXI.Matrix();
+/**
+ * @class
+ * @memberof PIXI
+ * @param points {PIXI.Point[]|number[]|...PIXI.Point|...number} This can be an array of Points that form the polygon,
+ *      a flat array of numbers that will be interpreted as [x,y, x,y, ...], or the arguments passed can be
+ *      all the points of the polygon e.g. `new PIXI.Polygon(new PIXI.Point(), new PIXI.Point(), ...)`, or the
+ *      arguments passed can be flat x,y values e.g. `new Polygon(x,y, x,y, x,y, ...)` where `x` and `y` are
+ *      Numbers.
+ */
+PIXI.Polygon = function (points_) {
+    // prevents an argument assignment deopt
+    // see section 3.1: https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#3-managing-arguments
+    var points = points_;
 
+    //if points isn't an array, use arguments as the array
+    if (!Array.isArray(points)) {
+        // prevents an argument leak deopt
+        // see section 3.2: https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#3-managing-arguments
+        points = new Array(arguments.length);
+
+        for (var a = 0; a < points.length; ++a) {
+            points[a] = arguments[a];
+        }
+    }
+
+    // if this is an array of points, convert it to a flat array of numbers
+    if (points[0] instanceof PIXI.Point) {
+        var p = [];
+        for (var i = 0, il = points.length; i < il; i++) {
+            p.push(points[i].x, points[i].y);
+        }
+
+        points = p;
+    }
+
+    this.closed = true;
+
+    /**
+     * An array of the points of this polygon
+     *
+     * @member {number[]}
+     */
+    this.points = points;
+
+    /**
+     * The type of the object, mainly used to avoid `instanceof` checks
+     *
+     * @member {number}
+     */
+    this.type = PIXI.SHAPES.POLY;
+}
+
+PIXI.Polygon.prototype.constructor = PIXI.Polygon;
+
+/**
+ * Creates a clone of this polygon
+ *
+ * @return {PIXI.Polygon} a copy of the polygon
+ */
+PIXI.Polygon.prototype.clone = function () {
+    return new Polygon(this.points.slice());
+};
+
+/**
+ * Checks whether the x and y coordinates passed to this function are contained within this polygon
+ *
+ * @param x {number} The X coordinate of the point to test
+ * @param y {number} The Y coordinate of the point to test
+ * @return {boolean} Whether the x/y coordinates are within this polygon
+ */
+PIXI.Polygon.prototype.contains = function (x, y) {
+    var inside = false;
+
+    // use some raycasting to test hits
+    // https://github.com/substack/point-in-polygon/blob/master/index.js
+    var length = this.points.length / 2;
+
+    for (var i = 0, j = length - 1; i < length; j = i++) {
+        var xi = this.points[i * 2], yi = this.points[i * 2 + 1],
+            xj = this.points[j * 2], yj = this.points[j * 2 + 1],
+            intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+
+        if (intersect) {
+            inside = !inside;
+        }
+    }
+
+    return inside;
+};
+
+
+var tempPoint = new Phaser.Point(),
+    tempPolygon = new PIXI.Polygon();
 PIXI.mesh.Mesh = function (game, texture, vertices, uvs, indices, drawMode) {
     Phaser.Sprite.call(this, game);
     /**
@@ -673,7 +968,7 @@ PIXI.mesh.Mesh = function (game, texture, vertices, uvs, indices, drawMode) {
      *
      * @member {Float32Array}
      */
-    this.uvs = uvs || new Float32Array([0, 0,
+    this.uvs = uvs || new PIXI.Float32Array([0, 0,
         1, 0,
         1, 1,
         0, 1]);
@@ -683,7 +978,7 @@ PIXI.mesh.Mesh = function (game, texture, vertices, uvs, indices, drawMode) {
      *
      * @member {Float32Array}
      */
-    this.vertices = vertices || new Float32Array([0, 0,
+    this.vertices = vertices || new PIXI.Float32Array([0, 0,
         100, 0,
         100, 100,
         0, 100]);
@@ -692,7 +987,7 @@ PIXI.mesh.Mesh = function (game, texture, vertices, uvs, indices, drawMode) {
      * @member {Uint16Array} An array containing the indices of the vertices
      */
     //  TODO auto generate this based on draw mode!
-    this.indices = indices || new Uint16Array([0, 1, 3, 2]);
+    this.indices = indices || new PIXI.Uint16Array([0, 1, 3, 2]);
 
     /**
      * Whether the Mesh is dirty or not
@@ -734,6 +1029,9 @@ PIXI.mesh.Mesh = function (game, texture, vertices, uvs, indices, drawMode) {
     * @member {PIXI.Shader}
     */
     this.shader = null;
+    this.slot = null;
+    this.spine = null;
+    this.spineWorldTransform = null;
 }
 
 // constructor
@@ -777,7 +1075,8 @@ Object.defineProperties(PIXI.mesh.Mesh.prototype, {
  * @private
  */
 PIXI.mesh.Mesh.prototype._renderWebGL = function (renderer) {
-    this._renderCanvas(renderer);
+    renderer.setObjectRenderer(renderer.plugins.mesh);
+    renderer.plugins.mesh.render(this);
 };
 
 /**
@@ -791,19 +1090,30 @@ PIXI.mesh.Mesh.prototype._renderCanvas = function (renderer) {
 
     var transform = this.worldTransform;
     var res = renderer.resolution;
+
+
+    if (this.spineWorldTransform.tx !== 0) {
+        transform.tx += this.spine.worldTransform.tx - this.spineWorldTransform.tx;
+    }
+
+    if (this.spineWorldTransform.ty !== 0) {
+        transform.ty += this.spine.worldTransform.ty - this.spineWorldTransform.ty;
+    }
+
     if (renderer.roundPixels) {
-        context.setTransform(transform.a * res, transform.b * res, transform.c * res, transform.d * res, (transform.tx * res) | 0, (transform.ty * res) | 0);
+        context.setTransform(transform.a * res * this.spine.scale.x, transform.b * res, transform.c * res, transform.d * res * this.spine.scale.y, (transform.tx * res) | 0, (transform.ty * res) | 0);
     }
     else {
-        context.setTransform(transform.a * res, transform.b * res, transform.c * res, transform.d * res, transform.tx * res, transform.ty * res);
+        context.setTransform(transform.a * res * this.spine.scale.x, transform.b * res, transform.c * res, transform.d * res * this.spine.scale.y, transform.tx * res, transform.ty * res);
     }
-    
+    context.rotate(this.spine.rotation  *(this.spine.scale.x < 0  ? -1 : 1))
     if (this.drawMode === PIXI.mesh.Mesh.DRAW_MODES.TRIANGLE_MESH) {
         this._renderCanvasTriangleMesh(context);
     }
     else {
         this._renderCanvasTriangles(context);
     }
+    this.spineWorldTransform = this.spine.worldTransform.clone();
 };
 
 /**
@@ -861,7 +1171,7 @@ PIXI.mesh.Mesh.prototype._renderCanvasTriangles = function (context) {
  * @private
  */
 PIXI.mesh.Mesh.prototype._renderCanvasDrawTriangle = function (context, vertices, uvs, index0, index1, index2) {
-    var base = this._texture.baseTexture;
+    var base = this.texture.baseTexture;
     var textureSource = base.source;
     var textureWidth = base.width;
     var textureHeight = base.height;
@@ -1011,7 +1321,7 @@ PIXI.mesh.Mesh.prototype.getBounds = function (matrix) {
         }
 
         if (minX === -Infinity || maxY === Infinity) {
-            return core.Rectangle.EMPTY;
+            return new PIXI.Rectangle();
         }
 
         var bounds = this._bounds;
@@ -1045,7 +1355,7 @@ PIXI.mesh.Mesh.prototype.containsPoint = function (point) {
     var points = tempPolygon.points;
     var i, len;
 
-    if (this.drawMode === Mesh.DRAW_MODES.TRIANGLES) {
+    if (this.drawMode === PIXI.mesh.Mesh.DRAW_MODES.TRIANGLES) {
         var indices = this.indices;
         len = this.indices.length;
         //TODO: inline this.
@@ -1078,6 +1388,119 @@ PIXI.mesh.Mesh.prototype.containsPoint = function (point) {
     return false;
 };
 
+PIXI.mesh.Mesh.prototype.update = function () {
+    if (this.needsTextureUpdate) {
+        this.needsTextureUpdate = false;
+        this._onTextureUpdate();
+    }
+    Phaser.Sprite.prototype.update.call(this);
+}
+
+var _tempMatrix = new PIXI.Matrix();
+var _tempDisplayObjectParent = { worldTransform: new PIXI.Matrix(), worldAlpha: 1, children: [] };
+
+PIXI.Sprite.prototype.SpineContainerUpdateTransform = function () {
+    if (!this.visible) {
+        return;
+    }
+
+    this.displayObjectUpdateTransform();
+
+    for (var i = 0, j = this.children.length; i < j; ++i) {
+        this.children[i].updateTransform();
+    }
+}
+
+PIXI.Sprite.prototype.SpineUpdateTransform = function () {
+    // create some matrix refs for easy access
+    var pt = this.parent.worldTransform;
+    var wt = this.worldTransform;
+
+    // temporary matrix variables
+    var a, b, c, d, tx, ty;
+    if (!this.skew) {
+        this.skew = {}
+    }
+    // looks like we are skewing
+    if (this.skew.x || this.skew.y) {
+        // I'm assuming that skewing is not going to be very common
+        // With that in mind, we can do a full setTransform using the temp matrix
+        _tempMatrix.setTransform(
+            this.position.x,
+            this.position.y,
+            this.pivot.x,
+            this.pivot.y,
+            this.scale.x,
+            this.scale.y,
+            this.rotation,
+            this.skew.x,
+            this.skew.y
+        );
+
+        // now concat the matrix (inlined so that we can avoid using copy)
+        wt.a = _tempMatrix.a * pt.a + _tempMatrix.b * pt.c;
+        wt.b = _tempMatrix.a * pt.b + _tempMatrix.b * pt.d;
+        wt.c = _tempMatrix.c * pt.a + _tempMatrix.d * pt.c;
+        wt.d = _tempMatrix.c * pt.b + _tempMatrix.d * pt.d;
+        wt.tx = _tempMatrix.tx * pt.a + _tempMatrix.ty * pt.c + pt.tx;
+        wt.ty = _tempMatrix.tx * pt.b + _tempMatrix.ty * pt.d + pt.ty;
+    }
+    else {
+        // so if rotation is between 0 then we can simplify the multiplication process...
+        if (this.rotation % PIXI.PI_2) {
+            // check to see if the rotation is the same as the previous render. This means we only need to use sin and cos when rotation actually changes
+            if (this.rotation !== this.rotationCache) {
+                this.rotationCache = this.rotation;
+                this._sr = Math.sin(this.rotation);
+                this._cr = Math.cos(this.rotation);
+            }
+
+            // get the matrix values of the displayobject based on its transform properties..
+            a = this._cr * this.scale.x;
+            b = this._sr * this.scale.x;
+            c = -this._sr * this.scale.y;
+            d = this._cr * this.scale.y;
+            tx = this.position.x;
+            ty = this.position.y;
+
+            // check for pivot.. not often used so geared towards that fact!
+            if (this.pivot.x || this.pivot.y) {
+                tx -= this.pivot.x * a + this.pivot.y * c;
+                ty -= this.pivot.x * b + this.pivot.y * d;
+            }
+
+            // concat the parent matrix with the objects transform.
+            wt.a = a * pt.a + b * pt.c;
+            wt.b = a * pt.b + b * pt.d;
+            wt.c = c * pt.a + d * pt.c;
+            wt.d = c * pt.b + d * pt.d;
+            wt.tx = tx * pt.a + ty * pt.c + pt.tx;
+            wt.ty = tx * pt.b + ty * pt.d + pt.ty;
+        }
+        else {
+            // lets do the fast version as we know there is no rotation..
+            a = this.scale.x;
+            d = this.scale.y;
+
+            tx = this.position.x - this.pivot.x * a;
+            ty = this.position.y - this.pivot.y * d;
+
+            wt.a = a * pt.a;
+            wt.b = a * pt.b;
+            wt.c = d * pt.c;
+            wt.d = d * pt.d;
+            wt.tx = tx * pt.a + ty * pt.c + pt.tx;
+            wt.ty = tx * pt.b + ty * pt.d + pt.ty;
+        }
+    }
+
+    // multiply the alphas..
+    this.worldAlpha = this.alpha * (this.parent ? this.parent.worldAlpha : 1);
+
+    // reset the bounds each time this is called!
+    this._currentBounds = null;
+};
+
 /**
  * Different drawing buffer modes supported
  *
@@ -1092,6 +1515,101 @@ PIXI.mesh.Mesh.DRAW_MODES = {
     TRIANGLES: 1
 };
 
+PIXI.Plane = function (texture, segmentsX, segmentsY) {
+    PIXI.mesh.Mesh.call(this, texture);
+
+    /**
+     * Tracker for if the Plane is ready to be drawn. Needed because Mesh ctor can
+     * call _onTextureUpdated which could call refresh too early.
+     *
+     * @member {boolean}
+     * @private
+     */
+    this._ready = true;
+
+    this.segmentsX = segmentsX || 10;
+    this.segmentsY = segmentsY || 10;
+
+    this.drawMode = PIXI.mesh.Mesh.DRAW_MODES.TRIANGLES;
+    this.refresh();
+
+}
+
+
+// constructor
+PIXI.Plane.prototype = Object.create(PIXI.mesh.Mesh.prototype);
+PIXI.Plane.prototype.constructor = PIXI.Plane;
+PIXI.Plane.prototype.refresh = function () {
+    var total = this.segmentsX * this.segmentsY;
+    var verts = [];
+    var colors = [];
+    var uvs = [];
+    var indices = [];
+    var texture = this.texture;
+
+    //  texture.width = 800 texture.width || 800;
+    //   texture.height = 800//texture.height || 800;
+
+    var segmentsXSub = this.segmentsX - 1;
+    var segmentsYSub = this.segmentsY - 1;
+    var i = 0;
+
+    var sizeX = texture.width / segmentsXSub;
+    var sizeY = texture.height / segmentsYSub;
+
+    for (i = 0; i < total; i++) {
+
+        var x = (i % this.segmentsX);
+        var y = ((i / this.segmentsX) | 0);
+
+
+        verts.push((x * sizeX),
+            (y * sizeY));
+
+        // this works for rectangular textures. 
+        uvs.push(texture._uvs.x0 + (texture._uvs.x1 - texture._uvs.x0) * (x / (this.segmentsX - 1)), texture._uvs.y0 + (texture._uvs.y3 - texture._uvs.y0) * (y / (this.segmentsY - 1)));
+    }
+
+    //  cons
+
+    var totalSub = segmentsXSub * segmentsYSub;
+
+    for (i = 0; i < totalSub; i++) {
+
+        var xpos = i % segmentsXSub;
+        var ypos = (i / segmentsXSub) | 0;
+
+
+        var value = (ypos * this.segmentsX) + xpos;
+        var value2 = (ypos * this.segmentsX) + xpos + 1;
+        var value3 = ((ypos + 1) * this.segmentsX) + xpos;
+        var value4 = ((ypos + 1) * this.segmentsX) + xpos + 1;
+
+        indices.push(value, value2, value3);
+        indices.push(value2, value4, value3);
+    }
+
+
+    //console.log(indices)
+    this.vertices = new PIXI.Float32Array(verts);
+    this.uvs = new PIXI.Float32Array(uvs);
+    this.colors = new PIXI.Float32Array(colors);
+    this.indices = new PIXI.Uint16Array(indices);
+};
+
+/**
+ * Clear texture UVs when new texture is set
+ *
+ * @private
+ */
+PIXI.Plane.prototype._onTextureUpdate = function () {
+    PIXI.mesh.Mesh.prototype._onTextureUpdate.call(this);
+
+    // wait for the Plane ctor to finish before calling refresh
+    if (this._ready) {
+        this.refresh();
+    }
+};
 
 
 (function e(t, n, r) { function s(o, u) { if (!n[o]) { if (!t[o]) { var a = typeof require == "function" && require; if (!u && a) return a(o, !0); if (i) return i(o, !0); var f = new Error("Cannot find module '" + o + "'"); throw f.code = "MODULE_NOT_FOUND", f } var l = n[o] = { exports: {} }; t[o][0].call(l.exports, function (e) { var n = t[o][1][e]; return s(n ? n : e) }, l, l.exports, e, t, n, r) } return n[o].exports } var i = typeof require == "function" && require; for (var o = 0; o < r.length; o++)s(r[o]); return s })({
@@ -1175,6 +1693,7 @@ PIXI.mesh.Mesh.DRAW_MODES = {
             this.data = stateData;
             this.tracks = [];
             this.events = [];
+            this.onAnimationComplete = new Phaser.Signal();
         };
         spine.AnimationState.prototype = {
             onStart: null,
@@ -1182,9 +1701,10 @@ PIXI.mesh.Mesh.DRAW_MODES = {
             onComplete: null,
             onEvent: null,
             timeScale: 1,
+            onAnimationComplete: null,
             update: function (delta) {
                 delta *= this.timeScale;
-                
+
                 for (var i = 0; i < this.tracks.length; i++) {
                     var current = this.tracks[i];
                     if (!current) continue;
@@ -1249,8 +1769,14 @@ PIXI.mesh.Mesh.DRAW_MODES = {
                     // Check if completed the animation or a loop iteration.
                     if (loop ? (lastTime % endTime > time % endTime) : (lastTime < endTime && time >= endTime)) {
                         var count = Math.floor(time / endTime);
-                        if (current.onComplete) current.onComplete(i, count);
-                        if (this.onComplete) this.onComplete(i, count);
+                        this.onAnimationComplete.dispatch( current, current.animation.name);
+                        if (current.onComplete) { 
+                            current.onComplete(i, count);
+                        } 
+                        if (this.onComplete) { 
+                            this.onComplete(i, count);
+                            
+                        } 
                     }
 
                     current.lastTime = current.time;
@@ -2784,8 +3310,8 @@ PIXI.mesh.Mesh.DRAW_MODES = {
                 var bone = slot.bone;
                 x += bone.worldX;
                 y += bone.worldY;
-                
-                
+
+
                 var m00 = bone.matrix.a, m01 = bone.matrix.c, m10 = bone.matrix.b, m11 = bone.matrix.d;
                 var vertices = this.vertices;
                 var verticesCount = vertices.length;
@@ -4728,7 +5254,9 @@ PIXI.mesh.Mesh.DRAW_MODES = {
             for (var i = 0, n = this.skeleton.slots.length; i < n; i++) {
                 var slot = this.skeleton.slots[i];
                 var attachment = slot.attachment;
-                var slotContainer = new Phaser.Sprite(this.game, this.x, this.y);
+                var slotContainer = new Phaser.Group(this.game);
+                slotContainer.x = this.x;
+                slotContainer.y = this.y;
                 this.slotContainers.push(slotContainer);
                 this.addChild(slotContainer);
 
@@ -4795,7 +5323,7 @@ PIXI.mesh.Mesh.DRAW_MODES = {
                 },
 
                 set: function (value) {
-                    this.updateTransform = value ? Spine.prototype.autoUpdateTransform : PIXI.Sprite.prototype.updateTransform;
+                    this.updateTransform = value ? Spine.prototype.autoUpdateTransform : PIXI.Sprite.prototype.SpineUpdateTransform;
                 }
             }
         });
@@ -4806,8 +5334,8 @@ PIXI.mesh.Mesh.DRAW_MODES = {
          * @param dt {number} Delta time. Time by which the animation should be updated
          */
 
-        Spine.prototype.update = function () {
-            this.state.update(0.05);
+        Spine.prototype.update = function (dt) {
+            this.state.update(dt);
             this.state.apply(this.skeleton);
             this.skeleton.updateWorldTransform();
 
@@ -4841,7 +5369,7 @@ PIXI.mesh.Mesh.DRAW_MODES = {
                             }
                             else {
                                 var sprite = this.createSprite(slot, attachment);
-                                
+
                                 slotContainer.addChild(sprite);
                             }
                             slot.currentSprite = slot.sprites[spriteName];
@@ -4868,13 +5396,13 @@ PIXI.mesh.Mesh.DRAW_MODES = {
                         lt.tx += slot.bone.skeleton.x;
                         lt.ty += slot.bone.skeleton.y;
                         slotContainer.localTransform = lt;
-                        slotContainer.displayObjectUpdateTransform = SlotContainerUpdateTransformV3;
+                        slotContainer.displayObjectUpdateTransform = PIXI.SlotContainerUpdateTransformV3;
                         slotContainer.updateTransform(lt);
                     }
 
                     slot.currentSprite.blendMode = slot.blendMode;
                     slot.currentSprite.tint = PIXI.utils.rgb2hex([slot.r, slot.g, slot.b]);
-                    
+
                 }
                 else if (type === spine.AttachmentType.skinnedmesh || type === spine.AttachmentType.mesh) {
                     if (!slot.currentMeshName || slot.currentMeshName !== attachment.name) {
@@ -4897,6 +5425,12 @@ PIXI.mesh.Mesh.DRAW_MODES = {
                         slot.currentMeshName = meshName;
                     }
                     attachment.computeWorldVertices(slot.bone.skeleton.x, slot.bone.skeleton.y, slot, slot.currentMesh.vertices);
+                    var lt = slotContainer.localTransform || new PIXI.Matrix();
+                    slot.bone.matrix.copy(lt);
+                    lt.tx += slot.bone.skeleton.x;
+                    lt.ty += slot.bone.skeleton.y;
+                    slot.meshLocalTransform = lt;
+                    slot.currentMesh.update();
                 }
                 else {
                     slotContainer.visible = false;
@@ -4917,7 +5451,7 @@ PIXI.mesh.Mesh.DRAW_MODES = {
          *
          * @private
          */
-        Spine.prototype.autoUpdateTransform = function () {
+        Spine.prototype.autoUpdateTransform = function () {/*
             if (Spine.globalAutoUpdate) {
                 this.lastTime = this.lastTime || this.game.time.physicsElapsedMS;
                 var timeDelta = (this.game.time.physicsElapsedMS - this.lastTime) * 0.001;
@@ -4926,6 +5460,7 @@ PIXI.mesh.Mesh.DRAW_MODES = {
             } else {
                 this.lastTime = 0;
             }
+*/
         };
 
         /**
@@ -4941,9 +5476,6 @@ PIXI.mesh.Mesh.DRAW_MODES = {
             var sprite = new Phaser.Sprite(this.game, attachment.x, attachment.y, texture);
             sprite.scale.x = attachment.scaleX * attachment.width / descriptor.originalWidth;
             sprite.scale.y = - attachment.scaleY * attachment.height / descriptor.originalHeight;
-           
-            
-            console.log(descriptor.name, attachment.rotation)
             sprite.anchor.x = 0.5;
             sprite.anchor.y = 0.5;
             sprite.initialRotation = attachment.rotation * spine.degRad;
@@ -4969,9 +5501,9 @@ PIXI.mesh.Mesh.DRAW_MODES = {
             var strip = new PIXI.mesh.Mesh(
                 this.game,
                 texture,
-                new Float32Array(attachment.uvs.length),
-                new Float32Array(attachment.uvs),
-                new Uint16Array(attachment.triangles),
+                new PIXI.Float32Array(attachment.uvs.length),
+                new PIXI.Float32Array(attachment.uvs),
+                new PIXI.Uint16Array(attachment.triangles),
                 PIXI.mesh.Mesh.DRAW_MODES.TRIANGLES);
 
             strip.canvasPadding = 1.5;
@@ -4980,11 +5512,14 @@ PIXI.mesh.Mesh.DRAW_MODES = {
 
             slot.meshes = slot.meshes || {};
             slot.meshes[attachment.name] = strip;
+            strip.slot = slot;
+            strip.spine = this;
+            strip.spineWorldTransform = this.worldTransform.clone();
 
             return strip;
         };
 
-        function SlotContainerUpdateTransformV3() {
+        PIXI.SlotContainerUpdateTransformV3 = function () {
             var pt = this.parent.worldTransform;
             var wt = this.worldTransform;
             var lt = this.localTransform;

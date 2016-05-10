@@ -46,7 +46,7 @@ declare module PIXI {
             timeScale: number;
 
             constructor(stateData: AnimationStateData);
-
+            
             update(delta: number): void;
             apply(skeleton: Skeleton): void;
             clearTracks(): void;
@@ -59,6 +59,7 @@ declare module PIXI {
             addAnimation(trackIndex: number, animation: Animation, loop: boolean, delay: number): TrackEntry;
             getCurrent(trackIndex: number): TrackEntry;
             hasAnimationByName(name: string): boolean;
+            onAnimationComplete: Phaser.Signal;
 
         }
 
@@ -68,7 +69,7 @@ declare module PIXI {
 
             static fromAtlas(resourceName: string): Spine;
 
-            update(): void;
+            update(dt?:number): void;
 
             private autoUpdateTransform(): void;
             private createSprite(slot: Slot, attachment: Attachment): Sprite;
