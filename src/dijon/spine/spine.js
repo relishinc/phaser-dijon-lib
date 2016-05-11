@@ -1086,6 +1086,9 @@ PIXI.mesh.Mesh.prototype._renderWebGL = function (renderer) {
  * @private
  */
 PIXI.mesh.Mesh.prototype._renderCanvas = function (renderer) {
+    if (!this.visible) { 
+        return;
+    }
     var context = renderer.context;
 
     var transform = this.worldTransform;
