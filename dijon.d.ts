@@ -286,22 +286,35 @@ declare module "dijon/display" {
         assetName: string;
         static DEFAULT_SPEED: number;
         debug: boolean;
+        onCreate: Phaser.Signal;
         onAnimationComplete: Phaser.Signal;
-        private _paused;
-        private _speed;
-        private _boundsOffset;
-        private _currentBounds;
+        protected _canUpdate: boolean;
+        protected _paused: boolean;
+        protected _speed: number;
+        protected _boundsOffset: Phaser.Point;
+        protected _boundsWidthScale: number;
+        protected _boundsHeightScale: number;
+        protected _currentBounds: PIXI.Rectangle;
+        physicsSprite: Phaser.Sprite;
+        protected _physicsEnabled: boolean;
         constructor(assetName?: string, x?: number, y?: number);
+        private _onCreateInternal();
         update(dt?: number): void;
+        initPhysics(type: number): boolean;
+        disablePhysics(): void;
+        enablePhysics(): void;
         static createSpineData(assetName: string): any;
         private static _atlasCallbackFunction(line, callback);
         paused: boolean;
         speed: number;
         boundsOffset: Phaser.Point;
+        boundsWidthScale: number;
+        boundsHeightScale: number;
         getBounds(): PIXI.Rectangle;
         protected _createBounds(): PIXI.Rectangle;
         width: number;
         height: number;
+        body: any;
     }
 }
 declare module "dijon/utils" {

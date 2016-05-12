@@ -783,30 +783,72 @@ export class NineSliceImage extends Group {
 export class Spine extends PIXI.spine.Spine {
     public static DEFAULT_SPEED: number = 0.0167;// 60 fps;
     public debug: boolean = false;
+    public onCreate: Phaser.Signal = new Phaser.Signal();
     public onAnimationComplete: Phaser.Signal = new Phaser.Signal();
 
-    private _paused: boolean = false;
-    private _speed: number = 1;
+    protected _canUpdate: boolean = false;
+    protected _paused: boolean = false;
+    protected _speed: number = 1;
 
-    private _boundsOffset: Phaser.Point = new Phaser.Point(0, 0);
-    private _currentBounds: PIXI.Rectangle = new PIXI.Rectangle();
+    protected _boundsOffset: Phaser.Point = new Phaser.Point(0, 0);
+    protected _boundsWidthScale:number = 1;
+    protected _boundsHeightScale:number = 1;
+    protected _currentBounds: PIXI.Rectangle = new PIXI.Rectangle();
+
+    public physicsSprite: Phaser.Sprite;
+    protected _physicsEnabled: boolean = false;
 
     constructor(public assetName: string = '', x: number = 0, y: number = 0) {
         super(Application.getInstance().game, x, y, Spine.createSpineData(assetName));
+        this.name = assetName;
         this.skeleton.setToSetupPose();
         this._createBounds();
         this.update(0);
         this.autoUpdate = false;
         this.onAnimationComplete = this.state.onAnimationComplete;
         this.hitArea = new Phaser.Rectangle(0, - this.skeleton.data.height, this.skeleton.data.width, this.skeleton.data.height);
-        this.events.onInputDown.add(() => { console.log(this) });
+
+        this.game.time.events.add(100, this._onCreateInternal, this);
+
+    }
+
+    private _onCreateInternal(): void {
+        this.onCreate.dispatch();
+        this._canUpdate = true;
     }
 
     public update(dt: number = Spine.DEFAULT_SPEED): void {
-        if (this._paused) {
+        if (this._paused || !this._canUpdate) {
             return;
         }
+        if (this._physicsEnabled === true) {
+            this.position.x = this.physicsSprite.body.position.x;
+            this.position.y = this.physicsSprite.body.position.y + (this.scale.y  > 0 ? this.physicsSprite.body.height : 0);
+        }
         super.update(this._speed * dt);
+    }
+
+    public initPhysics(type: number): boolean {
+        this._createBounds();
+        if (type != Phaser.Physics.ARCADE &&
+            type != Phaser.Physics.NINJA &&
+            type != Phaser.Physics.P2JS)
+            return false;
+        this.physicsSprite = <Phaser.Sprite>this.parent.addChild(this.game.add.sprite(this.x, this.y));
+        this.physicsSprite.name = this.assetName + '_physicsSprite';
+        this.game.physics.enable(this.physicsSprite, type);
+
+        this._physicsEnabled = (this.physicsSprite.body !== null);
+        return this._physicsEnabled;
+
+    }
+
+    public disablePhysics(): void {
+        this._physicsEnabled = false;
+    }
+
+    public enablePhysics(): void {
+        this._physicsEnabled = true;
     }
 
     public static createSpineData(assetName: string): any {
@@ -841,13 +883,37 @@ export class Spine extends PIXI.spine.Spine {
         this._boundsOffset = offset;
         this._currentBounds = null;
     }
+    
+    public get boundsOffset():Phaser.Point{
+        return this._boundsOffset;
+    }
+    
+    public set boundsWidthScale(scale:number) {
+        this._boundsWidthScale = scale;
+        this._currentBounds = null;
+    }
+    
+    public get boundsWidthScale():number {
+        return this._boundsWidthScale;
+    }
+    
+    public set boundsHeightScale(scale:number) {
+        this._boundsHeightScale = scale;
+        this._currentBounds = null;
+    }
+    
+    public get boundsHeightScale():number {
+        return this._boundsHeightScale;
+    }
+    
 
     public getBounds(): PIXI.Rectangle {
         return this._currentBounds || this._createBounds();
     }
 
     protected _createBounds(): PIXI.Rectangle {
-        this._currentBounds = new PIXI.Rectangle(this.x + (this._boundsOffset.x * this.scale.x), this.y - (this.skeleton.data.height * this.scale.y) + (this._boundsOffset.y * this.scale.y), this.skeleton.data.width * this.scale.x, this.skeleton.data.height * this.scale.y);
+        this._currentBounds = new PIXI.Rectangle(this.x + (this._boundsOffset.x * this.scale.x), this.y - (this.skeleton.data.height * this.scale.y) + (this._boundsOffset.y * this.scale.y), this.skeleton.data.width * this.scale.x * this.boundsWidthScale, this.skeleton.data.height * this.scale.y * this.boundsHeightScale);
+        
         return this._currentBounds;
     }
 
@@ -857,5 +923,12 @@ export class Spine extends PIXI.spine.Spine {
 
     public get height(): number {
         return this.getBounds().height;
+    }
+
+    public get body(): any {
+        if (!this._physicsEnabled) {
+            return null;
+        }
+        return this.physicsSprite.body;
     }
 }
