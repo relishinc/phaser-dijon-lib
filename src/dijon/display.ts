@@ -835,7 +835,6 @@ export class Spine extends PIXI.spine.Spine {
             type != Phaser.Physics.NINJA &&
             type != Phaser.Physics.P2JS)
             return false;
-            console.log('adding phys', this.x, this.y, this.parent)
         
         if (offset.x !== undefined){
             this._physicsOffset.x = offset.x;
