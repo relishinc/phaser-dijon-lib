@@ -319,6 +319,7 @@ declare module "dijon/display" {
         boundsHeightScale: number;
         getBounds(): PIXI.Rectangle;
         protected _createBounds(): PIXI.Rectangle;
+        setScale(x?: number, y?: number): void;
         width: number;
         height: number;
         body: any;

@@ -826,6 +826,7 @@ export class Spine extends PIXI.spine.Spine {
             this.position.y = this.physicsSprite.body.position.y + this._physicsOffset.y +  (this.scale.y  > 0 ? this.physicsSprite.body.height : 0);
         }
         super.update(this._speed * dt);
+        
     }
 
     public initPhysics(type: number, offset:{x?:number, y?:number}): boolean {
@@ -913,7 +914,6 @@ export class Spine extends PIXI.spine.Spine {
     public get boundsHeightScale():number {
         return this._boundsHeightScale;
     }
-    
 
     public getBounds(): PIXI.Rectangle {
         return this._currentBounds || this._createBounds();
@@ -924,7 +924,18 @@ export class Spine extends PIXI.spine.Spine {
         
         return this._currentBounds;
     }
-
+    
+    // also updates the bounds
+    public setScale(x:number = null, y:number = null){
+        if (x!==null){
+            this.scale.x = x;
+        }
+        if (y !== null){
+            this.scale.y = y;    
+        }
+        this._currentBounds = null;
+    }
+    
     public get width(): number {
         return this.getBounds().width;
     }
