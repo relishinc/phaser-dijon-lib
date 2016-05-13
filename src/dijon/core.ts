@@ -519,6 +519,9 @@ export class AssetManager implements INotifier {
         if (typeof resolution !== 'string') {
             resolution = this._getResolution(resolution);
         }
+        if (resolution === ''){
+                resolution = '@1x';
+            } 
         const key: string = this._getAssetKey(url);
 
         if (this.game.cache.checkImageKey(key)) {
@@ -527,7 +530,7 @@ export class AssetManager implements INotifier {
         }
         url = key + resolution + '.png';
         const jsonUrl = key + '.json';
-        const atlasUrl = key + '.atlas';
+        const atlasUrl = key + resolution + '.atlas';
         this.game.load.json(key + '.json', this._getCacheBustedUrl(this._spinePath + '/' + jsonUrl));
         this.game.load.text(key + '.atlas', this._getCacheBustedUrl(this._spinePath + '/' + atlasUrl));
         this.game.load.image(key + '.png', this._getCacheBustedUrl(this._spinePath + '/' + url));

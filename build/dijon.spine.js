@@ -2063,7 +2063,6 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
                             reader.readTuple(tuple);
                             var width = parseInt(tuple[0]);
                             var height = parseInt(tuple[1]);
-
                             var resolution = page.rendererObject.resolution;
                             x /= resolution;
                             y /= resolution;

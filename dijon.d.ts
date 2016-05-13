@@ -296,15 +296,22 @@ declare module "dijon/display" {
         protected _boundsHeightScale: number;
         protected _currentBounds: PIXI.Rectangle;
         physicsSprite: Phaser.Sprite;
+        protected _physicsOffset: {
+            x: number;
+            y: number;
+        };
         protected _physicsEnabled: boolean;
         constructor(assetName?: string, x?: number, y?: number);
         private _onCreateInternal();
         update(dt?: number): void;
-        initPhysics(type: number): boolean;
+        initPhysics(type: number, offset: {
+            x?: number;
+            y?: number;
+        }): boolean;
         disablePhysics(): void;
         enablePhysics(): void;
         static createSpineData(assetName: string): any;
-        private static _atlasCallbackFunction(line, callback);
+        static atlasCallbackFunction(line: any, callback: any): void;
         paused: boolean;
         speed: number;
         boundsOffset: Phaser.Point;
