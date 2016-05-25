@@ -359,7 +359,7 @@ declare module "dijon/utils" {
         static button(x?: number, y?: number, width?: number, height?: number, autoSize?: boolean, text?: string, callback?: Function, callbackContext?: any, defaultColor?: number, overColor?: number, downColor?: number): Phaser.Sprite;
     }
     export class Time {
-        static delayedCall(delayInMilliseconds: number, callback: Function, callbackContext: any): Phaser.TimerEvent;
+        static delayedCall(delayInMilliseconds: number, callback: Function, callbackContext: any, ...params: any[]): any;
     }
     export class Notifications {
         static ASSET_MANAGER_DATA_SET: string;
