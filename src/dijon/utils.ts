@@ -223,6 +223,12 @@ export class Placeholders {
     }
 }
 
+export class Time {
+    public static delayedCall(delayInMilliseconds: number, callback: Function, callbackContext: any) {
+        return Application.getInstance().game.time.events.add(delayInMilliseconds, callback, callbackContext);
+    }
+}
+
 export class Notifications {
     public static ASSET_MANAGER_DATA_SET: string = 'dijonAssetManagerDataSet';
     public static ASSET_MANAGER_ASSETS_CLEARED: string = 'dijonAssetManagerAssetsCleared';
@@ -230,3 +236,4 @@ export class Notifications {
     public static MOUSE_LEAVE_GLOBAL: string = 'mouseOutGlobal';
     public static MOUSE_ENTER_GLOBAL: string = 'mouseEnterGlobal';
 }
+

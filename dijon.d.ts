@@ -358,6 +358,9 @@ declare module "dijon/utils" {
         static image(x: number, y: number, texture: any, name?: string): Phaser.Image;
         static button(x?: number, y?: number, width?: number, height?: number, autoSize?: boolean, text?: string, callback?: Function, callbackContext?: any, defaultColor?: number, overColor?: number, downColor?: number): Phaser.Sprite;
     }
+    export class Time {
+        static delayedCall(delayInMilliseconds: number, callback: Function, callbackContext: any): Phaser.TimerEvent;
+    }
     export class Notifications {
         static ASSET_MANAGER_DATA_SET: string;
         static ASSET_MANAGER_ASSETS_CLEARED: string;
