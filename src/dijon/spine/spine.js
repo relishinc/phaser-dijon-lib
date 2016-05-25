@@ -1094,20 +1094,11 @@ PIXI.mesh.Mesh.prototype._renderCanvas = function (renderer) {
     var transform = this.worldTransform;
     var res = renderer.resolution;
 
-
-    if (this.spineWorldTransform.tx !== 0) {
-        transform.tx += this.spine.worldTransform.tx - this.spineWorldTransform.tx;
-    }
-
-    if (this.spineWorldTransform.ty !== 0) {
-        transform.ty += this.spine.worldTransform.ty - this.spineWorldTransform.ty;
-    }
-
     if (renderer.roundPixels) {
-        context.setTransform(transform.a * res * this.spine.scale.x, transform.b * res, transform.c * res, transform.d * res * this.spine.scale.y, (transform.tx * res) | 0, (transform.ty * res) | 0);
+        context.setTransform(transform.a * res * this.spine.scale.x, transform.b * res, transform.c * res, transform.d * res * this.spine.scale.y, (this.spineWorldTransform.tx * res) | 0, (this.spineWorldTransform.ty * res) | 0);
     }
     else {
-        context.setTransform(transform.a * res * this.spine.scale.x, transform.b * res, transform.c * res, transform.d * res * this.spine.scale.y, transform.tx * res, transform.ty * res);
+        context.setTransform(transform.a * res * this.spine.scale.x, transform.b * res, transform.c * res, transform.d * res * this.spine.scale.y, this.spineWorldTransform.tx * res, this.spineWorldTransform.ty * res);
     }
     context.rotate(this.spine.rotation  *(this.spine.scale.x < 0  ? -1 : 1))
     if (this.drawMode === PIXI.mesh.Mesh.DRAW_MODES.TRIANGLE_MESH) {
@@ -1116,7 +1107,8 @@ PIXI.mesh.Mesh.prototype._renderCanvas = function (renderer) {
     else {
         this._renderCanvasTriangles(context);
     }
-    this.spineWorldTransform = this.spine.worldTransform.clone();
+
+    
 };
 
 /**
@@ -5516,7 +5508,7 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
             slot.meshes[attachment.name] = strip;
             strip.slot = slot;
             strip.spine = this;
-            strip.spineWorldTransform = this.worldTransform.clone();
+            strip.spineWorldTransform = this.worldTransform;
 
             return strip;
         };
