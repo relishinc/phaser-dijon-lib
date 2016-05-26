@@ -301,7 +301,11 @@ declare module "dijon/display" {
             y: number;
         };
         protected _physicsEnabled: boolean;
+        nonMeshVersion: boolean;
         constructor(assetName?: string, x?: number, y?: number);
+        private _initAutoMeshLoading();
+        private _checkAutoMeshFPS();
+        private _disableAdvancedTiming();
         private _onCreateInternal();
         update(dt?: number): void;
         initPhysics(type: number, offset: {
@@ -310,6 +314,8 @@ declare module "dijon/display" {
         }): boolean;
         disablePhysics(): void;
         enablePhysics(): void;
+        checkNonMeshThreshold(): void;
+        loadNonMeshVersion(): void;
         static createSpineData(assetName: string): any;
         static atlasCallbackFunction(line: any, callback: any): void;
         paused: boolean;
@@ -323,6 +329,12 @@ declare module "dijon/display" {
         width: number;
         height: number;
         body: any;
+        static AUTO_MESH: boolean;
+        static DEFAULT_NON_MESH_SUFFIX: string;
+        static NON_MESH_SUFFIX: string;
+        static DEFAULT_NON_MESH_FPS: number;
+        static NON_MESH_FPS: number;
+        static setAutoMesh(enabled?: boolean, nonMeshSuffix?: string, nonMeshFPS?: number): void;
     }
 }
 declare module "dijon/utils" {
@@ -485,6 +497,7 @@ declare module "dijon/core" {
         setData(data: Object): void;
         clearAssets(id: string, clearAudio?: boolean, clearAtlasses?: boolean, clearImages?: boolean, clearText?: boolean, clearJSON?: boolean): void;
         clearAsset(asset: IAsset, clearAudio?: boolean, clearAtlasses?: boolean, clearImages?: boolean, clearText?: boolean, clearJSON?: boolean): void;
+        clearSpineAsset(id: string): void;
         hasLoadedAssets(id: string): boolean;
         sendNotification(notificationName: string, notificationBody?: any): void;
         baseURL: string;

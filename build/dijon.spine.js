@@ -1086,7 +1086,7 @@ PIXI.mesh.Mesh.prototype._renderWebGL = function (renderer) {
  * @private
  */
 PIXI.mesh.Mesh.prototype._renderCanvas = function (renderer) {
-    if (!this.visible) { 
+    if (!this.visible) {
         return;
     }
     var context = renderer.context;
@@ -1100,7 +1100,7 @@ PIXI.mesh.Mesh.prototype._renderCanvas = function (renderer) {
     else {
         context.setTransform(transform.a * res * this.spine.scale.x, transform.b * res, transform.c * res, transform.d * res * this.spine.scale.y, this.spineWorldTransform.tx * res, this.spineWorldTransform.ty * res);
     }
-    context.rotate(this.spine.rotation  *(this.spine.scale.x < 0  ? -1 : 1))
+    context.rotate(this.spine.rotation * (this.spine.scale.x < 0 ? -1 : 1))
     if (this.drawMode === PIXI.mesh.Mesh.DRAW_MODES.TRIANGLE_MESH) {
         this._renderCanvasTriangleMesh(context);
     }
@@ -1108,7 +1108,7 @@ PIXI.mesh.Mesh.prototype._renderCanvas = function (renderer) {
         this._renderCanvasTriangles(context);
     }
 
-    
+
 };
 
 /**
@@ -1764,14 +1764,14 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
                     // Check if completed the animation or a loop iteration.
                     if (loop ? (lastTime % endTime > time % endTime) : (lastTime < endTime && time >= endTime)) {
                         var count = Math.floor(time / endTime);
-                        this.onAnimationComplete.dispatch( current, current.animation.name);
-                        if (current.onComplete) { 
+                        this.onAnimationComplete.dispatch(current, current.animation.name);
+                        if (current.onComplete) {
                             current.onComplete(i, count);
-                        } 
-                        if (this.onComplete) { 
+                        }
+                        if (this.onComplete) {
                             this.onComplete(i, count);
-                            
-                        } 
+
+                        }
                     }
 
                     current.lastTime = current.time;
@@ -5201,6 +5201,51 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
         function Spine(game, x, y, spineData) {
             Phaser.Sprite.call(this, game, x, y);
 
+            this.setup(spineData);
+        }
+
+
+
+        Spine.fromAtlas = function (resourceName) {
+            var skeletonData = atlasParser.AnimCache[resourceName];
+
+            if (!skeletonData) {
+                throw new Error('Spine data "' + resourceName + '" does not exist in the animation cache');
+            }
+
+            return new Spine(skeletonData);
+        }
+
+        Spine.prototype = Object.create(Phaser.Sprite.prototype);
+        Spine.prototype.constructor = Spine;
+        module.exports = Spine;
+
+        Spine.globalAutoUpdate = true;
+
+        Object.defineProperties(Spine.prototype, {
+            /**
+             * If this flag is set to true, the spine animation will be autoupdated every time
+             * the object id drawn. The down side of this approach is that the delta time is
+             * automatically calculated and you could miss out on cool effects like slow motion,
+             * pause, skip ahead and the sorts. Most of these effects can be achieved even with
+             * autoupdate enabled but are harder to achieve.
+             *
+             * @member {boolean}
+             * @memberof Spine#
+             * @default true
+             */
+            autoUpdate: {
+                get: function () {
+                    return (this.updateTransform === Spine.prototype.autoUpdateTransform);
+                },
+
+                set: function (value) {
+                    this.updateTransform = value ? Spine.prototype.autoUpdateTransform : PIXI.Sprite.prototype.SpineUpdateTransform;
+                }
+            }
+        });
+
+        Spine.prototype.setup = function (spineData, reloading) {
             if (!spineData) {
                 throw new Error('The spineData param is required.');
             }
@@ -5229,15 +5274,14 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
              *
              * @member {object}
              */
-            this.stateData = new spine.AnimationStateData(spineData);
+                this.stateData = new spine.AnimationStateData(spineData);
 
-            /**
-             * A spine AnimationState object created from the spine AnimationStateData object
-             *
-             * @member {object}
-             */
-            this.state = new spine.AnimationState(this.stateData);
-
+                /**
+                 * A spine AnimationState object created from the spine AnimationStateData object
+                 *
+                 * @member {object}
+                 */
+                this.state = new spine.AnimationState(this.stateData);
             /**
              * An array of containers
              *
@@ -5282,46 +5326,6 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
              */
             this.autoUpdate = true;
         }
-
-        Spine.fromAtlas = function (resourceName) {
-            var skeletonData = atlasParser.AnimCache[resourceName];
-
-            if (!skeletonData) {
-                throw new Error('Spine data "' + resourceName + '" does not exist in the animation cache');
-            }
-
-            return new Spine(skeletonData);
-        }
-
-        Spine.prototype = Object.create(Phaser.Sprite.prototype);
-        Spine.prototype.constructor = Spine;
-        module.exports = Spine;
-
-        Spine.globalAutoUpdate = true;
-
-        Object.defineProperties(Spine.prototype, {
-            /**
-             * If this flag is set to true, the spine animation will be autoupdated every time
-             * the object id drawn. The down side of this approach is that the delta time is
-             * automatically calculated and you could miss out on cool effects like slow motion,
-             * pause, skip ahead and the sorts. Most of these effects can be achieved even with
-             * autoupdate enabled but are harder to achieve.
-             *
-             * @member {boolean}
-             * @memberof Spine#
-             * @default true
-             */
-            autoUpdate: {
-                get: function () {
-                    return (this.updateTransform === Spine.prototype.autoUpdateTransform);
-                },
-
-                set: function (value) {
-                    this.updateTransform = value ? Spine.prototype.autoUpdateTransform : PIXI.Sprite.prototype.SpineUpdateTransform;
-                }
-            }
-        });
-
         /**
          * Update the spine skeleton and its animations by delta time (dt)
          *

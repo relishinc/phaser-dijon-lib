@@ -521,7 +521,7 @@ export class AssetManager implements INotifier {
         }
         if (resolution === ''){
                 resolution = '@1x';
-            } 
+            }
         const key: string = this._getAssetKey(url);
 
         if (this.game.cache.checkImageKey(key)) {
@@ -534,6 +534,10 @@ export class AssetManager implements INotifier {
         this.game.load.json(key + '.json', this._getCacheBustedUrl(this._spinePath + '/' + jsonUrl));
         this.game.load.text(key + '.atlas', this._getCacheBustedUrl(this._spinePath + '/' + atlasUrl));
         this.game.load.image(key + '.png', this._getCacheBustedUrl(this._spinePath + '/' + url));
+
+        if (Spine.AUTO_MESH === true && key.indexOf(Spine.NON_MESH_SUFFIX) ===-1) {
+            this.loadSpine(key + Spine.NON_MESH_SUFFIX);
+        }
     }
 
     public loadBitmapFont(url: string, resolution?: any) {
@@ -778,6 +782,12 @@ export class AssetManager implements INotifier {
         }
     }
 
+    public clearSpineAsset(id: string): void{
+        this.game.cache.removeJSON(id + '.json');
+        this.game.cache.removeText(id + '.atlas');
+        this.game.cache.removeImage(id + '.png', true);
+    }
+
     /**
     * checks if the assets from this list id are already loaded
     * @param  {String}  id the asset list id to check
@@ -868,7 +878,7 @@ export class AudioManager {
         this.game = Application.getInstance().game;
     }
 
-    // private methods 
+    // private methods
     private _addAudio(key: string, isAudioSprite: boolean = false): Phaser.Sound | Phaser.AudioSprite {
         if (isAudioSprite === true) {
             return this._parseAudioSprite(key, this.game.add.audioSprite(key));
@@ -1147,7 +1157,7 @@ export class AudioManager {
 }
 
 /**
- * Game 
+ * Game
  */
 export class Game extends Phaser.Game {
     // public variables
@@ -1210,7 +1220,7 @@ export class Game extends Phaser.Game {
         }
     }
 
-    // Override this.world as the default layer that 
+    // Override this.world as the default layer that
     // .add calls will be created on.
     public setFactoryDefaultLayer(newLayer: Phaser.Group) {
         this.add.setDefaultLayer(newLayer || this.world);
@@ -1316,8 +1326,8 @@ export class Game extends Phaser.Game {
 
     // getter / setter
     /**
-     * sets the target group for the gameObjectFactory to gameLayer before adding 
-     * this way if we pass a null group to whatever method we call 
+     * sets the target group for the gameObjectFactory to gameLayer before adding
+     * this way if we pass a null group to whatever method we call
      * ie (this.game.addToGame.image(0, 0, key, frame));
      * it will be added to the appropriate layer
      */
@@ -1327,8 +1337,8 @@ export class Game extends Phaser.Game {
     }
 
     /**
-     * sets the target group for the gameObjectFactory to uiLayer before adding 
-     * this way if we pass a null group to whatever method we call 
+     * sets the target group for the gameObjectFactory to uiLayer before adding
+     * this way if we pass a null group to whatever method we call
      * ie (this.game.addToUI.image(0, 0, key, frame));
      * it will be added to the appropriate layer
      */
@@ -1371,7 +1381,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     // overrides
     /**
     * Adds an existing display object to the game world.
-    * 
+    *
     * @method Phaser.GameObjectFactory#existing
     * @param {any} object - An instance of Phaser.Sprite, Phaser.Button or any other display object.
     * @return {any} The child that was added to the World.
@@ -1383,10 +1393,10 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     }
     /**
     * Create a new `Image` object.
-    * 
+    *
     * An Image is a light-weight object you can use to display anything that doesn't need physics or animation.
-    * 
-    * It can still rotate, scale, crop and receive input events. 
+    *
+    * It can still rotate, scale, crop and receive input events.
     * This makes it perfect for logos, backgrounds, simple buttons and other non-Sprite graphics.
     *
     * @method Phaser.GameObjectFactory#image
@@ -1429,14 +1439,14 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     * Create a new Creature Animation object.
     *
     * Creature is a custom Game Object used in conjunction with the Creature Runtime libraries by Kestrel Moon Studios.
-    * 
+    *
     * It allows you to display animated Game Objects that were created with the [Creature Automated Animation Tool](http://www.kestrelmoon.com/creature/).
-    * 
+    *
     * Note 1: You can only use Phaser.Creature objects in WebGL enabled games. They do not work in Canvas mode games.
     *
     * Note 2: You must use a build of Phaser that includes the CreatureMeshBone.js runtime and gl-matrix.js, or have them
     * loaded before your Phaser game boots.
-    * 
+    *
     * See the Phaser custom build process for more details.
     *
     * @method Phaser.GameObjectFactory#creature
@@ -1476,7 +1486,7 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
 
     /**
     * A Group is a container for display objects that allows for fast pooling, recycling and collision checks.
-    * 
+    *
     * A Physics Group is the same as an ordinary Group except that is has enableBody turned on by default, so any Sprites it creates
     * are automatically given a physics body.
     *
@@ -1611,11 +1621,11 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
     * Create a new BitmapText object.
     *
     * BitmapText objects work by taking a texture file and an XML file that describes the font structure.
-    * It then generates a new Sprite object for each letter of the text, proportionally spaced out and aligned to 
+    * It then generates a new Sprite object for each letter of the text, proportionally spaced out and aligned to
     * match the font structure.
-    * 
-    * BitmapText objects are less flexible than Text objects, in that they have less features such as shadows, fills and the ability 
-    * to use Web Fonts. However you trade this flexibility for pure rendering speed. You can also create visually compelling BitmapTexts by 
+    *
+    * BitmapText objects are less flexible than Text objects, in that they have less features such as shadows, fills and the ability
+    * to use Web Fonts. However you trade this flexibility for pure rendering speed. You can also create visually compelling BitmapTexts by
     * processing the font texture in an image editor first, applying fills and any other effects required.
     *
     * To create multi-line text insert \r, \n or \r\n escape codes into the text string.

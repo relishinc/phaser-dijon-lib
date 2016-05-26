@@ -68,7 +68,7 @@ declare module PIXI {
             constructor(game: Phaser.Game, x?:number, y?:number, spineData?: any);
 
             static fromAtlas(resourceName: string): Spine;
-
+            setup(spineData?: any): void;
             update(dt?:number): void;
 
             private autoUpdateTransform(): void;
