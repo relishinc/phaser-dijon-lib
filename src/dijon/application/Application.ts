@@ -1,7 +1,6 @@
-import {Game} from './core';
-import {Mediator, Model, Notification} from './mvc';
-import {INotifier, IObserver, INotification} from './interfaces';
-import {Notifications} from './utils';
+import {INotifier, INotification, IObserver} from '../interfaces';
+import {Mediator, Model, Notification} from '../mvc';
+import {Game} from '../core';
 
 export class Application implements INotifier {
     // static constants
@@ -183,7 +182,7 @@ export class Application implements INotifier {
 
     private static _getHashQuery(): void {
         Application._hashQuery = {};
-        if (!window.location.hash || window.location.hash === undefined){
+        if (!window.location.hash || window.location.hash === undefined) {
             window.location.hash = '';
         }
         const hash = window.location.hash.substr(1, window.location.hash.length);
