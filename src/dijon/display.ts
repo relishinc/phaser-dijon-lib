@@ -783,6 +783,7 @@ export class NineSliceImage extends Group {
 export class Spine extends PIXI.spine.Spine {
     public static DEFAULT_SPEED: number = 0.0167;// 60 fps;
     public debug: boolean = false;
+    private _created: boolean = false;
     public onCreate: Phaser.Signal = new Phaser.Signal();
     public onAnimationComplete: Phaser.Signal = new Phaser.Signal();
 
@@ -812,7 +813,7 @@ export class Spine extends PIXI.spine.Spine {
         this.onAnimationComplete = this.state.onAnimationComplete;
         this.hitArea = new Phaser.Rectangle(0, - this.skeleton.data.height, this.skeleton.data.width, this.skeleton.data.height);
         //this.game.time.events.add(100, this._onCreateInternal, this);
-        this._onCreateInternal();
+
 
         if (Spine.AUTO_MESH) {
             this.game.time.advancedTiming = true;
@@ -825,7 +826,7 @@ export class Spine extends PIXI.spine.Spine {
     }
 
     private _checkAutoMeshFPS(): void {
-        console.log(this.game.time.fps, Spine.NON_MESH_FPS)
+        //console.log(this.game.time.fps, Spine.NON_MESH_FPS)
         if (this.game.time.fps < Spine.NON_MESH_FPS) {
             this.loadNonMeshVersion();
         }
@@ -836,6 +837,7 @@ export class Spine extends PIXI.spine.Spine {
     }
 
     private _onCreateInternal(): void {
+        this._created = true;
         this.onCreate.dispatch();
         this._canUpdate = true;
     }
@@ -843,6 +845,9 @@ export class Spine extends PIXI.spine.Spine {
     public update(dt: number = Spine.DEFAULT_SPEED): void {
         if (this._paused || !this._canUpdate) {
             return;
+        }
+        if (!this._created) {
+            this._onCreateInternal();
         }
         if (this._physicsEnabled === true) {
             this.x = this.physicsSprite.body.position.x + this._physicsOffset.x;
@@ -889,7 +894,7 @@ export class Spine extends PIXI.spine.Spine {
     }
 
     public loadNonMeshVersion(): void {
-        
+
         if (this.nonMeshVersion === true) {
             return;
         }
@@ -919,7 +924,7 @@ export class Spine extends PIXI.spine.Spine {
 
         // clear the meshed spine assets
         (<Game>this.game).asset.clearSpineAsset(this.name);
-        this.game.time.events.add(100, () => {this.alpha = 1}, this);
+        this.game.time.events.add(100, () => { this.alpha = 1 }, this);
     }
 
     public static createSpineData(assetName: string): any {
@@ -934,7 +939,7 @@ export class Spine extends PIXI.spine.Spine {
         //callback(PIXI.BaseTexture.fromImage('assets/spine/' + line));
         const lineArr = line.split('@' + Application.getInstance().game.resolution + 'x');
         const url = lineArr.join('');
-        
+
         callback(new PIXI.BaseTexture(Application.getInstance().game.cache.getImage(url), PIXI.scaleModes.DEFAULT));
     }
 

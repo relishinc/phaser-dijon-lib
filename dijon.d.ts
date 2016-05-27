@@ -286,6 +286,7 @@ declare module "dijon/display" {
         assetName: string;
         static DEFAULT_SPEED: number;
         debug: boolean;
+        private _created;
         onCreate: Phaser.Signal;
         onAnimationComplete: Phaser.Signal;
         protected _canUpdate: boolean;
