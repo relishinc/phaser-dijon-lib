@@ -425,10 +425,10 @@ export class Text extends Phaser.Text {
     }
 
     protected setResolution(): void {
-        if (!this.game || !this.game.device.cocoonJS) {
+        if (!this.game || !Device.cocoon) {
             return;
         }
-        else if (this.game.device.cocoonJS) {
+        else if (Device.cocoon) {
             // fix for fonts looking really blurry in cocoonJS
             this.resolution = this.game.resolution * this.game.resolution;
         }
