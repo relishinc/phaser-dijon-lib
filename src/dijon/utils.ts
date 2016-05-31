@@ -166,8 +166,8 @@ export class Placeholders {
 
         if (autoSize) {
             // Use a padding of 10
-            width = textInstance.width + 10;
-            height = textInstance.height + 10;
+            width = textInstance.realWidth + 10;
+            height = textInstance.realHeight + 10;
             // Update the text position
             textInstance.position.set(width * 0.5, height * 0.55);
         }
