@@ -67,6 +67,7 @@ export class AssetManager implements INotifier {
     private _dataPath: string = null;
     private _spriteSheetPath: string = null;
     private _imgPath: string = null;
+    private _videoPath: string = null;
     private _spinePath: string = null;
     private _fontPath: string = null;
     private _bitmapFontPath: string = null;
@@ -115,6 +116,7 @@ export class AssetManager implements INotifier {
     public static SOUND: string = 'sound';
     public static AUDIO_SPRITE: string = 'audioSprite';
     public static IMAGE: string = 'image';
+    public static VIDEO: string = 'video';
     public static ATLAS: string = 'atlas';
     public static TEXT: string = 'text';
     public static JSON: string = 'json';
@@ -391,6 +393,9 @@ export class AssetManager implements INotifier {
             case AssetManager.IMAGE:
                 this.loadImage(url, this._getResolution(asset.resolution));
                 break;
+            case AssetManager.VIDEO:
+                this.loadVideo(url, this._getResolution(asset.resolution));
+                break;
             case AssetManager.ATLAS:
                 this.loadAtlas(url, this._getResolution(asset.resolution));
                 break;
@@ -512,16 +517,31 @@ export class AssetManager implements INotifier {
             return key;
         }
         url = key + resolution + '.' + this._getExtension(url);
+
         return this.game.load.image(key, this._getCacheBustedUrl(this._imgPath + '/' + url));
+    }
+
+    public loadVideo(url: string, resolution?: any): Phaser.Loader | string {
+        if (typeof resolution !== 'string') {
+            resolution = this._getResolution(resolution);
+        }
+        const key: string = this._getAssetKey(url);
+
+        if (this.game.cache.checkVideoKey(key)) {
+            // if the image key already exists, don't reload the image and return the key
+            return key;
+        }
+        url = key + resolution + '.' + this._getExtension(url);
+        return this.game.load.video(key, this._getCacheBustedUrl(this._videoPath + '/' + url));
     }
 
     public loadSpine(url: string, resolution?: any): string | void {
         if (typeof resolution !== 'string') {
             resolution = this._getResolution(resolution);
         }
-        if (resolution === ''){
-                resolution = '@1x';
-            }
+        if (resolution === '') {
+            resolution = '@1x';
+        }
         const key: string = this._getAssetKey(url);
 
         if (this.game.cache.checkImageKey(key)) {
@@ -535,7 +555,7 @@ export class AssetManager implements INotifier {
         this.game.load.text(key + '.atlas', this._getCacheBustedUrl(this._spinePath + '/' + atlasUrl));
         this.game.load.image(key + '.png', this._getCacheBustedUrl(this._spinePath + '/' + url));
 
-        if (Spine.AUTO_MESH === true && key.indexOf(Spine.NON_MESH_SUFFIX) ===-1) {
+        if (Spine.AUTO_MESH === true && key.indexOf(Spine.NON_MESH_SUFFIX) === -1) {
             this.loadSpine(key + Spine.NON_MESH_SUFFIX);
         }
     }
@@ -546,7 +566,6 @@ export class AssetManager implements INotifier {
         }
         this.game.load.bitmapFont(url, this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + resolution + '.png'), this._getCacheBustedUrl(this._bitmapFontPath + '/' + url + resolution + '.json'));
     }
-
 
     public loadAudio(url: string, exts: any, isAudioSprite: boolean) {
         var type, path;
@@ -782,7 +801,7 @@ export class AssetManager implements INotifier {
         }
     }
 
-    public clearSpineAsset(id: string): void{
+    public clearSpineAsset(id: string): void {
         this.game.cache.removeJSON(id + '.json');
         this.game.cache.removeText(id + '.atlas');
         this.game.cache.removeImage(id + '.png', true);
@@ -817,6 +836,7 @@ export class AssetManager implements INotifier {
         this._dataPath = this._baseURL + (this._pathObj.dataPath || 'assets/data');
         this._spriteSheetPath = this._baseURL + (this._pathObj.spritesheetPath || 'assets/img/spritesheets');
         this._imgPath = this._baseURL + (this._pathObj.imgPath || 'assets/img');
+        this._videoPath = this._baseURL + (this._pathObj.imgPath || 'assets/video');
         this._spinePath = this._baseURL + (this._pathObj.spinePath || 'assets/spine');
         this._fontPath = this._baseURL + (this._pathObj.fontPath || 'assets/fonts');
         this._bitmapFontPath = this._baseURL + (this._pathObj.bitmapFontPath || 'assets/fonts/bitmap');

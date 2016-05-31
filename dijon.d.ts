@@ -409,6 +409,7 @@ declare module "dijon/core" {
         private _dataPath;
         private _spriteSheetPath;
         private _imgPath;
+        private _videoPath;
         private _spinePath;
         private _fontPath;
         private _bitmapFontPath;
@@ -446,6 +447,7 @@ declare module "dijon/core" {
         static SOUND: string;
         static AUDIO_SPRITE: string;
         static IMAGE: string;
+        static VIDEO: string;
         static ATLAS: string;
         static TEXT: string;
         static JSON: string;
@@ -486,6 +488,7 @@ declare module "dijon/core" {
         loadPhysics(key: string): Phaser.Loader;
         loadAtlas(url: string, resolution?: any): Phaser.Loader | string;
         loadImage(url: string, resolution?: any): Phaser.Loader | string;
+        loadVideo(url: string, resolution?: any): Phaser.Loader | string;
         loadSpine(url: string, resolution?: any): string | void;
         loadBitmapFont(url: string, resolution?: any): void;
         loadAudio(url: string, exts: any, isAudioSprite: boolean): void;
