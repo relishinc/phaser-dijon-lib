@@ -308,6 +308,7 @@ declare module "dijon/display" {
         private _checkAutoMeshFPS();
         private _disableAdvancedTiming();
         private _onCreateInternal();
+        protected _create(): void;
         update(dt?: number): void;
         initPhysics(type: number, offset: {
             x?: number;

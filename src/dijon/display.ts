@@ -838,15 +838,20 @@ export class Spine extends PIXI.spine.Spine {
 
     private _onCreateInternal(): void {
         this._created = true;
+        this._create();
         this.onCreate.dispatch();
         this._canUpdate = true;
+    }
+    
+    protected _create():void{
+        // to override
     }
 
     public update(dt: number = Spine.DEFAULT_SPEED): void {
         if (this._paused || !this._canUpdate) {
             return;
         }
-        if (!this._created) {
+        if (!this._created && this.parent) {
             this._onCreateInternal();
         }
         if (this._physicsEnabled === true) {
@@ -854,7 +859,6 @@ export class Spine extends PIXI.spine.Spine {
             this.y = this.physicsSprite.body.position.y + this._physicsOffset.y + (this.scale.y > 0 ? this.physicsSprite.body.height : 0);
         }
         super.update(this._speed * dt);
-
     }
 
     public initPhysics(type: number, offset: { x?: number, y?: number }): boolean {
