@@ -807,10 +807,9 @@ export class Spine extends PIXI.spine.Spine {
 
     constructor(public assetName: string = '', x: number = 0, y: number = 0) {
         super(Application.getInstance().game, x, y, Spine.createSpineData(Spine.LOAD_NON_MESH ? (assetName + Spine.NON_MESH_SUFFIX) : assetName));
-        if (Spine.LOAD_NON_MESH){
+        if (Spine.LOAD_NON_MESH) {
             this.nonMeshVersion = true;
         }
-        this.visible = false;
         // initialize static
         Spine.initialize();
         Spine.onNonMeshFPS.addOnce(this.loadNonMeshVersion, this);
@@ -834,7 +833,6 @@ export class Spine extends PIXI.spine.Spine {
         this._create();
         this.onCreate.dispatch();
         this._canUpdate = true;
-        this.visible = true;
     }
 
     protected _create(): void {
@@ -842,6 +840,9 @@ export class Spine extends PIXI.spine.Spine {
     }
 
     public update(dt: number = Spine.DEFAULT_SPEED): void {
+        if (!this._created && this.parent) {
+            this._onCreateInternal();
+        }
         if (this._paused || !this._canUpdate) {
             return;
         }
@@ -853,9 +854,7 @@ export class Spine extends PIXI.spine.Spine {
 
         super.update(this._speed * dt);
 
-        if (!this._created && this.parent) {
-            this._onCreateInternal();
-        }
+
     }
 
     public initPhysics(type: number, offset: { x?: number, y?: number }): boolean {
@@ -1048,9 +1047,9 @@ export class Spine extends PIXI.spine.Spine {
         Spine.game.time.advancedTiming = true;
         Spine.game.time.events.add(2000, Spine.checkNonMeshThreshold, Spine);
     }
-    
-    public static destroyNonMeshTimer():void{
-        if (Spine.nonMeshTimer !== null){
+
+    public static destroyNonMeshTimer(): void {
+        if (Spine.nonMeshTimer !== null) {
             Spine.game.time.events.remove(Spine.nonMeshTimer);
             Spine.nonMeshTimer = null;
         }
