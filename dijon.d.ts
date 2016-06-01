@@ -304,9 +304,6 @@ declare module "dijon/display" {
         protected _physicsEnabled: boolean;
         nonMeshVersion: boolean;
         constructor(assetName?: string, x?: number, y?: number);
-        private _initAutoMeshLoading();
-        private _checkAutoMeshFPS();
-        private _disableAdvancedTiming();
         private _onCreateInternal();
         protected _create(): void;
         update(dt?: number): void;
@@ -316,7 +313,6 @@ declare module "dijon/display" {
         }): boolean;
         disablePhysics(): void;
         enablePhysics(): void;
-        checkNonMeshThreshold(): void;
         loadNonMeshVersion(): void;
         static createSpineData(assetName: string): any;
         static atlasCallbackFunction(line: any, callback: any): void;
@@ -331,11 +327,22 @@ declare module "dijon/display" {
         width: number;
         height: number;
         body: any;
+        protected static INITIALIZED: boolean;
+        protected static game: Game;
+        protected static nonMeshTimer: Phaser.TimerEvent;
+        protected static onNonMeshFPS: Phaser.Signal;
+        static LOAD_NON_MESH: boolean;
         static AUTO_MESH: boolean;
         static DEFAULT_NON_MESH_SUFFIX: string;
         static NON_MESH_SUFFIX: string;
         static DEFAULT_NON_MESH_FPS: number;
         static NON_MESH_FPS: number;
+        static initialize(): void;
+        static detectAutoMesh(): void;
+        static destroyNonMeshTimer(): void;
+        static checkNonMeshThreshold(): void;
+        static checkAutoMeshFPS(): void;
+        static disableAdvancedTiming(): void;
         static setAutoMesh(enabled?: boolean, nonMeshSuffix?: string, nonMeshFPS?: number): void;
     }
 }
