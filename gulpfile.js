@@ -56,14 +56,13 @@ gulp.task('clean', function() {
         });
 });
 
-gulp.task('combine', function() {
-    return gulp.src('./src/**/*.ts')
-        .pipe(concat('dijon.ts'))
-        .pipe(gulp.dest('./src/dijon'));
+gulp.task('typescript', function(done){
+    return gulp.src('./typescript/*.ts')
+        .pipe(gulp.dest('./build/typescript'));    
 });
 
 gulp.task('compile', function(done) {
-    return sequence('clean', 'lib', 'uglify', 'addons', 'spine', done);
+    return sequence('clean', 'lib', 'uglify', 'addons', 'spine', 'typescript', done);
 });
 
 gulp.task('default', function(done) {
