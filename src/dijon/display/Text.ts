@@ -1,6 +1,10 @@
 import {Application} from '../application';
 import {Game} from '../core';
+import {Device} from '../utils';
 
+/**
+ * Text
+ */
 export class Text extends Phaser.Text {
     // constants
     public static DEFAULT_FONT_SIZE: number = 12;
@@ -52,10 +56,10 @@ export class Text extends Phaser.Text {
     }
 
     protected setResolution(): void {
-        if (!this.game || !this.game.device.cocoonJS) {
+        if (!this.game || !Device.cocoon) {
             return;
         }
-        else if (this.game.device.cocoonJS) {
+        else if (Device.cocoon) {
             // fix for fonts looking really blurry in cocoonJS
             this.resolution = this.game.resolution * this.game.resolution;
         }

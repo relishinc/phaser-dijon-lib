@@ -308,6 +308,7 @@ declare module "dijon/display/NineSliceImage" {
     }
 }
 declare module "dijon/display/Spine" {
+    import { Game } from "dijon/core";
     export class Spine extends PIXI.spine.Spine {
         assetName: string;
         static DEFAULT_SPEED: number;
@@ -330,10 +331,8 @@ declare module "dijon/display/Spine" {
         protected _physicsEnabled: boolean;
         nonMeshVersion: boolean;
         constructor(assetName?: string, x?: number, y?: number);
-        private _initAutoMeshLoading();
-        private _checkAutoMeshFPS();
-        private _disableAdvancedTiming();
         private _onCreateInternal();
+        protected _create(): void;
         update(dt?: number): void;
         initPhysics(type: number, offset: {
             x?: number;
@@ -341,7 +340,6 @@ declare module "dijon/display/Spine" {
         }): boolean;
         disablePhysics(): void;
         enablePhysics(): void;
-        checkNonMeshThreshold(): void;
         loadNonMeshVersion(): void;
         static createSpineData(assetName: string): any;
         static atlasCallbackFunction(line: any, callback: any): void;
@@ -356,11 +354,22 @@ declare module "dijon/display/Spine" {
         width: number;
         height: number;
         body: any;
+        protected static INITIALIZED: boolean;
+        protected static game: Game;
+        protected static nonMeshTimer: Phaser.TimerEvent;
+        protected static onNonMeshFPS: Phaser.Signal;
+        static LOAD_NON_MESH: boolean;
         static AUTO_MESH: boolean;
         static DEFAULT_NON_MESH_SUFFIX: string;
         static NON_MESH_SUFFIX: string;
         static DEFAULT_NON_MESH_FPS: number;
         static NON_MESH_FPS: number;
+        static initialize(): void;
+        static detectAutoMesh(): void;
+        static destroyNonMeshTimer(): void;
+        static checkNonMeshThreshold(): void;
+        static checkAutoMeshFPS(): void;
+        static disableAdvancedTiming(): void;
         static setAutoMesh(enabled?: boolean, nonMeshSuffix?: string, nonMeshFPS?: number): void;
     }
 }
@@ -447,6 +456,7 @@ declare module "dijon/core/AssetManager" {
         private _dataPath;
         private _spriteSheetPath;
         private _imgPath;
+        private _videoPath;
         private _spinePath;
         private _fontPath;
         private _bitmapFontPath;
@@ -484,6 +494,7 @@ declare module "dijon/core/AssetManager" {
         static SOUND: string;
         static AUDIO_SPRITE: string;
         static IMAGE: string;
+        static VIDEO: string;
         static ATLAS: string;
         static TEXT: string;
         static JSON: string;
@@ -524,6 +535,7 @@ declare module "dijon/core/AssetManager" {
         loadPhysics(key: string): Phaser.Loader;
         loadAtlas(url: string, resolution?: any): Phaser.Loader | string;
         loadImage(url: string, resolution?: any): Phaser.Loader | string;
+        loadVideo(url: string, resolution?: any): Phaser.Loader | string;
         loadSpine(url: string, resolution?: any): string | void;
         loadBitmapFont(url: string, resolution?: any): void;
         loadAudio(url: string, exts: any, isAudioSprite: boolean): void;

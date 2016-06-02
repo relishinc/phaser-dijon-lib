@@ -182,7 +182,7 @@ export class Application implements INotifier {
 
     private static _getHashQuery(): void {
         Application._hashQuery = {};
-        if (!window.location.hash || window.location.hash === undefined) {
+        if (!window.location.hash || window.location.hash === undefined){
             window.location.hash = '';
         }
         const hash = window.location.hash.substr(1, window.location.hash.length);

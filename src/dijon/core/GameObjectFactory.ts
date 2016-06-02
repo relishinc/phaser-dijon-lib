@@ -3,6 +3,10 @@
  */
 
 import {Text, Group, Spine, Sprite, Component} from '../display';
+/**
+ * GameObjectFactory
+ */
+
 export class GameObjectFactory extends Phaser.GameObjectFactory {
     // The layer the current object will be added to. This is used by helper functions in Game.ts.
     protected _targetGroup: Phaser.Group = null;

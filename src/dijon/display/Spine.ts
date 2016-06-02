@@ -24,7 +24,13 @@ export class Spine extends PIXI.spine.Spine {
     public nonMeshVersion: boolean = false;
 
     constructor(public assetName: string = '', x: number = 0, y: number = 0) {
-        super(Application.getInstance().game, x, y, Spine.createSpineData(assetName));
+        super(Application.getInstance().game, x, y, Spine.createSpineData(Spine.LOAD_NON_MESH ? (assetName + Spine.NON_MESH_SUFFIX) : assetName));
+        if (Spine.LOAD_NON_MESH) {
+            this.nonMeshVersion = true;
+        }
+        // initialize static
+        Spine.initialize();
+        Spine.onNonMeshFPS.addOnce(this.loadNonMeshVersion, this);
 
         this.name = assetName;
         this.skeleton.setToSetupPose();
@@ -35,46 +41,37 @@ export class Spine extends PIXI.spine.Spine {
         this.hitArea = new Phaser.Rectangle(0, - this.skeleton.data.height, this.skeleton.data.width, this.skeleton.data.height);
         //this.game.time.events.add(100, this._onCreateInternal, this);
 
-
-        if (Spine.AUTO_MESH) {
-            this.game.time.advancedTiming = true;
-            this.game.time.events.add(2000, this._initAutoMeshLoading, this);
+        if (Spine.AUTO_MESH && !Spine.LOAD_NON_MESH) {
+            Spine.detectAutoMesh();
         }
-    }
-
-    private _initAutoMeshLoading(): void {
-        this.checkNonMeshThreshold();
-    }
-
-    private _checkAutoMeshFPS(): void {
-        //console.log(this.game.time.fps, Spine.NON_MESH_FPS)
-        if (this.game.time.fps < Spine.NON_MESH_FPS) {
-            this.loadNonMeshVersion();
-        }
-    }
-
-    private _disableAdvancedTiming(): void {
-        this.game.time.advancedTiming = false;
     }
 
     private _onCreateInternal(): void {
         this._created = true;
+        this._create();
         this.onCreate.dispatch();
         this._canUpdate = true;
     }
 
+    protected _create(): void {
+        // to override
+    }
+
     public update(dt: number = Spine.DEFAULT_SPEED): void {
+        if (!this._created && this.parent) {
+            this._onCreateInternal();
+        }
         if (this._paused || !this._canUpdate) {
             return;
         }
-        if (!this._created) {
-            this._onCreateInternal();
-        }
+        
         if (this._physicsEnabled === true) {
             this.x = this.physicsSprite.body.position.x + this._physicsOffset.x;
             this.y = this.physicsSprite.body.position.y + this._physicsOffset.y + (this.scale.y > 0 ? this.physicsSprite.body.height : 0);
         }
+
         super.update(this._speed * dt);
+
 
     }
 
@@ -107,11 +104,6 @@ export class Spine extends PIXI.spine.Spine {
 
     public enablePhysics(): void {
         this._physicsEnabled = true;
-    }
-
-    public checkNonMeshThreshold(): void {
-        this.game.time.events.repeat(500, 10, this._checkAutoMeshFPS, this);
-        this.game.time.events.add(5500, this._disableAdvancedTiming, this);
     }
 
     public loadNonMeshVersion(): void {
@@ -243,7 +235,15 @@ export class Spine extends PIXI.spine.Spine {
         return this.physicsSprite.body;
     }
 
+    // static methods
     // auto mesh / non-mesh asset loading
+    protected static INITIALIZED: boolean = false;
+    protected static game: Game = null;
+    protected static nonMeshTimer: Phaser.TimerEvent = null;
+    protected static onNonMeshFPS: Phaser.Signal;
+
+    public static LOAD_NON_MESH: boolean = false;
+
     public static AUTO_MESH: boolean = false;
 
     public static DEFAULT_NON_MESH_SUFFIX: string = '_nomesh';
@@ -251,6 +251,46 @@ export class Spine extends PIXI.spine.Spine {
 
     public static DEFAULT_NON_MESH_FPS: number = 35;
     public static NON_MESH_FPS: number = null;
+
+    public static initialize(): void {
+        if (Spine.INITIALIZED) {
+            return;
+        }
+        Spine.INITIALIZED = true;
+        Spine.game = Application.getInstance().game;
+        Spine.onNonMeshFPS = new Phaser.Signal();
+    }
+
+    public static detectAutoMesh(): void {
+        Spine.game.time.advancedTiming = true;
+        Spine.game.time.events.add(2000, Spine.checkNonMeshThreshold, Spine);
+    }
+
+    public static destroyNonMeshTimer(): void {
+        if (Spine.nonMeshTimer !== null) {
+            Spine.game.time.events.remove(Spine.nonMeshTimer);
+            Spine.nonMeshTimer = null;
+        }
+    }
+    public static checkNonMeshThreshold(): void {
+        Spine.destroyNonMeshTimer();
+        Spine.nonMeshTimer = Spine.game.time.events.repeat(500, 10, Spine.checkAutoMeshFPS, Spine);
+        Spine.game.time.events.add(5500, Spine.disableAdvancedTiming, Spine);
+    }
+
+    public static checkAutoMeshFPS(): void {
+        //console.log(this.game.time.fps, Spine.NON_MESH_FPS)
+        if (Spine.game.time.fps < Spine.NON_MESH_FPS) {
+            Spine.destroyNonMeshTimer();
+            Spine.LOAD_NON_MESH = true;
+            Spine.onNonMeshFPS.dispatch();
+            Spine.disableAdvancedTiming();
+        }
+    }
+
+    public static disableAdvancedTiming(): void {
+        Spine.game.time.advancedTiming = false;
+    }
 
     public static setAutoMesh(enabled: boolean = true, nonMeshSuffix: string = Spine.DEFAULT_NON_MESH_SUFFIX, nonMeshFPS: number = Spine.DEFAULT_NON_MESH_FPS) {
         Spine.AUTO_MESH = enabled;
