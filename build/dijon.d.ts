@@ -732,7 +732,7 @@ declare module "dijon/core/TransitionManager" {
     }
 }
 declare module "dijon/core" {
-    export { AnalyticsManager } from "dijon/core/AnalyticsManager";
+    export { AnalyticsManager, AnalyticsException } from "dijon/core/AnalyticsManager";
     export { AssetManager } from "dijon/core/AssetManager";
     export { AudioManager } from "dijon/core/AudioManager";
     export { Game } from "dijon/core/Game";
