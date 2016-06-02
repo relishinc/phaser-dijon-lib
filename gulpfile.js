@@ -10,7 +10,7 @@ var gulp = require('gulp'),
     typedoc = require("gulp-typedoc");
 
 gulp.task('lib', function() {
-    var tsResult = gulp.src('./src/main.ts')
+    var tsResult = gulp.src('./src/lib.ts')
         .pipe(sourcemaps.init())
         .pipe(ts({
             out: 'dijon.js',

@@ -1,21 +1,5 @@
 /// <reference path="typescript/phaser.comments.d.ts" />
 /// <reference path="typescript/spine.d.ts" />
-declare module "dijon/core/AnalyticsManager" {
-    export class AnalyticsManager {
-        enabled: boolean;
-        category: string;
-        constructor(enabled?: boolean, category?: string);
-        trackEvent(action?: string, label?: string, value?: string): void;
-        trackOmnitureEvent(gameName: string, activity: string, isGameEvent: boolean): boolean;
-        active: boolean;
-        ga: Function;
-    }
-    export class AnalyticsException {
-        message: string;
-        name: string;
-        constructor(message: string);
-    }
-}
 declare module "dijon/interfaces/IAsset" {
     export interface IAsset {
         url: string;
@@ -118,14 +102,14 @@ declare module "dijon/interfaces/ITiledmapAssets" {
     }
 }
 declare module "dijon/interfaces/ITransition" {
-    import { ITransitionHandler, IPreloadHandler } from "interfaces";
+    import { ITransitionHandler, IPreloadHandler } from "dijon/interfaces";
     export interface ITransition {
         inHandler?: ITransitionHandler;
         preloadHandler?: IPreloadHandler;
         outHandler: ITransitionHandler;
     }
 }
-declare module "interfaces" {
+declare module "dijon/interfaces" {
     export { IAsset } from "dijon/interfaces/IAsset";
     export { IAssetList } from "dijon/interfaces/IAssetList";
     export { IBrowser } from "dijon/interfaces/IBrowser";
@@ -140,123 +124,24 @@ declare module "interfaces" {
     export { ITransition } from "dijon/interfaces/ITransition";
     export { ITransitionHandler } from "dijon/interfaces/ITransitionHandler";
 }
-declare module "dijon/mvc/Model" {
-    import { Application } from "application";
-    import { Game } from "core";
-    export class Model {
-        private modelName;
-        app: Application;
-        game: Game;
-        protected _data: any;
-        static MODEL_NAME: string;
-        constructor(dataKey?: string, modelName?: string);
-        onRegister(): void;
-        onRemoved(): void;
-        protected getKeyExists(key: string): boolean;
-        setData(dataKey: string): any;
-        getData(): any;
-        destroy(): void;
+declare module "dijon/core/AnalyticsManager" {
+    export class AnalyticsManager {
+        enabled: boolean;
+        category: string;
+        constructor(enabled?: boolean, category?: string);
+        trackEvent(action?: string, label?: string, value?: string): void;
+        trackOmnitureEvent(gameName: string, activity: string, isGameEvent: boolean): boolean;
+        active: boolean;
+        ga: Function;
+    }
+    export class AnalyticsException {
+        message: string;
         name: string;
+        constructor(message: string);
     }
-}
-declare module "dijon/mvc/CopyModel" {
-    import { Model } from "dijon/mvc/Model";
-    export class CopyModel extends Model {
-        static MODEL_NAME: string;
-        private _languages;
-        constructor(dataKey?: string);
-        getCopy(groupId: string, itemId: string): string;
-        getCopyGroup(groupId: string): any;
-        addLanguage(languageId: string, dataKey: string): any;
-        changeLanguage(languageId: string): void;
-        name: string;
-    }
-}
-declare module "dijon/mvc/Mediator" {
-    import { Application } from "application";
-    import { IObserver, INotification } from "interfaces";
-    import { Game } from "core";
-    export class Mediator implements IObserver {
-        protected _viewComponent: any;
-        static MEDIATOR_NAME: string;
-        protected mediatorName: string;
-        protected app: Application;
-        protected game: Game;
-        constructor(_viewComponent?: any, autoReg?: boolean, mediatorName?: string);
-        protected register(): void;
-        protected remove(): void;
-        onRegister(): void;
-        onRemoved(): void;
-        destroy(): void;
-        listNotificationInterests(): string[];
-        handleNotification(notification: INotification): void;
-        sendNotification(notificationName: string, notificationBody?: any): void;
-        viewComponent: any;
-        name: string;
-    }
-}
-declare module "dijon/mvc/Notification" {
-    import { INotification } from "interfaces";
-    export class Notification implements INotification {
-        private _name;
-        private _body;
-        constructor(_name: string, _body?: any);
-        getName(): string;
-        setBody(body: any): void;
-        getBody(): any;
-        destroy(): void;
-    }
-}
-declare module "mvc" {
-    export { CopyModel } from "dijon/mvc/CopyModel";
-    export { Mediator } from "dijon/mvc/Mediator";
-    export { Model } from "dijon/mvc/Model";
-    export { Notification } from "dijon/mvc/Notification";
-}
-declare module "dijon/application/Application" {
-    import { INotifier, IObserver } from "interfaces";
-    import { Mediator, Model } from "mvc";
-    import { Game } from "core";
-    export class Application implements INotifier {
-        protected static instance: any;
-        protected static SINGLETON_MSG: string;
-        game: Game;
-        protected _mediator: Mediator;
-        protected _models: {
-            [name: string]: Model;
-        };
-        protected _mediators: {
-            [name: string]: Mediator;
-        };
-        protected _observerMap: {
-            [name: string]: IObserver[];
-        };
-        private static _hashQuery;
-        constructor();
-        protected windowHashChange(): void;
-        protected createGame(): void;
-        protected startGame(): void;
-        addPlugins(): void;
-        registerModel(model: Model): Model;
-        retrieveModel(modelName: string): Model;
-        removeModel(modelToRemove: Model): void;
-        registerMediator(mediator: Mediator): void;
-        retrieveMediator(mediatorName: string): Mediator;
-        removeMediator(mediatorToRemove: Mediator): void;
-        registerObserver(observer: IObserver): void;
-        removeObserver(notificationName: string, observerToRemove: IObserver): void;
-        sendNotification(notificationName: string, notficationBody?: any): void;
-        private _notifyObservers(notification);
-        private static _getHashQuery();
-        static getInstance(): Application;
-        static queryVar(variableId: string): any;
-    }
-}
-declare module "application" {
-    export { Application } from "dijon/application/Application";
 }
 declare module "dijon/utils/Device" {
-    import { IBrowser } from "interfaces";
+    import { IBrowser } from "dijon/interfaces";
     export class Device {
         static IOS: string;
         static ANDROID: string;
@@ -294,8 +179,8 @@ declare module "dijon/utils/Textures" {
     }
 }
 declare module "dijon/display/Component" {
-    import { Game } from "core";
-    import { Sprite, Group } from "display";
+    import { Game } from "dijon/core";
+    import { Sprite, Group } from "dijon/display";
     export class Component {
         game: Game;
         name: string;
@@ -309,8 +194,8 @@ declare module "dijon/display/Component" {
     }
 }
 declare module "dijon/display/Group" {
-    import { Game, GameObjectFactory } from "core";
-    import { Mediator } from "mvc";
+    import { Game, GameObjectFactory } from "dijon/core";
+    import { Mediator } from "dijon/mvc";
     import { Component } from "dijon/display/Component";
     export class Group extends Phaser.Group {
         name: string;
@@ -340,7 +225,7 @@ declare module "dijon/display/Group" {
     }
 }
 declare module "dijon/display/Sprite" {
-    import { Game } from "core";
+    import { Game } from "dijon/core";
     import { Component } from "dijon/display/Component";
     export class Sprite extends Phaser.Sprite {
         name: string;
@@ -480,7 +365,7 @@ declare module "dijon/display/Spine" {
     }
 }
 declare module "dijon/display/Text" {
-    import { Game } from "core";
+    import { Game } from "dijon/core";
     export class Text extends Phaser.Text {
         lineSpacing: number;
         static DEFAULT_FONT_SIZE: number;
@@ -514,7 +399,7 @@ declare module "dijon/display/Text" {
         realWidth: number;
     }
 }
-declare module "display" {
+declare module "dijon/display" {
     export { Component } from "dijon/display/Component";
     export { Group } from "dijon/display/Group";
     export { InvisibleButton } from "dijon/display/InvisibleButton";
@@ -540,7 +425,7 @@ declare module "dijon/utils/Util" {
         static isNumber(value: string): boolean;
     }
 }
-declare module "utils" {
+declare module "dijon/utils" {
     export { Device } from "dijon/utils/Device";
     export { Logger } from "dijon/utils/Logger";
     export { Notifications } from "dijon/utils/Notifications";
@@ -550,9 +435,9 @@ declare module "utils" {
     export { Util } from "dijon/utils/Util";
 }
 declare module "dijon/core/AssetManager" {
-    import { Application } from "application";
-    import { Game } from "core";
-    import { INotifier, IPathConfig, IAsset } from "interfaces";
+    import { Application } from "dijon/application";
+    import { Game } from "dijon/core";
+    import { INotifier, IPathConfig, IAsset } from "dijon/interfaces";
     export class AssetManager implements INotifier {
         protected app: Application;
         private _data;
@@ -662,7 +547,7 @@ declare module "dijon/core/AssetManager" {
     }
 }
 declare module "dijon/core/AudioManager" {
-    import { Game } from "core";
+    import { Game } from "dijon/core";
     export class AudioManager {
         game: Game;
         private _defaultVolume;
@@ -696,10 +581,10 @@ declare module "dijon/core/AudioManager" {
     }
 }
 declare module "dijon/core/Game" {
-    import { Application } from "application";
-    import { IGameConfig } from "interfaces";
-    import { AssetManager, TransitionManager, SequenceManager, StorageManager, AudioManager, AnalyticsManager, GameObjectFactory } from "core";
-    import { Group } from "display";
+    import { Application } from "dijon/application";
+    import { IGameConfig } from "dijon/interfaces";
+    import { AssetManager, TransitionManager, SequenceManager, StorageManager, AudioManager, AnalyticsManager, GameObjectFactory } from "dijon/core";
+    import { Group } from "dijon/display";
     export class Game extends Phaser.Game {
         app: Application;
         config: IGameConfig;
@@ -739,7 +624,7 @@ declare module "dijon/core/Game" {
     }
 }
 declare module "dijon/core/GameObjectFactory" {
-    import { Text, Group, Sprite, Component } from "display";
+    import { Text, Group, Sprite, Component } from "dijon/display";
     export class GameObjectFactory extends Phaser.GameObjectFactory {
         protected _targetGroup: Phaser.Group;
         protected _defaultLayer: Phaser.Group;
@@ -766,7 +651,7 @@ declare module "dijon/core/GameObjectFactory" {
     }
 }
 declare module "dijon/core/SequenceManager" {
-    import { Game } from "core";
+    import { Game } from "dijon/core";
     export class SequenceManager {
         game: Game;
         private _defaultInterval;
@@ -776,9 +661,9 @@ declare module "dijon/core/SequenceManager" {
     }
 }
 declare module "dijon/core/State" {
-    import { Application } from "application";
-    import { Game, GameObjectFactory } from "core";
-    import { Mediator } from "mvc";
+    import { Application } from "dijon/application";
+    import { Game, GameObjectFactory } from "dijon/core";
+    import { Mediator } from "dijon/mvc";
     export class State extends Phaser.State {
         protected _audio: Phaser.Sound[];
         protected _mediator: Mediator;
@@ -804,7 +689,7 @@ declare module "dijon/core/State" {
     }
 }
 declare module "dijon/core/StorageManager" {
-    import { Game } from "core";
+    import { Game } from "dijon/core";
     export class StorageManager {
         game: Game;
         private _localStorageAvailable;
@@ -818,8 +703,8 @@ declare module "dijon/core/StorageManager" {
     }
 }
 declare module "dijon/core/TransitionManager" {
-    import { Game } from "core";
-    import { ITransitionHandler, IPreloadHandler } from "interfaces";
+    import { Game } from "dijon/core";
+    import { ITransitionHandler, IPreloadHandler } from "dijon/interfaces";
     export class TransitionManager {
         game: Game;
         onTransitionOutComplete: Phaser.Signal;
@@ -846,7 +731,7 @@ declare module "dijon/core/TransitionManager" {
         transitionOut(): void;
     }
 }
-declare module "core" {
+declare module "dijon/core" {
     export { AnalyticsManager } from "dijon/core/AnalyticsManager";
     export { AssetManager } from "dijon/core/AssetManager";
     export { AudioManager } from "dijon/core/AudioManager";
@@ -857,11 +742,126 @@ declare module "core" {
     export { StorageManager } from "dijon/core/StorageManager";
     export { TransitionManager } from "dijon/core/TransitionManager";
 }
-declare module "main" {
-    export {  };
-    export * from "core";
-    export * from "display";
-    export * from "interfaces";
-    export * from "mvc";
-    export * from "utils";
+declare module "dijon/mvc/Model" {
+    import { Application } from "dijon/application";
+    import { Game } from "dijon/core";
+    export class Model {
+        private modelName;
+        app: Application;
+        game: Game;
+        protected _data: any;
+        static MODEL_NAME: string;
+        constructor(dataKey?: string, modelName?: string);
+        onRegister(): void;
+        onRemoved(): void;
+        protected getKeyExists(key: string): boolean;
+        setData(dataKey: string): any;
+        getData(): any;
+        destroy(): void;
+        name: string;
+    }
+}
+declare module "dijon/mvc/CopyModel" {
+    import { Model } from "dijon/mvc/Model";
+    export class CopyModel extends Model {
+        static MODEL_NAME: string;
+        private _languages;
+        constructor(dataKey?: string);
+        getCopy(groupId: string, itemId: string): string;
+        getCopyGroup(groupId: string): any;
+        addLanguage(languageId: string, dataKey: string): any;
+        changeLanguage(languageId: string): void;
+        name: string;
+    }
+}
+declare module "dijon/mvc/Mediator" {
+    import { Application } from "dijon/application";
+    import { IObserver, INotification } from "dijon/interfaces";
+    import { Game } from "dijon/core";
+    export class Mediator implements IObserver {
+        protected _viewComponent: any;
+        static MEDIATOR_NAME: string;
+        protected mediatorName: string;
+        protected app: Application;
+        protected game: Game;
+        constructor(_viewComponent?: any, autoReg?: boolean, mediatorName?: string);
+        protected register(): void;
+        protected remove(): void;
+        onRegister(): void;
+        onRemoved(): void;
+        destroy(): void;
+        listNotificationInterests(): string[];
+        handleNotification(notification: INotification): void;
+        sendNotification(notificationName: string, notificationBody?: any): void;
+        viewComponent: any;
+        name: string;
+    }
+}
+declare module "dijon/mvc/Notification" {
+    import { INotification } from "dijon/interfaces";
+    export class Notification implements INotification {
+        private _name;
+        private _body;
+        constructor(_name: string, _body?: any);
+        getName(): string;
+        setBody(body: any): void;
+        getBody(): any;
+        destroy(): void;
+    }
+}
+declare module "dijon/mvc" {
+    export { CopyModel } from "dijon/mvc/CopyModel";
+    export { Mediator } from "dijon/mvc/Mediator";
+    export { Model } from "dijon/mvc/Model";
+    export { Notification } from "dijon/mvc/Notification";
+}
+declare module "dijon/application/Application" {
+    import { INotifier, IObserver } from "dijon/interfaces";
+    import { Mediator, Model } from "dijon/mvc";
+    import { Game } from "dijon/core";
+    export class Application implements INotifier {
+        protected static instance: any;
+        protected static SINGLETON_MSG: string;
+        game: Game;
+        protected _mediator: Mediator;
+        protected _models: {
+            [name: string]: Model;
+        };
+        protected _mediators: {
+            [name: string]: Mediator;
+        };
+        protected _observerMap: {
+            [name: string]: IObserver[];
+        };
+        private static _hashQuery;
+        constructor();
+        protected windowHashChange(): void;
+        protected createGame(): void;
+        protected startGame(): void;
+        addPlugins(): void;
+        registerModel(model: Model): Model;
+        retrieveModel(modelName: string): Model;
+        removeModel(modelToRemove: Model): void;
+        registerMediator(mediator: Mediator): void;
+        retrieveMediator(mediatorName: string): Mediator;
+        removeMediator(mediatorToRemove: Mediator): void;
+        registerObserver(observer: IObserver): void;
+        removeObserver(notificationName: string, observerToRemove: IObserver): void;
+        sendNotification(notificationName: string, notficationBody?: any): void;
+        private _notifyObservers(notification);
+        private static _getHashQuery();
+        static getInstance(): Application;
+        static queryVar(variableId: string): any;
+    }
+}
+declare module "dijon/application" {
+    export { Application } from "dijon/application/Application";
+}
+declare module "lib" {
+    export * from "dijon/application";
+    export * from "dijon/core";
+    export * from "dijon/display";
+    export * from "dijon/interfaces";
+    export * from "dijon/mvc";
+    export * from "dijon/utils";
 }

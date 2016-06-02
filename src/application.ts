@@ -1,1 +1,0 @@
-export {Application} from './dijon/application/Application';
