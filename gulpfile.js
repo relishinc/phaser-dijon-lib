@@ -16,14 +16,13 @@ gulp.task('lib', function() {
             out: 'dijon.js',
             target: "ES5",
             module: "system",
-            emitError: false,
             declaration: true,
             sortOutput:true,
             removeComments: true
         }))
         
     return merge([
-        tsResult.dts.pipe(gulp.dest('.')),
+        tsResult.dts.pipe(gulp.dest('./build')),
         tsResult.js
             .pipe(concat('dijon.js'))
             .pipe(sourcemaps.write())
@@ -45,7 +44,7 @@ gulp.task('addons', function() {
 
 gulp.task('spine', function() {
     return gulp.src('src/dijon/spine/spine.js')
-         .pipe(concat('dijon.spine.js'))
+        .pipe(concat('dijon.spine.js'))
         .pipe(gulp.dest('build'));
 })
 
@@ -64,7 +63,7 @@ gulp.task('combine', function() {
 });
 
 gulp.task('compile', function(done) {
-    return sequence('clean', 'lib', 'uglify', 'addons','spine', done);
+    return sequence('clean', 'lib', 'uglify', 'addons', 'spine', done);
 });
 
 gulp.task('default', function(done) {
