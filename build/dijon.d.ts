@@ -504,6 +504,7 @@ declare module "dijon/core/AssetManager" {
         static TILEDMAP_LAYER: string;
         static PHYSICS: string;
         static SPINE: string;
+        static BITMAP_FONT: string;
         static ASSET_LIST: string;
         static RESOLUTION_2X: string;
         static RESOLUTION_3X: string;

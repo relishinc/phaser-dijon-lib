@@ -80,6 +80,7 @@ export class AssetManager implements INotifier {
     public static TILEDMAP_LAYER: string = 'layer';
     public static PHYSICS: string = 'physics';
     public static SPINE: string = 'spine';
+    public static BITMAP_FONT: string = 'bitmapFont';
     public static ASSET_LIST: string = 'assetList';
 
     // resolutions
@@ -200,9 +201,15 @@ export class AssetManager implements INotifier {
     * @private
     */
     private _gameFileComplete(progress: number, id?: string, fileIndex?: number, totalFiles?: number) {
+       
         if (this.game.cache.checkKey(Phaser.Cache.IMAGE, id)) {
             this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
+            
         }
+        // else if (this.game.cache.checkKey(Phaser.Cache.BITMAPFONT, id)){
+        //     this._setBaseTextureResolution(this.game.cache.getBaseTexture(id, Phaser.Cache.BITMAPFONT));
+        //     console.log('id', id, this.game.cache.getBaseTexture(id, Phaser.Cache.BITMAPFONT).resolution);
+        // }
         this._fileCompleteProgress = progress;
         this.onFileComplete.dispatch(this.getLoadProgress(), id, fileIndex, totalFiles);
     }
@@ -370,6 +377,9 @@ export class AssetManager implements INotifier {
                 break;
             case AssetManager.SPINE:
                 this.loadSpine(url, this._getResolution(asset.resolution))
+                break;
+            case AssetManager.BITMAP_FONT:
+                this.loadBitmapFont(url, this._getResolution(asset.resolution))
                 break;
         }
     }

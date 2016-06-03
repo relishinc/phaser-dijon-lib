@@ -1747,3 +1747,4 @@ Phaser.Tilemap.EAST = 1;
 Phaser.Tilemap.SOUTH = 2;
 Phaser.Tilemap.WEST = 3;
 Phaser.Tilemap.prototype = tilemapprototype;
+
