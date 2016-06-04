@@ -178,6 +178,19 @@ declare module "dijon/utils/Textures" {
         static ellipse(width?: number, height?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
     }
 }
+declare module "dijon/display/BitmapText" {
+    export class BitmapText extends Phaser.BitmapText {
+        protected _autoFlatten: boolean;
+        protected _color: number;
+        constructor(x?: number, y?: number, font?: string, text?: string, size?: number, align?: string, color?: number, smoothing?: boolean, autoFlatten?: boolean, makeImage?: boolean);
+        makeImage(): void;
+        flatten(delay?: number): void;
+        unFlatten(): void;
+        autoFlatten: boolean;
+        color: number;
+        text: string;
+    }
+}
 declare module "dijon/display/Component" {
     import { Game } from "dijon/core";
     import { Sprite, Group } from "dijon/display";
@@ -409,6 +422,7 @@ declare module "dijon/display/Text" {
     }
 }
 declare module "dijon/display" {
+    export { BitmapText } from "dijon/display/BitmapText";
     export { Component } from "dijon/display/Component";
     export { Group } from "dijon/display/Group";
     export { InvisibleButton } from "dijon/display/InvisibleButton";
@@ -637,7 +651,7 @@ declare module "dijon/core/Game" {
     }
 }
 declare module "dijon/core/GameObjectFactory" {
-    import { Text, Group, Sprite, Component } from "dijon/display";
+    import { Text, Group, Sprite, Component, BitmapText } from "dijon/display";
     export class GameObjectFactory extends Phaser.GameObjectFactory {
         protected _targetGroup: Phaser.Group;
         protected _defaultLayer: Phaser.Group;
@@ -657,6 +671,7 @@ declare module "dijon/core/GameObjectFactory" {
         dSprite(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: Component[], group?: Phaser.Group): Sprite;
         dGroup(x?: number, y?: number, name?: string, addToStage?: boolean, components?: Component[], enableBody?: boolean, physicsBodyType?: number, group?: Phaser.Group): Group;
         dText(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object, group?: Phaser.Group): Text;
+        dBitmapText(x?: number, y?: number, font?: string, text?: string, size?: number, align?: string, color?: number, smoothing?: boolean, autoFlatten?: boolean, makeImage?: boolean, group?: Phaser.Group): BitmapText;
         spine(assetName?: string, x?: number, y?: number, group?: Phaser.Group): any;
         setDefaultLayer(value: Phaser.Group): void;
         defaultLayer: Phaser.Group;

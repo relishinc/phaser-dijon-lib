@@ -1,3 +1,4 @@
+export {BitmapText} from './display/BitmapText';
 export {Component} from './display/Component';
 export {Group} from './display/Group';
 export {InvisibleButton} from './display/InvisibleButton';

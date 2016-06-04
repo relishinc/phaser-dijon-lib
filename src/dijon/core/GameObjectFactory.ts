@@ -2,7 +2,7 @@
  * GameObjectFactory
  */
 
-import {Text, Group, Spine, Sprite, Component} from '../display';
+import {Text, Group, Spine, Sprite, Component, BitmapText} from '../display';
 /**
  * GameObjectFactory
  */
@@ -308,6 +308,12 @@ export class GameObjectFactory extends Phaser.GameObjectFactory {
         if (group === undefined) { group = this.targetGroup; }
         this.targetGroup = null;
         return group.add(new Text(x, y, text, fontName, fontSize, fontColor, fontAlign, wordWrap, width, lineSpacing, settings));
+    }
+    
+    public dBitmapText(x:number = 0, y:number = 0, font:string = null, text:string = "", size:number = 12, align:string = 'left', color:number = 0xffffff, smoothing:boolean = true, autoFlatten:boolean = true, makeImage:boolean = false, group?: Phaser.Group): BitmapText {
+        if (group === undefined) { group = this.targetGroup; }
+        this.targetGroup = null;
+        return group.add(new BitmapText(x, y, font, text, size, align, color, smoothing, autoFlatten, makeImage));
     }
 
     public spine(assetName: string = '', x: number = 0, y: number = 0, group?: Phaser.Group) {
