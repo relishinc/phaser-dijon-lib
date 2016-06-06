@@ -64,7 +64,7 @@ export class Spine extends PIXI.spine.Spine {
         if (this._paused || !this._canUpdate) {
             return;
         }
-        
+
         if (this._physicsEnabled === true) {
             this.x = this.physicsSprite.body.position.x + this._physicsOffset.x;
             this.y = this.physicsSprite.body.position.y + this._physicsOffset.y + (this.scale.y > 0 ? this.physicsSprite.body.height : 0);
@@ -117,7 +117,7 @@ export class Spine extends PIXI.spine.Spine {
         this.alpha = 0;
         // store the tracks and signals
         const tracks = this.state.tracks;
-        const signal:Phaser.Signal = this.state.onAnimationComplete;
+        const signal: Phaser.Signal = this.state.onAnimationComplete;
 
         // destroy the slot containers
         while (this.children.length > 0) {
@@ -127,12 +127,18 @@ export class Spine extends PIXI.spine.Spine {
         // reset the spine data
         this.setup(Spine.createSpineData(this.name + Spine.NON_MESH_SUFFIX));
         this.state.apply(this.skeleton);
+
         // reset the state
         this.state.tracks = tracks;
+       
         // reset the signals
-        if (signal !== null){
+        if (signal !== null) {
+            this.state.onAnimationComplete.removeAll();
+            this.state.onAnimationComplete.dispose();
+            this.state.onAnimationComplete = null;
+            this.onAnimationComplete = null;
             this.state.onAnimationComplete = signal;
-        }else{
+        } else {
             this.state.onAnimationComplete = new Phaser.Signal();
         }
         this.onAnimationComplete = this.state.onAnimationComplete;
