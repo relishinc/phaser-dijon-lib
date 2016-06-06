@@ -117,7 +117,7 @@ export class Spine extends PIXI.spine.Spine {
         this.alpha = 0;
         // store the tracks and signals
         const tracks = this.state.tracks;
-        const signal = this.state.onAnimationComplete;
+        const signal:Phaser.Signal = this.state.onAnimationComplete;
 
         // destroy the slot containers
         while (this.children.length > 0) {
@@ -130,7 +130,12 @@ export class Spine extends PIXI.spine.Spine {
         // reset the state
         this.state.tracks = tracks;
         // reset the signals
-        this.onAnimationComplete = this.state.onAnimationComplete = signal;
+        if (signal !== null){
+            this.state.onAnimationComplete = signal;
+        }else{
+            this.state.onAnimationComplete = new Phaser.Signal();
+        }
+        this.onAnimationComplete = this.state.onAnimationComplete;
 
         // force an update
         //this.update();
