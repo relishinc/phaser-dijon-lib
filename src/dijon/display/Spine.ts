@@ -6,7 +6,8 @@ export class Spine extends PIXI.spine.Spine {
     public debug: boolean = false;
     private _created: boolean = false;
     public onCreate: Phaser.Signal = new Phaser.Signal();
-    public onAnimationComplete: Phaser.Signal = new Phaser.Signal();
+    public onAnimationComplete: Phaser.Signal = null;
+    public onMeshSwap: Phaser.Signal = new Phaser.Signal();
 
     protected _canUpdate: boolean = true;
     protected _paused: boolean = false;
@@ -149,6 +150,8 @@ export class Spine extends PIXI.spine.Spine {
         // clear the meshed spine assets
         (<Game>this.game).asset.clearSpineAsset(this.name);
         this.game.time.events.add(100, () => { this.alpha = 1 }, this);
+
+        this.onMeshSwap.dispatch();
     }
 
     public static createSpineData(assetName: string): any {

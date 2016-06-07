@@ -329,6 +329,7 @@ declare module "dijon/display/Spine" {
         private _created;
         onCreate: Phaser.Signal;
         onAnimationComplete: Phaser.Signal;
+        onMeshSwap: Phaser.Signal;
         protected _canUpdate: boolean;
         protected _paused: boolean;
         protected _speed: number;
