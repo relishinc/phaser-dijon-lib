@@ -11,7 +11,7 @@ PIXI.DisplayObject.PIVOT_BOTTOM_RIGHT = 'br';
 /**
  * Centers the pivot point
  */
-PIXI.DisplayObject.prototype.centerPivot = function(updateNeeded) {
+PIXI.DisplayObject.prototype.centerPivot = function (updateNeeded) {
     if (updateNeeded !== false) {
         this.updateTransform();
     }
@@ -22,7 +22,7 @@ PIXI.DisplayObject.prototype.centerPivot = function(updateNeeded) {
  * Sets the location of the pivot point
  * @param {String} pivotLocation one of 'center', 'r', 'l', 't', 'b', 'tl', 'tr', 'bl', 'br'
  */
-PIXI.DisplayObject.prototype.setPivot = function(pivotLocation) {
+PIXI.DisplayObject.prototype.setPivot = function (pivotLocation) {
     this.updateTransform();
     var w = this.getBounds().width;//this instanceof Phaser.Group ? this.width : this.realWidth;
     var h = this.getBounds().height;//this instanceof Phaser.Group ? this.height : this.realHeight;
@@ -62,7 +62,7 @@ PIXI.DisplayObject.prototype.setPivot = function(pivotLocation) {
  * @param {String} marker the sound marker to play
  * @param {Number} volume the volume of the sound
  */
-PIXI.DisplayObject.prototype.addOverSound = function(marker, volume) {
+PIXI.DisplayObject.prototype.addOverSound = function (marker, volume) {
     if (!this.inputEnabled)
         this.inputEnabled = true;
 
@@ -77,7 +77,7 @@ PIXI.DisplayObject.prototype.addOverSound = function(marker, volume) {
  * @param {String} marker the sound marker to play
  * @param {Number} volume the volume of the sound
  */
-PIXI.DisplayObject.prototype.addOutSound = function(marker, volume) {
+PIXI.DisplayObject.prototype.addOutSound = function (marker, volume) {
     if (!this.inputEnabled)
         this.inputEnabled = true;
 
@@ -92,7 +92,7 @@ PIXI.DisplayObject.prototype.addOutSound = function(marker, volume) {
  * @param {String} marker the sound marker to play
  * @param {Number} volume the volume of the sound
  */
-PIXI.DisplayObject.prototype.addDownSound = function(marker, volume) {
+PIXI.DisplayObject.prototype.addDownSound = function (marker, volume) {
     if (!this.inputEnabled)
         this.inputEnabled = true;
 
@@ -106,7 +106,7 @@ PIXI.DisplayObject.prototype.addDownSound = function(marker, volume) {
  * playOverSound plays the over sound
  * @return {void}
  */
-PIXI.DisplayObject.prototype.playOverSound = function() {
+PIXI.DisplayObject.prototype.playOverSound = function () {
     if (this.overSound && this.overSound.isPlaying) {
         this.overSound.stop();
     }
@@ -125,7 +125,7 @@ PIXI.DisplayObject.prototype.playOverSound = function() {
  * playOutSound plays the out sound
  * @return {void}
  */
-PIXI.DisplayObject.prototype.playOutSound = function() {
+PIXI.DisplayObject.prototype.playOutSound = function () {
     this.stopSounds();
     if (typeof this.outSoundMarker === 'undefined') {
         console.log('no out sound defined')
@@ -139,7 +139,7 @@ PIXI.DisplayObject.prototype.playOutSound = function() {
  * playDownSound plays the down sound
  * @return {void}
  */
-PIXI.DisplayObject.prototype.playDownSound = function() {
+PIXI.DisplayObject.prototype.playDownSound = function () {
     this.stopSounds();
     if (typeof this.downSoundMarker === 'undefined') {
         console.log('no down sound defined')
@@ -153,7 +153,7 @@ PIXI.DisplayObject.prototype.playDownSound = function() {
  * stopSounds stops the over, out and down sounds
  * @return {void}
  */
-PIXI.DisplayObject.prototype.stopSounds = function() {
+PIXI.DisplayObject.prototype.stopSounds = function () {
     if (this.overSound && this.overSound.isPlaying) {
         this.overSound.stop();
     }
@@ -166,11 +166,11 @@ PIXI.DisplayObject.prototype.stopSounds = function() {
 };
 
 Object.defineProperty(PIXI.DisplayObject.prototype, "scales", {
-    get: function() {
+    get: function () {
         return this.scale.x;
     },
 
-    set: function(value) {
+    set: function (value) {
         this.scale.set(value, value);
     }
 });
@@ -180,7 +180,7 @@ Object.defineProperty(PIXI.DisplayObject.prototype, "scales", {
 /**
  * PHASER FRAMEWORK FIXES FOR @2X RESOLLUTION
  */
-Phaser.Text.prototype.updateText = function() {
+Phaser.Text.prototype.updateText = function () {
     this.texture.baseTexture.resolution = this.resolution;
 
     this.context.font = this.style.font;
@@ -292,7 +292,7 @@ Phaser.Text.prototype.updateText = function() {
  *
  * @private
  */
-Phaser.Text.prototype.updateTexture = function() {
+Phaser.Text.prototype.updateTexture = function () {
     this.texture.baseTexture.resolution = this.resolution;
 
     this.texture.baseTexture.width = this.canvas.width;
@@ -308,7 +308,7 @@ Phaser.Text.prototype.updateTexture = function() {
     this.texture.baseTexture.dirty();
     this.dirty = false;
 };
-PIXI.Sprite.prototype.getBounds = function(matrix) {
+PIXI.Sprite.prototype.getBounds = function (matrix) {
     var width = this.texture.frame.width / this.texture.baseTexture.resolution;
     var height = this.texture.frame.height / this.texture.baseTexture.resolution;
 
@@ -391,7 +391,7 @@ PIXI.Sprite.prototype.getBounds = function(matrix) {
 
     return bounds;
 };
-Phaser.Text.prototype.getBounds = function() {
+Phaser.Text.prototype.getBounds = function () {
     if (this.dirty) {
         this.updateText();
     }
@@ -478,7 +478,7 @@ Phaser.Text.prototype.getBounds = function() {
     return bounds;
 };
 
-Phaser.Text.prototype.setShadow = function(x, y, color, blur, shadowStroke, shadowFill) {
+Phaser.Text.prototype.setShadow = function (x, y, color, blur, shadowStroke, shadowFill) {
     var divisor = this.game.resolution == 1 ? 2 : this.game.resolution;
 
     if (x === undefined) {
@@ -524,12 +524,10 @@ Phaser.Text.prototype.setShadow = function(x, y, color, blur, shadowStroke, shad
 * @param matrix {Matrix} the transformation matrix of the sprite
 * @return {Rectangle} the framing rectangle
 */
-PIXI.DisplayObjectContainer.prototype.getBounds = function () { 
-    if(!this._currentBounds)
-    {
+PIXI.DisplayObjectContainer.prototype.getBounds = function () {
+    if (!this._currentBounds) {
 
-        if (this.children.length === 0)
-        {
+        if (this.children.length === 0) {
             return new PIXI.Rectangle();
         }
 
@@ -547,12 +545,10 @@ PIXI.DisplayObjectContainer.prototype.getBounds = function () {
 
         var childVisible = false;
 
-        for (var i = 0, j = this.children.length; i < j; ++i)
-        {
+        for (var i = 0, j = this.children.length; i < j; ++i) {
             var child = this.children[i];
 
-            if (!child.visible)
-            {
+            if (!child.visible) {
                 continue;
             }
 
@@ -570,8 +566,7 @@ PIXI.DisplayObjectContainer.prototype.getBounds = function () {
             maxY = maxY > childMaxY ? maxY : childMaxY;
         }
 
-        if (!childVisible)
-        {
+        if (!childVisible) {
             return math.Rectangle.EMPTY;
         }
 
@@ -589,14 +584,12 @@ PIXI.DisplayObjectContainer.prototype.getBounds = function () {
 }
 
 PIXI.DisplayObjectContainer.prototype.containerGetBounds = PIXI.DisplayObjectContainer.prototype.getBounds;
-PIXI.DisplayObjectContainer.prototype.getLocalBounds = function ()
-{
+PIXI.DisplayObjectContainer.prototype.getLocalBounds = function () {
     var matrixCache = this.worldTransform;
 
     this.worldTransform = PIXI.Matrix.IDENTITY;
 
-    for (var i = 0, j = this.children.length; i < j; ++i)
-    {
+    for (var i = 0, j = this.children.length; i < j; ++i) {
         this.children[i].updateTransform();
     }
 
@@ -604,7 +597,7 @@ PIXI.DisplayObjectContainer.prototype.getLocalBounds = function ()
 
     this._currentBounds = null;
 
-    return this.getBounds( PIXI.Matrix.IDENTITY );
+    return this.getBounds(PIXI.Matrix.IDENTITY);
 };
 
 
@@ -619,7 +612,7 @@ PIXI.DisplayObjectContainer.prototype.getLocalBounds = function ()
 * @param forcePowerOfTwo {Boolean} Whether we want to force the texture to be a power of two
 * @param renderSession {RenderSession} 
 */
-PIXI.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo, renderSession) {
+PIXI.TilingSprite.prototype.generateTilingTexture = function (forcePowerOfTwo, renderSession) {
     if (!this.texture.baseTexture.hasLoaded) {
         return;
     }
@@ -702,7 +695,7 @@ PIXI.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo, re
 * @param {Phaser.Pointer} pointer - The pointer to use for the test.
 * @param {Phaser.Point} localPoint - The local translated point.
 */
-Phaser.Input.prototype.hitTest = function(displayObject, pointer, localPoint) {
+Phaser.Input.prototype.hitTest = function (displayObject, pointer, localPoint) {
 
     if (!displayObject.worldVisible) {
         return false;
@@ -775,7 +768,7 @@ Phaser.Input.prototype.hitTest = function(displayObject, pointer, localPoint) {
  */
 Object.defineProperty(PIXI.DisplayObject.prototype, 'realWidth', {
 
-    get: function() {
+    get: function () {
         return this.scale.x * this.texture.frame.width / this.texture.baseTexture.resolution;
     }
 
@@ -789,7 +782,7 @@ Object.defineProperty(PIXI.DisplayObject.prototype, 'realWidth', {
  */
 Object.defineProperty(PIXI.DisplayObject.prototype, 'realHeight', {
 
-    get: function() {
+    get: function () {
         return this.scale.y * this.texture.frame.height / this.texture.baseTexture.resolution;
     }
 
@@ -818,7 +811,7 @@ Object.defineProperty(PIXI.DisplayObject.prototype, 'realHeight', {
 * @param {integer} [spacing=0] - The spacing between each tile in the sheet (in pixels).
 * @param {object} [properties={}] - Custom Tileset properties.
 */
-Phaser.Tileset = function(name, firstgid, width, height, margin, spacing, properties, resolution) {
+Phaser.Tileset = function (name, firstgid, width, height, margin, spacing, properties, resolution) {
     if (width === undefined || width <= 0) { width = 32; }
     if (height === undefined || height <= 0) { height = 32; }
     if (margin === undefined) { margin = 0; }
@@ -936,7 +929,7 @@ Phaser.Tileset.prototype = {
     * @param {number} y - The y coordinate to draw to.
     * @param {integer} index - The index of the tile within the set to draw.
     */
-    draw: function(context, x, y, index) {
+    draw: function (context, x, y, index) {
 
         //  Correct the tile index for the set and bias for interlacing
         var coordIndex = (index - this.firstgid) << 1;
@@ -964,7 +957,7 @@ Phaser.Tileset.prototype = {
     * @public
     * @return {boolean} True if this tileset contains the given index.
     */
-    containsTileIndex: function(tileIndex) {
+    containsTileIndex: function (tileIndex) {
 
         return (
             tileIndex >= this.firstgid &&
@@ -980,7 +973,7 @@ Phaser.Tileset.prototype = {
     * @public
     * @param {Image} image - The image that contains the tiles.
     */
-    setImage: function(image, resolution) {
+    setImage: function (image, resolution) {
         if (resolution === undefined) { resolution = 1; }
         this.resolution = resolution;
         this.image = image;
@@ -995,7 +988,7 @@ Phaser.Tileset.prototype = {
     * @param {integer} [margin=0] - The margin around the tiles in the sheet (in pixels).
     * @param {integer} [spacing=0] - The spacing between the tiles in the sheet (in pixels).
     */
-    setSpacing: function(margin, spacing) {
+    setSpacing: function (margin, spacing) {
 
         this.tileMargin = margin | 0;
         this.tileSpacing = spacing | 0;
@@ -1014,7 +1007,7 @@ Phaser.Tileset.prototype = {
     * @param {integer} imageWidth - The (expected) width of the image to slice.
     * @param {integer} imageHeight - The (expected) height of the image to slice.
     */
-    updateTileData: function(imageWidth, imageHeight) {
+    updateTileData: function (imageWidth, imageHeight) {
         // May be fractional values
         var rowCount = (imageHeight - this.tileMargin * 2 + this.tileSpacing) / (this.tileHeight + this.tileSpacing);
         var colCount = (imageWidth - this.tileMargin * 2 + this.tileSpacing) / (this.tileWidth + this.tileSpacing);
@@ -1061,7 +1054,7 @@ Phaser.Tileset.prototype = {
 Phaser.Tileset.prototype.constructor = Phaser.Tileset;
 
 
-Phaser.Tilemap.prototype.addTilesetImage = function(tileset, key, resolution, tileWidth, tileHeight, tileMargin, tileSpacing, gid) {
+Phaser.Tilemap.prototype.addTilesetImage = function (tileset, key, resolution, tileWidth, tileHeight, tileMargin, tileSpacing, gid) {
 
     if (tileset === undefined) { return null; }
     if (resolution === undefined) { resolution = 1; }
@@ -1153,7 +1146,7 @@ Phaser.Tilemap.prototype.addTilesetImage = function(tileset, key, resolution, ti
     }
 }
 
-Phaser.TilemapParser.parseTiledJSON = function(json) {
+Phaser.TilemapParser.parseTiledJSON = function (json) {
 
     if (json.orientation !== 'orthogonal') {
         console.warn('TilemapParser.parseTiledJSON - Only orthogonal map types are supported in this version of Phaser');
@@ -1452,7 +1445,7 @@ Phaser.TilemapParser.parseTiledJSON = function(json) {
             }
             else if (curo.objects[v].polyline) {
                 var object = {
-                    
+
                     name: curo.objects[v].name,
                     type: curo.objects[v].type,
                     x: curo.objects[v].x,
@@ -1595,13 +1588,13 @@ Phaser.TilemapParser.parseTiledJSON = function(json) {
     return map;
 }
 
-Phaser.Tilemap.prototype.getObjectLayerProps = function(name) {
-    return this.objectLayerProperties[name]  === undefined ?  null : this.objectLayerProperties[name];
+Phaser.Tilemap.prototype.getObjectLayerProps = function (name) {
+    return this.objectLayerProperties[name] === undefined ? null : this.objectLayerProperties[name];
 }
 
 var tilemapprototype = Phaser.Tilemap.prototype;
 
-Phaser.Tilemap = function(game, key, tileWidth, tileHeight, width, height) {
+Phaser.Tilemap = function (game, key, tileWidth, tileHeight, width, height) {
 
     /**
     * @property {Phaser.Game} game - A reference to the currently running Game.
@@ -1748,3 +1741,44 @@ Phaser.Tilemap.SOUTH = 2;
 Phaser.Tilemap.WEST = 3;
 Phaser.Tilemap.prototype = tilemapprototype;
 
+
+PIXI.DisplayObject.prototype._generateCachedSprite = function () {
+    this._cacheAsBitmap = false;
+
+    var bounds = this.getLocalBounds();
+    var res = this.game.resolution;
+
+    if (!this._cachedSprite) {
+        var renderTexture = new PIXI.RenderTexture(bounds.width * res | 0, bounds.height * res | 0);//, renderSession.renderer);
+        renderTexture.baseTexture.resolution = res;
+        this._cachedSprite = new PIXI.Sprite(renderTexture);
+        this._cachedSprite.texture.resolution = res;
+        this._cachedSprite.worldTransform = this.worldTransform;
+    }
+    else {
+        this._cachedSprite.texture.resize(bounds.width * res | 0, bounds.height * res | 0);
+    }
+
+    //REMOVE filter!
+    var tempFilters = this._filters;
+    this._filters = null;
+
+    this._cachedSprite.filters = tempFilters;
+
+    PIXI.DisplayObject._tempMatrix.tx = -bounds.x;
+    PIXI.DisplayObject._tempMatrix.ty = -bounds.y;
+
+    this._cachedSprite.texture.render(this, PIXI.DisplayObject._tempMatrix, true);
+
+    this._cachedSprite.anchor.x = -(bounds.x / bounds.width);
+    this._cachedSprite.anchor.y = -(bounds.y / bounds.height);
+
+    this._filters = tempFilters;
+
+    this._cacheAsBitmap = true;
+    this.setHitAreaToBounds();
+};
+
+PIXI.DisplayObject.prototype.setHitAreaToBounds = function(){
+    this.hitArea = this.getBounds();
+};
