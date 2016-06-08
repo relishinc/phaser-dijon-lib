@@ -5318,13 +5318,6 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
                 }
 
             }
-
-            /**
-             * Should the Spine object update its transforms
-             *
-             * @member {boolean}
-             */
-            this.autoUpdate = true;
         }
         /**
          * Update the spine skeleton and its animations by delta time (dt)
