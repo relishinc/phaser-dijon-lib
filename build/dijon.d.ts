@@ -180,6 +180,7 @@ declare module "dijon/utils/Textures" {
 }
 declare module "dijon/display/BitmapText" {
     export class BitmapText extends Phaser.BitmapText {
+        private _text;
         protected _autoFlatten: boolean;
         protected _color: number;
         protected _isImage: boolean;

@@ -6,6 +6,9 @@ import {Device} from '../utils';
  * Text
  */
 export class BitmapText extends Phaser.BitmapText {
+    // from Phaser.BitmapText
+    private _text:string;
+    
     protected _autoFlatten: boolean = true;
     protected _color: number = 0xffffff;
     protected _isImage: boolean = false;
@@ -13,8 +16,6 @@ export class BitmapText extends Phaser.BitmapText {
 
     constructor(x: number = 0, y: number = 0, font: string = null, text: string = "", size: number = 12, align: string = 'left', color: number = 0xffffff, smoothing: boolean = true, autoFlatten: boolean = true, makeImage: boolean = false) {
         super(Application.getInstance().game, x, y, font, text, size, align);
-
-
 
         if (smoothing) {
             this.smoothed = true;
@@ -31,8 +32,6 @@ export class BitmapText extends Phaser.BitmapText {
                 this.color = color;
             }
         }
-
-
     }
 
     public makeImage(): void {
@@ -102,8 +101,8 @@ export class BitmapText extends Phaser.BitmapText {
         if (this._autoFlatten) {
             this.unFlatten();
         }
-        if (this['_text'] !== undefined && value !== this['_text']) {
-            this['_text'] = value.toString() || '';
+        if (this._text !== undefined && value !== this._text) {
+            this._text = value.toString() || '';
             this.updateText();
         }
         if (this._autoFlatten) {
@@ -112,7 +111,7 @@ export class BitmapText extends Phaser.BitmapText {
     }
 
     public get text(): string {
-        return this['_text'];
+        return this._text;
     }
 
 }
