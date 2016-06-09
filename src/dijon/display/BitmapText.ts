@@ -7,8 +7,8 @@ import {Device} from '../utils';
  */
 export class BitmapText extends Phaser.BitmapText {
     // from Phaser.BitmapText
-    private _text:string;
-    
+    private _text: string;
+
     protected _autoFlatten: boolean = true;
     protected _color: number = 0xffffff;
     protected _isImage: boolean = false;
@@ -81,7 +81,7 @@ export class BitmapText extends Phaser.BitmapText {
             this.unFlatten();
         }
         this._color = value;
-        
+
         if (this._isImage) {
             this._internalImage.tint = this._color;
         } else {
@@ -98,20 +98,38 @@ export class BitmapText extends Phaser.BitmapText {
     }
 
     public set text(value: string) {
+        const wasvisible = this.visible === true;
+        const prevalpha = this.alpha;
+        if (!wasvisible) {
+            this.visible = true;
+            this.alpha = 0;
+        }
         if (this._autoFlatten) {
             this.unFlatten();
         }
-        if (this._text !== undefined && value !== this._text) {
-            this._text = value.toString() || '';
+        if (this['_text'] !== undefined && value !== this['_text']) {
+            this['_text'] = value.toString() || '';
             this.updateText();
         }
         if (this._autoFlatten) {
             this.flatten();
         }
+        if (!wasvisible) {
+            this.visible = false;
+            this.alpha = prevalpha;
+        }
     }
 
     public get text(): string {
         return this._text;
+    }
+
+    public get realWidth(): number {
+        return this.getBounds().width;
+    }
+
+    public get realHeight(): number {
+        return this.getBounds().height;
     }
 
 }

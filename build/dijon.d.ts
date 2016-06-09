@@ -192,6 +192,8 @@ declare module "dijon/display/BitmapText" {
         autoFlatten: boolean;
         color: number;
         text: string;
+        realWidth: number;
+        realHeight: number;
     }
 }
 declare module "dijon/display/Component" {
