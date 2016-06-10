@@ -1742,43 +1742,4 @@ Phaser.Tilemap.WEST = 3;
 Phaser.Tilemap.prototype = tilemapprototype;
 
 
-PIXI.DisplayObject.prototype._generateCachedSprite = function () {
-    this._cacheAsBitmap = false;
 
-    var bounds = this.getLocalBounds();
-    var res = this.game.resolution;
-
-    if (!this._cachedSprite) {
-        var renderTexture = new PIXI.RenderTexture(bounds.width * res | 0, bounds.height * res | 0);//, renderSession.renderer);
-        renderTexture.baseTexture.resolution = res;
-        this._cachedSprite = new PIXI.Sprite(renderTexture);
-        this._cachedSprite.texture.resolution = res;
-        this._cachedSprite.worldTransform = this.worldTransform;
-    }
-    else {
-        this._cachedSprite.texture.resize(bounds.width * res | 0, bounds.height * res | 0);
-    }
-
-    //REMOVE filter!
-    var tempFilters = this._filters;
-    this._filters = null;
-
-    this._cachedSprite.filters = tempFilters;
-
-    PIXI.DisplayObject._tempMatrix.tx = -bounds.x;
-    PIXI.DisplayObject._tempMatrix.ty = -bounds.y;
-
-    this._cachedSprite.texture.render(this, PIXI.DisplayObject._tempMatrix, true);
-
-    this._cachedSprite.anchor.x = -(bounds.x / bounds.width);
-    this._cachedSprite.anchor.y = -(bounds.y / bounds.height);
-
-    this._filters = tempFilters;
-
-    this._cacheAsBitmap = true;
-    this.setHitAreaToBounds();
-};
-
-PIXI.DisplayObject.prototype.setHitAreaToBounds = function(){
-    this.hitArea = this.getBounds();
-};

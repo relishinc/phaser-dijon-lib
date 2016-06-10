@@ -8,6 +8,7 @@ import {Device} from '../utils';
 export class BitmapText extends Phaser.BitmapText {
     // from Phaser.BitmapText
     private _text: string;
+    private _glyphs: any[];
 
     protected _autoFlatten: boolean = true;
     protected _color: number = 0xffffff;
@@ -16,11 +17,10 @@ export class BitmapText extends Phaser.BitmapText {
 
     constructor(x: number = 0, y: number = 0, font: string = null, text: string = "", size: number = 12, align: string = 'left', color: number = 0xffffff, smoothing: boolean = true, autoFlatten: boolean = true, makeImage: boolean = false) {
         super(Application.getInstance().game, x, y, font, text, size, align);
-
-        if (smoothing) {
-            this.smoothed = true;
+        
+        if (smoothing !== true) {
+            this.smoothed = false;
         }
-
         if (makeImage !== true) {
             if (color !== 0xffffff) {
                 this.color = color;
@@ -44,11 +44,11 @@ export class BitmapText extends Phaser.BitmapText {
             n--;
         }
 
-        const glyphs = this['_glyphs'];
+        const glyphs = this._glyphs;
         for (var i = 0; i < glyphs.length; i++) {
             glyphs[i].destroy();
         }
-        this['_glyphs'] = [];
+        this._glyphs = [];
     }
 
     public flatten(delay: number = null): void {
@@ -107,8 +107,8 @@ export class BitmapText extends Phaser.BitmapText {
         if (this._autoFlatten) {
             this.unFlatten();
         }
-        if (this['_text'] !== undefined && value !== this['_text']) {
-            this['_text'] = value.toString() || '';
+        if (this._text !== undefined && value !== this._text) {
+            this._text = value.toString() || '';
             this.updateText();
         }
         if (this._autoFlatten) {
@@ -132,4 +132,44 @@ export class BitmapText extends Phaser.BitmapText {
         return this.getBounds().height;
     }
 
+    protected _generateCachedSprite = function () {
+        this._cacheAsBitmap = false;
+
+        var bounds = this.getLocalBounds();
+        var res = this.game.resolution;
+
+        if (!this._cachedSprite) {
+            var renderTexture = new PIXI.RenderTexture(bounds.width * res | 0, bounds.height * res | 0);//, renderSession.renderer);
+            renderTexture.baseTexture.resolution = res;
+            this._cachedSprite = new PIXI.Sprite(renderTexture);
+            this._cachedSprite.texture.resolution = res;
+            this._cachedSprite.worldTransform = this.worldTransform;
+        }
+        else {
+            this._cachedSprite.texture.resize(bounds.width * res | 0, bounds.height * res | 0);
+        }
+
+        //REMOVE filter!
+        var tempFilters = this._filters;
+        this._filters = null;
+
+        this._cachedSprite.filters = tempFilters;
+
+        PIXI.DisplayObject['_tempMatrix'].tx = -bounds.x;
+        PIXI.DisplayObject['_tempMatrix'].ty = -bounds.y;
+
+        this._cachedSprite.texture.render(this, PIXI.DisplayObject['_tempMatrix'], true);
+
+        this._cachedSprite.anchor.x = -(bounds.x / bounds.width);
+        this._cachedSprite.anchor.y = -(bounds.y / bounds.height);
+
+        this._filters = tempFilters;
+
+        this._cacheAsBitmap = true;
+        this.setHitAreaToBounds();
+    }
+
+    public setHitAreaToBounds = function () {
+        this.hitArea = this.getBounds();
+    }
 }
