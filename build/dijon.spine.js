@@ -846,6 +846,41 @@ PIXI.Matrix.prototype.copy = function (matrix) {
 };
 
 /**
+    * Copies the properties from this Matrix to the given Matrix.
+    *
+    * @method Phaser.Matrix#copyTo
+    * @param {Phaser.Matrix} matrix - The Matrix to copy from.
+    * @return {Phaser.Matrix} The destination Matrix object.
+    */
+PIXI.Matrix.prototype.copyTo = function (matrix) {
+
+    matrix.copyFrom(this);
+
+    return matrix;
+
+};
+
+/**
+* Copies the properties from the given Matrix into this Matrix.
+*
+* @method Phaser.Matrix#copyFrom
+* @param {Phaser.Matrix} matrix - The Matrix to copy from.
+* @return {Phaser.Matrix} This Matrix object.
+*/
+PIXI.Matrix.prototype.copyFrom = function (matrix) {
+
+    this.a = matrix.a;
+    this.b = matrix.b;
+    this.c = matrix.c;
+    this.d = matrix.d;
+    this.tx = matrix.tx;
+    this.ty = matrix.ty;
+
+    return this;
+
+};
+
+/**
  * A default (identity) matrix
  *
  * @static
@@ -5274,14 +5309,14 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
              *
              * @member {object}
              */
-                this.stateData = new spine.AnimationStateData(spineData);
+            this.stateData = new spine.AnimationStateData(spineData);
 
-                /**
-                 * A spine AnimationState object created from the spine AnimationStateData object
-                 *
-                 * @member {object}
-                 */
-                this.state = new spine.AnimationState(this.stateData);
+            /**
+             * A spine AnimationState object created from the spine AnimationStateData object
+             *
+             * @member {object}
+             */
+            this.state = new spine.AnimationState(this.stateData);
             /**
              * An array of containers
              *
