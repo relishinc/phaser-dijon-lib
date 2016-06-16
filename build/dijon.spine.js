@@ -795,21 +795,24 @@ PIXI.Matrix.prototype.invert = function () {
     return this;
 };
 
+PIXI.Matrix.prototype.setTo = function (a, b, c, d, tx, ty) {
+    this.a = a;
+    this.b = b;
+    this.c = c;
+    this.d = d;
+    this.tx = tx;
+    this.ty = ty;
 
+    return this;
+
+};
 /**
  * Resets this Matix to an identity (default) matrix.
  *
  * @return {PIXI.Matrix} This matrix. Good for chaining method calls.
  */
 PIXI.Matrix.prototype.identity = function () {
-    this.a = 1;
-    this.b = 0;
-    this.c = 0;
-    this.d = 1;
-    this.tx = 0;
-    this.ty = 0;
-
-    return this;
+    return this.setTo(1, 0, 0, 1, 0, 0);
 };
 
 /**

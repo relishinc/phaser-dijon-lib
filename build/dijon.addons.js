@@ -308,6 +308,7 @@ Phaser.Text.prototype.updateTexture = function () {
     this.texture.baseTexture.dirty();
     this.dirty = false;
 };
+
 PIXI.Sprite.prototype.getBounds = function (matrix) {
     var width = this.texture.frame.width / this.texture.baseTexture.resolution;
     var height = this.texture.frame.height / this.texture.baseTexture.resolution;
@@ -388,9 +389,9 @@ PIXI.Sprite.prototype.getBounds = function (matrix) {
 
     // store a reference so that if this function gets called again in the render cycle we do not have to recalculate
     this._currentBounds = bounds;
-
     return bounds;
 };
+
 Phaser.Text.prototype.getBounds = function () {
     if (this.dirty) {
         this.updateText();

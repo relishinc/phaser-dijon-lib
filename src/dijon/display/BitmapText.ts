@@ -17,7 +17,7 @@ export class BitmapText extends Phaser.BitmapText {
 
     constructor(x: number = 0, y: number = 0, font: string = null, text: string = "", size: number = 12, align: string = 'left', color: number = 0xffffff, smoothing: boolean = true, autoFlatten: boolean = true, makeImage: boolean = false) {
         super(Application.getInstance().game, x, y, font, text, size, align);
-        
+
         if (smoothing !== true) {
             this.smoothed = false;
         }
@@ -38,8 +38,12 @@ export class BitmapText extends Phaser.BitmapText {
         this._isImage = true;
         this._internalImage = <Phaser.Image>this.addChildAt(this.game.add.image(0, 0, this.generateTexture(this.game.resolution, PIXI.scaleModes.DEFAULT)), 0);
 
+        this.destroyGlyphs();
+    }
+
+    public destroyGlyphs(){
         let n = this.children.length - 1;
-        while (n > 0) {
+        while (n > (this._isImage ? 0 : -1)) {
             this.removeChildAt(n);
             n--;
         }
@@ -98,25 +102,16 @@ export class BitmapText extends Phaser.BitmapText {
     }
 
     public set text(value: string) {
-        const wasvisible = this.visible === true;
-        const prevalpha = this.alpha;
-        if (!wasvisible) {
-            this.visible = true;
-            this.alpha = 0;
-        }
         if (this._autoFlatten) {
             this.unFlatten();
         }
         if (this._text !== undefined && value !== this._text) {
             this._text = value.toString() || '';
+            this.destroyGlyphs();
             this.updateText();
         }
         if (this._autoFlatten) {
             this.flatten();
-        }
-        if (!wasvisible) {
-            this.visible = false;
-            this.alpha = prevalpha;
         }
     }
 
@@ -169,7 +164,9 @@ export class BitmapText extends Phaser.BitmapText {
         this.setHitAreaToBounds();
     }
 
+
     public setHitAreaToBounds = function () {
         this.hitArea = this.getBounds();
     }
 }
+

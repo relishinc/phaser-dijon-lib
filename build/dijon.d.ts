@@ -188,6 +188,7 @@ declare module "dijon/display/BitmapText" {
         protected _internalImage: Phaser.Image;
         constructor(x?: number, y?: number, font?: string, text?: string, size?: number, align?: string, color?: number, smoothing?: boolean, autoFlatten?: boolean, makeImage?: boolean);
         makeImage(): void;
+        destroyGlyphs(): void;
         flatten(delay?: number): void;
         unFlatten(): void;
         autoFlatten: boolean;
