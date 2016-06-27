@@ -1741,3 +1741,32 @@ Phaser.Tilemap.EAST = 1;
 Phaser.Tilemap.SOUTH = 2;
 Phaser.Tilemap.WEST = 3;
 Phaser.Tilemap.prototype = tilemapprototype;
+
+
+Phaser.Utils.Debug.prototype.start = function(x, y, color, columnWidth){
+
+    if (typeof x !== 'number') { x = 0; }
+    if (typeof y !== 'number') { y = 0; }
+    color = color || 'rgb(255,255,255)';
+    if (columnWidth === undefined) { columnWidth = 0; }
+
+    this.currentX = x;
+    this.currentY = y;
+    this.currentColor = color;
+    this.columnWidth = columnWidth;
+
+    this.dirty = true;
+
+    this.context.save();
+    if (this.game.renderType === Phaser.CANVAS){
+this.context.setTransform(this.game.resolution, 0, 0, this.game.resolution, 0, 0);
+    }else{
+        this.context.setTransform(1, 0, 0, 1, 0, 0);
+    }
+    
+    this.context.strokeStyle = color;
+    this.context.fillStyle = color;
+    this.context.font = this.font;
+    this.context.globalAlpha = this.currentAlpha;
+
+}
