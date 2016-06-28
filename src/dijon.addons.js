@@ -556,7 +556,9 @@ PIXI.DisplayObjectContainer.prototype.getBounds = function () {
             childVisible = true;
 
             childBounds = this.children[i].getBounds();
-
+            if (childBounds === undefined){
+                continue;
+            }
             minX = minX < childBounds.x ? minX : childBounds.x;
             minY = minY < childBounds.y ? minY : childBounds.y;
 
@@ -568,7 +570,7 @@ PIXI.DisplayObjectContainer.prototype.getBounds = function () {
         }
 
         if (!childVisible) {
-            return math.Rectangle.EMPTY;
+            return PIXI.Rectangle.EMPTY;
         }
 
         var bounds = this._bounds;
@@ -1743,7 +1745,7 @@ Phaser.Tilemap.WEST = 3;
 Phaser.Tilemap.prototype = tilemapprototype;
 
 
-Phaser.Utils.Debug.prototype.start = function(x, y, color, columnWidth){
+Phaser.Utils.Debug.prototype.start = function (x, y, color, columnWidth) {
 
     if (typeof x !== 'number') { x = 0; }
     if (typeof y !== 'number') { y = 0; }
@@ -1758,12 +1760,12 @@ Phaser.Utils.Debug.prototype.start = function(x, y, color, columnWidth){
     this.dirty = true;
 
     this.context.save();
-    if (this.game.renderType === Phaser.CANVAS){
-this.context.setTransform(this.game.resolution, 0, 0, this.game.resolution, 0, 0);
-    }else{
+    if (this.game.renderType === Phaser.CANVAS) {
+        this.context.setTransform(this.game.resolution, 0, 0, this.game.resolution, 0, 0);
+    } else {
         this.context.setTransform(1, 0, 0, 1, 0, 0);
     }
-    
+
     this.context.strokeStyle = color;
     this.context.fillStyle = color;
     this.context.font = this.font;
