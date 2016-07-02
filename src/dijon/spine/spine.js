@@ -795,21 +795,24 @@ PIXI.Matrix.prototype.invert = function () {
     return this;
 };
 
+PIXI.Matrix.prototype.setTo = function (a, b, c, d, tx, ty) {
+    this.a = a;
+    this.b = b;
+    this.c = c;
+    this.d = d;
+    this.tx = tx;
+    this.ty = ty;
 
+    return this;
+
+};
 /**
  * Resets this Matix to an identity (default) matrix.
  *
  * @return {PIXI.Matrix} This matrix. Good for chaining method calls.
  */
 PIXI.Matrix.prototype.identity = function () {
-    this.a = 1;
-    this.b = 0;
-    this.c = 0;
-    this.d = 1;
-    this.tx = 0;
-    this.ty = 0;
-
-    return this;
+    return this.setTo(1, 0, 0, 1, 0, 0);
 };
 
 /**
@@ -843,6 +846,41 @@ PIXI.Matrix.prototype.copy = function (matrix) {
     matrix.ty = this.ty;
 
     return matrix;
+};
+
+/**
+    * Copies the properties from this Matrix to the given Matrix.
+    *
+    * @method Phaser.Matrix#copyTo
+    * @param {Phaser.Matrix} matrix - The Matrix to copy from.
+    * @return {Phaser.Matrix} The destination Matrix object.
+    */
+PIXI.Matrix.prototype.copyTo = function (matrix) {
+
+    matrix.copyFrom(this);
+
+    return matrix;
+
+};
+
+/**
+* Copies the properties from the given Matrix into this Matrix.
+*
+* @method Phaser.Matrix#copyFrom
+* @param {Phaser.Matrix} matrix - The Matrix to copy from.
+* @return {Phaser.Matrix} This Matrix object.
+*/
+PIXI.Matrix.prototype.copyFrom = function (matrix) {
+
+    this.a = matrix.a;
+    this.b = matrix.b;
+    this.c = matrix.c;
+    this.d = matrix.d;
+    this.tx = matrix.tx;
+    this.ty = matrix.ty;
+
+    return this;
+
 };
 
 /**
@@ -5274,14 +5312,14 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
              *
              * @member {object}
              */
-                this.stateData = new spine.AnimationStateData(spineData);
+            this.stateData = new spine.AnimationStateData(spineData);
 
-                /**
-                 * A spine AnimationState object created from the spine AnimationStateData object
-                 *
-                 * @member {object}
-                 */
-                this.state = new spine.AnimationState(this.stateData);
+            /**
+             * A spine AnimationState object created from the spine AnimationStateData object
+             *
+             * @member {object}
+             */
+            this.state = new spine.AnimationState(this.stateData);
             /**
              * An array of containers
              *

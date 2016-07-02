@@ -181,17 +181,23 @@ declare module "dijon/utils/Textures" {
 declare module "dijon/display/BitmapText" {
     export class BitmapText extends Phaser.BitmapText {
         private _text;
+        private _glyphs;
         protected _autoFlatten: boolean;
         protected _color: number;
         protected _isImage: boolean;
         protected _internalImage: Phaser.Image;
         constructor(x?: number, y?: number, font?: string, text?: string, size?: number, align?: string, color?: number, smoothing?: boolean, autoFlatten?: boolean, makeImage?: boolean);
         makeImage(): void;
+        destroyGlyphs(): void;
         flatten(delay?: number): void;
         unFlatten(): void;
         autoFlatten: boolean;
         color: number;
         text: string;
+        realWidth: number;
+        realHeight: number;
+        protected _generateCachedSprite: () => void;
+        setHitAreaToBounds: () => void;
     }
 }
 declare module "dijon/display/Component" {

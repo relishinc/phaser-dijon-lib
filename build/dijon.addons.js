@@ -308,6 +308,7 @@ Phaser.Text.prototype.updateTexture = function () {
     this.texture.baseTexture.dirty();
     this.dirty = false;
 };
+
 PIXI.Sprite.prototype.getBounds = function (matrix) {
     var width = this.texture.frame.width / this.texture.baseTexture.resolution;
     var height = this.texture.frame.height / this.texture.baseTexture.resolution;
@@ -388,9 +389,9 @@ PIXI.Sprite.prototype.getBounds = function (matrix) {
 
     // store a reference so that if this function gets called again in the render cycle we do not have to recalculate
     this._currentBounds = bounds;
-
     return bounds;
 };
+
 Phaser.Text.prototype.getBounds = function () {
     if (this.dirty) {
         this.updateText();
@@ -555,7 +556,9 @@ PIXI.DisplayObjectContainer.prototype.getBounds = function () {
             childVisible = true;
 
             childBounds = this.children[i].getBounds();
-
+            if (childBounds === undefined){
+                continue;
+            }
             minX = minX < childBounds.x ? minX : childBounds.x;
             minY = minY < childBounds.y ? minY : childBounds.y;
 
@@ -567,7 +570,7 @@ PIXI.DisplayObjectContainer.prototype.getBounds = function () {
         }
 
         if (!childVisible) {
-            return math.Rectangle.EMPTY;
+            return PIXI.Rectangle.EMPTY;
         }
 
         var bounds = this._bounds;
@@ -1742,43 +1745,30 @@ Phaser.Tilemap.WEST = 3;
 Phaser.Tilemap.prototype = tilemapprototype;
 
 
-PIXI.DisplayObject.prototype._generateCachedSprite = function () {
-    this._cacheAsBitmap = false;
+Phaser.Utils.Debug.prototype.start = function (x, y, color, columnWidth) {
 
-    var bounds = this.getLocalBounds();
-    var res = this.game.resolution;
+    if (typeof x !== 'number') { x = 0; }
+    if (typeof y !== 'number') { y = 0; }
+    color = color || 'rgb(255,255,255)';
+    if (columnWidth === undefined) { columnWidth = 0; }
 
-    if (!this._cachedSprite) {
-        var renderTexture = new PIXI.RenderTexture(bounds.width * res | 0, bounds.height * res | 0);//, renderSession.renderer);
-        renderTexture.baseTexture.resolution = res;
-        this._cachedSprite = new PIXI.Sprite(renderTexture);
-        this._cachedSprite.texture.resolution = res;
-        this._cachedSprite.worldTransform = this.worldTransform;
+    this.currentX = x;
+    this.currentY = y;
+    this.currentColor = color;
+    this.columnWidth = columnWidth;
+
+    this.dirty = true;
+
+    this.context.save();
+    if (this.game.renderType === Phaser.CANVAS) {
+        this.context.setTransform(this.game.resolution, 0, 0, this.game.resolution, 0, 0);
+    } else {
+        this.context.setTransform(1, 0, 0, 1, 0, 0);
     }
-    else {
-        this._cachedSprite.texture.resize(bounds.width * res | 0, bounds.height * res | 0);
-    }
 
-    //REMOVE filter!
-    var tempFilters = this._filters;
-    this._filters = null;
+    this.context.strokeStyle = color;
+    this.context.fillStyle = color;
+    this.context.font = this.font;
+    this.context.globalAlpha = this.currentAlpha;
 
-    this._cachedSprite.filters = tempFilters;
-
-    PIXI.DisplayObject._tempMatrix.tx = -bounds.x;
-    PIXI.DisplayObject._tempMatrix.ty = -bounds.y;
-
-    this._cachedSprite.texture.render(this, PIXI.DisplayObject._tempMatrix, true);
-
-    this._cachedSprite.anchor.x = -(bounds.x / bounds.width);
-    this._cachedSprite.anchor.y = -(bounds.y / bounds.height);
-
-    this._filters = tempFilters;
-
-    this._cacheAsBitmap = true;
-    this.setHitAreaToBounds();
-};
-
-PIXI.DisplayObject.prototype.setHitAreaToBounds = function(){
-    this.hitArea = this.getBounds();
-};
+}
