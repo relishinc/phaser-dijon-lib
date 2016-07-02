@@ -4,6 +4,7 @@ import {Game} from '../core';
 export class Spine extends PIXI.spine.Spine {
     public static DEFAULT_SPEED: number = 0.0167;// 60 fps;
     public debug: boolean = false;
+    public game: Game;
     private _created: boolean = false;
     public onCreate: Phaser.Signal = new Phaser.Signal();
     public onAnimationComplete: Phaser.Signal = null;

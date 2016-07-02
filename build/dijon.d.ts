@@ -326,6 +326,7 @@ declare module "dijon/display/NineSliceImage" {
 declare module "dijon/display/Spine" {
     import { Game } from "dijon/core";
     export class Spine extends PIXI.spine.Spine {
+        game: Game;
         assetName: string;
         static DEFAULT_SPEED: number;
         debug: boolean;
