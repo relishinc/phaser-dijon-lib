@@ -124,22 +124,6 @@ declare module "dijon/interfaces" {
     export { ITransition } from "dijon/interfaces/ITransition";
     export { ITransitionHandler } from "dijon/interfaces/ITransitionHandler";
 }
-declare module "dijon/core/AnalyticsManager" {
-    export class AnalyticsManager {
-        enabled: boolean;
-        category: string;
-        constructor(enabled?: boolean, category?: string);
-        trackEvent(action?: string, label?: string, value?: string): void;
-        trackOmnitureEvent(gameName: string, activity: string, isGameEvent: boolean): boolean;
-        active: boolean;
-        ga: Function;
-    }
-    export class AnalyticsException {
-        message: string;
-        name: string;
-        constructor(message: string);
-    }
-}
 declare module "dijon/utils/Device" {
     import { IBrowser } from "dijon/interfaces";
     export class Device {
@@ -332,10 +316,10 @@ declare module "dijon/display/NineSliceImage" {
 declare module "dijon/display/Spine" {
     import { Game } from "dijon/core";
     export class Spine extends PIXI.spine.Spine {
-        game: Game;
         assetName: string;
         static DEFAULT_SPEED: number;
         debug: boolean;
+        game: Game;
         private _created;
         onCreate: Phaser.Signal;
         onAnimationComplete: Phaser.Signal;
@@ -467,6 +451,26 @@ declare module "dijon/utils" {
     export { Textures } from "dijon/utils/Textures";
     export { Time } from "dijon/utils/Time";
     export { Util } from "dijon/utils/Util";
+}
+declare module "dijon/core/AnalyticsManager" {
+    export class AnalyticsManager {
+        enabled: boolean;
+        category: string;
+        private _trackerId;
+        private _startedWithTrackerId;
+        constructor(enabled?: boolean, category?: string);
+        trackEvent(action?: string, label?: string, value?: string): void;
+        trackOmnitureEvent(gameName: string, activity: string, isGameEvent: boolean): boolean;
+        private _startWithTrackerId();
+        trackerId: string;
+        active: boolean;
+        ga: Function;
+    }
+    export class AnalyticsException {
+        message: string;
+        name: string;
+        constructor(message: string);
+    }
 }
 declare module "dijon/core/AssetManager" {
     import { Application } from "dijon/application";
