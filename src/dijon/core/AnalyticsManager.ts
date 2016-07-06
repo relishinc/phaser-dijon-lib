@@ -15,17 +15,9 @@ export class AnalyticsManager {
             throw new AnalyticsException('No action defined');
         }
 
-        if (Device.cocoon && window['analytics']) {
+        if (Device.cocoon && window['analytics']!==undefined) {
             const analytics = window['analytics'];
-            if (value) {
-                analytics.trackEvent(this.category, action, label, value);
-            }
-            else if (label) {
-                analytics.trackEvent(this.category, action, label);
-            }
-            else {
-                analytics.trackEvent(this.category, action);
-            }
+            analytics.trackEvent(this.category, action, label, value);
             return;
         }
 
@@ -51,33 +43,28 @@ export class AnalyticsManager {
     }
 
     private _startWithTrackerId(): void {
-        const self = this;
-        if (Device.cocoon && window['analytics']) {
-            const analytics = window['analytics'];
-            analytics.startTrackerWithId(this._trackerId, function () {
-                console.log('Cocoon analytics started');
-                self._startedWithTrackerId = true;
-            }, function () {
-                console.log('Cocoon analytics failed to start');
-                self._startedWithTrackerId = false;
-            });
+        let self = this;
+        if (Device.cocoon && window['analytics']!==undefined) {
+            let analytics = window['analytics'];
+            analytics.startTrackerWithId(this._trackerId);
         }
     }
 
 
     set trackerId(value: string) {
-        if (!Device.cocoon) {
-            return;
-        }
         this._trackerId = value;
         if (!this._startedWithTrackerId) {
             this._startWithTrackerId();
         }
     }
 
+    get trackerId(): string {
+        return this._trackerId;
+    }
+
     // getter / setter
     get active(): boolean {
-        return (window['ga']) ? true : false;
+        return (window['ga'] || (Device.cocoon && window['analytics'] !== undefined)) ? true : false;
     }
 
     get ga(): Function {
