@@ -157,7 +157,7 @@ export class AssetManager implements INotifier {
     */
     private _backgroundFileComplete(progress: number, id: string, fileIndex: number, totalFiles: number) {
         if (this.game.cache.checkKey(Phaser.Cache.IMAGE, id)) {
-            this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
+            this._setBaseTextureResolution(this.game.cache.getBaseTexture(id));
         }
         this._fileCompleteProgress = progress;
         this.onBackgroundFileComplete.dispatch(progress, id, fileIndex, totalFiles);
@@ -203,7 +203,7 @@ export class AssetManager implements INotifier {
     private _gameFileComplete(progress: number, id?: string, fileIndex?: number, totalFiles?: number) {
        
         if (this.game.cache.checkKey(Phaser.Cache.IMAGE, id)) {
-            this._setBaseTextureResolution(this.game.cache.getPixiBaseTexture(id));
+            this._setBaseTextureResolution(this.game.cache.getBaseTexture(id));
             
         }
         // else if (this.game.cache.checkKey(Phaser.Cache.BITMAPFONT, id)){
