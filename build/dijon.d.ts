@@ -181,6 +181,7 @@ declare module "dijon/display/BitmapText" {
         realWidth: number;
         realHeight: number;
         protected _generateCachedSprite: () => void;
+        protected _alignToNearestPixel(): void;
         setHitAreaToBounds: () => void;
     }
 }

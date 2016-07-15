@@ -36,12 +36,13 @@ export class BitmapText extends Phaser.BitmapText {
 
     public makeImage(): void {
         this._isImage = true;
+        this._alignToNearestPixel();
         this._internalImage = <Phaser.Image>this.addChildAt(this.game.add.image(0, 0, this.generateTexture(this.game.resolution, PIXI.scaleModes.DEFAULT)), 0);
 
         this.destroyGlyphs();
     }
 
-    public destroyGlyphs(){
+    public destroyGlyphs() {
         let n = this.children.length - 1;
         while (n > (this._isImage ? 0 : -1)) {
             this.removeChildAt(n);
@@ -60,6 +61,7 @@ export class BitmapText extends Phaser.BitmapText {
             this.game.time.events.add(delay, () => { this.cacheAsBitmap = true }, this);
             return;
         }
+        this._alignToNearestPixel();
         this.cacheAsBitmap = true;
     }
 
@@ -112,6 +114,8 @@ export class BitmapText extends Phaser.BitmapText {
         }
         if (this._autoFlatten) {
             this.flatten();
+        }else{
+            this._alignToNearestPixel();
         }
     }
 
@@ -162,6 +166,15 @@ export class BitmapText extends Phaser.BitmapText {
 
         this._cacheAsBitmap = true;
         this.setHitAreaToBounds();
+    }
+
+    protected _alignToNearestPixel(): void {
+        this.x = Math.round(this.x);
+        this.y = Math.round(this.y);
+        this.children.forEach(child => {
+            child.x = Math.round(child.x);
+            child.y = Math.round(child.y);
+        });
     }
 
 
