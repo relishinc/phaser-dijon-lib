@@ -30,7 +30,7 @@ export class NineSliceImage extends Group {
         this.__height = Math.round(height);
 
         this._build();
-        this.game.time.events.add(10, this._flatten, this);
+        this.game.time.events.add(10, this.dFlatten, this);
     }
 
     private _build(): void {
@@ -83,22 +83,24 @@ export class NineSliceImage extends Group {
     }
 
     private _setSize(): void {
-        this._unflatten();
+        this.dUnflatten();
 
-        this.t.width = this.b.width = this.__width - this.tl.getBounds().width - this.tr.getBounds().width;
-        this.r.x = this.tr.x = this.br.x = this.__width;
-        this.l.height = this.r.height = this.__height - this.tr.getBounds().height - this.bl.getBounds().height;
-        this.bl.y = this.b.y = this.br.y = this.__height;
+        this.t.width = this.b.width = (this.__width - this.tl.getBounds().width - this.tr.getBounds().width | 0);
+        this.r.x = this.tr.x = this.br.x = this.__width | 0;
+        this.l.height = this.r.height = (this.__height - this.tr.getBounds().height - this.bl.getBounds().height | 0);
+        this.bl.y = this.b.y = this.br.y = this.__height | 0;
 
         if (this.fillMiddle) {
             this.tile.width = this.__width - this.tr.getBounds().width - this.tl.getBounds().width + 4
             this.tile.height = this.__height - this.tl.getBounds().height - this.bl.getBounds().height + 4;
         }
 
-        this._interactiveBacking.width = this.__width;
-        this._interactiveBacking.height = this.__height;
+        if (this._interactiveBacking) {
+            this._interactiveBacking.width = this.__width;
+            this._interactiveBacking.height = this.__height;
+        }
 
-        this.game.time.events.add(10, this._flatten, this);
+        this.game.time.events.add(10, this.dFlatten, this);
     }
 
     private _addInput(): void {
@@ -114,11 +116,11 @@ export class NineSliceImage extends Group {
         this._interactiveBacking.inputEnabled = false;
     }
 
-    private _unflatten(): void {
+    public dUnflatten(): void {
         this._displayLayer.cacheAsBitmap = null;
     }
 
-    private _flatten(): void {
+    public dFlatten(): void {
         this._displayLayer.cacheAsBitmap = true;//this.game.renderType === Phaser.WEBGL;
     }
 

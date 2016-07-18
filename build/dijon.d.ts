@@ -304,8 +304,8 @@ declare module "dijon/display/NineSliceImage" {
         private _setSize();
         private _addInput();
         private _removeInput();
-        private _unflatten();
-        private _flatten();
+        dUnflatten(): void;
+        dFlatten(): void;
         inputEnabled: boolean;
         events: Phaser.Events;
         input: Phaser.InputHandler;
