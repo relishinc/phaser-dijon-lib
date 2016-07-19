@@ -41,20 +41,20 @@ export class NineSliceImage extends Group {
 
         this.tr = <Phaser.Image>this._displayLayer.add(this.game.add.image(this.__width, 0, this.key, this.texturePath + '/tr'));
 
-        this.t = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(this.tl.getBounds().width, 0, this.__width - this.tl.getBounds().width - this.tr.getBounds().width, this.topHeight || this.tl.getBounds().height, this.key, this.texturePath + '/t'));
+        this.t = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(Math.floor(this.tl.getBounds().width), 0, Math.ceil(this.__width - this.tl.getBounds().width - this.tr.getBounds().width), this.topHeight || this.tl.getBounds().height, this.key, this.texturePath + '/t'));
 
-        this.l = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(0, this.tl.getBounds().height, this.leftWidth || this.tl.getBounds().width, 100, this.key, this.texturePath + '/l'));
+        this.l = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(0, Math.floor(this.tl.getBounds().height), Math.ceil(this.leftWidth || this.tl.getBounds().width), 100, this.key, this.texturePath + '/l'));
 
         this.bl = <Phaser.Image>this._displayLayer.add(this.game.add.image(0, this.__height, this.key, this.texturePath + '/bl'));
 
-        this.l.height = this.__height - this.tl.getBounds().height - this.bl.getBounds().height;
+        this.l.height = Math.ceil(this.__height - this.tl.getBounds().height - this.bl.getBounds().height);
 
-        this.b = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(this.bl.getBounds().width, this.__height, 100, this.bottomHeight || this.bl.getBounds().height, this.key, this.texturePath + '/b'));
+        this.b = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(Math.floor(this.bl.getBounds().width), this.__height, 100, this.bottomHeight || this.bl.getBounds().height, this.key, this.texturePath + '/b'));
 
         this.br = <Phaser.Image>this._displayLayer.add(this.game.add.image(this.__width, this.__height, this.key, this.texturePath + '/br'));
 
-        this.b.width = this.__width - this.bl.getBounds().width - this.br.getBounds().width;
-        this.r = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(this.__width, this.tr.getBounds().height, this.rightWidth || this.tr.getBounds().width, this.__height - this.tl.getBounds().height - this.br.getBounds().height, this.key, this.texturePath + '/r'));
+        this.b.width = Math.ceil(this.__width - this.bl.getBounds().width - this.br.getBounds().width);
+        this.r = <Phaser.TileSprite>this._displayLayer.add(this.game.add.tileSprite(this.__width, Math.floor(this.tr.getBounds().height), Math.ceil(this.rightWidth || this.tr.getBounds().width), Math.ceil(this.__height - this.tl.getBounds().height - this.br.getBounds().height), this.key, this.texturePath + '/r'));
 
         this.tr.setPivot('tr');
         this.r.setPivot('tr');
@@ -85,17 +85,18 @@ export class NineSliceImage extends Group {
     private _setSize(): void {
         this.dUnflatten();
 
-        this.t.width = this.b.width = (this.__width - this.tl.getBounds().width - this.tr.getBounds().width | 0);
+        this.t.width = this.b.width = Math.ceil(this.__width - this.tl.getBounds().width - this.tr.getBounds().width | 0);
         this.r.x = this.tr.x = this.br.x = this.__width | 0;
         this.l.height = this.r.height = (this.__height - this.tr.getBounds().height - this.bl.getBounds().height | 0);
         this.bl.y = this.b.y = this.br.y = this.__height | 0;
 
         if (this.fillMiddle) {
-            this.tile.width = this.__width - this.tr.getBounds().width - this.tl.getBounds().width + 4
-            this.tile.height = this.__height - this.tl.getBounds().height - this.bl.getBounds().height + 4;
+            this.tile.width = Math.ceil(this.__width - this.tr.getBounds().width - this.tl.getBounds().width + 4)
+            this.tile.height = Math.ceil(this.__height - this.tl.getBounds().height - this.bl.getBounds().height + 4);
         }
 
-        if (this._interactiveBacking) {
+        if (this._interactiveBacking != null) {
+            console.log('new width', this.__width)
             this._interactiveBacking.width = this.__width;
             this._interactiveBacking.height = this.__height;
         }
@@ -166,5 +167,9 @@ export class NineSliceImage extends Group {
         this.__width = width;
         this.__height = height;
         this._setSize();
+    }
+
+    public get interactiveBacking():Phaser.Image{
+        return this._interactiveBacking;
     }
 }

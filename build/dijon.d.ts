@@ -312,6 +312,7 @@ declare module "dijon/display/NineSliceImage" {
         hSize: number;
         vSize: number;
         setSize(width: number, height: number): void;
+        interactiveBacking: Phaser.Image;
     }
 }
 declare module "dijon/display/Spine" {
