@@ -25,8 +25,8 @@ export class Spine extends PIXI.spine.Spine {
 
     public nonMeshVersion: boolean = false;
 
-    constructor(public assetName: string = '', x: number = 0, y: number = 0) {
-        super(Application.getInstance().game, x, y, Spine.createSpineData(Spine.LOAD_NON_MESH ? (assetName + Spine.NON_MESH_SUFFIX) : assetName));
+    constructor(public assetName: string = '', x: number = 0, y: number = 0, public skeletonScale: number = 1) {
+        super(Application.getInstance().game, x, y, Spine.createSpineData(Spine.LOAD_NON_MESH ? (assetName + Spine.NON_MESH_SUFFIX) : assetName, skeletonScale));
         if (Spine.LOAD_NON_MESH) {
             this.nonMeshVersion = true;
         }
@@ -155,10 +155,10 @@ export class Spine extends PIXI.spine.Spine {
         this.onMeshSwap.dispatch();
     }
 
-    public static createSpineData(assetName: string): any {
+    public static createSpineData(assetName: string, skeletonScale: number = 1): any {
         const spine = PIXI.spine;
         const spineAtlas = new spine.SpineRuntime.Atlas(Application.getInstance().game.cache.getText(assetName + '.atlas'), this.atlasCallbackFunction);
-        const spineJsonParser = new spine.SpineRuntime.SkeletonJsonParser(new spine.SpineRuntime.AtlasAttachmentParser(spineAtlas));
+        const spineJsonParser = new spine.SpineRuntime.SkeletonJsonParser(new spine.SpineRuntime.AtlasAttachmentParser(spineAtlas), skeletonScale);
         const skeletonData = spineJsonParser.readSkeletonData(Application.getInstance().game.cache.getJSON(assetName + '.json'));
         return skeletonData;
     }

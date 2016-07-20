@@ -319,6 +319,7 @@ declare module "dijon/display/Spine" {
     import { Game } from "dijon/core";
     export class Spine extends PIXI.spine.Spine {
         assetName: string;
+        skeletonScale: number;
         static DEFAULT_SPEED: number;
         debug: boolean;
         game: Game;
@@ -340,7 +341,7 @@ declare module "dijon/display/Spine" {
         };
         protected _physicsEnabled: boolean;
         nonMeshVersion: boolean;
-        constructor(assetName?: string, x?: number, y?: number);
+        constructor(assetName?: string, x?: number, y?: number, skeletonScale?: number);
         private _onCreateInternal();
         protected _create(): void;
         update(dt?: number): void;
@@ -351,7 +352,7 @@ declare module "dijon/display/Spine" {
         disablePhysics(): void;
         enablePhysics(): void;
         loadNonMeshVersion(): void;
-        static createSpineData(assetName: string): any;
+        static createSpineData(assetName: string, skeletonScale?: number): any;
         static atlasCallbackFunction(line: any, callback: any): void;
         paused: boolean;
         speed: number;

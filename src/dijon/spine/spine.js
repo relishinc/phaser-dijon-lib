@@ -4110,7 +4110,8 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
             this.parent = parent;
         }
 
-        spine.SkeletonJsonParser = function (attachmentLoader) {
+        spine.SkeletonJsonParser = function (attachmentLoader, scale) {
+            this.scale = scale === undefined ? 1 : scale;
             if (attachmentLoader.pages) {
                 //its an atlas, we have to wrap it
                 this.attachmentLoader = new spine.AtlasAttachmentLoader(attachmentLoader);

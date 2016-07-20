@@ -743,7 +743,7 @@ declare module PIXI {
             }
             export class SkeletonJsonParser {
 
-                constructor(attachmentLoader: any);
+                constructor(attachmentLoader: any, scale: number);
 
                 attachmentLoader: any;
                 scale: number;
