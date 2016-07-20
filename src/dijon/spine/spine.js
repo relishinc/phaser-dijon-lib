@@ -4136,8 +4136,8 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
                 if (skeletonMap) {
                     skeletonData.hash = skeletonMap["hash"];
                     skeletonData.version = skeletonMap["spine"];
-                    skeletonData.width = skeletonMap["width"] || 0;
-                    skeletonData.height = skeletonMap["height"] || 0;
+                    skeletonData.width = skeletonMap["width"] * this.scale || 0;
+                    skeletonData.height = skeletonMap["height"] * this.scale || 0;
                 }
 
                 // Bones.
