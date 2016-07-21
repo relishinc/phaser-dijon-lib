@@ -13,6 +13,7 @@ export class Spine extends PIXI.spine.Spine {
     protected _canUpdate: boolean = true;
     protected _paused: boolean = false;
     protected _speed: number = 1;
+    protected _skeletonScale: number = 1;
 
     protected _boundsOffset: Phaser.Point = new Phaser.Point(0, 0);
     protected _boundsWidthScale: number = 1;
@@ -27,6 +28,9 @@ export class Spine extends PIXI.spine.Spine {
 
     constructor(public assetName: string = '', x: number = 0, y: number = 0, public skeletonScale: number = 1) {
         super(Application.getInstance().game, x, y, Spine.createSpineData(Spine.LOAD_NON_MESH ? (assetName + Spine.NON_MESH_SUFFIX) : assetName, skeletonScale));
+
+        this._skeletonScale = skeletonScale;
+
         if (Spine.LOAD_NON_MESH) {
             this.nonMeshVersion = true;
         }
@@ -125,9 +129,10 @@ export class Spine extends PIXI.spine.Spine {
         while (this.children.length > 0) {
             (<Phaser.Group>this.removeChildAt(0)).destroy();
         }
-
+        let previousScale = this.scale;
+        this.scale.set(1, 1);
         // reset the spine data
-        this.setup(Spine.createSpineData(this.name + Spine.NON_MESH_SUFFIX));
+        this.setup(Spine.createSpineData(this.name + Spine.NON_MESH_SUFFIX, this._skeletonScale));
         this.state.apply(this.skeleton);
 
         // reset the state
@@ -151,6 +156,9 @@ export class Spine extends PIXI.spine.Spine {
         // clear the meshed spine assets
         (<Game>this.game).asset.clearSpineAsset(this.name);
         this.game.time.events.add(100, () => { this.alpha = 1 }, this);
+
+        // Return the previous scale
+        this.scale.set(previousScale.x, previousScale.y);
 
         this.onMeshSwap.dispatch();
     }

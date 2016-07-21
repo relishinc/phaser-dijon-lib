@@ -330,6 +330,7 @@ declare module "dijon/display/Spine" {
         protected _canUpdate: boolean;
         protected _paused: boolean;
         protected _speed: number;
+        protected _skeletonScale: number;
         protected _boundsOffset: Phaser.Point;
         protected _boundsWidthScale: number;
         protected _boundsHeightScale: number;
