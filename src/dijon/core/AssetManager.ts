@@ -767,14 +767,16 @@ export class AssetManager implements INotifier {
                 }
                 break;
             case AssetManager.SPINE:
-                this.clearSpineAsset(asset.id);
+                this.clearSpineAsset(asset.url);
             break;
         }
     }
 
     private clearImage(url: string): void {
         let img:any = this.game.cache.getImage(url, true);
-        this.game.cache.removeImage(url, true);
+        this.game.cache.removeImage(url);
+        console.log(img.base);
+        console.log(img.base.imageUrl);
         if (img && img.data.dispose !== undefined) {
             img.data.dispose();
         }

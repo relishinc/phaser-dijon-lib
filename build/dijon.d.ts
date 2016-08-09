@@ -345,6 +345,7 @@ declare module "dijon/display/Spine" {
         constructor(assetName?: string, x?: number, y?: number, skeletonScale?: number);
         private _onCreateInternal();
         protected _create(): void;
+        destroy(): void;
         update(dt?: number): void;
         initPhysics(type: number, offset: {
             x?: number;

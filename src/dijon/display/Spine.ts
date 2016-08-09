@@ -63,6 +63,22 @@ export class Spine extends PIXI.spine.Spine {
         // to override
     }
 
+    public destroy(): void {
+        this.skeleton = null;
+        this.state = null;
+        this.stateData = null;
+        this.spineData = null;
+
+        if (this.slotContainers && this.slotContainers.length > 0) {
+            while (this.slotContainers.length > 0) {
+                this.slotContainers.shift().destroy(true, true);
+            }
+        }
+        this.slotContainers = null;
+        this.removeChildren();
+        super.destroy();
+    }
+
     public update(dt: number = Spine.DEFAULT_SPEED): void {
         if (!this._created && this.parent) {
             this._onCreateInternal();
@@ -135,7 +151,7 @@ export class Spine extends PIXI.spine.Spine {
 
         // reset the state
         this.state.tracks = tracks;
-       
+
         // reset the signals
         if (signal !== null) {
             this.state.onAnimationComplete.removeAll();
