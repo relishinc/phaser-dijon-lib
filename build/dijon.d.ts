@@ -582,6 +582,7 @@ declare module "dijon/core/AssetManager" {
         setData(data: Object): void;
         clearAssets(id: string, clearAudio?: boolean, clearAtlasses?: boolean, clearImages?: boolean, clearText?: boolean, clearJSON?: boolean): void;
         clearAsset(asset: IAsset, clearAudio?: boolean, clearAtlasses?: boolean, clearImages?: boolean, clearText?: boolean, clearJSON?: boolean): void;
+        private clearImage(url);
         clearSpineAsset(id: string): void;
         hasLoadedAssets(id: string): boolean;
         sendNotification(notificationName: string, notificationBody?: any): void;

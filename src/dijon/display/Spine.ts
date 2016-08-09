@@ -47,7 +47,7 @@ export class Spine extends PIXI.spine.Spine {
         this.hitArea = new Phaser.Rectangle(0, - this.skeleton.data.height, this.skeleton.data.width, this.skeleton.data.height);
         //this.game.time.events.add(100, this._onCreateInternal, this);
 
-        if (Spine.AUTO_MESH && !Spine.LOAD_NON_MESH) {
+        if (Spine.AUTO_MESH && Spine.LOAD_NON_MESH !== true) {
             Spine.detectAutoMesh();
         }
     }

@@ -201,10 +201,10 @@ export class AssetManager implements INotifier {
     * @private
     */
     private _gameFileComplete(progress: number, id?: string, fileIndex?: number, totalFiles?: number) {
-       
+
         if (this.game.cache.checkKey(Phaser.Cache.IMAGE, id)) {
             this._setBaseTextureResolution(this.game.cache.getBaseTexture(id));
-            
+
         }
         // else if (this.game.cache.checkKey(Phaser.Cache.BITMAPFONT, id)){
         //     this._setBaseTextureResolution(this.game.cache.getBaseTexture(id, Phaser.Cache.BITMAPFONT));
@@ -588,11 +588,11 @@ export class AssetManager implements INotifier {
         this._hasFiles = false;
         this._soundsToDecode = [];
 
-        if (typeof this._data === 'undefined') {
+        if (this._data === undefined) {
             return;
         }
 
-        if (typeof this._data[id] === 'undefined' || this._data[id].length < 1) {
+        if (this._data[id] === undefined || this._data[id].assets === undefined || this._data[id].assets.length < 1) {
             return console.log('no preload data registered for ', id);
         }
 
@@ -642,7 +642,7 @@ export class AssetManager implements INotifier {
         for (state in this._data) {
             if (this._autoLoadData[state]) {
 
-                assets = this._data[state];
+                assets = this._data[state].assets;
                 for (i = 0; i < assets.length; i++) {
                     this._loadAsset(assets[i]);
                 }
@@ -692,20 +692,25 @@ export class AssetManager implements INotifier {
     * @return {void}
     */
     public clearAssets(id: string, clearAudio: boolean = true, clearAtlasses: boolean = true, clearImages: boolean = true, clearText: boolean = true, clearJSON: boolean = true) {
-        var assets = this._data[id];
+        var data = this._data[id];
 
-        console.log('clearing: ', id);
+        console.log('clearing: ', id, data);
 
-        if (!assets || typeof assets === 'undefined' || assets.length < 1) {
-            return console.log('no assets', assets);
+        if (!data || typeof data === 'undefined' || !data.assets || data.assets.length < 1) {
+            return console.log('no assets', data);
         }
+        var assets = data.assets;
 
         for (var i = 0; i < assets.length; i++) {
+            console.log('clearing type', assets[i].type);
+            if (assets[i].type === AssetManager.ASSET_LIST) {
+                this.clearAssets(assets[i].id, clearAudio, clearAtlasses, clearImages, clearText, clearJSON);
+                continue;
+            }
             this.clearAsset(assets[i], clearAudio, clearAtlasses, clearImages, clearText, clearJSON);
         }
 
         this._completedLoads[id] = false;
-
         this.sendNotification(Notifications.ASSET_MANAGER_ASSETS_CLEARED, id);
     }
 
@@ -722,6 +727,7 @@ export class AssetManager implements INotifier {
         var type = asset.type,
             url = asset.url,
             required = asset.required;
+            
 
         if (required) {
             console.log('the ' + type + ' asset: ' + url + ' is required and will not be cleared');
@@ -736,15 +742,13 @@ export class AssetManager implements INotifier {
                 break;
             case AssetManager.IMAGE:
                 if (clearImages) {
-                    this.game.cache.removeImage(url);
-                    PIXI.BaseTextureCache[url].destroy();
+                    this.clearImage(url);
                 }
                 break;
             case AssetManager.ATLAS:
                 if (clearAtlasses) {
-                    this.game.cache.removeImage(url);
-                    PIXI.BaseTextureCache[url].destroy();
-                    this.game.cache.removeXML(url);
+                    this.clearImage(url);
+                    this.game.cache.removeJSON(url);
                 }
                 break;
             case AssetManager.TEXT:
@@ -762,13 +766,25 @@ export class AssetManager implements INotifier {
                     this.game.cache.removePhysics(url);
                 }
                 break;
+            case AssetManager.SPINE:
+                this.clearSpineAsset(asset.id);
+            break;
         }
+    }
+
+    private clearImage(url: string): void {
+        let img:any = this.game.cache.getImage(url, true);
+        this.game.cache.removeImage(url, true);
+        if (img && img.data.dispose !== undefined) {
+            img.data.dispose();
+        }
+        img = null;
     }
 
     public clearSpineAsset(id: string): void {
         this.game.cache.removeJSON(id + '.json');
         this.game.cache.removeText(id + '.atlas');
-        this.game.cache.removeImage(id + '.png', true);
+        this.clearImage(id + '.png');
     }
 
     /**
