@@ -114,7 +114,7 @@ export class BitmapText extends Phaser.BitmapText {
         }
         if (this._autoFlatten) {
             this.flatten();
-        }else{
+        } else {
             this._alignToNearestPixel();
         }
     }
@@ -177,6 +177,36 @@ export class BitmapText extends Phaser.BitmapText {
         });
     }
 
+    public highlight(highlightStr: string, highlightColor: number): boolean {
+        if (this._isImage) {
+            console.log('BitmapText:: cannot highlight a substring of a BitmapText instance when makeImage is set to true', this.text);
+            return false;
+        }
+        if (this.text.indexOf(highlightStr) < 0) {
+            return false;
+        }
+
+        const startIndex: number = this.text.indexOf(highlightStr)-1;
+        const endIndex: number = startIndex + highlightStr.length;
+        let child: PIXI.Sprite;
+
+        if (this._autoFlatten) {
+            this.unFlatten();
+        }
+
+        for (let i = startIndex; i < endIndex; i++) {
+            child = <PIXI.Sprite>this.getChildAt(i);
+            child.tint = highlightColor;
+        }
+
+        if (this._autoFlatten) {
+            this.flatten();
+        } else {
+            this._alignToNearestPixel();
+        }
+
+        return true;
+    }
 
     public setHitAreaToBounds = function () {
         this.hitArea = this.getBounds();
