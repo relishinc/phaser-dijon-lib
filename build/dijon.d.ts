@@ -387,6 +387,73 @@ declare module "dijon/display/Spine" {
         static setAutoMesh(enabled?: boolean, nonMeshSuffix?: string, nonMeshFPS?: number): void;
     }
 }
+declare module "dijon/display/Spine2" {
+    import { Game } from "dijon/core";
+    export class Spine2 extends PIXI.spine.Spine {
+        assetName: string;
+        skeletonScale: number;
+        static DEFAULT_SPEED: number;
+        debug: boolean;
+        game: Game;
+        private _created;
+        onCreate: Phaser.Signal;
+        onAnimationComplete: Phaser.Signal;
+        onMeshSwap: Phaser.Signal;
+        protected _canUpdate: boolean;
+        protected _paused: boolean;
+        protected _speed: number;
+        protected _skeletonScale: number;
+        protected _boundsOffset: Phaser.Point;
+        protected _boundsWidthScale: number;
+        protected _boundsHeightScale: number;
+        protected _currentBounds: PIXI.Rectangle;
+        protected _physicsOffset: {
+            x: number;
+            y: number;
+        };
+        protected _physicsEnabled: boolean;
+        nonMeshVersion: boolean;
+        constructor(assetName?: string, x?: number, y?: number, skeletonScale?: number);
+        private _onCreateInternal();
+        protected _create(): void;
+        destroy(): void;
+        update(dt?: number): void;
+        initPhysics(type: number): boolean;
+        disablePhysics(): void;
+        enablePhysics(): void;
+        loadNonMeshVersion(): void;
+        static createSpineData(assetName: string, skeletonScale?: number): any;
+        static atlasCallbackFunction(line: any, callback: any): void;
+        paused: boolean;
+        speed: number;
+        boundsOffset: Phaser.Point;
+        boundsWidthScale: number;
+        boundsHeightScale: number;
+        getBounds(): PIXI.Rectangle;
+        protected _createBounds(): PIXI.Rectangle;
+        setScale(x?: number, y?: number): void;
+        width: number;
+        height: number;
+        arcadeBody: Phaser.Physics.Arcade.Body;
+        protected static INITIALIZED: boolean;
+        protected static game: Game;
+        protected static nonMeshTimer: Phaser.TimerEvent;
+        protected static onNonMeshFPS: Phaser.Signal;
+        static LOAD_NON_MESH: boolean;
+        static AUTO_MESH: boolean;
+        static DEFAULT_NON_MESH_SUFFIX: string;
+        static NON_MESH_SUFFIX: string;
+        static DEFAULT_NON_MESH_FPS: number;
+        static NON_MESH_FPS: number;
+        static initialize(): void;
+        static detectAutoMesh(): void;
+        static destroyNonMeshTimer(): void;
+        static checkNonMeshThreshold(): void;
+        static checkAutoMeshFPS(): void;
+        static disableAdvancedTiming(): void;
+        static setAutoMesh(enabled?: boolean, nonMeshSuffix?: string, nonMeshFPS?: number): void;
+    }
+}
 declare module "dijon/display/Text" {
     import { Game } from "dijon/core";
     export class Text extends Phaser.Text {
@@ -429,6 +496,7 @@ declare module "dijon/display" {
     export { InvisibleButton } from "dijon/display/InvisibleButton";
     export { NineSliceImage } from "dijon/display/NineSliceImage";
     export { Spine } from "dijon/display/Spine";
+    export { Spine2 } from "dijon/display/Spine2";
     export { Sprite } from "dijon/display/Sprite";
     export { Text } from "dijon/display/Text";
 }
