@@ -1772,3 +1772,20 @@ Phaser.Utils.Debug.prototype.start = function (x, y, color, columnWidth) {
     this.context.globalAlpha = this.currentAlpha;
 
 }
+
+
+/**
+ * dSetSize sets the size and offset of an Arcade physics body, and applies an extra offset on special resolutions. Use this if your sprite has a non-zero anchor point and your game supports @2x graphics
+ * @param {Number} width of the body
+ * @param {Number} height of the body
+ * @param {Number} x offset of the body
+ * @param {Number} y offset of the body
+ * @param {Number} resolution of the game
+ */
+Phaser.Physics.Arcade.Body.prototype.dSetSize = function (width, height, offsetX, offsetY, resolution) {
+    if (resolution <= 0) {
+        console.log("Phaser.Physics.Arcade.Body.dSetSize: Resolution must be positive");
+        return;
+    }
+    this.setSize(width, height, offsetX + this.sprite.width*this.sprite.anchor.x*(1 - (1/resolution)), offsetY + this.sprite.height*this.sprite.anchor.y*(1 - (1/resolution)));
+};
