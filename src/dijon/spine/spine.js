@@ -1456,6 +1456,7 @@ PIXI.Sprite.prototype.SpineUpdateTransform = function () {
     }
     // looks like we are skewing
     if (this.skew.x || this.skew.y) {
+
         // I'm assuming that skewing is not going to be very common
         // With that in mind, we can do a full setTransform using the temp matrix
         _tempMatrix.setTransform(
@@ -1493,8 +1494,8 @@ PIXI.Sprite.prototype.SpineUpdateTransform = function () {
             b = this._sr * this.scale.x;
             c = -this._sr * this.scale.y;
             d = this._cr * this.scale.y;
-            tx = this.position.x;
-            ty = this.position.y;
+            tx = this.x;
+            ty = this.y;
 
             // check for pivot.. not often used so geared towards that fact!
             if (this.pivot.x || this.pivot.y) {
@@ -5239,7 +5240,7 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
          */
         function Spine(game, x, y, spineData) {
             Phaser.Sprite.call(this, game, x, y);
-
+            this.slotContainerUpdateTransform = undefined;
             this.setup(spineData);
         }
 
@@ -5332,8 +5333,7 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
                 var slot = this.skeleton.slots[i];
                 var attachment = slot.attachment;
                 var slotContainer = new Phaser.Group(this.game);
-                slotContainer.x = this.x;
-                slotContainer.y = this.y;
+                slotContainer.spineInstance = this;
                 this.slotContainers.push(slotContainer);
                 this.addChild(slotContainer);
 
@@ -5426,7 +5426,7 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
                         lt.tx += slot.bone.skeleton.x;
                         lt.ty += slot.bone.skeleton.y;
                         slotContainer.localTransform = lt;
-                        slotContainer.displayObjectUpdateTransform = PIXI.SlotContainerUpdateTransformV3;
+                        slotContainer.displayObjectUpdateTransform = this.slotContainerUpdateTransform === undefined ? PIXI.SlotContainerUpdateTransformV3 : this.slotContainerUpdateTransform;
                         slotContainer.updateTransform(lt);
                     }
 
@@ -5550,7 +5550,7 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
         };
 
         PIXI.SlotContainerUpdateTransformV3 = function () {
-            var pt = this.parent.worldTransform;
+            var pt = this.spineInstance.worldTransform;
             var wt = this.worldTransform;
             var lt = this.localTransform;
             wt.a = lt.a * pt.a + lt.b * pt.c;

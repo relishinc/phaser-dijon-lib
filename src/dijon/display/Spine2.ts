@@ -98,7 +98,7 @@ export class Spine2 extends PIXI.spine.Spine {
         
         if (type === Phaser.Physics.ARCADE) {
             this.game.physics.arcade.enable(this, false);
-        } else { 
+        } else {
             this.game.physics.enable(this, type);
         }
         
@@ -249,7 +249,7 @@ export class Spine2 extends PIXI.spine.Spine {
         return this.getBounds().height;
     }
 
-    public get arcadeBody():Phaser.Physics.Arcade.Body{
+    public get arcadeBody(): Phaser.Physics.Arcade.Body {
         return <Phaser.Physics.Arcade.Body>this.body;
     }
 
