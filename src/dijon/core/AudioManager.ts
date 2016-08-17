@@ -170,6 +170,16 @@ export class AudioManager {
         return this._sounds[key].play("", 0, volume, loop, forceRestart);
     }
 
+    // similat to playSound, but just returns the Phaser.Sound instance
+    public getSound(key: string, volume?: number, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound{
+        if (typeof this._sounds[key] === 'undefined') {
+            return null;
+        }
+        volume = typeof volume === 'undefined' ? this._defaultVolume : volume;
+
+        return this._sounds[key];
+    }
+
     /**
     * plays a marker from an audio sprite
     * @param  {String} marker       the marker to check for (will check all audio sprites)

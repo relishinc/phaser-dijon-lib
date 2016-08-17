@@ -685,6 +685,7 @@ declare module "dijon/core/AudioManager" {
         playAudio(marker: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
         playDelayedAudio(delay: number, marker: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
         playSound(key: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
+        getSound(key: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
         playSpriteMarker(marker: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
         playDelayedSound(delay: number, key: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
         playDelayedSpriteMarker(delay: number, marker: string, volume?: number, loop?: boolean, forceRestart?: boolean): Phaser.Sound;
