@@ -74,7 +74,6 @@ export class Spine2 extends PIXI.spine.Spine {
             }
         }
         this.slotContainers = null;
-        this.removeChildren();
         super.destroy();
     }
 
@@ -251,6 +250,10 @@ export class Spine2 extends PIXI.spine.Spine {
 
     public get arcadeBody(): Phaser.Physics.Arcade.Body {
         return <Phaser.Physics.Arcade.Body>this.body;
+    }
+
+    public get created(): boolean { 
+        return this._created;
     }
 
     // static methods

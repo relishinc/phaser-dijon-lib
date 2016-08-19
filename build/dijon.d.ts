@@ -435,6 +435,7 @@ declare module "dijon/display/Spine2" {
         width: number;
         height: number;
         arcadeBody: Phaser.Physics.Arcade.Body;
+        created: boolean;
         protected static INITIALIZED: boolean;
         protected static game: Game;
         protected static nonMeshTimer: Phaser.TimerEvent;
