@@ -183,6 +183,7 @@ declare module "dijon/display/BitmapText" {
         protected _generateCachedSprite: () => void;
         protected _alignToNearestPixel(): void;
         highlight(highlightStr: string, highlightColor: number): boolean;
+        anchorAsImage(x: number, y?: number): void;
         setHitAreaToBounds: () => void;
     }
 }

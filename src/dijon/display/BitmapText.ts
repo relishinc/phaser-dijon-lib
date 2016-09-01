@@ -208,6 +208,14 @@ export class BitmapText extends Phaser.BitmapText {
         return true;
     }
 
+    public anchorAsImage(x: number, y: number = x) {
+        // If the image is cached, no changes will be applied, so we temporarily uncache
+        const wasCached: boolean = this.cacheAsBitmap;
+        this.cacheAsBitmap = null;
+        this._internalImage.anchor.set(x, y);
+        this.cacheAsBitmap = wasCached;
+    }
+
     public setHitAreaToBounds = function () {
         this.hitArea = this.getBounds();
     }
