@@ -13,7 +13,7 @@ export class State extends Phaser.State {
         super();
     }
     // Phaser.State overrides
-    public init(): void {
+    public init(args?: any): void {
 
     }
 

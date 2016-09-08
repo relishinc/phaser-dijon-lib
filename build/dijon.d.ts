@@ -735,7 +735,7 @@ declare module "dijon/core/Game" {
         enableInput(group: Phaser.Group): any;
         disableGameInput(): void;
         enableGameInput(): void;
-        changeState(toState: string): void;
+        changeState(toState: string, args?: any): void;
         addToGame: GameObjectFactory;
         addToBackground: GameObjectFactory;
         addToUI: GameObjectFactory;
@@ -789,7 +789,7 @@ declare module "dijon/core/State" {
         protected _audio: Phaser.Sound[];
         protected _mediator: Mediator;
         constructor();
-        init(): void;
+        init(args?: any): void;
         preload(): void;
         create(): void;
         shutdown(removeMediator?: boolean, removeAudio?: boolean): void;
@@ -835,6 +835,7 @@ declare module "dijon/core/TransitionManager" {
         private _exceptions;
         private _fromState;
         private _toState;
+        private _args;
         constructor();
         private _add(id, outHandler, preloadHandler, inHandler);
         private _getTransition(inState, outState);
@@ -846,7 +847,7 @@ declare module "dijon/core/TransitionManager" {
         addAll(handler: IPreloadHandler): void;
         addException(state: string): void;
         remove(fromState: string, toState?: string): void;
-        to(state: string): void;
+        to(state: string, args?: any): void;
         transitionIn(): void;
         canTransitionOut(): boolean;
         transitionOut(): void;

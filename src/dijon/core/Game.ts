@@ -165,11 +165,14 @@ export class Game extends Phaser.Game {
      * but allows the ui layer to persist
      * that way we can overlay the game without adding stuff to the phaser stage (for transitions)
      * @param {String} toState the new state we're changing to
+     * @param {any} args an optional parameter. This can be used to pass in a token/object 
+     * containing specific parameters for the state you are changing to. The init() function of 
+     * that state must also take an object of type any.
      * @return {void}
      */
-    public changeState(toState: string): void {
+    public changeState(toState: string, args?: any): void {
         this.gameLayer.removeAll(true, true);
-        return this.state.start(toState, false, false);
+        return this.state.start(toState, false, false, args);
     }
 
     // getter / setter

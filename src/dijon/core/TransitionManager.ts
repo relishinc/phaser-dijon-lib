@@ -17,6 +17,8 @@ export class TransitionManager {
     private _fromState: string = null;
     private _toState: string = null;
 
+    private _args: any = null;
+
     constructor() {
         this.game = Application.getInstance().game;
     }
@@ -52,7 +54,8 @@ export class TransitionManager {
         this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this._preloadComplete, this);
         this.onTransitionInComplete.dispatch();
 
-        this.game.changeState(this._toState);
+
+        this.game.changeState(this._toState, this._args);
     }
 
     private _transitionOutComplete() {
@@ -153,13 +156,19 @@ export class TransitionManager {
     /**
     * Start the transition to a new state
     * @param {string} state - the state to transition to
+    * @param {any} args - an optional parameter. Pass in an object of type any containing specific parameters
+    * for the state you are transitioning to. The object can then be deconstructed in that states init(args: any).
     */
-    public to(state: string) {
+    public to(state: string, args?: any) {
         if (this._transition)
             this._clearTransition();
 
         if (this._exceptions[state])
             return;
+
+        if (args !== undefined) {
+            this._args = args;
+        }
 
         this._fromState = this.game.state.current;
         this._toState = state;
