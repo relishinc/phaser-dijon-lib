@@ -1,6 +1,7 @@
 import {INotifier, INotification, IObserver} from '../interfaces';
 import {Mediator, Model, Notification} from '../mvc';
 import {Game} from '../core';
+import { Log } from '../utils';
 
 export class Application implements INotifier {
     // static constants
@@ -18,6 +19,7 @@ export class Application implements INotifier {
 
     //for debugging
     private static _hashQuery: {};
+    public static static_debugMode: boolean = false;
 
     constructor() {
         if (Application.instance)
@@ -54,6 +56,9 @@ export class Application implements INotifier {
 
     public addPlugins() {
         this.game.addPlugins();
+        if (Application.static_debugMode) {
+            Log.init();
+        }    
     }
 
     public registerModel(model: Model): Model {

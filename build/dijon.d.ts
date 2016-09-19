@@ -519,6 +519,28 @@ declare module "dijon/utils/Util" {
         static isNumber(value: string): boolean;
     }
 }
+declare module "dijon/utils/Log" {
+    export class Log {
+        private static MAX_LOG_LINES;
+        private static LINE_SPACING;
+        private static static_logLines;
+        private static static_logLinesText;
+        private static static_backOffset;
+        private static static_window;
+        private static static_windowBG;
+        private static static_gameInstance;
+        private static static_gameHalfHeight;
+        static init(): void;
+        static show(): void;
+        static hide(): void;
+        static debug(pLine: string, ...pOptionalParams: any[]): void;
+        static warn(pLine: string, ...pOptionalParams: any[]): void;
+        static error(pLine: string, ...pOptionalParams: any[]): void;
+        static isVisible(): boolean;
+        private static _createWindowGroup();
+        private static _addLine(pIndex, pColor);
+    }
+}
 declare module "dijon/utils" {
     export { Device } from "dijon/utils/Device";
     export { Logger } from "dijon/utils/Logger";
@@ -527,6 +549,7 @@ declare module "dijon/utils" {
     export { Textures } from "dijon/utils/Textures";
     export { Time } from "dijon/utils/Time";
     export { Util } from "dijon/utils/Util";
+    export { Log } from "dijon/utils/Log";
 }
 declare module "dijon/core/AnalyticsManager" {
     export class AnalyticsManager {
@@ -956,6 +979,7 @@ declare module "dijon/application/Application" {
             [name: string]: IObserver[];
         };
         private static _hashQuery;
+        static static_debugMode: boolean;
         constructor();
         protected windowHashChange(): void;
         protected createGame(): void;
