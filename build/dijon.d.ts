@@ -853,6 +853,7 @@ declare module "dijon/core/TransitionManager" {
         game: Game;
         onTransitionOutComplete: Phaser.Signal;
         onTransitionInComplete: Phaser.Signal;
+        private _isInTransition;
         private _transition;
         private _transitions;
         private _exceptions;
@@ -874,6 +875,7 @@ declare module "dijon/core/TransitionManager" {
         transitionIn(): void;
         canTransitionOut(): boolean;
         transitionOut(): void;
+        isInTransition: boolean;
     }
 }
 declare module "dijon/core" {

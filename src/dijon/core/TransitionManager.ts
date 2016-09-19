@@ -9,6 +9,8 @@ export class TransitionManager {
     public game: Game;
     public onTransitionOutComplete: Phaser.Signal = new Phaser.Signal();
     public onTransitionInComplete: Phaser.Signal = new Phaser.Signal();
+    
+    private _isInTransition: boolean = false;
 
     private _transition: ITransition = null;
     private _transitions: Object = {};
@@ -61,6 +63,7 @@ export class TransitionManager {
     private _transitionOutComplete() {
         this._transition = null;
         this.onTransitionOutComplete.dispatch();
+        this._isInTransition = false;
     }
 
     private _preloadComplete() {
@@ -186,8 +189,9 @@ export class TransitionManager {
     public transitionIn() {
         if (!this._transition)
             return;
-
+        
         if (typeof this._transition.outHandler.transitionIn === 'function') {
+            this._isInTransition = true;
             this._transition.outHandler.transitionInComplete.addOnce(this._transitionInComplete, this);
             this._transition.outHandler.transitionIn();
         }
@@ -204,5 +208,9 @@ export class TransitionManager {
     public transitionOut() {
         this._transition.inHandler.transitionOutComplete.addOnce(this._transitionOutComplete, this);
         this._transition.inHandler.transitionOut();
+    }
+
+    public get isInTransition(): boolean {
+        return this._isInTransition;
     }
 }
