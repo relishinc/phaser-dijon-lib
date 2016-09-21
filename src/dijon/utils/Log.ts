@@ -69,9 +69,13 @@ export class Log {
         }
         
         // Add the line
-        if (pLine === null || pLine === undefined) {
-            pLine = "null or undefined";
+        if (pLine === null) {
+            pLine = "null";
         }
+        else if (pLine === undefined) {
+            pLine = "undefined";
+        }
+        
         this.static_logLines.push(pLine + optionalParamsString);
 
         // Update the _window if visible
@@ -101,9 +105,13 @@ export class Log {
         }
 
         // Add the line
-        if (pLine === null || pLine === undefined) {
-            pLine = "null or undefined";
+        if (pLine === null) {
+            pLine = "null";
         }
+        else if (pLine === undefined) {
+            pLine = "undefined";
+        }
+
         this.static_logLines.push(pLine + optionalParamsString);
 
         // Update the _window if visible
@@ -133,9 +141,13 @@ export class Log {
         }
 
         // Add the line
-        if (pLine === null || pLine === undefined) {
-            pLine = "null or undefined";
+        if (pLine === null) {
+            pLine = "null";
         }
+        else if (pLine === undefined) {
+            pLine = "undefined";
+        }
+
         this.static_logLines.push(pLine + optionalParamsString);
 
         // Update the _window if visible
