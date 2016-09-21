@@ -60,12 +60,19 @@ export class Log {
         }    
 
         // TODO: Figure out how pOptionalParams is handled by console.log
+        var optionalParamsString = "";
+
+        for (var cnt = 0; cnt < pOptionalParams.length; cnt++) {
+            var element = pOptionalParams[cnt];
+            optionalParamsString += " ";
+            optionalParamsString += element.toString();
+        }
         
         // Add the line
         if (pLine === null || pLine === undefined) {
             pLine = "null or undefined";
         }
-        this.static_logLines.push(pLine);
+        this.static_logLines.push(pLine + optionalParamsString);
 
         // Update the _window if visible
         this._addLine(this.static_logLines.length, '#ffffff');
@@ -85,12 +92,19 @@ export class Log {
         } 
 
         // TODO: Figure out how pOptionalParams is handled by console.warn
+        var optionalParamsString = "";
+
+        for (var cnt = 0; cnt < pOptionalParams.length; cnt++) {
+            var element = pOptionalParams[cnt];
+            optionalParamsString += " ";
+            optionalParamsString += element.toString();
+        }
 
         // Add the line
         if (pLine === null || pLine === undefined) {
             pLine = "null or undefined";
         }
-        this.static_logLines.push(pLine);
+        this.static_logLines.push(pLine + optionalParamsString);
 
         // Update the _window if visible
         this._addLine(this.static_logLines.length, '#ffff00');
@@ -110,12 +124,19 @@ export class Log {
         } 
 
         // TODO: Figure out how pOptionalParams is handled by console.error
+        var optionalParamsString = "";
+
+        for (var cnt = 0; cnt < pOptionalParams.length; cnt++) {
+            var element = pOptionalParams[cnt];
+            optionalParamsString += " ";
+            optionalParamsString += element.toString();
+        }
 
         // Add the line
         if (pLine === null || pLine === undefined) {
             pLine = "null or undefined";
         }
-        this.static_logLines.push(pLine);
+        this.static_logLines.push(pLine + optionalParamsString);
 
         // Update the _window if visible
         this._addLine(this.static_logLines.length, '#ff0000');
