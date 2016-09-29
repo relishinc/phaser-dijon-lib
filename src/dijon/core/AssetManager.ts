@@ -102,6 +102,7 @@ export class AssetManager implements INotifier {
         this.baseURL = '';
         this.paths = null;
         this.resolution = this.game.resolution;
+        this._soundsToDecode = [];
     }
 
     /**
@@ -586,8 +587,7 @@ export class AssetManager implements INotifier {
         this.game.load.onFileComplete.remove(this._gameFileComplete, this);
 
         this._hasFiles = false;
-        this._soundsToDecode = [];
-
+        
         if (this._data === undefined) {
             return;
         }
