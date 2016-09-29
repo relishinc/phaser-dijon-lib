@@ -51,7 +51,7 @@ export class Placeholders {
             upImage.visible = true;
 
             if (callback) {
-                callback.call(callbackContext);
+                callback.call(callbackContext, this);
             }
         });
 
