@@ -45,6 +45,28 @@ export class Text extends Phaser.Text {
         this.setResolution();
     }
 
+    public static CreateFromData(data: any): Text {
+        let self: Text = new Text(data.position.x, data.position.y, data.copy, data.fontName, data.fontSize, '#' + data.fontColor, data.alignment, data.wrapWidth > 0, data.wrapWidth > 0 ? data.wrapWidth : null, data.spacing);
+        self.name = data.name;
+        console.log(self.wordWrapWidth);
+        if (data.stroke != "") {
+            self.stroke = data.stroke;
+        }
+        if (data.shadowColor) {
+            self.setShadow(data.shadowX, data.shadowY, data.shadowColor);
+        }
+        if (data.anchor) {
+            self.anchor.setTo(data.anchor.x, data.anchor.y);
+        }
+        if (data.scale) {
+            self.scale.setTo(data.scale.x, data.scale.y);
+        }
+        if (data.alpha) {
+            self.alpha = data.alpha;
+        }
+        return self;
+    }   
+    
     // Phaser.Text overrides
     public setText(text: string): Phaser.Text {
         super.setText(text);

@@ -25,6 +25,14 @@ export class Group extends Phaser.Group {
             this.addComponents(components);
     }
 
+    public static CreateFromData(data: any): Group {
+        let self = new Group(data.position.x, data.position.y, data.name);
+        if (data.alpha) {
+            self.alpha = data.alpha;
+        }
+        return self;
+    }
+
     // Phaser.Group overrides
     /**
     * called every frame
