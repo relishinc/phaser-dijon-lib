@@ -33,6 +33,10 @@ export class Group extends Phaser.Group {
         return self;
     }
 
+    public assignPrefab(object: any) {
+        // Override this to handle assignment of child prefabs.
+    }
+    
     // Phaser.Group overrides
     /**
     * called every frame

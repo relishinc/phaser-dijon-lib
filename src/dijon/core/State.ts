@@ -27,6 +27,7 @@ export class State extends Phaser.State {
             this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this.create, this);
             return;
         }
+        
         this.buildInterface();
         this.afterBuildInterface();
         this.startBuild();

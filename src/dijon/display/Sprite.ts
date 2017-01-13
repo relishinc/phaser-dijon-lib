@@ -36,6 +36,10 @@ export class Sprite extends Phaser.Sprite {
         return self;
     }
 
+    public assignPrefab(object: any) {
+        // Override this to handle assignment of child prefabs.
+    }
+    
     // Phaser.Sprite overrides
     /**
     * called every frame

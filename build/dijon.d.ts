@@ -217,6 +217,7 @@ declare module "dijon/display/Group" {
         protected _mediator: Mediator;
         constructor(x?: number, y?: number, name?: string, addToStage?: boolean, components?: Component[], enableBody?: boolean, physicsBodyType?: number);
         static CreateFromData(data: any): Group;
+        assignPrefab(object: any): void;
         update(): void;
         destroy(): void;
         protected init(): void;
@@ -247,6 +248,7 @@ declare module "dijon/display/Sprite" {
         };
         constructor(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number, name?: string, components?: Component[]);
         static CreateFromData(data: any): Sprite;
+        assignPrefab(object: any): void;
         update(): void;
         destroy(): void;
         protected init(): void;
@@ -479,6 +481,7 @@ declare module "dijon/display/Text" {
         protected _textToAnimate: string[];
         constructor(x: number, y: number, text?: string, fontName?: string, fontSize?: number, fontColor?: string, fontAlign?: string, wordWrap?: boolean, width?: number, lineSpacing?: number, settings?: Object);
         static CreateFromData(data: any): Text;
+        assignPrefab(object: any): void;
         setText(text: string): Phaser.Text;
         protected setResolution(): void;
         protected _startTextAnimation(): void;
