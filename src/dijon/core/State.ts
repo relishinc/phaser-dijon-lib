@@ -4,11 +4,17 @@
 import {Application} from '../application';
 import {Game, GameObjectFactory} from '../core';
 import {Mediator} from '../mvc';
+import {PrefabBuilder} from '../utils';
 
 export class State extends Phaser.State {
+    public prefabs: { [name: string]: any } = {};
+    public groups: { [name: string]: any } = {};
+
     protected _audio: Phaser.Sound[] = [];
     protected _mediator: Mediator = null;
 
+    protected _sceneData: {prefabs: any[]} = null;
+    
     constructor() {
         super();
     }
@@ -22,12 +28,43 @@ export class State extends Phaser.State {
             this.game.asset.loadAssets(this.preloadID);
     }
 
+    public createPrefabFromData(prefData: any): any {
+        if (prefData != null) {
+            return PrefabBuilder.createPrefabObjects(prefData, this);
+        }
+        return null;
+    }
+
+    public assignPrefab(object: any) {
+        // Override this to handle assignment of child prefabs.
+    }
+    
+    protected _findPrefab(name: string): Phaser.Image {
+        if (this.prefabs.hasOwnProperty(name)) {
+            return this.prefabs[name];
+        }
+        else {
+            return null;
+        }
+    }
+
+    protected _findGroup(name: string): Phaser.Group {
+        if (this.groups.hasOwnProperty(name)) {
+            return this.groups[name];
+        }
+        else {
+            return null;
+        }
+    }   
+    
     public create(): void {
         if (!this.game.asset.allSoundsDecoded()) {
             this.game.asset.onLoadCompleteAndAudioDecoded.addOnce(this.create, this);
             return;
         }
-        
+        if (this._sceneData !== null) {
+            PrefabBuilder.createSceneFrom(this._sceneData, this);
+        }
         this.buildInterface();
         this.afterBuildInterface();
         this.startBuild();

@@ -57,16 +57,20 @@ export class Text extends Phaser.Text {
             self.scale.setTo(data.scale.x, data.scale.y);
         }
         if (data.anchor) {
-            self.pivot = data.anchor;
-            if (data.anchor.x === 0.5) {
-                self.x += self.realWidth * 0.5;
-            }
-            else if (data.anchor.x === 1) {
-                self.x -= self.realWidth;
-            }
+            self.pivot = new Phaser.Point(data.anchor.x, data.anchor.y);
+        }
+        
+        switch (data.alignment) {
+            case 'center':
+                self.x -= self.realWidth * 0.5;
+                break;
+        
+            case 'right':
+                self.x -= self.realWidth;         
+                break;    
         }
         self.x = Math.round(self.x);
-        self.y = Math.round(self.y);
+        self.y = Math.round(self.y + (self.realHeight * (0.5 / self.game.resolution)));
         self.alpha = data.alpha ? data.alpha : 1;
         return self;
     }

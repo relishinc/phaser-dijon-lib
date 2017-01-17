@@ -5,4 +5,5 @@ export {Placeholders} from './utils/Placeholders';
 export {Textures} from './utils/Textures';
 export {Time} from './utils/Time';
 export {Util} from './utils/Util';
-export {Log} from './utils/Log';
+export { Log } from './utils/Log';
+export { PrefabBuilder } from './utils/PrefabBuilder';

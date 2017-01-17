@@ -547,6 +547,18 @@ declare module "dijon/utils/Log" {
         private static _addLine(pIndex, pColor);
     }
 }
+declare module "dijon/utils/PrefabBuilder" {
+    import { State } from "dijon/core";
+    export class PrefabBuilder {
+        static prefabClasses: {};
+        static addPrefabClass(newClass: any, importName: string, overrideExisting?: boolean): void;
+        static createSceneFrom(data: {
+            prefabs: any[];
+        }, scene: State): void;
+        static createPrefabObjects(data: any, scene: State): any;
+        static createPrefab(data: any): any;
+    }
+}
 declare module "dijon/utils" {
     export { Device } from "dijon/utils/Device";
     export { Logger } from "dijon/utils/Logger";
@@ -556,6 +568,7 @@ declare module "dijon/utils" {
     export { Time } from "dijon/utils/Time";
     export { Util } from "dijon/utils/Util";
     export { Log } from "dijon/utils/Log";
+    export { PrefabBuilder } from "dijon/utils/PrefabBuilder";
 }
 declare module "dijon/core/AnalyticsManager" {
     export class AnalyticsManager {
@@ -815,11 +828,24 @@ declare module "dijon/core/State" {
     import { Game, GameObjectFactory } from "dijon/core";
     import { Mediator } from "dijon/mvc";
     export class State extends Phaser.State {
+        prefabs: {
+            [name: string]: any;
+        };
+        groups: {
+            [name: string]: any;
+        };
         protected _audio: Phaser.Sound[];
         protected _mediator: Mediator;
+        protected _sceneData: {
+            prefabs: any[];
+        };
         constructor();
         init(args?: any): void;
         preload(): void;
+        createPrefabFromData(prefData: any): any;
+        assignPrefab(object: any): void;
+        protected _findPrefab(name: string): Phaser.Image;
+        protected _findGroup(name: string): Phaser.Group;
         create(): void;
         shutdown(removeMediator?: boolean, removeAudio?: boolean): void;
         listBuildSequence(): Function[];
