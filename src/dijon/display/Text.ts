@@ -65,6 +65,8 @@ export class Text extends Phaser.Text {
                 self.x -= self.realWidth;
             }
         }
+        self.x = Math.round(self.x);
+        self.y = Math.round(self.y);
         self.alpha = data.alpha ? data.alpha : 1;
         return self;
     }
