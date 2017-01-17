@@ -58,6 +58,12 @@ export class Text extends Phaser.Text {
         }
         if (data.anchor) {
             self.pivot = data.anchor;
+            if (data.anchor.x === 0.5) {
+                self.x += self.realWidth * 0.5;
+            }
+            else if (data.anchor.x === 1) {
+                self.x -= self.realWidth;
+            }
         }
         self.alpha = data.alpha ? data.alpha : 1;
         return self;
