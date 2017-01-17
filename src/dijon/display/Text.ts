@@ -26,8 +26,7 @@ export class Text extends Phaser.Text {
     protected _textToAnimate: string[] = [];
 
     constructor(x: number, y: number, text: string = "", fontName?: string, fontSize: number = Text.DEFAULT_FONT_SIZE, fontColor: string = Text.DEFAULT_FONT_COLOR, fontAlign: string = 'left', wordWrap: boolean = false, width: number = 0, public lineSpacing: number = 0, settings: Object = null) {
-        super(
-            Application.getInstance().game,
+        super(Application.getInstance().game,
             x,
             y,
             text,
@@ -58,7 +57,7 @@ export class Text extends Phaser.Text {
             self.scale.setTo(data.scale.x, data.scale.y);
         }
         if (data.anchor) {
-            self.anchor.setTo(data.anchor);
+            self.pivot = data.anchor;
         }
         self.alpha = data.alpha ? data.alpha : 1;
         return self;
