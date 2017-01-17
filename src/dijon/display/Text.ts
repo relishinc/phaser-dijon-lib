@@ -57,9 +57,10 @@ export class Text extends Phaser.Text {
         if (data.scale) {
             self.scale.setTo(data.scale.x, data.scale.y);
         }
-        if (data.alpha) {
-            self.alpha = data.alpha;
+        if (data.anchor) {
+            self.anchor.setTo(data.anchor);
         }
+        self.alpha = data.alpha ? data.alpha : 1;
         return self;
     }
 
