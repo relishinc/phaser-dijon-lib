@@ -70,7 +70,7 @@ export class Text extends Phaser.Text {
                 break;    
         }
         self.x = Math.round(self.x);
-        self.y = Math.round(self.y + (self.realHeight * (0.5 / self.game.resolution)));
+        self.y = Math.round(self.y);
         self.alpha = data.alpha ? data.alpha : 1;
         return self;
     }
