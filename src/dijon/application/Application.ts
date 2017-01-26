@@ -75,11 +75,10 @@ export class Application implements INotifier {
             }, this);
         }
         this.ensureAudioContextUnlocked = () => {
-            console.log("Context Unlock has been attempted");
             return;
         };
     }
-    
+
     protected windowHashChange(): void { }
 
     // public methods
