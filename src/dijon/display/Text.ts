@@ -26,8 +26,7 @@ export class Text extends Phaser.Text {
     protected _textToAnimate: string[] = [];
 
     constructor(x: number, y: number, text: string = "", fontName?: string, fontSize: number = Text.DEFAULT_FONT_SIZE, fontColor: string = Text.DEFAULT_FONT_COLOR, fontAlign: string = 'left', wordWrap: boolean = false, width: number = 0, public lineSpacing: number = 0, settings: Object = null) {
-        super(
-            Application.getInstance().game,
+        super(Application.getInstance().game,
             x,
             y,
             text,
@@ -45,6 +44,41 @@ export class Text extends Phaser.Text {
         this.setResolution();
     }
 
+    public static CreateFromData(data: any): Text {
+        let self: Text = new Text(data.position.x, data.position.y, data.copy, data.fontName, data.fontSize, '#' + data.fontColor, data.alignment, data.wrapWidth > 0, data.wrapWidth > 0 ? data.wrapWidth : null, data.spacing);
+        self.name = data.name;
+        if (data.stroke != "") {
+            self.stroke = data.stroke;
+        }
+        if (data.shadowColor) {
+            self.setShadow(data.shadowX, data.shadowY, data.shadowColor);
+        }
+        if (data.scale) {
+            self.scale.setTo(data.scale.x, data.scale.y);
+        }
+        if (data.anchor) {
+            self.pivot = new Phaser.Point(data.anchor.x, data.anchor.y);
+        }
+        
+        switch (data.alignment) {
+            case 'center':
+                self.x -= self.realWidth * 0.5;
+                break;
+        
+            case 'right':
+                self.x -= self.realWidth;         
+                break;    
+        }
+        self.x = Math.round(self.x);
+        self.y = Math.round(self.y);
+        self.alpha = data.alpha ? data.alpha : 1;
+        return self;
+    }
+
+    public assignPrefab(object: any) {
+        // Override this to handle assignment of child prefabs.
+    }
+    
     // Phaser.Text overrides
     public setText(text: string): Phaser.Text {
         super.setText(text);

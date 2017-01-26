@@ -15,6 +15,31 @@ export class Sprite extends Phaser.Sprite {
         if (components)
             this.addComponents(components);
     }
+
+    public static CreateFromData(data: any): Sprite {
+        let self = new Sprite(data.position.x, data.position.y, data.key, data.frame, data.name);
+        if (data.anchor) {
+            self.anchor.setTo(data.anchor.x, data.anchor.y);
+        }
+        if (data.scale) {
+            self.scale.setTo(data.scale.x, data.scale.y);
+        }
+        if (data.angle) {
+            self.angle = data.angle;
+        }
+        if (data.tint) {
+            self.tint = data.tint;
+        }
+        if (data.alpha) {
+            self.alpha = data.alpha;
+        }
+        return self;
+    }
+
+    public assignPrefab(object: any) {
+        // Override this to handle assignment of child prefabs.
+    }
+    
     // Phaser.Sprite overrides
     /**
     * called every frame
