@@ -65,6 +65,7 @@ export class State extends Phaser.State {
         if (this._sceneData !== null) {
             PrefabBuilder.createSceneFrom(this._sceneData, this);
         }
+        this.app.ensureAudioContextUnlocked();
         this.buildInterface();
         this.afterBuildInterface();
         this.startBuild();

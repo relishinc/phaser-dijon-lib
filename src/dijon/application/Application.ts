@@ -36,8 +36,51 @@ export class Application implements INotifier {
         this.startGame();
     }
 
-    protected windowHashChange(): void {
+    /**
+     * Utility Method - Method should be called during boot state, and will unlock audio if the audio contenxt
+     * has been suspended (awaiting touch input). This is due to a bug with the way audio is handled by chrome/android
+     * when the game is opened in an iFrame from a different site. This should be called in the boot state.
+     */
+    public ensureAudioContextUnlocked(): void {
+        if (this.game.device.android && this.game.device.chrome && this.game.device.chromeVersion >= 55) {
+            this.game.sound.setTouchLock();
+            this.game.input.touch.addTouchLockCallback(() => {
+                if (this.game.sound.noAudio || !this.game.sound.touchLocked) {
+                    return true;
+                }
+                if (this.game.sound.usingWebAudio) {
+                    // Create empty buffer and play it
+                    // The SoundManager.update loop captures the state of it and then resets touchLocked to false
+
+                    var buffer = this.game.sound.context.createBuffer(1, 1, 22050);
+                    this.game.sound["unlockSource"] = this.game.sound.context.createBufferSource();
+                    this.game.sound["unlockSource"].buffer = buffer;
+                    this.game.sound["unlockSource"].connect(this.game.sound.context.destination);
+                    if (this.game.sound["unlockSource"].start === undefined) {
+                        this.game.sound["unlockSource"].noteOn(0);
+                    }
+                    else {
+                        this.game.sound["unlockSource"].start(0);
+                    }
+
+                    //Hello Chrome 55!
+                    if (this.game.sound["unlockSource"].context.state === 'suspended') {
+                        this.game.sound["unlockSource"].context.resume();
+                    }
+                }
+
+                //  We can remove the event because we've done what we needed (started the unlock sound playing)
+                return true;
+
+            }, this);
+        }
+        this.ensureAudioContextUnlocked = () => {
+            console.log("Context Unlock has been attempted");
+            return;
+        };
     }
+    
+    protected windowHashChange(): void { }
 
     // public methods
     protected createGame(): void {

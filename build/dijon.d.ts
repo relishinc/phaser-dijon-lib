@@ -1015,6 +1015,7 @@ declare module "dijon/application/Application" {
         private static _hashQuery;
         static static_debugMode: boolean;
         constructor();
+        ensureAudioContextUnlocked(): void;
         protected windowHashChange(): void;
         protected createGame(): void;
         protected startGame(): void;
