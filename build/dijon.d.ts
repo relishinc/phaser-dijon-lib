@@ -748,6 +748,7 @@ declare module "dijon/core/Game" {
     import { AssetManager, TransitionManager, SequenceManager, StorageManager, AudioManager, AnalyticsManager, GameObjectFactory } from "dijon/core";
     import { Group } from "dijon/display";
     export class Game extends Phaser.Game {
+        scaleFactor: number;
         app: Application;
         config: IGameConfig;
         asset: AssetManager;
@@ -765,6 +766,7 @@ declare module "dijon/core/Game" {
         stageLayer: Group;
         constructor(config: IGameConfig);
         boot(): void;
+        updateWorldScaleFactor(originalW: number, originalH: number): void;
         addPlugins(): void;
         setFactoryDefaultLayer(newLayer: Phaser.Group): void;
         protected addLayers(): void;
@@ -783,6 +785,8 @@ declare module "dijon/core/Game" {
         addToUI: GameObjectFactory;
         addToStage: GameObjectFactory;
         addToWorld: GameObjectFactory;
+        centerX: number;
+        centerY: number;
     }
 }
 declare module "dijon/core/GameObjectFactory" {
