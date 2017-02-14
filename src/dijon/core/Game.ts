@@ -8,9 +8,7 @@ import {Group} from '../display';
 import {Notifications} from '../utils';
 
 export class Game extends Phaser.Game {
-    // public variables
-    public scaleFactor: number;
-    
+    // public variables    
     // application
     public app: Application;
     public config: IGameConfig;
@@ -58,18 +56,7 @@ export class Game extends Phaser.Game {
         this.addLayers();
         this.addMouseCallbacks();
         this.setFactoryDefaultLayer(this.gameLayer);
-
-        this.scaleFactor = 1;
-    }
-
-    // Updates this.scaleFactor, which can be multplied into assets that were
-    // designed with an original resolution in size and need to be scaled to suit
-    // any resolution. This can be used with a RESIZE scale environment to manage asset scaling.
-    public updateWorldScaleFactor(originalW: number, originalH: number): void {
-        let newX = this.width / originalW;
-        let newY = this.height / originalH;
-        this.scaleFactor = newY < newX ? newY : newX;
-    }   
+    } 
 
     public addPlugins(): void {
         if (this.config.plugins && this.config.plugins.length > 0) {
