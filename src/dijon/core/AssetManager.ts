@@ -99,7 +99,12 @@ export class AssetManager implements INotifier {
     private _init() {
         this.app = Application.getInstance();
         this.game = this.app.game;
-        this.baseURL = '';
+        if (window.hasOwnProperty("baseURL")) {
+            this.baseURL = window["baseURL"];
+        }
+        else {
+            this.baseURL = '';
+        }
         this.paths = null;
         this.resolution = this.game.resolution;
         this._soundsToDecode = [];
