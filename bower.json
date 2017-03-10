@@ -7,7 +7,7 @@
     "anthonysapp <anthony@reli.sh>"
   ],
   "dependencies": {
-    "phaser-official": "https://github.com/photonstorm/phaser.git"
+    "phaser-official": "https://github.com/photonstorm/phaser-ce.git"
   },
   "ignore": [
     "**/.*",

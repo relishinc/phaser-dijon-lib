@@ -364,14 +364,16 @@ declare module p2 {
 
     }
 
-     export interface ContactMaterialOptions {
-        friction?: number;
-        restitution?: number;
-        stiffness?: number;
-        relaxation?: number;
-        frictionStiffness?: number;
-        frictionRelaxation?: number;
-        surfaceVelocity?: number;
+    export class ContactMaterialOptions {
+
+        friction: number;
+        restitution: number;
+        stiffness: number;
+        relaxation: number;
+        frictionStiffness: number;
+        frictionRelaxation: number;
+        surfaceVelocity: number;
+
     }
 
     export class ContactMaterial {

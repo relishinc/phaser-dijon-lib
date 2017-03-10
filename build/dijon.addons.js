@@ -615,7 +615,7 @@ PIXI.DisplayObjectContainer.prototype.getLocalBounds = function () {
 * @param forcePowerOfTwo {Boolean} Whether we want to force the texture to be a power of two
 * @param renderSession {RenderSession} 
 */
-PIXI.TilingSprite.prototype.generateTilingTexture = function (forcePowerOfTwo, renderSession) {
+Phaser.TileSprite.prototype.generateTilingTexture = function (forcePowerOfTwo, renderSession) {
     if (!this.texture.baseTexture.hasLoaded) {
         return;
     }
@@ -641,8 +641,8 @@ PIXI.TilingSprite.prototype.generateTilingTexture = function (forcePowerOfTwo, r
     }
 
     if (forcePowerOfTwo) {
-        targetWidth = PIXI.getNextPowerOfTwo(targetWidth);
-        targetHeight = PIXI.getNextPowerOfTwo(targetHeight);
+        targetWidth = Phaser.Math.getNextPowerOfTwo(targetWidth);
+        targetHeight = Phaser.Math.getNextPowerOfTwo(targetHeight);
     }
 
     if (this.canvasBuffer) {
