@@ -1,4 +1,4 @@
-export {AnalyticsManager, AnalyticsException} from './core/AnalyticsManager';
+export {AnalyticsManager, AnalyticsException, AnalyticsEventModel} from './core/AnalyticsManager';
 export {AssetManager} from './core/AssetManager';
 export {AudioManager} from './core/AudioManager';
 export {Game} from './core/Game';

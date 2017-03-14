@@ -12,7 +12,7 @@ export class State extends Phaser.State {
 
     protected _audio: Phaser.Sound[] = [];
     protected _mediator: Mediator = null;
-
+    protected _allowUpdate: boolean = false;
     protected _sceneData: {prefabs: any[]} = null;
     
     constructor() {
@@ -28,34 +28,17 @@ export class State extends Phaser.State {
             this.game.asset.loadAssets(this.preloadID);
     }
 
-    public createPrefabFromData(prefData: any): any {
-        if (prefData != null) {
-            return PrefabBuilder.createPrefabObjects(prefData, this);
-        }
-        return null;
-    }
-
-    public assignPrefab(object: any) {
-        // Override this to handle assignment of child prefabs.
-    }
-    
-    protected _findPrefab(name: string): Phaser.Image {
-        if (this.prefabs.hasOwnProperty(name)) {
-            return this.prefabs[name];
-        }
-        else {
-            return null;
+    // State Loop - No longer handed by Phasers integrated update, allowing us to easily pause
+    // without relying on this.game.pause - which halts a great deal of other functionality we may need.
+    public update(): void {
+        if (this._allowUpdate) {
+            this.updateState();
         }
     }
 
-    protected _findGroup(name: string): Phaser.Group {
-        if (this.groups.hasOwnProperty(name)) {
-            return this.groups[name];
-        }
-        else {
-            return null;
-        }
-    }   
+    protected updateState(): void { 
+        console.log("State: Calling updateState() - you should override this for logic loops, not update().");
+    }
     
     public create(): void {
         if (!this.game.asset.allSoundsDecoded()) {
@@ -160,4 +143,42 @@ export class State extends Phaser.State {
     public get game(): Game {
         return this.app.game;
     }
+
+    public get allowUpdate(): boolean {
+        return this._allowUpdate;
+    }
+
+    public set allowUpdate(value: boolean) {
+        this._allowUpdate = value;
+    }
+
+    /* EXPERIMENT CONTENT CREATION FROM UNITY SCENE EXPORT */
+     public createPrefabFromData(prefData: any): any {
+        if (prefData != null) {
+            return PrefabBuilder.createPrefabObjects(prefData, this);
+        }
+        return null;
+    }
+
+    public assignPrefab(object: any) {
+        // Override this to handle assignment of child prefabs.
+    }
+    
+    protected _findPrefab(name: string): Phaser.Image {
+        if (this.prefabs.hasOwnProperty(name)) {
+            return this.prefabs[name];
+        }
+        else {
+            return null;
+        }
+    }
+
+    protected _findGroup(name: string): Phaser.Group {
+        if (this.groups.hasOwnProperty(name)) {
+            return this.groups[name];
+        }
+        else {
+            return null;
+        }
+    }   
 }

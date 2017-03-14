@@ -571,12 +571,19 @@ declare module "dijon/utils" {
     export { PrefabBuilder } from "dijon/utils/PrefabBuilder";
 }
 declare module "dijon/core/AnalyticsManager" {
+    export class AnalyticsEventModel {
+        action: string;
+        label: string;
+        value: number;
+        constructor(pAction: string, pLabel?: string, pValue?: number);
+    }
     export class AnalyticsManager {
         enabled: boolean;
-        category: string;
+        protected _category: string;
         private _trackerId;
         private _startedWithTrackerId;
         constructor(enabled?: boolean, category?: string);
+        setCategory(newCat: string): void;
         trackEvent(action?: string, label?: string, value?: string): void;
         trackOmnitureEvent(gameName: string, activity: string, isGameEvent: boolean): boolean;
         private _startWithTrackerId();
@@ -838,16 +845,15 @@ declare module "dijon/core/State" {
         };
         protected _audio: Phaser.Sound[];
         protected _mediator: Mediator;
+        protected _allowUpdate: boolean;
         protected _sceneData: {
             prefabs: any[];
         };
         constructor();
         init(args?: any): void;
         preload(): void;
-        createPrefabFromData(prefData: any): any;
-        assignPrefab(object: any): void;
-        protected _findPrefab(name: string): Phaser.Image;
-        protected _findGroup(name: string): Phaser.Group;
+        update(): void;
+        protected updateState(): void;
         create(): void;
         shutdown(removeMediator?: boolean, removeAudio?: boolean): void;
         listBuildSequence(): Function[];
@@ -864,6 +870,11 @@ declare module "dijon/core/State" {
         add: GameObjectFactory;
         app: Application;
         game: Game;
+        allowUpdate: boolean;
+        createPrefabFromData(prefData: any): any;
+        assignPrefab(object: any): void;
+        protected _findPrefab(name: string): Phaser.Image;
+        protected _findGroup(name: string): Phaser.Group;
     }
 }
 declare module "dijon/core/StorageManager" {
@@ -913,7 +924,7 @@ declare module "dijon/core/TransitionManager" {
     }
 }
 declare module "dijon/core" {
-    export { AnalyticsManager, AnalyticsException } from "dijon/core/AnalyticsManager";
+    export { AnalyticsManager, AnalyticsException, AnalyticsEventModel } from "dijon/core/AnalyticsManager";
     export { AssetManager } from "dijon/core/AssetManager";
     export { AudioManager } from "dijon/core/AudioManager";
     export { Game } from "dijon/core/Game";
@@ -1000,6 +1011,7 @@ declare module "dijon/application/Application" {
     import { INotifier, IObserver } from "dijon/interfaces";
     import { Mediator, Model } from "dijon/mvc";
     import { Game } from "dijon/core";
+    import { AnalyticsEventModel } from "dijon/core";
     export class Application implements INotifier {
         protected static instance: any;
         protected static SINGLETON_MSG: string;
@@ -1018,6 +1030,8 @@ declare module "dijon/application/Application" {
         static static_debugMode: boolean;
         constructor();
         ensureAudioContextUnlocked(): void;
+        trackEvent(eventModel: AnalyticsEventModel): void;
+        trackEventAndChangeCategory(newCategory: string, eventModel: AnalyticsEventModel): void;
         protected windowHashChange(): void;
         protected createGame(): void;
         protected startGame(): void;

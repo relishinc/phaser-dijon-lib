@@ -2,6 +2,7 @@ import {INotifier, INotification, IObserver} from '../interfaces';
 import {Mediator, Model, Notification} from '../mvc';
 import {Game} from '../core';
 import { Log } from '../utils';
+import { AnalyticsEventModel } from '../core';
 
 export class Application implements INotifier {
     // static constants
@@ -79,6 +80,15 @@ export class Application implements INotifier {
         };
     }
 
+    public trackEvent(eventModel: AnalyticsEventModel): void {
+        this.game.analytics.trackEvent(eventModel.action, eventModel.label, eventModel.value.toString());
+    }   
+
+    public trackEventAndChangeCategory(newCategory: string, eventModel: AnalyticsEventModel): void {
+        this.game.analytics.setCategory(newCategory);
+        this.trackEvent(eventModel);
+    }
+    
     protected windowHashChange(): void { }
 
     // public methods
