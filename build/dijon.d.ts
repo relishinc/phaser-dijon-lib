@@ -845,14 +845,16 @@ declare module "dijon/core/State" {
         };
         protected _audio: Phaser.Sound[];
         protected _mediator: Mediator;
-        protected _allowUpdate: boolean;
         protected _sceneData: {
             prefabs: any[];
         };
+        private _allowUpdate;
         constructor();
         init(args?: any): void;
         preload(): void;
         update(): void;
+        resume(): void;
+        pause(): void;
         protected updateState(): void;
         create(): void;
         shutdown(removeMediator?: boolean, removeAudio?: boolean): void;
@@ -870,7 +872,6 @@ declare module "dijon/core/State" {
         add: GameObjectFactory;
         app: Application;
         game: Game;
-        allowUpdate: boolean;
         createPrefabFromData(prefData: any): any;
         assignPrefab(object: any): void;
         protected _findPrefab(name: string): Phaser.Image;

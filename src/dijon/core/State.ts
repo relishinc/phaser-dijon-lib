@@ -12,8 +12,8 @@ export class State extends Phaser.State {
 
     protected _audio: Phaser.Sound[] = [];
     protected _mediator: Mediator = null;
-    protected _allowUpdate: boolean = false;
     protected _sceneData: {prefabs: any[]} = null;
+    private _allowUpdate: boolean = false;
     
     constructor() {
         super();
@@ -34,6 +34,14 @@ export class State extends Phaser.State {
         if (this._allowUpdate) {
             this.updateState();
         }
+    }
+
+    public resume(): void {
+        this._allowUpdate = true;
+    }
+
+    public pause(): void {
+        this._allowUpdate = false;
     }
 
     protected updateState(): void { 
@@ -142,14 +150,6 @@ export class State extends Phaser.State {
 
     public get game(): Game {
         return this.app.game;
-    }
-
-    public get allowUpdate(): boolean {
-        return this._allowUpdate;
-    }
-
-    public set allowUpdate(value: boolean) {
-        this._allowUpdate = value;
     }
 
     /* EXPERIMENT CONTENT CREATION FROM UNITY SCENE EXPORT */
