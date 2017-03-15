@@ -34,11 +34,15 @@ export class LabelledButton extends Phaser.Button {
      * @param {number} overTint (Optional)Color to tint font when cursor is over button
      * @param {number} upTint (Optional)Color to tint font when button is released
      */  
-    public addLabel(text: string, fontSize: number, fontName: string, outTint: number = 0xffffff, downTint?: number, overTint?: number, upTint?: number) {
+    public addLabel(text: string, fontSize: number, fontName: string, outTint: number = 0xffffff, downTint?: number, overTint?: number, upTint?: number, labelOffset?: Phaser.Point) {
         if (fontSize < 1) {
             fontSize = fontSize * this.realHeight;
-        }        
-        this._label = new Text(this.realWidth * 0.5, this.realHeight * 0.5 + 8, text, fontName, fontSize, "#ffffff");
+        }  
+        let textPoint = new Phaser.Point(this.realWidth * 0.5, this.realHeight * 0.5);
+        if (labelOffset) {
+            textPoint = Phaser.Point.add(textPoint, labelOffset);
+        }
+        this._label = new Text(textPoint.x, textPoint.y, text, fontName, fontSize, "#ffffff");      
         this._label.centerPivot();
         this.addChild(this._label);
 

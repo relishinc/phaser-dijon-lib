@@ -288,7 +288,7 @@ declare module "dijon/display/LabelledButton" {
             out: number;
         };
         constructor(x: number, y: number, callback: any, context: any, key: string, upFrame: string, downFrame?: string, overFrame?: string, outFrame?: string);
-        addLabel(text: string, fontSize: number, fontName: string, outTint?: number, downTint?: number, overTint?: number, upTint?: number): void;
+        addLabel(text: string, fontSize: number, fontName: string, outTint?: number, downTint?: number, overTint?: number, upTint?: number, labelOffset?: Phaser.Point): void;
         setLabelTints(outTint: number, downTint?: number, overTint?: number, upTint?: number): void;
         onInputDownHandler(sprite: any, pointer: any): void;
         onInputOverHandler(sprite: any, pointer: any): void;
