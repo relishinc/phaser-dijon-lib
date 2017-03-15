@@ -2,6 +2,7 @@ export {BitmapText} from './display/BitmapText';
 export {Component} from './display/Component';
 export {Group} from './display/Group';
 export {InvisibleButton} from './display/InvisibleButton';
+export {LabelledButton} from './display/LabelledButton';
 export {NineSliceImage} from './display/NineSliceImage';
 export {Spine} from './display/Spine';
 export {Spine2} from './display/Spine2';

@@ -277,6 +277,28 @@ declare module "dijon/display/InvisibleButton" {
         setSize(w: any, h: any): void;
     }
 }
+declare module "dijon/display/LabelledButton" {
+    import { Text } from "dijon/display";
+    export class LabelledButton extends Phaser.Button {
+        protected _label: Text;
+        protected _labelTint: {
+            up: number;
+            down: number;
+            over: number;
+            out: number;
+        };
+        constructor(x: number, y: number, callback: any, context: any, key: string, upFrame: string, downFrame?: string, overFrame?: string, outFrame?: string);
+        addLabel(text: string, fontSize: number, fontName: string, outTint?: number, downTint?: number, overTint?: number, upTint?: number): void;
+        setLabelTints(outTint: number, downTint?: number, overTint?: number, upTint?: number): void;
+        onInputDownHandler(sprite: any, pointer: any): void;
+        onInputOverHandler(sprite: any, pointer: any): void;
+        onInputOutHandler(sprite: any, pointer: any): void;
+        onInputUpHandler(sprite: any, pointer: any, isOver: boolean): void;
+        changeLabel(newLabel: string): void;
+        assignText(newText: Text): void;
+        protected tintLabel(newTint: number): void;
+    }
+}
 declare module "dijon/display/NineSliceImage" {
     import { Group } from "dijon/display/Group";
     export class NineSliceImage extends Group {
@@ -502,6 +524,7 @@ declare module "dijon/display" {
     export { Component } from "dijon/display/Component";
     export { Group } from "dijon/display/Group";
     export { InvisibleButton } from "dijon/display/InvisibleButton";
+    export { LabelledButton } from "dijon/display/LabelledButton";
     export { NineSliceImage } from "dijon/display/NineSliceImage";
     export { Spine } from "dijon/display/Spine";
     export { Spine2 } from "dijon/display/Spine2";
