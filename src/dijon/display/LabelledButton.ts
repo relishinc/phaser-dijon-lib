@@ -1,7 +1,7 @@
 import { Text } from '../display';
 import {Application} from '../application';
 
-export default class LabelledButton extends Phaser.Button {
+export class LabelledButton extends Phaser.Button {
     
     protected _label: Text;
     protected _labelTint: { up: number, down: number, over: number, out: number };
