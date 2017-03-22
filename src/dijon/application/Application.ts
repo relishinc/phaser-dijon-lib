@@ -81,7 +81,7 @@ export class Application implements INotifier {
     }
 
     public trackEvent(eventModel: AnalyticsEventModel): void {
-        this.game.analytics.trackEvent(eventModel.action, eventModel.label, eventModel.value.toString());
+        this.game.analytics.trackEvent(eventModel.action, eventModel.label, eventModel.value === null ? null : eventModel.value.toString());
     }   
 
     public trackEventAndChangeCategory(newCategory: string, eventModel: AnalyticsEventModel): void {
