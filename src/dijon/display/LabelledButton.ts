@@ -25,18 +25,19 @@ export class LabelledButton extends Phaser.Button {
     }
 
     /**
-     * 
+     * If the text you try to create on the button is larger than the button sprite itself it will be scaled down to match.
      * @param {string} text Text to display
      * @param {number} fontSize Font size. If 0-1 is passed, will be used as a percentage of button height
      * @param {string} fontName The name of the font family
-     * @param {number} outTint Standard color to display (default)
+     * @param {boolean} forceFit If true, the text will be scaled down if it is larger than the button itself (Default: True).
+     * @param {number} outTint Standard color to display (Default: White)
      * @param {number} downTint (Optional)Color to tint font when button is pressed down
      * @param {number} overTint (Optional)Color to tint font when cursor is over button
      * @param {number} upTint (Optional)Color to tint font when button is released
      */  
-    public addLabel(text: string, fontSize: number, fontName: string, outTint: number = 0xffffff, downTint?: number, overTint?: number, upTint?: number, labelOffset?: Phaser.Point) {
+    public addLabel(text: string, fontSize: number, fontName: string, forceFit: boolean = true, outTint: number = 0xffffff, downTint?: number, overTint?: number, upTint?: number, labelOffset?: Phaser.Point) {
         if (fontSize < 1) {
-            fontSize = fontSize * this.realHeight;
+            fontSize = fontSize * this.realHeight * 0.5;
         }  
         let textPoint = new Phaser.Point(this.realWidth * 0.5, this.realHeight * 0.5);
         if (labelOffset) {
@@ -51,6 +52,14 @@ export class LabelledButton extends Phaser.Button {
         this._labelTint.up = upTint ? upTint : outTint;
         this._labelTint.over = overTint ? overTint : outTint;
         this._labelTint.out = outTint;
+
+        this._label.tint = this._labelTint.out;
+        // If the font is still to large we need to scale it down.        
+        if (this._label.realWidth > this.realWidth || this._label.realHeight > this.realHeight) {
+            let wRatio = this.realWidth / this._label.realWidth;
+            let hRatio = this.realHeight / this._label.realHeight;
+            this._label.scale.setTo(wRatio < hRatio ? wRatio * 0.9 : hRatio * 0.9);
+        }
     }
 
     public setLabelTints(outTint: number, downTint?: number, overTint?: number, upTint?: number) {
