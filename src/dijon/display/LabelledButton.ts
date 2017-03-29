@@ -55,7 +55,7 @@ export class LabelledButton extends Phaser.Button {
 
         this._label.tint = this._labelTint.out;
         // If the font is still to large we need to scale it down.        
-        if (this._label.realWidth > this.realWidth || this._label.realHeight > this.realHeight) {
+        if (forceFit === true && this._label.realWidth > this.realWidth || this._label.realHeight > this.realHeight) {
             let wRatio = this.realWidth / this._label.realWidth;
             let hRatio = this.realHeight / this._label.realHeight;
             this._label.scale.setTo(wRatio < hRatio ? wRatio * 0.9 : hRatio * 0.9);
