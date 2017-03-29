@@ -108,6 +108,7 @@ export class LabelledButton extends Phaser.Button {
     public changeLabel(newLabel: string): void {
         if (this._label !== null) {
             this._label.text = newLabel;
+            this._label.centerPivot();
         }
     }
 
