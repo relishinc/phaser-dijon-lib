@@ -306,7 +306,7 @@ export class AudioManager {
 
         return sound.fadeTween.start();
     }
-
+    
     /* GET/SET */
 
     public set spriteEnabled(value: boolean) {
@@ -318,19 +318,21 @@ export class AudioManager {
         this._soundEnabled = value;
         this.onSoundToggle.dispatch(this._soundEnabled);
     }
-    
+
     public set spriteVolume(value: number) {
-         if (value >= 0 && value <= 1) {
-             this._spriteVolume = value;
-             this.onSpriteVolumeChange.dispatch(this._spriteVolume);
+        if (value < 0 || value > 1) {
+            return;     
         }
+        this._spriteVolume = value;
+        this.onSpriteVolumeChange.dispatch(this._spriteVolume);
     }
 
     public set soundVolume(value: number) {
-        if (value >= 0 && value <= 1) {
-            this._soundVolume = value;
-            this.onSoundVolumeChange.dispatch(this._soundVolume);
+        if (value < 0 || value > 1) {
+            return;    
         }
+        this._soundVolume = value;
+        this.onSoundVolumeChange.dispatch(this._soundVolume);
     }
 
     public get spriteEnabled(): boolean {
