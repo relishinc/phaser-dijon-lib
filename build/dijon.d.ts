@@ -741,7 +741,14 @@ declare module "dijon/core/AudioManager" {
     import { Game } from "dijon/core";
     export class AudioManager {
         game: Game;
-        private _defaultVolume;
+        onSpriteToggle: Phaser.Signal;
+        onSoundToggle: Phaser.Signal;
+        onSpriteVolumeChange: Phaser.Signal;
+        onSoundVolumeChange: Phaser.Signal;
+        private _spriteEnabled;
+        private _soundEnabled;
+        private _spriteVolume;
+        private _soundVolume;
         private _sprites;
         private _sounds;
         private _markerLookup;
@@ -769,7 +776,10 @@ declare module "dijon/core/AudioManager" {
         removeSound(key: any): boolean;
         removeSprite(key: string): void;
         fade(sound: Phaser.Sound, volume: number, time: number, stop?: boolean): Phaser.Tween;
-        defaultVolume: number;
+        spriteEnabled: boolean;
+        soundEnabled: boolean;
+        spriteVolume: number;
+        soundVolume: number;
     }
 }
 declare module "dijon/core/Game" {
