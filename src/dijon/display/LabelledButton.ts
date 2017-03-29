@@ -43,6 +43,7 @@ export class LabelledButton extends Phaser.Button {
         }
         this._label = new Text(textPoint.x, textPoint.y, text, fontName, fontSize, "#ffffff");
         this._label.tint = outTint;
+        this._label.anchor.setTo(0.5, 0.5);
         this.addChild(this._label);
         
         this._labelTint = <{ up: number, down: number, over: number, out: number }>new Object();
@@ -135,7 +136,7 @@ export class LabelledButton extends Phaser.Button {
     }
 
     protected _fitLabelToButton(): void {
-        this._label.centerPivot();
+        this._label.scale.setTo(1, 1);
         if (this._label.realWidth > this.realWidth || this._label.realHeight > this.realHeight) {
             let wRatio = this.realWidth / this._label.realWidth;
             let hRatio = this.realHeight / this._label.realHeight;
