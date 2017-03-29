@@ -287,16 +287,17 @@ declare module "dijon/display/LabelledButton" {
             over: number;
             out: number;
         };
-        constructor(x: number, y: number, callback: any, context: any, key: string, upFrame: string, downFrame?: string, overFrame?: string, outFrame?: string);
-        addLabel(text: string, fontSize: number, fontName: string, forceFit?: boolean, outTint?: number, downTint?: number, overTint?: number, upTint?: number, labelOffset?: Phaser.Point): void;
+        constructor(x: number, y: number, callback: any, context: any, key: string, outFrame: string, downFrame?: string, overFrame?: string, upFrame?: string);
+        addLabel(text: string, fontSize: number, fontName: string, outTint?: number, downTint?: number, overTint?: number, upTint?: number, labelOffset?: Phaser.Point): void;
         setLabelTints(outTint: number, downTint?: number, overTint?: number, upTint?: number): void;
+        changeLabel(newLabel: string): void;
+        assignText(newText: Text): void;
         onInputDownHandler(sprite: any, pointer: any): void;
         onInputOverHandler(sprite: any, pointer: any): void;
         onInputOutHandler(sprite: any, pointer: any): void;
         onInputUpHandler(sprite: any, pointer: any, isOver: boolean): void;
-        changeLabel(newLabel: string): void;
-        assignText(newText: Text): void;
-        protected tintLabel(newTint: number): void;
+        protected _tintLabel(newTint: number): void;
+        protected _fitLabelToButton(): void;
     }
 }
 declare module "dijon/display/NineSliceImage" {
