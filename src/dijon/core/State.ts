@@ -152,6 +152,10 @@ export class State extends Phaser.State {
         return this.app.game;
     }
 
+    public get updateAllowed(): boolean {
+        return this._allowUpdate;
+    }
+
     /* EXPERIMENT CONTENT CREATION FROM UNITY SCENE EXPORT */
      public createPrefabFromData(prefData: any): any {
         if (prefData != null) {

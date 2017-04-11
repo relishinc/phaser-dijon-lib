@@ -906,6 +906,7 @@ declare module "dijon/core/State" {
         add: GameObjectFactory;
         app: Application;
         game: Game;
+        updateAllowed: boolean;
         createPrefabFromData(prefData: any): any;
         assignPrefab(object: any): void;
         protected _findPrefab(name: string): Phaser.Image;
