@@ -1,5 +1,6 @@
 import { Text } from '../display';
-import {Application} from '../application';
+import { Application } from '../application';
+import { Game } from '../core';
 
 export class LabelledButton extends Phaser.Button {
     
@@ -142,5 +143,9 @@ export class LabelledButton extends Phaser.Button {
             let hRatio = this.realHeight / this._label.realHeight;
             this._label.scale.setTo(wRatio < hRatio ? wRatio * 0.9 : hRatio * 0.9);
         }
+    }
+
+    public get game(): Game {
+        return Application.getInstance().game;
     }
 }

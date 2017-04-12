@@ -142,52 +142,52 @@ export class AudioManager {
     /**
     * a global method to play a sound - will check audio sprite markers for the provided key first, then single sounds
     * @param  {String} marker       the sound marker (or key) to check for
-    * @param  {Number} volume       the volume at which to play the sound
+    * @param  {Number} volume       the volume at which to play the sound (as a percentange of internal volume setting)
     * @param  {Boolean} loop         whether the sound should loop (won't work if it's a sprite marker, and "loop" hasn't been set in the audio sprite descriptor file)
     * @param  {Boolean} forceRestart whether to restart the sound if it's already playing
     * @return {Phaser.Sound}              the playing sound
     */
-    public playAudio(marker: string, volume: number = this._spriteVolume, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound {
+    public playAudio(marker: string, volume: number = 1, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound {
         if (this._getKeyFromMarkerName(marker)) {
             return this.playSpriteMarker(marker, this._spriteEnabled ? volume : 0, loop, forceRestart);
         }
 
-        return this.playSound(marker, this._spriteEnabled ? volume : 0, loop, forceRestart);
+        return this.playSound(marker, this._spriteEnabled ? volume * this._spriteVolume : 0, loop, forceRestart);
     }
 
     /**
     * calls Dijon.AudioManager.playAudio on a delay
     * @param  {int} delay        number of milliseconds to delay the sound
     * @param  {String} marker       the sound marker (or key) to check for
-    * @param  {Number} volume       the volume at which to play the sound
+    * @param  {Number} volume       the volume at which to play the sound (as a percentange of internal volume setting)
     * @param  {Boolean} loop         whether the sound should loop (won't work if it's a sprite marker, and "loop" hasn't been set in the audio sprite descriptor file)
     * @param  {Boolean} forceRestart whether to restart the sound if it's already playing
     */
-    public playDelayedAudio(delay: number, marker: string, volume: number = this._spriteVolume, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound {
+    public playDelayedAudio(delay: number, marker: string, volume: number = 1, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound {
         if (this._getKeyFromMarkerName(marker)) {
-            return this.playDelayedSpriteMarker(delay, marker, this._spriteEnabled ? volume : 0, loop, forceRestart);
+            return this.playDelayedSpriteMarker(delay, marker, this._spriteEnabled ? volume * this._spriteVolume : 0, loop, forceRestart);
         }
-        return this.playDelayedSound(delay, marker, this._spriteEnabled ? volume : 0, loop, forceRestart);
+        return this.playDelayedSound(delay, marker, this._spriteEnabled ? volume * this._spriteVolume: 0, loop, forceRestart);
     }
 
     /**
     * plays a single sound
     * @param  {String} key          the Phaser.Cache key for the sound
-    * @param  {Number} volume       the volume at which to play the sound
+    * @param  {Number} volume       the volume at which to play the sound (as a percentange of internal volume setting)
     * @param  {Boolean} loop         whether the sound should loop (won't work if it's a sprite marker, and "loop" hasn't been set in the audio sprite descriptor file)
     * @param  {Boolean} forceRestart whether to restart the sound if it's already playing
     * @return {Phaser.Sound} the playing sound
     */
-    public playSound(key: string, volume: number = this._soundVolume, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound {
+    public playSound(key: string, volume: number = 1, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound {
         if (typeof this._sounds[key] === 'undefined') {
             return null;
         }
 
-        return this._sounds[key].play("", 0, this._soundEnabled ? volume : 0, loop, forceRestart);
+        return this._sounds[key].play("", 0, this._soundEnabled ? volume * this._soundVolume : 0, loop, forceRestart);
     }
 
     // similat to playSound, but just returns the Phaser.Sound instance
-    public getSound(key: string, volume: number = this._soundVolume, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound{
+    public getSound(key: string, volume: number = 1, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound{
         if (typeof this._sounds[key] === 'undefined') {
             return null;
         }
@@ -198,12 +198,12 @@ export class AudioManager {
     /**
     * plays a marker from an audio sprite
     * @param  {String} marker       the marker to check for (will check all audio sprites)
-    * @param  {Number} volume       the volume at which to play the sound
+    * @param  {Number} volume       the volume at which to play the sound (as a percentange of internal volume setting)
     * @param  {Boolean} loop         whether the sound should loop (won't work if it's a sprite marker, and "loop" hasn't been set in the audio sprite descriptor file)
     * @param  {Boolean} forceRestart whether to restart the sound if it's already playing
     * @return {Phaser.Sound} the playing sound
     */
-    public playSpriteMarker(marker: string, volume: number = this._spriteVolume, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound {
+    public playSpriteMarker(marker: string, volume: number = 1, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound {
         const key = this._getKeyFromMarkerName(marker);
 
         if (!key) {
@@ -211,15 +211,15 @@ export class AudioManager {
             return null;
         }
 
-        return this._playSpriteMarker(<string>key, marker, this._spriteEnabled ? volume : 0, loop, forceRestart);
+        return this._playSpriteMarker(<string>key, marker, this._spriteEnabled ? volume * this._spriteVolume : 0, loop, forceRestart);
     }
 
-    public playDelayedSound(delay: number, key: string, volume: number = this._soundVolume, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound {
+    public playDelayedSound(delay: number, key: string, volume: number = 1, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound {
         this.game.time.events.add(delay, this.playSound, this, key, volume, loop, forceRestart);
         return null;
     }
 
-    public playDelayedSpriteMarker(delay: number, marker: string, volume: number = this._spriteVolume, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound {
+    public playDelayedSpriteMarker(delay: number, marker: string, volume: number = 1, loop: boolean = false, forceRestart: boolean = true): Phaser.Sound {
         this.game.time.events.add(delay, this.playSpriteMarker, this, marker, volume, loop, forceRestart);
         return null;
     }

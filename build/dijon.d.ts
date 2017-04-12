@@ -279,6 +279,7 @@ declare module "dijon/display/InvisibleButton" {
 }
 declare module "dijon/display/LabelledButton" {
     import { Text } from "dijon/display";
+    import { Game } from "dijon/core";
     export class LabelledButton extends Phaser.Button {
         protected _label: Text;
         protected _labelTint: {
@@ -298,6 +299,7 @@ declare module "dijon/display/LabelledButton" {
         onInputUpHandler(sprite: any, pointer: any, isOver: boolean): void;
         protected _tintLabel(newTint: number): void;
         protected _fitLabelToButton(): void;
+        game: Game;
     }
 }
 declare module "dijon/display/NineSliceImage" {
