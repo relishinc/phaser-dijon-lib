@@ -3103,10 +3103,15 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
             var rotation = bone.rotation;
             var rotationIK = Math.atan2(targetY - bone.worldY, targetX - bone.worldX) * spine.radDeg - parentRotation;
             if ((bone.worldSignX != bone.worldSignY) != (bone.skeleton.flipX != (bone.skeleton.flipY != spine.Bone.yDown))) rotationIK = 360 - rotationIK;
-            if (rotationIK > 180)
+            while (rotationIK > 180)
                 rotationIK -= 360;
-            else if (rotationIK < -180) rotationIK += 360;
+            while (rotationIK < -180)
+                rotationIK += 360;
             bone.rotationIK = rotation + (rotationIK - rotation) * alpha;
+            while (bone.rotationIK > 180)
+                bone.rotationIK -= 360;
+            while (bone.rotationIK < -180)
+                bone.rotationIK += 360;
             bone.updateWorldTransform();
         };
         /** Adjusts the parent and child bone rotations so the tip of the child is as close to the target position as possible. The
@@ -3223,17 +3228,27 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
             var offset = Math.atan2(cy, child.x) * sign2;
             a1 = (a1 - offset) * spine.radDeg + offset1;
             a2 = (a2 + offset) * spine.radDeg * sign2 + offset2;
-            if (a1 > 180)
+            while (a1 > 180)
                 a1 -= 360;
-            else if (a1 < -180) a1 += 360;
-            if (a2 > 180)
+            while (a1 < -180)
+                a1 += 360;
+            while (a2 > 180)
                 a2 -= 360;
-            else if (a2 < -180) a2 += 360;
+            while (a2 < -180)
+                a2 += 360;
             var rotation = parent.rotation;
             parent.rotationIK = rotation + (a1 - rotation) * alpha;
+            while (parent.rotationIK > 180)
+                parent.rotationIK -= 360;
+            while (parent.rotationIK < -180)
+                parent.rotationIK += 360;
             parent.updateWorldTransform();
             rotation = child.rotation;
             child.rotationIK = rotation + (a2 - rotation) * alpha;
+            while (child.rotationIK > 180)
+                child.rotationIK -= 360;
+            while (child.rotationIK < -180)
+                child.rotationIK += 360;
             child.updateWorldTransform();
         };
         module.exports = spine.IkConstraint;
@@ -3494,6 +3509,10 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
                     while (amount < -180)
                         amount += 360;
                     bone.rotation += amount * alpha;
+                    while (bone.rotation > 180)
+                        bone.rotation -= 360;
+                    while (bone.rotation < -180)
+                        bone.rotation += 360;
                     return;
                 }
 
@@ -3515,6 +3534,10 @@ PIXI.Plane.prototype._onTextureUpdate = function () {
                 while (amount < -180)
                     amount += 360;
                 bone.rotation += amount * alpha;
+                while (bone.rotation > 180)
+                    bone.rotation -= 360;
+                while (bone.rotation < -180)
+                    bone.rotation += 360;
             }
         };
         module.exports = spine.RotateTimeline;
