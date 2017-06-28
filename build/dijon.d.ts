@@ -496,8 +496,10 @@ declare module "dijon/display/Text" {
         static GLOBAL_PADDING_Y: number;
         game: Game;
         style: any;
+        customResolution: any;
         onAnimationComplete: Phaser.Signal;
         protected _canUpdate: boolean;
+        protected _rounded: boolean;
         protected _repeatTimer: Phaser.TimerEvent;
         protected _delayTimer: Phaser.TimerEvent;
         protected _lowercaseText: string;
@@ -515,8 +517,8 @@ declare module "dijon/display/Text" {
         resetColor(): void;
         highlightPhrase(phrase: string, color: string, caseSensitive?: boolean): void;
         animate(letterTime?: number, delay?: number): void;
-        stopAnimating: () => void;
-        roundPixel: () => void;
+        stopAnimating(): void;
+        roundPixel(): void;
         private static _addSettings(obj, settings);
         realHeight: number;
         realWidth: number;
@@ -1051,6 +1053,8 @@ declare module "dijon/application/Application" {
     import { Game } from "dijon/core";
     import { AnalyticsEventModel } from "dijon/core";
     export class Application implements INotifier {
+        static resolution: number;
+        static textResolution: number;
         protected static instance: any;
         protected static SINGLETON_MSG: string;
         game: Game;
