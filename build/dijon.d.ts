@@ -587,6 +587,46 @@ declare module "dijon/utils/PrefabBuilder" {
         static createPrefab(data: any): any;
     }
 }
+declare module "dijon/utils/CustomTimer" {
+    import { Game } from "dijon/core";
+    export class TimerEvent {
+        paused: boolean;
+        startT: number;
+        delay: number;
+        loop: boolean;
+        protected args: any[];
+        protected callback: Function;
+        protected callbackContext: any;
+        constructor(start: number, delay: number, callback: any, context: any, autoStart?: boolean, loop?: boolean, args?: any[]);
+        dispatchCallback(): void;
+        cleanup(): void;
+    }
+    export class CustomTimer {
+        game: Game;
+        onComplete: Phaser.Signal;
+        protected internalMS: number;
+        protected events: TimerEvent[];
+        protected toRemove: TimerEvent[];
+        protected runTime: number;
+        protected running: boolean;
+        constructor();
+        update(): void;
+        checkEvent(event: TimerEvent, index: number, delta: number): void;
+        pause(): void;
+        resume(): void;
+        addEvent(delay: number, callback: any, context: any, autoStart?: boolean, loop?: boolean, args?: any[]): TimerEvent;
+        removeEvent(event: TimerEvent): TimerEvent;
+        removeAllEvents(): void;
+        reset(autoStart?: boolean, runTime?: number, startAt?: number): void;
+        destroy(): void;
+        isEndless: boolean;
+        percentRemaining: number;
+        percentComplete: number;
+        msRemaining: number;
+        secondsRemaining: number;
+        timeElapsed: number;
+    }
+}
 declare module "dijon/utils" {
     export { Device } from "dijon/utils/Device";
     export { Logger } from "dijon/utils/Logger";
@@ -597,6 +637,8 @@ declare module "dijon/utils" {
     export { Util } from "dijon/utils/Util";
     export { Log } from "dijon/utils/Log";
     export { PrefabBuilder } from "dijon/utils/PrefabBuilder";
+    export { CustomTimer } from "dijon/utils/CustomTimer";
+    export { TimerEvent } from "dijon/utils/CustomTimer";
 }
 declare module "dijon/core/AnalyticsManager" {
     export class AnalyticsEventModel {
@@ -795,6 +837,7 @@ declare module "dijon/core/Game" {
     export class Game extends Phaser.Game {
         app: Application;
         config: IGameConfig;
+        scaleRatio: Phaser.Point;
         asset: AssetManager;
         sequence: SequenceManager;
         transition: TransitionManager;

@@ -12,6 +12,7 @@ export class Game extends Phaser.Game {
     // application
     public app: Application;
     public config: IGameConfig;
+    public scaleRatio: Phaser.Point = new Phaser.Point(1, 1);
     
     // managers
     public asset: AssetManager;

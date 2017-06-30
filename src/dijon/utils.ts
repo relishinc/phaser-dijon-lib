@@ -7,3 +7,5 @@ export {Time} from './utils/Time';
 export {Util} from './utils/Util';
 export { Log } from './utils/Log';
 export { PrefabBuilder } from './utils/PrefabBuilder';
+export { CustomTimer } from './utils/CustomTimer';
+export { TimerEvent } from './utils/CustomTimer';

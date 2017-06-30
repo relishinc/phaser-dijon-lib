@@ -21,7 +21,6 @@ export class PrefabBuilder {
                 console.warn("Entry for: " + importName + " already exists in Prefab Classes");
                 console.warn("Use overrideExisting flag if you wish replace existing entry");
             }
-           
         }
         else {
             PrefabBuilder.prefabClasses[importName] = newClass;
