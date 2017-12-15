@@ -76,4 +76,38 @@ export class Textures {
 
         return texture;
     }
+
+    static triangle(path: Phaser.Point[], color: number = 0xffffff, alpha: number = 1, fill: boolean = true, lineColor: number = 0xffffff, lineThickness: number = 1, lineAlpha: number = 1, outline: boolean = false): PIXI.Texture {
+        const gfx = Textures.game.add.graphics(0, 0);
+        if (fill) {
+            gfx.beginFill(color, alpha);
+        }
+        if (outline) {
+            gfx.lineWidth = lineThickness;
+            gfx.lineStyle(lineThickness, lineColor, lineAlpha);
+        }
+        gfx.drawTriangle(path);
+
+        const texture = gfx.generateTexture();
+        Textures.game.world.remove(gfx);
+
+        return texture;
+    }
+
+    static polygon(path: Phaser.Point[], color: number = 0xffffff, alpha: number = 1, fill: boolean = true, lineColor: number = 0xffffff, lineThickness: number = 1, lineAlpha: number = 1, outline: boolean = false): PIXI.Texture {
+        const gfx = Textures.game.add.graphics(0, 0);
+        if (fill) {
+            gfx.beginFill(color, alpha);
+        }
+        if (outline) {
+            gfx.lineWidth = lineThickness;
+            gfx.lineStyle(lineThickness, lineColor, lineAlpha);
+        }
+        gfx.drawPolygon(path);
+
+        const texture = gfx.generateTexture();
+        Textures.game.world.remove(gfx);
+
+        return texture;
+    }
 }

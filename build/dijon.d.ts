@@ -160,6 +160,8 @@ declare module "dijon/utils/Textures" {
         static square(size?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
         static circle(diameter?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
         static ellipse(width?: number, height?: number, color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
+        static triangle(path: Phaser.Point[], color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
+        static polygon(path: Phaser.Point[], color?: number, alpha?: number, fill?: boolean, lineColor?: number, lineThickness?: number, lineAlpha?: number, outline?: boolean): PIXI.Texture;
     }
 }
 declare module "dijon/display/BitmapText" {
